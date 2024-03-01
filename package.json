@@ -2,7 +2,7 @@
   "name": "my-qwik-empty-starter",
   "description": "App with Routing built-in ready to create your app",
   "engines": {
-    "node": ">=15.0.0"
+    "node": "21.6.2"
   },
   "private": true,
   "trustedDependencies": [
@@ -22,21 +22,23 @@
     "lint": "eslint \"src/**/*.ts*\"",
     "preview": "qwik build preview && vite preview --open",
     "start": "vite --open --mode ssr",
-    "qwik": "qwik"
+    "qwik": "qwik",
+    "update": "npx npm-check-updates -u",
+    "update.check": "npx npm-check-updates"
   },
   "devDependencies": {
-    "@builder.io/qwik": "^1.4.5",
-    "@builder.io/qwik-city": "^1.4.5",
-    "@types/eslint": "^8.56.2",
-    "@types/node": "^20.11.6",
-    "@typescript-eslint/eslint-plugin": "^6.19.1",
-    "@typescript-eslint/parser": "^6.19.1",
-    "eslint": "^8.56.0",
-    "eslint-plugin-qwik": "^1.4.5",
-    "prettier": "^3.2.4",
+    "@builder.io/qwik": "1.4.5",
+    "@builder.io/qwik-city": "1.4.5",
+    "@types/eslint": "8.56.5",
+    "@types/node": "20.11.24",
+    "@typescript-eslint/eslint-plugin": "7.1.0",
+    "@typescript-eslint/parser": "7.1.0",
+    "eslint": "8.57.0",
+    "eslint-plugin-qwik": "1.4.5",
+    "prettier": "3.2.5",
     "typescript": "5.3.3",
-    "undici": "*",
-    "vite": "^5.0.12",
-    "vite-tsconfig-paths": "^4.2.1"
+    "undici": "6.6.2",
+    "vite": "5.1.4",
+    "vite-tsconfig-paths": "4.3.1"
   }
 }
