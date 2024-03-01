@@ -13,6 +13,7 @@
     "build": "qwik build",
     "build.client": "vite build",
     "build.preview": "vite build --ssr src/entry.preview.tsx",
+    "build.server": "vite build -c adapters/fastify/vite.config.ts",
     "build.types": "tsc --incremental --noEmit",
     "deploy": "echo 'Run \"npm run qwik add\" to install a server adapter'",
     "dev": "vite --mode ssr",
@@ -21,24 +22,33 @@
     "fmt.check": "prettier --check .",
     "lint": "eslint \"src/**/*.ts*\"",
     "preview": "qwik build preview && vite preview --open",
+    "serve": "node server/entry.fastify",
     "start": "vite --open --mode ssr",
-    "qwik": "qwik",
     "update": "npx npm-check-updates -u",
-    "update.check": "npx npm-check-updates"
+    "update.check": "npx npm-check-updates",
+    "qwik": "qwik"
   },
   "devDependencies": {
     "@builder.io/qwik": "1.4.5",
     "@builder.io/qwik-city": "1.4.5",
+    "@fastify/compress": "7.0.0",
+    "@fastify/static": "7.0.1",
     "@types/eslint": "8.56.5",
     "@types/node": "20.11.24",
     "@typescript-eslint/eslint-plugin": "7.1.0",
     "@typescript-eslint/parser": "7.1.0",
+    "dotenv": "16.4.5",
     "eslint": "8.57.0",
     "eslint-plugin-qwik": "1.4.5",
+    "fastify": "4.26.1",
+    "fastify-plugin": "4.5.1",
     "prettier": "3.2.5",
     "typescript": "5.3.3",
     "undici": "6.6.2",
     "vite": "5.1.4",
     "vite-tsconfig-paths": "4.3.1"
+  },
+  "dependencies": {
+    "@dnlup/fastify-traps": "3.0.2"
   }
 }
