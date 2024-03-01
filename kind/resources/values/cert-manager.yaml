@@ -157,7 +157,7 @@ dns01RecursiveNameserversOnly: false
 # To see all available flags run docker run quay.io/jetstack/cert-manager-controller:<version> --help
 extraArgs:
   []
-  # Use this flag to enable or disable arbitrary controllers, for example, disable the CertificiateRequests approver
+  # Use this flag to enable or disable arbitrary controllers, for example, disable the CertificateRequests approver
   # - --controllers=*,-certificaterequests-approver
 
 extraEnv: []
@@ -244,7 +244,7 @@ prometheus:
 # https_proxy: "https://proxy:8080"
 # no_proxy: 127.0.0.1,localhost
 
-# A Kubernetes Affinty, if required; see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#affinity-v1-core
+# A Kubernetes Affinity, if required; see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#affinity-v1-core
 # for example:
 #   affinity:
 #     nodeAffinity:
