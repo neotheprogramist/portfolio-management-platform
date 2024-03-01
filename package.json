@@ -26,6 +26,7 @@
     "serve": "node server/entry.fastify",
     "start": "vite --open --mode ssr",
     "storybook": "storybook dev -p 6006",
+    "test.e2e": "playwright test",
     "update": "npx npm-check-updates -u",
     "update.check": "npx npm-check-updates",
     "qwik": "qwik"
@@ -36,6 +37,7 @@
     "@dnlup/fastify-traps": "3.0.2",
     "@fastify/compress": "7.0.0",
     "@fastify/static": "7.0.1",
+    "@playwright/test": "1.42.0",
     "@storybook/addon-essentials": "7.6.17",
     "@storybook/addon-links": "7.6.17",
     "@storybook/blocks": "7.6.17",

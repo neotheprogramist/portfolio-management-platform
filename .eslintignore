@@ -38,3 +38,5 @@ yarn.lock
 server
 storybook-static
 tailwind.config.js
+playwright-report
+test-results
