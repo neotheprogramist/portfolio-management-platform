@@ -1,0 +1,16 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: emeth
+spec:
+  parentRefs:
+    - kind: Gateway
+      name: nginx-staging-gateway
+      namespace: nginx-staging-gateway
+  hostnames:
+    - emeth.staging.visoft.dev
+  rules:
+    - matches:
+      backendRefs:
+        - name: emeth
+          port: 80
