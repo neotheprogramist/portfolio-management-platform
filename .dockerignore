@@ -34,6 +34,7 @@ node_modules
 *.local
 package-lock.json
 .tool-versions
+/scripts
 
 # Cache
 .cache
