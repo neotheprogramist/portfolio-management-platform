@@ -24,9 +24,8 @@ jobs:
         with:
           node-version: 21.6.2
 
-      - name: Install ESLint and plugins
+      - name: Install ESLint plugins
         run: npm install
-          "eslint"
           "@types/eslint"
           "@typescript-eslint/eslint-plugin"
           "@typescript-eslint/parser"

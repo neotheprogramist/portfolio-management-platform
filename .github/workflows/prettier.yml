@@ -24,5 +24,9 @@ jobs:
         with:
           node-version: 21.6.2
 
+      - name: Install Prettier plugins
+        run: npm install
+          "prettier-plugin-tailwindcss"
+
       - name: Run Prettier
         run: npx prettier --check .
