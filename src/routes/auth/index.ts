@@ -11,8 +11,14 @@ import { connectToDB } from "~/utils/db";
 const MESSAGE_EXPIRATION_TIME = 60 * 1000;
 
 // GENERATE NONCE
-export const onGet: RequestHandler = async ({ request, json }) => {
-  const db = await connectToDB();
+export const onGet: RequestHandler = async ({ request, json, env }) => {
+  const db = await connectToDB(
+    env.get("SURREALDB_URL") || "http://localhost:8000",
+    env.get("SURREALDB_USER") || "root",
+    env.get("SURREALDB_PASS") || "root",
+    env.get("SURREALDB_NS") || "test",
+    env.get("SURREALDB_DB") || "test",
+  );
 
   const address = request.headers.get("X-Address");
   if (!address) {
@@ -34,8 +40,19 @@ export const onGet: RequestHandler = async ({ request, json }) => {
 };
 
 // VERIFY MESSAGE
-export const onPost: RequestHandler = async ({ parseBody, json, cookie }) => {
-  const db = await connectToDB();
+export const onPost: RequestHandler = async ({
+  parseBody,
+  json,
+  cookie,
+  env,
+}) => {
+  const db = await connectToDB(
+    env.get("SURREALDB_URL") || "http://localhost:8000",
+    env.get("SURREALDB_USER") || "root",
+    env.get("SURREALDB_PASS") || "root",
+    env.get("SURREALDB_NS") || "test",
+    env.get("SURREALDB_DB") || "test",
+  );
 
   const { message, signature } =
     (await parseBody()) as VerifyMessageBodyResponse;
@@ -99,8 +116,8 @@ export const onPost: RequestHandler = async ({ parseBody, json, cookie }) => {
     }
 
     // Generate tokens
-    const secret = process.env.ACCESS_TOKEN_SECRET;
-    const refreshSecret = process.env.REFRESH_TOKEN_SECRET;
+    const secret = env.get("ACCESS_TOKEN_SECRET");
+    const refreshSecret = env.get("REFRESH_TOKEN_SECRET");
     if (!secret || !refreshSecret) throw new Error("No secret");
 
     const accessToken = jwt.sign({ userId }, secret, { expiresIn: "1h" });

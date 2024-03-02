@@ -23,7 +23,13 @@ import { isAddress } from "viem";
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
-    const db = await connectToDB();
+    const db = await connectToDB(
+      requestEvent.env.get("SURREALDB_URL") || "http://localhost:8000",
+      requestEvent.env.get("SURREALDB_USER") || "root",
+      requestEvent.env.get("SURREALDB_PASS") || "root",
+      requestEvent.env.get("SURREALDB_NS") || "test",
+      requestEvent.env.get("SURREALDB_DB") || "test",
+    );
     await db.query(
       `DEFINE INDEX walletAddressChainIndex ON TABLE wallet COLUMNS address, chainId UNIQUE;`,
     );
@@ -107,7 +113,13 @@ export const useAddWallet = routeAction$(
 
 export const useRemoveWallet = routeAction$(
   async (wallet, requestEvent) => {
-    const db = await connectToDB();
+    const db = await connectToDB(
+      requestEvent.env.get("SURREALDB_URL") || "http://localhost:8000",
+      requestEvent.env.get("SURREALDB_USER") || "root",
+      requestEvent.env.get("SURREALDB_PASS") || "root",
+      requestEvent.env.get("SURREALDB_NS") || "test",
+      requestEvent.env.get("SURREALDB_DB") || "test",
+    );
 
     const cookie = requestEvent.cookie.get("accessToken");
     if (!cookie) {
@@ -139,7 +151,13 @@ export const useRemoveWallet = routeAction$(
 );
 
 export const useObservedWallets = routeLoader$(async (requestEvent) => {
-  const db = await connectToDB();
+  const db = await connectToDB(
+    requestEvent.env.get("SURREALDB_URL") || "http://localhost:8000",
+    requestEvent.env.get("SURREALDB_USER") || "root",
+    requestEvent.env.get("SURREALDB_PASS") || "root",
+    requestEvent.env.get("SURREALDB_NS") || "test",
+    requestEvent.env.get("SURREALDB_DB") || "test",
+  );
 
   const cookie = requestEvent.cookie.get("accessToken");
   if (!cookie) {

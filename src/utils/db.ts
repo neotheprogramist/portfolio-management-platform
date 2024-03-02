@@ -1,15 +1,21 @@
 import { Surreal } from "surrealdb.js";
 
-export const connectToDB = async () => {
+export const connectToDB = async (
+  url: string,
+  username: string,
+  password: string,
+  namespace: string,
+  database: string,
+) => {
   const db = new Surreal();
   await db.connect("http://127.0.0.1:8000", {
-    namespace: "test",
-    database: "test",
+    namespace,
+    database,
     auth: {
-      namespace: "test",
-      database: "test",
-      username: "root",
-      password: "root",
+      namespace,
+      database,
+      username,
+      password,
     },
   });
   return db;

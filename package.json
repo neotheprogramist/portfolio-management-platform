@@ -1,6 +1,6 @@
 {
-  "name": "my-qwik-empty-starter",
-  "description": "App with Routing built-in ready to create your app",
+  "name": "portfolio-management-platform",
+  "description": "Portfolio Management Platform",
   "engines": {
     "node": "21.6.2"
   },
@@ -37,7 +37,7 @@
     "@dnlup/fastify-traps": "3.0.2",
     "@fastify/compress": "7.0.0",
     "@fastify/static": "7.0.1",
-    "@playwright/test": "1.42.0",
+    "@playwright/test": "1.42.1",
     "@storybook/addon-essentials": "7.6.17",
     "@storybook/addon-links": "7.6.17",
     "@storybook/blocks": "7.6.17",
