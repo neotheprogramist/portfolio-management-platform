@@ -4,6 +4,9 @@ ARG NODE_VERSION=21.6.2
 # Use node image for base image for all stages.
 FROM node:${NODE_VERSION}-alpine as base
 
+# Install build-base.
+RUN apk add build-base python3
+
 # Set working directory for all build stages.
 WORKDIR /app
 
