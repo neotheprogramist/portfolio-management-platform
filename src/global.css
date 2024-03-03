@@ -5,3 +5,79 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/**
+ * WHAT IS THIS FILE?
+ *
+ * Globally applied styles. No matter which components are in the page or matching route,
+ * the styles in here will be applied to the Document, without any sort of CSS scoping.
+ *
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  line-height: 1;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  line-height: inherit;
+}
+
+@layer base {
+  @font-face {
+    font-family: "Sora";
+    font-style: normal;
+    font-weight: 400;
+    src: url("/fonts/Sora-Regular.tff") format("ttf");
+  }
+}
+
+.border-white-opacity-20 {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.bg-glass {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.border-buttons {
+  border: 2px solid rgba(255, 255, 255, 0.4);
+}
+
+.color-gradient {
+  background: linear-gradient(
+    130deg,
+    #da301f 0.24%,
+    #f48946 18.43%,
+    #ee3560 35.57%,
+    #fa4784 51.68%,
+    #ff48c0 66.75%,
+    #8e38b5 81.82%,
+    #5542bb 89.09%,
+    #0051c3 100%
+  );
+}
+
+.gradient {
+  background: linear-gradient(
+    130deg,
+    #da301f 0.24%,
+    #f48946 18.43%,
+    #ee3560 35.57%,
+    #fa4784 51.68%,
+    #ff48c0 66.75%,
+    #8e38b5 81.82%,
+    #5542bb 89.09%,
+    #0051c3 100%
+  );
+  opacity: 0.5;
+  filter: blur(170px);
+}
