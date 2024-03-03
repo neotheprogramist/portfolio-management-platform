@@ -2,7 +2,7 @@
 
 # Delete the existing Kubernetes resources defined in the dev patch
 # The 'true' command ensures that the script continues even if the delete command fails (e.g., if the resources do not exist)
-kubectl delete --wait -k k8s/patches/dev || true && \
+kubectl --context kind-kind delete --wait -k k8s/patches/dev || true && \
 
 # Build the Docker image using Podman
 # The image is tagged as 'emeth-dev'
@@ -14,4 +14,4 @@ podman push --tls-verify=false emeth-dev:latest localhost:30500/emeth-dev:latest
 
 # Apply Kubernetes manifests
 # This command creates or updates the Kubernetes resources defined in the dev patch
-kubectl apply --wait -k k8s/patches/dev
+kubectl --context kind-kind apply --wait -k k8s/patches/dev
