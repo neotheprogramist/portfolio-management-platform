@@ -1,16 +1,16 @@
 import { component$, $ } from "@builder.io/qwik";
-import jwt from "jsonwebtoken";
 import { mainnet, arbitrum, type Chain } from "viem/chains";
 import { reconnect } from "@wagmi/core";
 import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi";
 import { createSIWEConfig } from "@web3modal/siwe";
 import { SiweMessage } from "siwe";
+import { type RouteLocation, useLocation } from "@builder.io/qwik-city";
 import {
-  type RouteLocation,
-  server$,
-  useLocation,
-  z,
-} from "@builder.io/qwik-city";
+  getNonceServer,
+  getSessionServer,
+  signOutServer,
+  verifyMessageServer,
+} from "~/components/wallet-connect/server";
 
 const metadata = {
   name: "Web3Modal",
@@ -18,20 +18,6 @@ const metadata = {
   url: "https://web3modal.com",
   icons: ["https://avatars.githubusercontent.com/u/37784886"],
 };
-
-export const getSession = server$(async function () {
-  const secret = this.env.get("ACCESS_TOKEN_SECRET");
-  const accessToken = this.cookie.get("accessToken");
-  if (!secret || !accessToken) {
-    throw new Error("Missing secret or access token");
-  }
-  const tokenValidator = z.object({ address: z.string(), chainId: z.number() });
-  const token = jwt.verify(accessToken.value, secret);
-  console.log(token);
-  const result = tokenValidator.parse(token);
-  console.log("Decoded Token", result);
-  return { address: result.address, chainId: result.chainId };
-});
 
 export const returnSIWEConfig = (loc: RouteLocation) => {
   const siweConfig = createSIWEConfig({
@@ -47,62 +33,22 @@ export const returnSIWEConfig = (loc: RouteLocation) => {
         statement: "Sign to continue...",
       }).prepareMessage(),
     getNonce: async () => {
-      const response = await fetch(`/auth`);
-      const { nonce } = await response.json();
-
-      if (!nonce) {
-        throw new Error("Failed to get nonce!");
-      }
-
+      const { nonce } = await getNonceServer();
       return nonce;
     },
     getSession: async () => {
-      const session = await getSession();
-      console.log("Session", session);
-      const { address, chainId } = session;
+      const { address, chainId } = await getSessionServer();
       return { address, chainId };
     },
     verifyMessage: async ({ message, signature }) => {
-      try {
-        const response = await fetch(`/auth`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            message,
-            signature,
-          }),
-        });
-
-        if (!response.ok) {
-          return false;
-        }
-        const result = await response.json();
-
-        if (typeof result === "object") {
-          const { refreshToken } = result;
-          localStorage.setItem("refreshToken", refreshToken);
-          return true;
-        }
-
-        return false;
-      } catch (error) {
-        return false;
-      }
+      const { refreshToken } = await verifyMessageServer(message, signature);
+      localStorage.setItem("refreshToken", refreshToken);
+      return true;
     },
     signOut: async () => {
-      try {
-        const response = await fetch("/auth", { method: "DELETE" });
-        if (!response.ok) {
-          throw new Error("Logout failed");
-        }
-
-        localStorage.removeItem("refreshToken");
-        return true;
-      } catch (error) {
-        return false;
-      }
+      await signOutServer();
+      localStorage.removeItem("refreshToken");
+      return true;
     },
   });
   return siweConfig;
