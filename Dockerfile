@@ -42,10 +42,14 @@ ENV NODE_ENV production
 # Run the application as a non-root user.
 USER node
 
+# Set working directory.
+WORKDIR /app
+
 # Copy the production dependencies from the deps stage and also
 # the built application from the build stage into the image.
+COPY --from=deps /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/server ./server
 
 # Run the application.
-ENTRYPOINT [ "node", "/app/server/entry.fastify" ]
+ENTRYPOINT [ "node", "server/entry.fastify" ]
