@@ -1,7 +1,4 @@
 ARG NODE_VERSION=21.6.2
-ARG PUBLIC_PROJECT_ID
-ARG PUBLIC_METADATA_NAME
-ARG PUBLIC_METADATA_DESCRIPTION
 
 ################################################################################
 # Use node image for base image for all stages.
@@ -25,9 +22,9 @@ RUN npm install
 # Create a stage for building the application.
 FROM deps as build
 
-ENV PUBLIC_PROJECT_ID=$PUBLIC_PROJECT_ID
-ENV PUBLIC_METADATA_NAME=$PUBLIC_METADATA_NAME
-ENV PUBLIC_METADATA_DESCRIPTION=$PUBLIC_METADATA_DESCRIPTION
+ARG PUBLIC_PROJECT_ID
+ARG PUBLIC_METADATA_NAME
+ARG PUBLIC_METADATA_DESCRIPTION
 
 # Set working directory.
 WORKDIR /app
