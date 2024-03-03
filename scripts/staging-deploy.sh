@@ -14,7 +14,10 @@ kubectl \
 
 # Build the Docker image using Podman
 # The image is tagged as 'emeth-staging'
-podman build -t emeth-staging:latest . && \
+podman build \
+  --build-arg-file k8s/patches/staging/.env \
+  -t emeth-staging:latest \
+  . && \
 
 # Push the Docker image
 # The image is pushed to the registry specified by the REGISTRY_USER and REGISTRY_PASS environment variables
