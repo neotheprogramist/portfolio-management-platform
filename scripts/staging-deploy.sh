@@ -23,7 +23,7 @@ kubectl -n emeth-staging create secret docker-registry regcred \
   --docker-server registry.visoft.dev \
   --docker-username $REGISTRY_USER \
   --docker-password $REGISTRY_PASS \
-  --dry-run client \
+  --dry-run=client \
   -o yaml | \
   kubectl apply -f - && \
 
