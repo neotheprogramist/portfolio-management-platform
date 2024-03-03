@@ -98,7 +98,6 @@ export default component$(() => {
           </table>
         </div>
       </div>
-      {/* <div class="block absolute bottom-0 left-1/4 h-1/4 w-6/12 rounded-full gradient"></div> */}
     </div>
   );
 });
