@@ -1,4 +1,4 @@
-import { component$ } from "@builder.io/qwik";
+import { type QRL, component$ } from "@builder.io/qwik";
 
 export interface ButtonProps {
   image?: string;
@@ -8,6 +8,7 @@ export interface ButtonProps {
   padding?: string;
   containerGap?: string;
   fontSize?: string;
+  onClick$?: QRL<() => Promise<void>>;
 }
 
 export const Button = component$<ButtonProps>((props) => {
@@ -24,11 +25,12 @@ export const Button = component$<ButtonProps>((props) => {
   };
   return (
     <button
+      onClick$={props.onClick$}
       class="flex items-center justify-between rounded-3xl border-2"
       style={buttonStyle}
     >
       <div class="flex items-center" style={containerStyle}>
-        <img src={props.image} width='24' height='24'/>
+        {props.image && (<img src={props.image} width='24' height='24'/>)}
         <p class="font-normal">{props.text}</p>
       </div>
       <img
