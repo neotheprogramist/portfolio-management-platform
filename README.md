@@ -67,11 +67,13 @@ npm run dev
 Start database and provision it with data (as above) - `production` build require database up and running.
 
 Build `production` mode:
+
 ```bash
 npm run build
 ```
 
 Serve `production` mode:
+
 ```bash
 npm run serve
 ```
