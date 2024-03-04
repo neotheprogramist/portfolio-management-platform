@@ -225,7 +225,7 @@ export default component$(() => {
   const addWalletFormStore = useStore({ name: "", address: "" });
 
   return (
-    <div class="grid h-screen w-full grid-cols-2 gap-4 p-8">
+    <div class="grid  grid-cols-2 gap-4 p-8">
       <div class="max-h-600 flex flex-col overflow-auto p-2">
         <div class="flex justify-between">
           <span>Wallets</span>

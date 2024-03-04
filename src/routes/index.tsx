@@ -1,23 +1,27 @@
 import { component$ } from "@builder.io/qwik";
 import { useNavigate } from "@builder.io/qwik-city";
 import { getCookie, isTokenExpired } from "~/utils/refresh";
-import { ImagesBlock } from "~/components/images-block/images-block";
 import { ButtonCancel } from "~/components/button-cancel/button-cancel";
 import { Gradient } from "~/components/gradient/gradient";
 import { Paragraph } from "~/components/paragraph/paragraph";
 import { WelcomeText } from "~/components/welcome-text/welcome-text";
 import WalletConnect from "~/components/wallet-connect";
+import { Navbar } from "~/components/navbar/navbar";
+import ImgGradientMain from "/public/images/gradient-main.png?jsx";
 
 export default component$(() => {
   const nav = useNavigate();
 
   return (
     <>
-      <main class="flex h-screen bg-black">
-        <ImagesBlock />
+    <Navbar />
+      <div class="flex">
+      <div class="w-[766px] h-[655px]">
+          <ImgGradientMain alt="gradient" />
+        </div>
         <div class="max-w-3/5 font-sora m-auto flex flex-col space-y-10 text-center text-white">
           <WelcomeText />
-          <div class="text-center">
+          <div>
             <ButtonCancel />
             <WalletConnect />
             <button
@@ -45,7 +49,7 @@ export default component$(() => {
           <Paragraph />
         </div>
         <Gradient />
-      </main>
+      </div>
     </>
   );
 });
