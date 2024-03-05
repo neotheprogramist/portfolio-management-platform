@@ -27,6 +27,7 @@
     "start": "vite --open --mode ssr",
     "storybook": "storybook dev -p 6006",
     "test.e2e": "playwright test",
+    "test.e2e.report": "playwright show-report",
     "test.e2e.setup": "playwright install --with-deps",
     "update": "npx npm-check-updates -u",
     "update.check": "npx npm-check-updates",
