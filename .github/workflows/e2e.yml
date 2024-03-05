@@ -1,0 +1,55 @@
+name: E2E
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+env:
+  NODE_VERSION: "21.6.2"
+  PLAYWRIGHT_TEST_RESULTS_RELATIVE_PATH: test-results/
+  PLAYWRIGHT_VERSION:
+
+jobs:
+  e2e:
+    name: End-to-end tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Get Playwright version
+        id: playwright-version
+        run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').dependencies['@playwright/test'].version)")" >> $GITHUB_ENV
+
+      - name: Cache Playwright dependencies
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: |
+            ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright dependencies
+        run: npm run test.e2e.setup
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+
+      - name: Run tests
+        run: npm run test.e2e
+
+      - name: Save results artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-test-results
+          path: ${{ ENV.PLAYWRIGHT_TEST_RESULTS_RELATIVE_PATH }}
