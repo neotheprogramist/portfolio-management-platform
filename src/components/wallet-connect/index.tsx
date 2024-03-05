@@ -101,6 +101,7 @@ export default component$<ButtonProps>((props) => {
       onClick$={openWeb3Modal}
       text={props.text}
       image={props.image}
+      class={props.class}
     ></Button>
   );
 });

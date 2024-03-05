@@ -17,14 +17,16 @@ export default component$(() => {
         <div class="grid grid-rows-[2fr_1fr]">
           <div class="grid content-end gap-10">
             <LoginText />
-            <div class="grid grid-rows-2 items-center justify-center gap-3 text-center text-sm">
+            <div class="m-auto">
               <Button
                 image="/images/svg/metamask-icon.svg"
                 text="Use Metamask"
+                class="text-center text-sm"
               />
               <WalletConnect
                 image="/images/svg/walletconnect-icon.svg"
                 text="Use WalletConnect"
+                class="mt-3 text-center text-sm"
               />
             </div>
           </div>

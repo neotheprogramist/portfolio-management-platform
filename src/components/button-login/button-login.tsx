@@ -1,4 +1,5 @@
 import { type QRL, component$ } from "@builder.io/qwik";
+import { twMerge } from "tailwind-merge";
 
 export interface ButtonProps {
   image?: string;
@@ -9,6 +10,7 @@ export interface ButtonProps {
   containerGap?: string;
   fontSize?: string;
   onClick$?: QRL<() => Promise<void>>;
+  class?: string;
 }
 
 export const Button = component$<ButtonProps>((props) => {
@@ -26,7 +28,10 @@ export const Button = component$<ButtonProps>((props) => {
   return (
     <button
       onClick$={props.onClick$}
-      class="flex items-center justify-between rounded-3xl border-2"
+      class={twMerge(
+        "flex items-center justify-between rounded-3xl border-2",
+        props.class,
+      )}
       style={buttonStyle}
     >
       <div class="flex items-center" style={containerStyle}>
