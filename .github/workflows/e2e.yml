@@ -31,10 +31,8 @@ jobs:
       - name: Get Playwright version
         id: playwright-version
         run: |
-          npm ls @playwright/test
-          # PLAYWRIGHT_VERSION=$(npm ls @playwright/test | grep @playwright/test | sed 's/.*@//')
-          # echo "Playwright's Version: $PLAYWRIGHT_VERSION"
-          # echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
+          PLAYWRIGHT_VERSION=$(npm ls @playwright/test | grep @playwright/test | sed 's/.*@//')
+          echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
 
       - name: Cache Playwright dependencies
         uses: actions/cache@v4
@@ -59,4 +57,4 @@ jobs:
         if: always()
         with:
           name: playwright-test-results
-          path: ${{ ENV.PLAYWRIGHT_TEST_RESULTS_RELATIVE_PATH }}
+          path: test-results
