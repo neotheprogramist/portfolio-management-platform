@@ -15,7 +15,7 @@ export const onGet: RequestHandler = async ({ cacheControl }) => {
 export default component$(() => {
   return (
     <>
-      <main>
+      <main class="h-screen overflow-auto bg-black font-['Sora'] text-white">
         <Slot />
       </main>
     </>
