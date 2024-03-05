@@ -80,3 +80,27 @@ Serve `production` mode:
 ```bash
 npm run serve
 ```
+
+## Test
+
+#### Setup
+
+You need to install extra dependencies (like browser drivers):
+
+```bash
+npm run test.e2e.setup
+```
+
+#### Run
+
+Run e2e scenarios:
+
+```bash
+npm run test.e2e
+```
+
+After every run you can serve report to your browser:
+
+```bash
+npm run test.e2e.report
+```
