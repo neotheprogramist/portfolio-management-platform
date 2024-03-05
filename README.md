@@ -16,6 +16,8 @@ Create `.env` (public values, used by client) and `.env.local` (secret values, u
 PUBLIC_PROJECT_ID=
 PUBLIC_METADATA_NAME=emeth
 PUBLIC_METADATA_DESCRIPTION=emeth
+
+PW_BASE_URL=
 ```
 
 ```
@@ -26,6 +28,7 @@ SURREALDB_USER=
 SURREALDB_PASS=
 SURREALDB_NS=
 SURREALDB_DB=
+
 ACCESS_TOKEN_SECRET=
 REFRESH_TOKEN_SECRET=
 ```

@@ -1,19 +1,16 @@
 import type { PlaywrightTestConfig } from "@playwright/test";
 import { devices } from "@playwright/test";
+import "dotenv/config";
 
-/**
- * See https://playwright.dev/docs/test-configuration.
- */
 const config: PlaywrightTestConfig = {
   testDir: "./tests",
-  /* Run tests in files in parallel */
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: 2,
+  retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: "html",
+  reporter: [["list"], ["html"]],
   use: {
-    actionTimeout: 0,
+    baseURL: process.env.PW_BASE_URL,
     trace: "on-first-retry",
   },
   projects: [
@@ -23,18 +20,7 @@ const config: PlaywrightTestConfig = {
         ...devices["Desktop Chrome"],
       },
     },
-    // {
-    //   name: 'webkit',
-    //   use: {
-    //     ...devices['Desktop Safari'],
-    //   },
-    // },
   ],
-
-  webServer: {
-    command: "npm run preview",
-    port: 4173,
-  },
 };
 
 export default config;

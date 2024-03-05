@@ -1,4 +1,4 @@
-name: Playwright
+name: E2E
 
 on:
   push:
@@ -7,24 +7,28 @@ on:
     # The branches below must be a subset of the branches above
     branches: ["master"]
 
+env:
+  NODE_VERSION: "21.6.2"
+
 jobs:
-  tests_e2e:
-    name: Run end-to-end tests
+  e2e:
+    name: End-to-end tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 21.6.2
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Install playwright browsers
-        run: npx playwright install --with-deps
+      - name: Install browsers
+        run: npm run test.e2e.setup
 
       - name: Run tests
-        run: npx playwright test
+        run: npm run test.e2e
