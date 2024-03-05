@@ -1,5 +1,16 @@
-import { component$, Slot } from "@builder.io/qwik";
+import {
+  component$,
+  createContextId,
+  type NoSerialize,
+  Slot,
+  useContextProvider,
+  useStore,
+} from "@builder.io/qwik";
 import type { RequestHandler } from "@builder.io/qwik-city";
+import {
+  type ModalStore,
+  ModalStoreContext,
+} from "~/interface/modal/ModalStore";
 
 export const onGet: RequestHandler = async ({ cacheControl }) => {
   // Control caching for this request for best performance and to reduce hosting costs:
@@ -13,6 +24,15 @@ export const onGet: RequestHandler = async ({ cacheControl }) => {
 };
 
 export default component$(() => {
+  const modalStore = useStore<ModalStore>({
+    address: undefined,
+    chainId: undefined,
+    isConnected: undefined,
+    config: undefined,
+  });
+
+  useContextProvider(ModalStoreContext, modalStore);
+
   return (
     <>
       <main class="h-screen overflow-auto bg-black font-['Sora'] text-white">
