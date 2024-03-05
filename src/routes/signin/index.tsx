@@ -1,22 +1,19 @@
 import { $, component$, useContext } from "@builder.io/qwik";
 import { useLocation, useNavigate } from "@builder.io/qwik-city";
-import { ButtonCancel } from "~/components/button-cancel/button-cancel";
+import { Button } from "~/components/button-signin/button-signin";
 import { Gradient } from "~/components/gradient/gradient";
 import { Paragraph } from "~/components/paragraph/paragraph";
 import { WelcomeText } from "~/components/welcome-text/welcome-text";
 import { Navbar } from "~/components/navbar/navbar";
 import ImgGradientMain from "/public/images/gradient-main.png?jsx";
-import { getAccount, getChainId, signMessage } from "@wagmi/core";
-import {
-  getNonceServer,
-  verifyMessageServer,
-} from "~/components/wallet-connect/server";
-import { SiweMessage } from "siwe";
 import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
+import { getNonceServer, verifyMessageServer } from "~/components/wallet-connect/server";
+import { getAccount, getChainId, signMessage } from "@wagmi/core";
+import { SiweMessage } from "siwe";
 
 export default component$(() => {
-  const loc = useLocation();
   const nav = useNavigate();
+  const loc = useLocation();
   const modalStore = useContext(ModalStoreContext);
 
   const signInHandler = $(async () => {
@@ -54,25 +51,32 @@ export default component$(() => {
 
   return (
     <>
-      <Navbar />
-      <div class="flex">
+      <Navbar class="fixed"/>
+      <div class="grid grid-cols-[30%_60%_5%]">
         <div class="h-[655px] w-[766px]">
           <ImgGradientMain alt="gradient" />
         </div>
-        <div class="font-sora m-auto flex flex-col space-y-10 text-center text-white">
-          <WelcomeText />
-          <div class="flex">
-            <ButtonCancel />
-            <button
-              onClick$={signInHandler}
-              class="font-sora ml-4 cursor-pointer rounded-full border-none bg-transparent bg-gradient-to-r from-orange-500 via-red-500 to-blue-500 p-1 text-white"
-            >
-              <div class="rounded-full bg-black p-4">Accept and Sign</div>
-            </button>
+        <div class="grid grid-rows-[2fr_1fr] mt-52">
+          <div class="grid content-end justify-items-center gap-10">
+            <WelcomeText />
+            <div class="flex gap-4 text-[14px]">
+              <Button text="Cancel" border="border-white border-opacity-20"/>
+              <Button text="Accept and Sign" class="rounded-[48px] bg-black px-[24px] py-[19px]" background="border-none bg-transparent bg-gradient-to-r from-orange-500 via-red-500 to-blue-500 p-[2px]"/>
+              <button
+                class="hidden font-sora cursor-pointer rounded-full border-none bg-gradient-to-r from-orange-500 via-yellow-500 to-blue-500 px-2"
+                onClick$={signInHandler}
+              >
+              <div class="rounded-full bg-black px-6 py-4">Dashboard</div>
+              </button>
+            </div>
           </div>
-          <Paragraph />
+          <div class="grid content-end justify-items-center">
+            <Paragraph />
+          </div>
         </div>
-        <Gradient />
+        <div class="grid content-center justify-items-end">
+          <Gradient />
+        </div>
       </div>
     </>
   );

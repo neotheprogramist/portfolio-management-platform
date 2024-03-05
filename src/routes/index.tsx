@@ -5,16 +5,17 @@ import { Button } from "~/components/button-login/button-login";
 import { Navbar } from "~/components/navbar/navbar";
 import ImgGradientMain from "/public/images/gradient-main.png?jsx";
 import WalletConnect from "~/components/wallet-connect";
+import { Paragraph } from "~/components/paragraph/paragraph";
 
 export default component$(() => {
   return (
     <>
-      <Navbar />
+      <Navbar class="fixed"/>
       <div class="grid grid-cols-[30%_60%_5%]">
-        <div class="h-[655px] w-[766px]">
+        <div class="h-[655px] w-[766px] ">
           <ImgGradientMain alt="gradient" />
         </div>
-        <div class="grid grid-rows-[2fr_1fr]">
+        <div class="grid grid-rows-[2fr_1fr] mt-52">
           <div class="grid content-end gap-10">
             <LoginText />
             <div class="m-auto">
@@ -40,7 +41,7 @@ export default component$(() => {
               containerGap="8px"
               fontSize="12px"
             />
-            <p>©2024 Golem Network. All rights reserved.</p>
+            <Paragraph />
           </div>
         </div>
         <div class="grid content-center justify-items-end">

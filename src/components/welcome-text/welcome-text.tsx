@@ -7,11 +7,10 @@ export const WelcomeText = component$(() => {
       <div class="flex justify-center">
         <ImgWelcomeIcon />
       </div>
-
-      <h1 class="py-6 text-6xl font-normal capitalize leading-none">
+      <h1 class="py-6 text-4xl font-medium">
         Welcome to Emeth
       </h1>
-      <p class="m-0 leading-relaxed">
+      <p class="text-base font-normal">
         By connecting your wallet and using Emeth, you agree to our{" "}
         <a class="text-white" href="#">
           Terms of Service
