@@ -11,7 +11,7 @@ import {
   signOutServer,
   verifyMessageServer,
 } from "~/components/wallet-connect/server";
-import { Button, ButtonProps } from "../button-login/button-login";
+import { Button, type ButtonProps } from "../button-login/button-login";
 
 const metadata = {
   name: "Web3Modal",
@@ -101,7 +101,6 @@ export default component$<ButtonProps>((props) => {
       onClick$={openWeb3Modal}
       text={props.text}
       image={props.image}
-    >
-    </Button>
+    ></Button>
   );
 });

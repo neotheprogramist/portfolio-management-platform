@@ -4,8 +4,10 @@ import ImgWelcomeIcon from "/public/images/svg/welcome-icon.svg?jsx";
 export const WelcomeText = component$(() => {
   return (
     <div class="max-w-[426px] text-center">
-      <div class="flex justify-center"><ImgWelcomeIcon /></div>
-      
+      <div class="flex justify-center">
+        <ImgWelcomeIcon />
+      </div>
+
       <h1 class="py-6 text-6xl font-normal capitalize leading-none">
         Welcome to Emeth
       </h1>

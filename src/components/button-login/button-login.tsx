@@ -30,7 +30,7 @@ export const Button = component$<ButtonProps>((props) => {
       style={buttonStyle}
     >
       <div class="flex items-center" style={containerStyle}>
-        {props.image && (<img src={props.image} width='24' height='24'/>)}
+        {props.image && <img src={props.image} width="24" height="24" />}
         <p class="font-normal">{props.text}</p>
       </div>
       <img

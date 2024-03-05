@@ -9,14 +9,14 @@ import WalletConnect from "~/components/wallet-connect";
 export default component$(() => {
   return (
     <>
-      <Navbar/>
+      <Navbar />
       <div class="grid grid-cols-[30%_60%_5%]">
-        <div class="w-[766px] h-[655px]">
+        <div class="h-[655px] w-[766px]">
           <ImgGradientMain alt="gradient" />
         </div>
         <div class="grid grid-rows-[2fr_1fr]">
-          <div class="grid gap-10 content-end">
-            <LoginText/>
+          <div class="grid content-end gap-10">
+            <LoginText />
             <div class="grid grid-rows-2 items-center justify-center gap-3 text-center text-sm">
               <Button
                 image="/images/svg/metamask-icon.svg"
@@ -28,7 +28,7 @@ export default component$(() => {
               />
             </div>
           </div>
-          <div class="grid gap-6 justify-items-center content-end text-xs">
+          <div class="grid content-end justify-items-center gap-6 text-xs">
             <Button
               image="/images/svg/info.svg"
               text="How to use Wallet?"
@@ -41,8 +41,8 @@ export default component$(() => {
             <p>©2024 Golem Network. All rights reserved.</p>
           </div>
         </div>
-        <div class="grid justify-items-end content-center">
-            <Gradient/>
+        <div class="grid content-center justify-items-end">
+          <Gradient />
         </div>
       </div>
     </>
