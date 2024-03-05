@@ -47,6 +47,9 @@ jobs:
       - name: Run tests
         run: npm run test.e2e
 
+      - name: tmp ls -la
+        run: ls -la
+
       - name: Save results artifact
         uses: actions/upload-artifact@v4
         if: always()
