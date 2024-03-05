@@ -35,20 +35,20 @@ body {
   @font-face {
     font-family: "Sora";
     font-style: normal;
-    font-weight: 400;
-    src: url("/fonts/Sora-Regular.woff") format("woff");
-  }
-  @font-face {
-    font-family: "Sora";
-    font-style: normal;
     font-weight: 700;
     src: url("/fonts/Sora-Bold.woff") format("woff");
   }
   @font-face {
     font-family: "Sora";
     font-style: normal;
-    font-weight: 600;
-    src: url("/fonts/Sora-SemiBold.woff") format("woff");
+    font-weight: 400;
+    src: url("/fonts/Sora-Regular.woff") format("woff");
+  }
+  @font-face {
+    font-family: "Sora";
+    font-style: normal;
+    font-weight: 500;
+    src: url("/fonts/Sora-Medium.woff") format("woff");
   }
 }
 
