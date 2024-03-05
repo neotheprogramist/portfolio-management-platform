@@ -1,51 +1,52 @@
-import { component$ } from "@builder.io/qwik";
-import { useNavigate } from "@builder.io/qwik-city";
-import { getCookie, isTokenExpired } from "~/utils/refresh";
-import { ImagesBlock } from "~/components/images-block/images-block";
-import { ButtonCancel } from "~/components/button-cancel/button-cancel";
 import { Gradient } from "~/components/gradient/gradient";
-import { Paragraph } from "~/components/paragraph/paragraph";
-import { WelcomeText } from "~/components/welcome-text/welcome-text";
+import { LoginText } from "~/components/login-text/login-text";
+import { component$ } from "@builder.io/qwik";
+import { Button } from "~/components/button-login/button-login";
+import { Navbar } from "~/components/navbar/navbar";
+import ImgGradientMain from "/public/images/gradient-main.png?jsx";
 import WalletConnect from "~/components/wallet-connect";
 
 export default component$(() => {
-  const nav = useNavigate();
-
   return (
     <>
-      <main class="flex h-screen bg-black">
-        <ImagesBlock />
-        <div class="max-w-3/5 font-sora m-auto flex flex-col space-y-10 text-center text-white">
-          <WelcomeText />
-          <div class="text-center">
-            <ButtonCancel />
-            <WalletConnect />
-            <button
-              class="font-sora ml-4 cursor-pointer rounded-full border-none bg-gradient-to-r from-orange-500 via-yellow-500 to-blue-500 px-2 text-white"
-              onClick$={async () => {
-                const accessToken = getCookie("accessToken");
-                if (accessToken && isTokenExpired(accessToken)) {
-                  const refreshToken = localStorage.getItem("refreshToken");
-                  const response = await fetch("/auth", {
-                    method: "PATCH",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ refreshToken }),
-                  });
-                  const data = await response.json();
-                  localStorage.setItem("refreshToken", data.refreshToken);
-                }
-                await nav("/app/dashboard");
-              }}
-            >
-              <div class="rounded-full bg-black px-6 py-4">Dashboard</div>
-            </button>
-          </div>
-          <Paragraph />
+      <Navbar />
+      <div class="grid grid-cols-[30%_60%_5%]">
+        <div class="h-[655px] w-[766px]">
+          <ImgGradientMain alt="gradient" />
         </div>
-        <Gradient />
-      </main>
+        <div class="grid grid-rows-[2fr_1fr]">
+          <div class="grid content-end gap-10">
+            <LoginText />
+            <div class="m-auto">
+              <Button
+                image="/images/svg/metamask-icon.svg"
+                text="Use Metamask"
+                class="text-center text-sm"
+              />
+              <WalletConnect
+                image="/images/svg/walletconnect-icon.svg"
+                text="Use WalletConnect"
+                class="mt-3 text-center text-sm"
+              />
+            </div>
+          </div>
+          <div class="grid content-end justify-items-center gap-6 text-xs">
+            <Button
+              image="/images/svg/info.svg"
+              text="How to use Wallet?"
+              padding="8px 12px 8px 8px"
+              buttonWidth="200px"
+              borderColor="#2196F3"
+              containerGap="8px"
+              fontSize="12px"
+            />
+            <p>©2024 Golem Network. All rights reserved.</p>
+          </div>
+        </div>
+        <div class="grid content-center justify-items-end">
+          <Gradient />
+        </div>
+      </div>
     </>
   );
 });

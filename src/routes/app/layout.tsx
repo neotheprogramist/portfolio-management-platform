@@ -2,6 +2,7 @@ import { Slot, component$ } from "@builder.io/qwik";
 import { type RequestHandler } from "@builder.io/qwik-city";
 import jwt from "jsonwebtoken";
 import { Navbar } from "~/components/navbar/navbar";
+import { NavbarContent } from "~/components/navbar/navbar-content";
 
 export const onRequest: RequestHandler = ({ json, cookie, env }) => {
   const accessToken = cookie.get("accessToken");
@@ -20,10 +21,12 @@ export const onRequest: RequestHandler = ({ json, cookie, env }) => {
 export default component$(() => {
   return (
     <>
-      <main class="grid h-screen grid-rows-[64px_1fr] bg-black font-['Sora']">
-        <Navbar />
+      <div class="grid h-screen grid-rows-[auto_1fr] bg-black font-['Sora']">
+        <Navbar>
+          <NavbarContent />
+        </Navbar>
         <Slot />
-      </main>
+      </div>
     </>
   );
 });

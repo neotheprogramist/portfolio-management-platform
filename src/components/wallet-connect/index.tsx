@@ -11,6 +11,7 @@ import {
   signOutServer,
   verifyMessageServer,
 } from "~/components/wallet-connect/server";
+import { Button, type ButtonProps } from "../button-login/button-login";
 
 const metadata = {
   name: "Web3Modal",
@@ -78,7 +79,7 @@ export const returnWeb3ModalAndClient = async (
   return modal;
 };
 
-export default component$(() => {
+export default component$<ButtonProps>((props) => {
   const loc = useLocation();
 
   const setWeb3Modal = $(async () => {
@@ -96,11 +97,11 @@ export default component$(() => {
   });
 
   return (
-    <button
+    <Button
       onClick$={openWeb3Modal}
-      class="font-sora ml-4 cursor-pointer rounded-full border-none bg-transparent bg-gradient-to-r from-orange-500 via-red-500 to-blue-500 p-1 text-white"
-    >
-      <div class="rounded-full bg-black p-4">Accept and Sign</div>
-    </button>
+      text={props.text}
+      image={props.image}
+      class={props.class}
+    ></Button>
   );
 });
