@@ -7,7 +7,7 @@ import ImgWarning from "/public/images/warning.svg?jsx";
 
 export default component$(() => {
   return (
-    <div class="grid grid-cols-4 grid-rows-[384px_1fr] gap-6 overflow-auto border-t border-opacity-15 border-white p-6 z-10">
+    <div class="grid grid-cols-4 grid-rows-[384px_1fr] gap-6 overflow-auto border-t border-opacity-15 border-white p-6">
       <PortfolioValue />
       <div class="border-white-opacity-20 bg-glass col-start-3 row-span-1 row-start-1 rounded-3xl p-4">
         <div class="mb-4 flex items-center justify-between text-white">

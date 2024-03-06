@@ -100,4 +100,5 @@ body {
   );
   opacity: 0.5;
   filter: blur(170px);
+  z-index: -1;
 }

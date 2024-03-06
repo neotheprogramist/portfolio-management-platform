@@ -21,12 +21,12 @@ export const onRequest: RequestHandler = ({ json, cookie, env }) => {
 export default component$(() => {
   return (
     <>
-      <div class="grid h-screen grid-rows-[auto_1fr] bg-black font-['Sora']">
+      <div class="grid h-screen grid-rows-[auto_1fr] bg-black font-['Sora'] relative z-0">
         <div class="absolute top-0 left-1/4 h-1/5 w-6/12 rounded-full gradient"></div>
         <Navbar>
           <NavbarContent />
         </Navbar>
-        <Slot />
+        <Slot/>
         <div class="absolute bottom-0 left-1/4 h-1/5 w-6/12 rounded-full gradient"></div>
       </div>
     </>

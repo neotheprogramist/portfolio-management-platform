@@ -20,6 +20,10 @@ import { type Balance } from "~/interface/balance/Balance";
 import { type WalletTokensBalances } from "~/interface/walletsTokensBalances/walletsTokensBalances";
 import { formatTokenBalance } from "~/utils/formatBalances/formatTokenBalance";
 import { isAddress } from "viem";
+// import ImgSearch from "/public/images/svg/search.svg?jsx";
+// import ImgSearch from "../../../../../public/images/svg/search.svg?jsx";
+import ImgArrowDown from '/public/images/arrowDown.svg?jsx';
+import ImgI from '/public/images/svg/i.svg?jsx';
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
@@ -225,19 +229,28 @@ export default component$(() => {
   const addWalletFormStore = useStore({ name: "", address: "" });
 
   return (
-    <div class="grid  grid-cols-2 gap-4 p-8">
-      <div class="max-h-600 flex flex-col overflow-auto p-2">
-        <div class="flex justify-between">
-          <span>Wallets</span>
+    <div class="grid w-full grid-cols-[24%_75%] gap-4 p-8 grid-rows-[14%_85%] z-10">
+      <div class="flex flex-col overflow-auto bg-glass border-white-opacity-20 rounded-xl p-6 gap-6 row-span-2">
+        <div class="flex justify-between text-white items-center">
+        <h1 class="text-xl">Wallets</h1>
           <button
-            class="cursor-pointer rounded bg-blue-500 p-2 text-white"
+            class="cursor-pointer border-buttons rounded-3xl px-4 py-2 font-semibold text-white text-xs"
             onClick$={() => {
               isAddWalletModalOpen.value = !isAddWalletModalOpen.value;
             }}
           >
-            Add new
+            Add New Wallet
           </button>
         </div>
+        <div class="flex flex-col gap-2">
+          <button class="cursor-pointer border-white-opacity-20 rounded-lg px-3 py-2 text-white text-opacity-50 text-xs bg-glass flex items-center gap-2">
+            {/* <ImgSearch/> */}
+            Search for wallet</button>
+          <button class="cursor-pointer border-white-opacity-20 rounded-lg px-3 py-2 text-white text-xs bg-glass flex items-center justify-between">
+            Choose Network
+          <ImgArrowDown/></button>
+        </div>
+
         <div class="flex flex-col">
           {observedWallets.value.map((observedWallet) => (
             <ObservedWallet
@@ -250,7 +263,19 @@ export default component$(() => {
         </div>
       </div>
 
-      <div class="max-h-600 flex flex-col overflow-auto p-2">
+      <div class="bg-blue-500 bg-opacity-20 border border-blue-500 rounded-xl p-6 gap-6 row-span-1 flex items-center justify-between">
+            <div class="text-white">
+                <h2 class="flex items-center gap-2 text-sm mb-4">
+                  <ImgI/> Pending authorization</h2>
+                <p class="text-xs">This wallet requires authorization. Click Authorize to log in using this wallet and approve all associated tokens.</p>
+            </div>
+            <div>
+              <button class="cursor-pointer border-buttons rounded-3xl px-3.5 py-1.5 font-semibold text-white text-xs mr-2">Dismiss</button>
+              <button class="border-none bg-blue-500 rounded-3xl px-4 py-2 font-semibold text-white text-xs">Authorize</button>
+            </div>
+      </div> 
+
+      <div class="flex flex-col overflow-auto bg-glass border-white-opacity-20 rounded-xl p-6 gap-6 row-span-1">
         {selectedWallet.value && (
           <SelectedWalletDetails
             key={selectedWallet.value.wallet.address}
@@ -269,50 +294,85 @@ export default component$(() => {
                 isAddWalletModalOpen.value = false;
               }
             }}
-            class="mt-4"
+            class="p-5"
           >
-            <label for="name" class="block">
+            <div class="mb-5">
+              <p  class="text-white text-xs pb-1">Type</p>
+              <div class="bg-glass border-white-opacity-20 p-1 rounded grid grid-cols-[50%_50%]">
+                <button class="color-gradient p-2.5 rounded col-span-1 text-white">Executable</button>
+                <button class="col-span-1 text-white">Read-only</button>
+              </div>
+            </div>
+            <label for="name" class="flex text-white text-xs pb-1 gap-2">
               Name
+              {!isValidName(addWalletFormStore.name) && (
+              <span class="text-red-500 text-xs">Invalid name</span>
+            )}
             </label>
             <input
               type="text"
               name="name"
-              class={`mb-1 block w-full ${!isValidName(addWalletFormStore.name) ? "bg-red-300" : ""}`}
+              class={`mb-5 block w-[80%] bg-transparent border-white-opacity-20 p-3 rounded text-white 
+              ${!isValidName(addWalletFormStore.name) ? "text-red-500" : ""}`}
               value={addWalletFormStore.name}
               onInput$={(e) => {
                 const target = e.target as HTMLInputElement;
                 addWalletFormStore.name = target.value;
               }}
             />
-            {!isValidName(addWalletFormStore.name) && (
-              <p class="mb-4 text-red-500">Invalid name</p>
+            <label for="address" class="flex text-white text-xs pb-1 gap-2">
+              Address             
+              {!isValidAddress(addWalletFormStore.address) && (
+              <span class=" text-red-500 text-xs">Invalid address</span>
             )}
-            <label for="address" class="block">
-              Address
             </label>
             <input
               type="text"
               name="address"
-              class={`mb-1 block w-full ${!isValidAddress(addWalletFormStore.address) ? "bg-red-300" : ""}`}
+              class={`mb-5 block w-[80%] bg-transparent border-white-opacity-20 p-3 text-white rounded 
+              ${!isValidAddress(addWalletFormStore.address) ? "bg-red-300" : ""}`}
               value={addWalletFormStore.address}
               onInput$={(e) => {
                 const target = e.target as HTMLInputElement;
                 addWalletFormStore.address = target.value;
               }}
             />
-            {!isValidAddress(addWalletFormStore.address) && (
-              <p class="mb-4 text-red-500">Invalid address</p>
-            )}
+
+            <label for="network" class="block text-white text-xs pb-1">
+              Network
+            </label>
+            <input
+              type="text"
+              name="network"
+              class={`mb-5 block w-full bg-transparent border-white-opacity-20 p-3 rounded placeholder-white placeholder-opacity-50 text-sm`}
+              // value={addWalletFormStore.address}
+              // onInput$={(e) => {
+              //   const target = e.target as HTMLInputElement;
+              //   addWalletFormStore.address = target.value;
+              // }}
+              placeholder="Select network" 
+            />
             <button
-              type="submit"
-              class="absolute bottom-4 right-4"
+              type="reset"
+              class="absolute bottom-5 right-36 text-white font-normal border-buttons p-3 rounded-3xl"
               disabled={
                 !isValidName(addWalletFormStore.name) ||
                 !isValidAddress(addWalletFormStore.address)
               }
             >
-              Add wallet
+              Cancel
             </button>
+            <button
+              type="submit"
+              class="absolute bottom-5 right-4 text-white font-normal color-gradient p-0.5 rounded-3xl"
+              disabled={
+                !isValidName(addWalletFormStore.name) ||
+                !isValidAddress(addWalletFormStore.address)
+              }
+            >
+              <p class="p-3 bg-black rounded-3xl">Add wallet</p>
+            </button>
+
           </Form>
         </Modal>
       )}
@@ -328,7 +388,7 @@ export default component$(() => {
                 isDeleteModalOpen.value = false;
               }
             }}
-            class="cursor-pointer rounded bg-red-500 p-2 text-white"
+            class="bg-red-500 text-white font-normal  p-3 rounded-3xl text-center absolute bottom-5 right-4"
           >
             Confirm Delete
           </button>
