@@ -249,12 +249,12 @@ export default component$(() => {
   const addWalletFormStore = useStore({ name: "", address: "" });
 
   return (
-    <div class="z-10 grid w-full grid-cols-[24%_75%] grid-rows-[14%_85%] gap-4 p-8">
-      <div class="bg-glass border-white-opacity-20 row-span-2 flex flex-col gap-6 overflow-auto rounded-xl p-6">
-        <div class="flex items-center justify-between text-white">
-          <h1 class="text-xl">Wallets</h1>
+    <div class="grid w-full grid-cols-[24%_75%] gap-4 p-8 grid-rows-[14%_85%] z-10">
+      <div class="flex flex-col overflow-auto bg-glass border-white-opacity-20 rounded-xl p-6 gap-6 row-span-2">
+        <div class="flex justify-between text-white items-center">
+        <h1 class="text-xl">Wallets</h1>
           <button
-            class="border-buttons cursor-pointer rounded-3xl px-4 py-2 text-xs font-semibold text-white"
+            class="cursor-pointer border-buttons rounded-3xl px-4 py-2 font-semibold text-white text-xs"
             onClick$={() => {
               isAddWalletModalOpen.value = !isAddWalletModalOpen.value;
             }}
@@ -263,14 +263,12 @@ export default component$(() => {
           </button>
         </div>
         <div class="flex flex-col gap-2">
-          <button class="border-white-opacity-20 bg-glass flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-xs text-white text-opacity-50">
+          <button class="cursor-pointer border-white-opacity-20 rounded-lg px-3 py-2 text-white text-opacity-50 text-xs bg-glass flex items-center gap-2">
             {/* <ImgSearch/> */}
-            Search for wallet
-          </button>
-          <button class="border-white-opacity-20 bg-glass flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-xs text-white">
+            Search for wallet</button>
+          <button class="cursor-pointer border-white-opacity-20 rounded-lg px-3 py-2 text-white text-xs bg-glass flex items-center justify-between">
             Choose Network
-            <ImgArrowDown />
-          </button>
+          <ImgArrowDown/></button>
         </div>
 
         <div class="flex flex-col">
@@ -419,6 +417,7 @@ export default component$(() => {
             >
               <p class="rounded-3xl bg-black p-3">Add wallet</p>
             </button>
+
           </Form>
         </Modal>
       )}

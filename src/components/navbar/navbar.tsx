@@ -18,7 +18,7 @@ export const Navbar = component$<NavbarProps>((props) => {
         <div class="h-[20px] w-[94px]">
           <Logo />
         </div>
-        <Slot />
+        <Slot/>
       </div>
     </>
   );
