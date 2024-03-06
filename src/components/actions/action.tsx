@@ -10,7 +10,7 @@ export const Action = component$(() => {
           <h3 class="text-sm">Automation name #1</h3>
           <p class="text-xs text-white text-opacity-50">6 hours ago</p>
         </div>
-        <div class="flex items-center gap-1 rounded-lg border border-green-500 p-2">
+        <div class="flex items-center gap-1 rounded-lg border border-green-500 p-2 bg-glass">
           <Slot />
           <ImgCheck />
           <p class="text-sm text-green-500">Success</p>
