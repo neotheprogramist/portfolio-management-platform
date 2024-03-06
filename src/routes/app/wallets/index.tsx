@@ -249,9 +249,9 @@ export default component$(() => {
   const addWalletFormStore = useStore({ name: "", address: "" });
 
   return (
-    <div class="grid w-full grid-cols-[24%_75%] gap-4 p-8 grid-rows-[14%_85%] z-10">
-      <div class="flex flex-col overflow-auto bg-glass border-white-opacity-20 rounded-xl p-6 gap-6 row-span-2">
-        <div class="flex justify-between text-white items-center">
+    <div class="grid w-full h-full grid-cols-[24%_75%] gap-4 p-8 grid-rows-[15%_85%] border-t border-white border-opacity-20">
+      <div class="flex flex-col overflow-auto bg-glass border-white-opacity-20 rounded-xl p-6 gap-2 row-span-2">
+        <div class="flex justify-between text-white items-center pb-4">
         <h1 class="text-xl">Wallets</h1>
           <button
             class="cursor-pointer border-buttons rounded-3xl px-4 py-2 font-semibold text-white text-xs"
@@ -264,14 +264,14 @@ export default component$(() => {
         </div>
         <div class="flex flex-col gap-2">
           <button class="cursor-pointer border-white-opacity-20 rounded-lg px-3 py-2 text-white text-opacity-50 text-xs bg-glass flex items-center gap-2">
-            {/* <ImgSearch/> */}
+            <ImgSearch/>
             Search for wallet</button>
           <button class="cursor-pointer border-white-opacity-20 rounded-lg px-3 py-2 text-white text-xs bg-glass flex items-center justify-between">
             Choose Network
           <ImgArrowDown/></button>
         </div>
 
-        <div class="flex flex-col">
+        <div class="flex flex-col overflow-auto">
           {observedWallets.value.map((observedWallet) => (
             <ObservedWallet
               key={observedWallet.wallet.address}
