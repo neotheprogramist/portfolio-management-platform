@@ -457,6 +457,7 @@ export default component$(() => {
                 Add wallet
               </p>
             </button>
+
           </Form>
         </Modal>
       )}
