@@ -27,7 +27,7 @@ export default component$(() => {
           <NavbarContent />
         </Navbar>
         <Slot />
-        <div class="gradient absolute bottom-0 left-1/4 h-1/5 w-6/12 rounded-full"></div>
+        <div class="absolute bottom-0 left-1/4 h-1/5 w-6/12 rounded-full gradient"></div>
       </div>
     </>
   );
