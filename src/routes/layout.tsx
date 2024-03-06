@@ -69,7 +69,7 @@ export default component$(() => {
 
   return (
     <>
-      <main class="h-screen overflow-auto bg-black font-['Sora'] text-white">
+      <main class="h-screen overflow-auto bg-black font-['Sora'] text-white z-0">
         <Slot />
       </main>
     </>

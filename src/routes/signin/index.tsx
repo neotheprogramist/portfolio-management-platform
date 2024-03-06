@@ -52,16 +52,16 @@ export default component$(() => {
   return (
     <>
       <Navbar class="fixed"/>
-      <div class="grid grid-cols-[30%_60%_5%]">
-        <div class="h-[655px] w-[766px]">
-          <ImgGradientMain alt="gradient" />
-        </div>
-        <div class="grid grid-rows-[2fr_1fr] mt-52">
-          <div class="grid content-end justify-items-center gap-10">
+      <div class="grid grid-cols-[1fr_2fr_auto] h-full items-center">
+        <div class="h-[766px] w-[655px]">
+          <ImgGradientMain class="h-full" alt="gradient" style="object-position: -129px 0;"/>
+        </div>  
+        <div class="grid grid-rows-[2fr_1fr] pt-52">
+          <div class="grid content-end justify-items-center gap-10 pb-10">
             <WelcomeText />
             <div class="flex gap-4 text-[14px]">
-              <Button text="Cancel" border="border-white border-opacity-20"/>
-              <Button text="Accept and Sign" class="rounded-[48px] bg-black px-[24px] py-[19px]" background="border-none bg-transparent bg-gradient-to-r from-orange-500 via-red-500 to-blue-500 p-[2px]"/>
+              <Button text="Cancel" border="border-white border-opacity-20" width="w-[98px]"/>
+              <Button text="Accept and Sign" width="w-[180px]" class="rounded-[48px] bg-black py-[15px]" background="border-none bg-gradient-to-r from-orange-500 via-red-500 to-blue-500 p-[2px]"/>
               <button
                 class="hidden font-sora cursor-pointer rounded-full border-none bg-gradient-to-r from-orange-500 via-yellow-500 to-blue-500 px-2"
                 onClick$={signInHandler}
@@ -74,9 +74,7 @@ export default component$(() => {
             <Paragraph />
           </div>
         </div>
-        <div class="grid content-center justify-items-end">
-          <Gradient />
-        </div>
+        <Gradient />
       </div>
     </>
   );

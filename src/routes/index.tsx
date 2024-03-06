@@ -3,7 +3,7 @@ import { LoginText } from "~/components/login-text/login-text";
 import { component$ } from "@builder.io/qwik";
 import { Button } from "~/components/button-login/button-login";
 import { Navbar } from "~/components/navbar/navbar";
-import ImgGradientMain from "/public/images/gradient-main.png?jsx";
+import ImgGradientMain from "/public/images/Gradient.png?jsx";
 import WalletConnect from "~/components/wallet-connect";
 import { Paragraph } from "~/components/paragraph/paragraph";
 
@@ -11,23 +11,22 @@ export default component$(() => {
   return (
     <>
       <Navbar class="fixed"/>
-      <div class="grid grid-cols-[30%_60%_5%]">
-        <div class="h-[655px] w-[766px] ">
-          <ImgGradientMain alt="gradient" />
+      <div class="grid grid-cols-[1fr_2fr_auto] h-full items-center">
+        <div class="h-[766px] w-[655px]">
+          <ImgGradientMain class="h-full" alt="gradient" style="object-position: -129px 0;"/>
         </div>
-        <div class="grid grid-rows-[2fr_1fr] mt-52">
-          <div class="grid content-end gap-10">
+        <div class="grid grid-rows-[2fr_2fr] pt-52 min-w-[340px]">
+          <div class="grid justify-items-center gap-10">
             <LoginText />
-            <div class="m-auto">
+            <div>
               <Button
                 image="/images/svg/metamask-icon.svg"
                 text="Use Metamask"
-                class="text-center text-sm"
               />
               <WalletConnect
                 image="/images/svg/walletconnect-icon.svg"
                 text="Use WalletConnect"
-                class="mt-3 text-center text-sm"
+                class="mt-3"
               />
             </div>
           </div>
@@ -44,9 +43,7 @@ export default component$(() => {
             <Paragraph />
           </div>
         </div>
-        <div class="grid content-center justify-items-end">
-          <Gradient />
-        </div>
+        <Gradient />
       </div>
     </>
   );
