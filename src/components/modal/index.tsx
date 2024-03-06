@@ -1,5 +1,5 @@
 import { type Signal, Slot, component$ } from "@builder.io/qwik";
-import ImgClose from "/public/images/svg/close.svg?jsx";
+import ImgClose from '/public/images/svg/close.svg?jsx';
 
 interface ModalProps {
   title: string;

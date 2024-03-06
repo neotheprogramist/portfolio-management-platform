@@ -292,7 +292,7 @@ export default component$(() => {
         <div class="row-span-1 row-start-1 flex items-center justify-between pb-4 text-white">
           <h1 class="text-xl">Wallets</h1>
           <button
-            class="border-buttons cursor-pointer rounded-3xl px-4 py-2 text-xs font-semibold text-white"
+            class="cursor-pointer border-buttons rounded-3xl px-4 py-2 font-semibold text-white text-xs"
             onClick$={() => {
               isAddWalletModalOpen.value = !isAddWalletModalOpen.value;
             }}
@@ -460,6 +460,7 @@ export default component$(() => {
             >
               <p class="rounded-3xl bg-black p-3">Add wallet</p>
             </button>
+
           </Form>
         </Modal>
       )}
