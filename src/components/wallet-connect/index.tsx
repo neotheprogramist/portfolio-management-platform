@@ -2,58 +2,15 @@ import { component$, $, useContext, noSerialize } from "@builder.io/qwik";
 import { mainnet, arbitrum, type Chain } from "viem/chains";
 import { reconnect, watchAccount } from "@wagmi/core";
 import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi";
-import { createSIWEConfig } from "@web3modal/siwe";
-import { SiweMessage } from "siwe";
-import { type RouteLocation, useNavigate } from "@builder.io/qwik-city";
-import {
-  getNonceServer,
-  getSessionServer,
-  signOutServer,
-  verifyMessageServer,
-} from "~/components/wallet-connect/server";
+import { useNavigate } from "@builder.io/qwik-city";
 import { Button, type ButtonProps } from "../button-login/button-login";
-import { ModalStoreContext } from "~/interface/modal/ModalStore";
+import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
 
 const metadata = {
   name: "Web3Modal",
   description: "Web3Modal Example",
   url: "https://web3modal.com",
   icons: ["https://avatars.githubusercontent.com/u/37784886"],
-};
-
-export const returnSIWEConfig = (loc: RouteLocation) => {
-  const siweConfig = createSIWEConfig({
-    createMessage: ({ nonce, address, chainId }) =>
-      new SiweMessage({
-        version: "1",
-        domain: loc.url.host,
-        uri: loc.url.origin,
-        address,
-        chainId,
-        nonce,
-        // Human-readable ASCII assertion that the user will sign, and it must not contain `\n`.
-        statement: "Sign to continue...",
-      }).prepareMessage(),
-    getNonce: async () => {
-      const { nonce } = await getNonceServer();
-      return nonce;
-    },
-    getSession: async () => {
-      const { address, chainId } = await getSessionServer();
-      return { address, chainId };
-    },
-    verifyMessage: async ({ message, signature }) => {
-      const { refreshToken } = await verifyMessageServer(message, signature);
-      localStorage.setItem("refreshToken", refreshToken);
-      return true;
-    },
-    signOut: async () => {
-      await signOutServer();
-      localStorage.removeItem("refreshToken");
-      return true;
-    },
-  });
-  return siweConfig;
 };
 
 export const returnWeb3ModalAndClient = async (projectId: string) => {
@@ -92,14 +49,11 @@ export default component$<ButtonProps>((props) => {
     const { config, modal } = await setWeb3Modal();
     await modal.open();
     modalStore.config = noSerialize(config);
-    console.log("modalStore.config", modalStore.config);
     watchAccount(config, {
       onChange(data) {
         console.log(data);
         modalStore.isConnected = data.isConnected;
-        modalStore.address = data.address;
-        modalStore.chainId = data.chainId;
-        modalStore.isConnected && nav("/signin");
+        modalStore.isConnected && (modal.close(), nav("/signin"));
       },
     });
   });
