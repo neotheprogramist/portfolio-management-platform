@@ -7,7 +7,7 @@ import ImgWarning from "/public/images/warning.svg?jsx";
 
 export default component$(() => {
   return (
-    <div class="grid grid-cols-4 grid-rows-[384px_1fr] gap-6 overflow-auto border-t border-white border-opacity-15 p-6">
+    <div class="grid grid-cols-4 grid-rows-[384px_1fr] gap-6 overflow-auto border-t border-opacity-15 border-white p-6 z-10">
       <PortfolioValue />
       <div class="border-white-opacity-20 bg-glass col-start-3 row-span-1 row-start-1 rounded-3xl p-4">
         <div class="mb-4 flex items-center justify-between text-white">
@@ -28,6 +28,7 @@ export default component$(() => {
           <Alert />
         </div>
       </div>
+
       <div class="border-white-opacity-20 bg-glass col-start-4 row-span-1 row-start-1 rounded-3xl p-4 shadow">
         <div class="mb-4 flex items-center justify-between text-white">
           <h1 class="text-xl font-semibold">Actions</h1>
@@ -43,7 +44,7 @@ export default component$(() => {
               <h3 class="text-sm">DCA</h3>
               <p class="text-xs text-white text-opacity-50">1 day ago</p>
             </div>
-            <div class="bg-glass flex items-center gap-1 rounded-lg border border-yellow-400 p-2">
+            <div class="flex items-center gap-1 rounded-lg border border-yellow-400 p-2 bg-glass">
               <ImgWarning />
               <p class="text-sm text-yellow-400">Warning</p>
             </div>
@@ -53,6 +54,7 @@ export default component$(() => {
           <Action />
         </div>
       </div>
+
       <div class="border-white-opacity-20 bg-glass col-start-1 col-end-5 row-span-1 row-start-2 grid grid-rows-[64px_1fr] overflow-auto rounded-3xl p-4">
         <div class="row-span-1 row-start-1 mb-6 flex items-center justify-between">
           <h1 class="text-xl font-semibold text-white">Favourite Tokens</h1>
@@ -69,7 +71,7 @@ export default component$(() => {
                 <td>VALUE</td>
                 <td class="flex items-center justify-center gap-4">
                   CHANGE
-                  <div class="bg-glass flex gap-1 rounded-lg border border-white border-opacity-20 p-1 text-white ">
+                  <div class="flex gap-1 rounded-lg border border-white border-opacity-20 bg-glass p-1 text-white ">
                     <button class="color-gradient rounded-lg p-2">24h</button>
                     <button class="p-2">3d</button>
                     <button class="p-2">30d</button>

@@ -21,7 +21,7 @@ export const PortfolioValue = component$(() => {
         <div class="flex items-center justify-between border-t border-white border-opacity-20 pt-4">
           <div class="flex items-center gap-2">
             <h2 class="uppercase text-gray-500">Value over time</h2>
-            <div class="bg-glass flex gap-1 rounded-lg border border-white border-opacity-20 p-1 text-white">
+            <div class="flex gap-1 rounded-lg border border-white border-opacity-20 bg-glass p-1 text-white">
               <button class="color-gradient rounded-lg p-2">Hour</button>
               <button class="p-2">Day</button>
               <button class="p-2">Month</button>
@@ -30,11 +30,11 @@ export const PortfolioValue = component$(() => {
           </div>
           <div class="flex items-center gap-2">
             <h2 class="uppercase text-gray-500">Portfolio</h2>
-            <button class="bg-glass flex gap-1 rounded-lg border border-white border-opacity-20 p-2">
+            <button class="flex gap-1 rounded-lg border border-white border-opacity-20 bg-glass p-2">
               <p class="text-white">All</p>
               <ImgArrowDown />
             </button>
-            <button class="bg-glass rounded-lg border border-white border-opacity-20 p-2.5">
+            <button class="rounded-lg border border-white border-opacity-20 bg-glass p-2.5">
               <ImgMaximalize />
             </button>
           </div>
