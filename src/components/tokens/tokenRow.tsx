@@ -15,32 +15,32 @@ export const TokenRow = component$(() => {
           </p>
         </td>
         <td class="">
-          <span class="bg-glass rounded-lg border border-white border-opacity-20 px-2 py-1 text-white ">
+          <span class="rounded-lg border border-white border-opacity-20 bg-glass px-2 py-1 text-white ">
             481
           </span>
         </td>
         <td class="">
-          <span class="bg-glass rounded-lg border border-white border-opacity-20 px-2 py-1 text-white">
+          <span class="rounded-lg border border-white border-opacity-20 bg-glass px-2 py-1 text-white">
             $67,083.63
           </span>
         </td>
         <td class="text-center">
-          <span class="bg-glass rounded-lg border border-green-500 bg-green-500 px-2 py-1 text-green-500">
+          <span class="rounded-lg border border-green-500 bg-green-500 bg-glass px-2 py-1 text-green-500">
             +3,36%
           </span>
         </td>
         <td class="">
-          <span class="bg-glass rounded-lg border border-white border-opacity-20 px-2 py-1 text-white">
+          <span class="rounded-lg border border-white border-opacity-20 bg-glass px-2 py-1 text-white">
             TreasuryBTC
           </span>
         </td>
         <td class="">
-          <span class="bg-glass rounded-lg border border-white border-opacity-20 px-2 py-1 text-white">
+          <span class="rounded-lg border border-white border-opacity-20 bg-glass px-2 py-1 text-white">
             Ethereum
           </span>
         </td>
         <td class="">
-          <span class="bg-glass rounded-lg border border-white border-opacity-20 px-2 py-1 text-white">
+          <span class="rounded-lg border border-white border-opacity-20 bg-glass px-2 py-1 text-white">
             Investment
           </span>
         </td>
