@@ -1,17 +1,10 @@
-import { component$, $ } from "@builder.io/qwik";
+import { component$, $, useContext, noSerialize } from "@builder.io/qwik";
 import { mainnet, arbitrum, type Chain } from "viem/chains";
-import { reconnect } from "@wagmi/core";
+import { reconnect, watchAccount } from "@wagmi/core";
 import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi";
-import { createSIWEConfig } from "@web3modal/siwe";
-import { SiweMessage } from "siwe";
-import { type RouteLocation, useLocation } from "@builder.io/qwik-city";
-import {
-  getNonceServer,
-  getSessionServer,
-  signOutServer,
-  verifyMessageServer,
-} from "~/components/wallet-connect/server";
+import { useNavigate } from "@builder.io/qwik-city";
 import { Button, type ButtonProps } from "../button-login/button-login";
+import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
 
 const metadata = {
   name: "Web3Modal",
@@ -20,45 +13,7 @@ const metadata = {
   icons: ["https://avatars.githubusercontent.com/u/37784886"],
 };
 
-export const returnSIWEConfig = (loc: RouteLocation) => {
-  const siweConfig = createSIWEConfig({
-    createMessage: ({ nonce, address, chainId }) =>
-      new SiweMessage({
-        version: "1",
-        domain: loc.url.host,
-        uri: loc.url.origin,
-        address,
-        chainId,
-        nonce,
-        // Human-readable ASCII assertion that the user will sign, and it must not contain `\n`.
-        statement: "Sign to continue...",
-      }).prepareMessage(),
-    getNonce: async () => {
-      const { nonce } = await getNonceServer();
-      return nonce;
-    },
-    getSession: async () => {
-      const { address, chainId } = await getSessionServer();
-      return { address, chainId };
-    },
-    verifyMessage: async ({ message, signature }) => {
-      const { refreshToken } = await verifyMessageServer(message, signature);
-      localStorage.setItem("refreshToken", refreshToken);
-      return true;
-    },
-    signOut: async () => {
-      await signOutServer();
-      localStorage.removeItem("refreshToken");
-      return true;
-    },
-  });
-  return siweConfig;
-};
-
-export const returnWeb3ModalAndClient = async (
-  projectId: string,
-  loc: RouteLocation,
-) => {
+export const returnWeb3ModalAndClient = async (projectId: string) => {
   const chains: [Chain, ...Chain[]] = [arbitrum, mainnet];
   const config = defaultWagmiConfig({
     chains, // required
@@ -74,26 +29,33 @@ export const returnWeb3ModalAndClient = async (
     wagmiConfig: config,
     projectId,
     enableAnalytics: true, // Optional - defaults to your Cloud configuration
-    siweConfig: returnSIWEConfig(loc),
   });
-  return modal;
+  return { config, modal };
 };
 
 export default component$<ButtonProps>((props) => {
-  const loc = useLocation();
+  const nav = useNavigate();
+  const modalStore = useContext(ModalStoreContext);
 
   const setWeb3Modal = $(async () => {
     const projectId = import.meta.env.PUBLIC_PROJECT_ID;
     if (!projectId || typeof projectId !== "string") {
       throw new Error("Missing project ID");
     }
-    const modal = await returnWeb3ModalAndClient(projectId, loc);
-    return modal;
+    return returnWeb3ModalAndClient(projectId);
   });
 
   const openWeb3Modal = $(async () => {
-    const modal = await setWeb3Modal();
+    const { config, modal } = await setWeb3Modal();
     await modal.open();
+    modalStore.config = noSerialize(config);
+    watchAccount(config, {
+      onChange(data) {
+        console.log(data);
+        modalStore.isConnected = data.isConnected;
+        modalStore.isConnected && (modal.close(), nav("/signin"));
+      },
+    });
   });
 
   return (
