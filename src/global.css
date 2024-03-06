@@ -36,8 +36,24 @@ body {
     font-family: "Sora";
     font-style: normal;
     font-weight: 400;
-    src: url("/fonts/Sora-Regular.tff") format("ttf");
+    src: url("/fonts/Sora-Regular.woff") format("woff");
   }
+  @font-face {
+    font-family: "Sora";
+    font-style: normal;
+    font-weight: 700;
+    src: url("/fonts/Sora-Bold.woff") format("woff");
+  }
+  @font-face {
+    font-family: "Sora";
+    font-style: normal;
+    font-weight: 600;
+    src: url("/fonts/Sora-SemiBold.woff") format("woff");
+  }
+}
+
+.shadow {
+  box-shadow: 0px 5px 15px 0px #000;
 }
 
 .border-white-opacity-20 {
@@ -45,7 +61,11 @@ body {
 }
 
 .bg-glass {
-  background-color: rgba(255, 255, 255, 0.05);
+  background:  linear-gradient(
+    98deg, 
+    rgba(255, 255, 255, 0.10) 0%, 
+    rgba(255, 255, 255, 0.00) 100%
+    );
 }
 
 .border-buttons {
