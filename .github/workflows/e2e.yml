@@ -48,8 +48,10 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit != 'true'
 
       - name: Start application database
-        run: |
-          ./scripts/database-setup.sh
+        uses: JarvusInnovations/background-action@v1
+        with:
+          run: ./scripts/database-setup.sh
+          wait-on: http-get://localhost:8000/status
 
       - name: Run tests
         run: npm run test.e2e
