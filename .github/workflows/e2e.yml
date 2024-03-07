@@ -49,6 +49,11 @@ jobs:
         run: npm run test.e2e.setup
         if: steps.playwright-cache.outputs.cache-hit != 'true'
 
+      - name: Install SurrealDB CLI
+        run: |
+          curl -sSf https://install.surrealdb.com | sh
+          ls -la /usr/local/bin
+
       - name: Start app database
         uses: JarvusInnovations/background-action@v1
         with:
@@ -58,7 +63,7 @@ jobs:
       - name: Provision app database data
         run: ./scripts/database-provision.sh
 
-      - name: Start app development mode
+      - name: Start app in development mode
         uses: JarvusInnovations/background-action@v1
         with:
           run: npm run dev
