@@ -11,7 +11,8 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import { Modal } from "~/components/modal";
 import { isAddress } from "viem";
 import { CreatedStructure } from "~/components/structures/created";
-import { Structure } from "~/interface/structure/Structure";
+import {Structure, StructureBalance} from "~/interface/structure/Structure";
+import {SelectedStructureDetails} from "~/components/structures/details";
 
 export const useAvailableStructures = routeLoader$(async (requestEvent) => {
   const db = await connectToDB(requestEvent.env);
@@ -73,7 +74,8 @@ export default component$(() => {
   const isCreateNewStructureModalOpen = useSignal(false);
   const createStructureAction = useCreateStructure();
   const structureNameStore = useStore({ name: "", address: "" });
-  const selectedStructure = useSignal<Structure | null>(null);
+  const selectedStructure = useSignal<StructureBalance| null>(null);
+  const isDeleteModalOpen = useSignal(false)
 
   return (
     <div class="grid  grid-cols-2 gap-4 p-8">
@@ -92,24 +94,25 @@ export default component$(() => {
         </div>
 
         <div class="flex flex-col">
-          {availableStructures.value.map((item) => (
+          {availableStructures.value.map((createdStructures) => (
             <CreatedStructure
-              key={item.structure.name}
-              createdStructure={item}
+              key={createdStructures.structure.name}
+              createdStructure={createdStructures}
               selectedStructure={selectedStructure}
             />
           ))}
         </div>
       </div>
 
-      {/*<div class="max-h-600 flex flex-col overflow-auto p-2">*/}
-      {/*  {selectedStructure.value && (*/}
-      {/*      <label*/}
-      {/*          key={selectedStructure.value.structure.name}*/}
-      {/*          selectedStructure={selectedStructure}*/}
-      {/*      />*/}
-      {/*  )}*/}
-      {/*</div>*/}
+      <div class="max-h-600 flex flex-col overflow-auto p-2">
+        {selectedStructure.value && (
+            <SelectedStructureDetails
+                key={selectedStructure.value.structure.name}
+                selectedStructure={selectedStructure}
+                isDeleteModalopen={isDeleteModalOpen}
+                />
+        )}
+      </div>
 
       {isCreateNewStructureModalOpen.value && (
         <Modal

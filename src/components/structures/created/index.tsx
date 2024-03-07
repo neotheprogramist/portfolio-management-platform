@@ -1,9 +1,9 @@
 import { type Signal, component$ } from "@builder.io/qwik";
-import { Structure } from "~/interface/structure/Structure";
+import {StructureBalance} from "~/interface/structure/Structure";
 
 interface createdStructuresProps {
-  createdStructure: Structure;
-  selectedStructure: Signal<Structure | null>;
+  createdStructure: StructureBalance;
+  selectedStructure: Signal<StructureBalance | null>;
 }
 
 export const CreatedStructure = component$<createdStructuresProps>(
@@ -15,8 +15,7 @@ export const CreatedStructure = component$<createdStructuresProps>(
           selectedStructure.value = createdStructure;
         }}
       >
-        <div class="text-lg font-bold">{createdStructure.name}</div>
-        <div class="text-base text-gray-500"></div>
+        <div class="text-lg font-bold">{createdStructure.structure.name}</div>
       </div>
     );
   },
