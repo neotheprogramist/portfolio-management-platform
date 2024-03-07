@@ -7,7 +7,7 @@ import ImgWarning from "/public/images/warning.svg?jsx";
 
 export default component$(() => {
   return (
-    <div class="grid grid-cols-4 grid-rows-[384px_1fr] gap-6 overflow-auto border-t border-white border-opacity-5 p-6">
+    <div class="grid grid-cols-4 grid-rows-[384px_1fr] gap-6 overflow-auto border-t border-white border-opacity-15 p-6">
       <PortfolioValue />
       <div class="border-white-opacity-20 bg-glass col-start-3 row-span-1 row-start-1 rounded-3xl p-4">
         <div class="mb-4 flex items-center justify-between text-white">
@@ -28,14 +28,14 @@ export default component$(() => {
           <Alert />
         </div>
       </div>
-      <div class="border-white-opacity-20 bg-glass col-start-4 row-span-1 row-start-1 rounded-3xl p-4">
+      <div class="border-white-opacity-20 bg-glass col-start-4 row-span-1 row-start-1 rounded-3xl p-4 shadow">
         <div class="mb-4 flex items-center justify-between text-white">
           <h1 class="text-xl font-semibold">Actions</h1>
           <button class="border-buttons rounded-3xl px-4 py-2 font-semibold">
             See All
           </button>
         </div>
-        <div class="h-72 overflow-scroll text-white ">
+        <div class="h-72 overflow-scroll text-white">
           <Action />
           <Action />
           <div class="flex justify-between border-b border-white border-opacity-20 py-5">
@@ -43,7 +43,7 @@ export default component$(() => {
               <h3 class="text-sm">DCA</h3>
               <p class="text-xs text-white text-opacity-50">1 day ago</p>
             </div>
-            <div class="flex items-center gap-1 rounded-lg border border-yellow-400 p-2">
+            <div class="bg-glass flex items-center gap-1 rounded-lg border border-yellow-400 p-2">
               <ImgWarning />
               <p class="text-sm text-yellow-400">Warning</p>
             </div>
@@ -55,7 +55,7 @@ export default component$(() => {
       </div>
       <div class="border-white-opacity-20 bg-glass col-start-1 col-end-5 row-span-1 row-start-2 grid grid-rows-[64px_1fr] overflow-auto rounded-3xl p-4">
         <div class="row-span-1 row-start-1 mb-6 flex items-center justify-between">
-          <h1 class="text-xl font-bold text-white">Favourite Tokens</h1>
+          <h1 class="text-xl font-semibold text-white">Favourite Tokens</h1>
           <button class="border-buttons rounded-3xl px-4 py-2 text-xs font-semibold text-white">
             Go To Portfolio
           </button>
@@ -69,7 +69,7 @@ export default component$(() => {
                 <td>VALUE</td>
                 <td class="flex items-center justify-center gap-4">
                   CHANGE
-                  <div class="flex gap-1 rounded-lg border border-white border-opacity-20 bg-white bg-opacity-10 p-1 text-white">
+                  <div class="bg-glass flex gap-1 rounded-lg border border-white border-opacity-20 p-1 text-white ">
                     <button class="color-gradient rounded-lg p-2">24h</button>
                     <button class="p-2">3d</button>
                     <button class="p-2">30d</button>

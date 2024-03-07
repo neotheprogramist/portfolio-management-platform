@@ -20,6 +20,10 @@ import { type Balance } from "~/interface/balance/Balance";
 import { type WalletTokensBalances } from "~/interface/walletsTokensBalances/walletsTokensBalances";
 import { formatTokenBalance } from "~/utils/formatBalances/formatTokenBalance";
 import { isAddress } from "viem";
+// import ImgSearch from "/public/images/svg/search.svg?jsx";
+// import ImgSearch from "../../../../../public/images/svg/search.svg?jsx";
+import ImgArrowDown from "/public/images/arrowDown.svg?jsx";
+import ImgI from "/public/images/svg/i.svg?jsx";
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
@@ -225,19 +229,30 @@ export default component$(() => {
   const addWalletFormStore = useStore({ name: "", address: "" });
 
   return (
-    <div class="grid  grid-cols-2 gap-4 p-8">
-      <div class="max-h-600 flex flex-col overflow-auto p-2">
-        <div class="flex justify-between">
-          <span>Wallets</span>
+    <div class="z-10 grid w-full grid-cols-[24%_75%] grid-rows-[14%_85%] gap-4 p-8">
+      <div class="bg-glass border-white-opacity-20 row-span-2 flex flex-col gap-6 overflow-auto rounded-xl p-6">
+        <div class="flex items-center justify-between text-white">
+          <h1 class="text-xl">Wallets</h1>
           <button
-            class="cursor-pointer rounded bg-blue-500 p-2 text-white"
+            class="border-buttons cursor-pointer rounded-3xl px-4 py-2 text-xs font-semibold text-white"
             onClick$={() => {
               isAddWalletModalOpen.value = !isAddWalletModalOpen.value;
             }}
           >
-            Add new
+            Add New Wallet
           </button>
         </div>
+        <div class="flex flex-col gap-2">
+          <button class="border-white-opacity-20 bg-glass flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-xs text-white text-opacity-50">
+            {/* <ImgSearch/> */}
+            Search for wallet
+          </button>
+          <button class="border-white-opacity-20 bg-glass flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-xs text-white">
+            Choose Network
+            <ImgArrowDown />
+          </button>
+        </div>
+
         <div class="flex flex-col">
           {observedWallets.value.map((observedWallet) => (
             <ObservedWallet
@@ -250,7 +265,27 @@ export default component$(() => {
         </div>
       </div>
 
-      <div class="max-h-600 flex flex-col overflow-auto p-2">
+      <div class="row-span-1 flex items-center justify-between gap-6 rounded-xl border border-blue-500 bg-blue-500 bg-opacity-20 p-6">
+        <div class="text-white">
+          <h2 class="mb-4 flex items-center gap-2 text-sm">
+            <ImgI /> Pending authorization
+          </h2>
+          <p class="text-xs">
+            This wallet requires authorization. Click Authorize to log in using
+            this wallet and approve all associated tokens.
+          </p>
+        </div>
+        <div>
+          <button class="border-buttons mr-2 cursor-pointer rounded-3xl px-3.5 py-1.5 text-xs font-semibold text-white">
+            Dismiss
+          </button>
+          <button class="rounded-3xl border-none bg-blue-500 px-4 py-2 text-xs font-semibold text-white">
+            Authorize
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-glass border-white-opacity-20 row-span-1 flex flex-col gap-6 overflow-auto rounded-xl p-6">
         {selectedWallet.value && (
           <SelectedWalletDetails
             key={selectedWallet.value.wallet.address}
@@ -269,49 +304,85 @@ export default component$(() => {
                 isAddWalletModalOpen.value = false;
               }
             }}
-            class="mt-4"
+            class="p-5"
           >
-            <label for="name" class="block">
+            <div class="mb-5">
+              <p class="pb-1 text-xs text-white">Type</p>
+              <div class="bg-glass border-white-opacity-20 grid grid-cols-[50%_50%] rounded p-1">
+                <button class="color-gradient col-span-1 rounded p-2.5 text-white">
+                  Executable
+                </button>
+                <button class="col-span-1 text-white">Read-only</button>
+              </div>
+            </div>
+            <label for="name" class="flex gap-2 pb-1 text-xs text-white">
               Name
+              {!isValidName(addWalletFormStore.name) && (
+                <span class="text-xs text-red-500">Invalid name</span>
+              )}
             </label>
             <input
               type="text"
               name="name"
-              class={`mb-1 block w-full ${!isValidName(addWalletFormStore.name) ? "bg-red-300" : ""}`}
+              class={`border-white-opacity-20 mb-5 block w-[80%] rounded bg-transparent p-3 text-white 
+              ${!isValidName(addWalletFormStore.name) ? "text-red-500" : ""}`}
               value={addWalletFormStore.name}
               onInput$={(e) => {
                 const target = e.target as HTMLInputElement;
                 addWalletFormStore.name = target.value;
               }}
             />
-            {!isValidName(addWalletFormStore.name) && (
-              <p class="mb-4 text-red-500">Invalid name</p>
-            )}
-            <label for="address" class="block">
+            <label for="address" class="flex gap-2 pb-1 text-xs text-white">
               Address
+              {!isValidAddress(addWalletFormStore.address) && (
+                <span class=" text-xs text-red-500">Invalid address</span>
+              )}
             </label>
             <input
               type="text"
               name="address"
-              class={`mb-1 block w-full ${!isValidAddress(addWalletFormStore.address) ? "bg-red-300" : ""}`}
+              class={`border-white-opacity-20 mb-5 block w-[80%] rounded bg-transparent p-3 text-white 
+              ${!isValidAddress(addWalletFormStore.address) ? "bg-red-300" : ""}`}
               value={addWalletFormStore.address}
               onInput$={(e) => {
                 const target = e.target as HTMLInputElement;
                 addWalletFormStore.address = target.value;
               }}
             />
-            {!isValidAddress(addWalletFormStore.address) && (
-              <p class="mb-4 text-red-500">Invalid address</p>
-            )}
+
+            <label for="network" class="block pb-1 text-xs text-white">
+              Network
+            </label>
+            <input
+              type="text"
+              name="network"
+              class={`border-white-opacity-20 mb-5 block w-full rounded bg-transparent p-3 text-sm placeholder-white placeholder-opacity-50`}
+              // value={addWalletFormStore.address}
+              // onInput$={(e) => {
+              //   const target = e.target as HTMLInputElement;
+              //   addWalletFormStore.address = target.value;
+              // }}
+              placeholder="Select network"
+            />
             <button
-              type="submit"
-              class="absolute bottom-4 right-4"
+              type="reset"
+              class="border-buttons absolute bottom-5 right-36 rounded-3xl p-3 font-normal text-white"
               disabled={
                 !isValidName(addWalletFormStore.name) ||
                 !isValidAddress(addWalletFormStore.address)
               }
             >
-              Add wallet
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="color-gradient absolute bottom-5 right-4 rounded-3xl p-0.5 font-normal text-white"
+              disabled={
+                !isValidName(addWalletFormStore.name) ||
+                !isValidAddress(addWalletFormStore.address)
+              }
+            >
+              <p class="rounded-3xl bg-black p-3">Add wallet</p>
             </button>
           </Form>
         </Modal>
@@ -328,7 +399,7 @@ export default component$(() => {
                 isDeleteModalOpen.value = false;
               }
             }}
-            class="cursor-pointer rounded bg-red-500 p-2 text-white"
+            class="absolute bottom-5 right-4  rounded-3xl bg-red-500 p-3 text-center font-normal text-white"
           >
             Confirm Delete
           </button>

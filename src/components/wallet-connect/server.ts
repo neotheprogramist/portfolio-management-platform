@@ -69,7 +69,7 @@ export const verifyMessageServer = server$(async function (
     },
   );
 
-  this.cookie.set("accessToken", accessToken);
+  this.cookie.set("accessToken", accessToken, { path: "/app" });
   return { refreshToken };
 });
 
