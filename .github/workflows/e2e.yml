@@ -13,6 +13,7 @@ env:
   PLAYWRIGHT_TEST_RESULTS_RELATIVE_PATH: test-results/
   PLAYWRIGHT_TEST_RESULTS_ARTIFACT_RETENTION_DAYS: 7
   PLAYWRIGHT_VERSION:
+  SURREAL_VERSION:
 
 jobs:
   e2e:
@@ -49,10 +50,23 @@ jobs:
         run: npm run test.e2e.setup
         if: steps.playwright-cache.outputs.cache-hit != 'true'
 
-      - name: Install SurrealDB CLI
+      - name: Get Surreal version
+        id: surreal-version
         run: |
-          curl -sSf https://install.surrealdb.com | sh
-          ls -la /usr/local/bin
+          SURREAL_VERSION=$(npm ls surrealdb.js | grep surrealdb.js | sed 's/.*@//')
+          echo "SURREAL_VERSION=$SURREAL_VERSION" >> $GITHUB_ENV
+
+      - name: Cache Surreal
+        uses: actions/cache@v4
+        id: surreal-cache
+        with:
+          path: |
+            /usr/local/bin/surreal
+          key: ${{ runner.os }}-surreal-${{ env.SURREAL_VERSION }}
+
+      - name: Install SurrealDB CLI
+        run: curl -sSf https://install.surrealdb.com | sh
+        if: steps.surreal-cache.outputs.cache-hit != 'true'
 
       - name: Start app database
         uses: JarvusInnovations/background-action@v1
