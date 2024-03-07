@@ -8,6 +8,8 @@ on:
 
 env:
   NODE_VERSION: "21.6.2"
+  APP_DATABASE_PORT: 8000
+  APP_PORT: 5173
   PLAYWRIGHT_TEST_RESULTS_RELATIVE_PATH: test-results/
   PLAYWRIGHT_TEST_RESULTS_ARTIFACT_RETENTION_DAYS: 7
   PLAYWRIGHT_VERSION:
@@ -47,11 +49,20 @@ jobs:
         run: npm run test.e2e.setup
         if: steps.playwright-cache.outputs.cache-hit != 'true'
 
-      - name: Start application database
+      - name: Start app database
         uses: JarvusInnovations/background-action@v1
         with:
           run: ./scripts/database-setup.sh
-          wait-on: http-get://localhost:8000/status
+          wait-on: http-get://localhost:${{ env.APP_DATABASE_PORT }}/status
+
+      - name: Provision app database data
+        run: ./scripts/database-provision.sh
+
+      - name: Start app development mode
+        uses: JarvusInnovations/background-action@v1
+        with:
+          run: npm run dev
+          wait-on: http-get://localhost:${{ env.APP_PORT }}
 
       - name: Run tests
         run: npm run test.e2e
