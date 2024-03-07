@@ -156,6 +156,59 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
   );
   if (!result) throw new Error("No observed wallets");
   const observedWalletsQueryResult = result[0]["->observes_wallet"].out;
+  console.log("observedWalletsQueryResult", observedWalletsQueryResult);
+
+  // IN PROGRESS START
+  const [resultAddresses]: any = await db.query(
+    `SELECT ->observes_wallet.out.address FROM ${userId};`,
+  );
+  if (!resultAddresses) throw new Error("No observed wallets");
+  const observedWalletsAddressesQueryResult =
+    resultAddresses[0]["->observes_wallet"].out.address;
+  console.log(
+    "observedWalletsQueryResult",
+    observedWalletsAddressesQueryResult,
+  );
+
+  const response = await fetch(
+    "https://api.studio.thegraph.com/query/67341/erc-20-v2/v0.0.2",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        query: `
+      {
+        accounts(where: { id_in: ${JSON.stringify(observedWalletsAddressesQueryResult)} }) {
+          id
+          balances {
+            id
+            token {
+              id
+              name
+              symbol
+              decimals
+            }
+            amount
+          }
+        }
+      }
+    `,
+      }),
+    },
+  );
+
+  const {
+    data: { accounts },
+  } = await response.json();
+  accounts.forEach((acc) => {
+    console.log("account", acc);
+    acc.balances.forEach((bal) => {
+      console.log("Balance:", bal);
+    });
+  });
+
+  // IN PROGRESS END
+
 
   const observedWallets: any[] = [];
   for (const observedWallet of observedWalletsQueryResult) {
