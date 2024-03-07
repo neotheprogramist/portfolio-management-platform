@@ -5,7 +5,7 @@ import { Gradient } from "~/components/gradient/gradient";
 import { Paragraph } from "~/components/paragraph/paragraph";
 import { WelcomeText } from "~/components/welcome-text/welcome-text";
 import { Navbar } from "~/components/navbar/navbar";
-import ImgGradientMain from "/public/images/gradient-main.png?jsx";
+import ImgGradientMain from "/public/images/Gradient.png?jsx";
 import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
 import { getNonceServer, verifyMessageServer } from "~/components/wallet-connect/server";
 import { getAccount, getChainId, signMessage } from "@wagmi/core";
@@ -70,17 +70,12 @@ export default component$(() => {
                 width="w-[98px]"
               />
               <Button
+                onClick$={signInHandler}
                 text="Accept and Sign"
                 width="w-[180px]"
                 class="rounded-[48px] bg-black py-[15px]"
                 background="border-none bg-gradient-to-r from-orange-500 via-red-500 to-blue-500 p-[2px]"
               />
-              <button
-                class="hidden font-sora cursor-pointer rounded-full border-none bg-gradient-to-r from-orange-500 via-yellow-500 to-blue-500 px-2"
-                onClick$={signInHandler}
-              >
-                <div class="rounded-full bg-black px-6 py-4">Dashboard</div>
-              </button>
             </div>
           </div>
           <div class="grid content-end justify-items-center">
