@@ -47,6 +47,10 @@ jobs:
         run: npm run test.e2e.setup
         if: steps.playwright-cache.outputs.cache-hit != 'true'
 
+      - name: Start application database
+        run: |
+          ./scripts/database-setup.sh
+
       - name: Run tests
         run: npm run test.e2e
 
