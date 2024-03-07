@@ -4,5 +4,5 @@ export type Structure = {
 };
 
 export type StructureBalance = {
-  structure: Structure
-}
+  structure: Structure;
+};

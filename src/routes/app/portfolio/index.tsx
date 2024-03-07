@@ -11,8 +11,10 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import { Modal } from "~/components/modal";
 import { isAddress } from "viem";
 import { CreatedStructure } from "~/components/structures/created";
-import {Structure, StructureBalance} from "~/interface/structure/Structure";
-import {SelectedStructureDetails} from "~/components/structures/details";
+import { Structure, StructureBalance } from "~/interface/structure/Structure";
+import { SelectedStructureDetails } from "~/components/structures/details";
+import { useObservedWallets } from "~/routes/shared/loaders";
+export { useObservedWallets } from "~/routes/shared/loaders";
 
 export const useAvailableStructures = routeLoader$(async (requestEvent) => {
   const db = await connectToDB(requestEvent.env);
@@ -39,7 +41,11 @@ export const useAvailableStructures = routeLoader$(async (requestEvent) => {
       },
     });
   }
-  console.log(availableStructures)
+  const groupDetails = await db.query(`
+    SELECT * FROM has_structure`);
+
+  // console.log("-----------------------------");
+  // console.log(groupDetails);
   return availableStructures;
 });
 export const useCreateStructure = routeAction$(
@@ -55,27 +61,37 @@ export const useCreateStructure = routeAction$(
       name: data.name,
     });
 
+    console.log("data");
+    console.log(data);
+
     await db.query(`
-    RELATE ONLY ${userId}-> has_structure -> ${structure[0].id}`);
+    relate only ${userId}-> has_structure -> ${structure[0].id}`);
+
+    await db.query(`
+    relate only ${structure[0].id}-> in_structure -> ${data.walletId}`);
+
     return {
       success: true,
       structure: { name: data.name },
     };
   },
   zod$({
-    address: z.string().refine((address) => isAddress(address), {
-      message: "Invalid address",
-    }),
+    // address: z.string().refine((address) => isAddress(address), {
+    //   message: "Invalid address",
+    // }),
+    walletId: z.string(),
     name: z.string(),
   }),
 );
+
 export default component$(() => {
   const availableStructures = useAvailableStructures();
   const isCreateNewStructureModalOpen = useSignal(false);
   const createStructureAction = useCreateStructure();
-  const structureNameStore = useStore({ name: "", address: "" });
-  const selectedStructure = useSignal<StructureBalance| null>(null);
-  const isDeleteModalOpen = useSignal(false)
+  const observedWallets = useObservedWallets();
+  const structureNameStore = useStore({ name: "", walletId: "" });
+  const selectedStructure = useSignal<StructureBalance | null>(null);
+  const isDeleteModalOpen = useSignal(false);
 
   return (
     <div class="grid  grid-cols-2 gap-4 p-8">
@@ -106,11 +122,11 @@ export default component$(() => {
 
       <div class="max-h-600 flex flex-col overflow-auto p-2">
         {selectedStructure.value && (
-            <SelectedStructureDetails
-                key={selectedStructure.value.structure.name}
-                selectedStructure={selectedStructure}
-                isDeleteModalopen={isDeleteModalOpen}
-                />
+          <SelectedStructureDetails
+            key={selectedStructure.value.structure.name}
+            selectedStructure={selectedStructure}
+            isDeleteModalopen={isDeleteModalOpen}
+          />
         )}
       </div>
 
@@ -147,26 +163,26 @@ export default component$(() => {
             <label for="address" class="block">
               Wallet
             </label>
-            <input
-              type="text"
-              name="address"
-              class={`mb-1 block w-full ${!isValidAddress(structureNameStore.address) ? "bg-red-300" : ""}`}
-              value={structureNameStore.address}
-              onInput$={(e) => {
-                const target = e.target as HTMLInputElement;
-                structureNameStore.address = target.value;
+            <select
+              name="walletId"
+              multiple
+              onChange$={(e) => {
+                const target = e.target as HTMLSelectElement;
+                structureNameStore.walletId = target.value.toString();
+                console.log(structureNameStore);
               }}
-            />
-            {!isValidAddress(structureNameStore.address) && (
-              <p class="mb-4 text-red-500">Invalid address</p>
-            )}
+            >
+              <option disabled={true}>Select wallets</option>
+              {observedWallets.value.map((option) => (
+                <option key={option.wallet.id} value={option.wallet.id}>
+                  {option.wallet.name}
+                </option>
+              ))}
+            </select>
             <button
               type="submit"
               class="absolute bottom-4 right-4"
-              disabled={
-                !isValidName(structureNameStore.name) ||
-                !isValidAddress(structureNameStore.address)
-              }
+              disabled={!isValidName(structureNameStore.name)}
             >
               Create structure
             </button>

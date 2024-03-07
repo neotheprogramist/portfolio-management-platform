@@ -1,5 +1,5 @@
 import { type Signal, component$ } from "@builder.io/qwik";
-import {StructureBalance} from "~/interface/structure/Structure";
+import { StructureBalance } from "~/interface/structure/Structure";
 
 interface createdStructuresProps {
   createdStructure: StructureBalance;
