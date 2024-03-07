@@ -50,23 +50,8 @@ jobs:
         run: npm run test.e2e.setup
         if: steps.playwright-cache.outputs.cache-hit != 'true'
 
-      - name: Get Surreal version
-        id: surreal-version
-        run: |
-          SURREAL_VERSION=$(npm ls surrealdb.js | grep surrealdb.js | sed 's/.*@//')
-          echo "SURREAL_VERSION=$SURREAL_VERSION" >> $GITHUB_ENV
-
-      - name: Cache Surreal
-        uses: actions/cache@v4
-        id: surreal-cache
-        with:
-          path: |
-            /usr/local/bin/surreal
-          key: ${{ runner.os }}-surreal-${{ env.SURREAL_VERSION }}
-
       - name: Install SurrealDB CLI
         run: curl -sSf https://install.surrealdb.com | sh
-        if: steps.surreal-cache.outputs.cache-hit != 'true'
 
       - name: Start app database
         uses: JarvusInnovations/background-action@v1
@@ -77,14 +62,11 @@ jobs:
       - name: Provision app database data
         run: ./scripts/database-provision.sh
 
-      # - name: Start app in development mode
-      #   uses: JarvusInnovations/background-action@v1
-      #   with:
-      #     run: npm run dev
-      #     wait-on: http-get://localhost:${{ env.APP_PORT }}
-
       - name: Start app in development mode
-        run: npm run dev
+        uses: JarvusInnovations/background-action@v1
+        with:
+          run: npm run dev
+          wait-on: http-get://localhost:${{ env.APP_PORT }}
 
       - name: Run tests
         run: npm run test.e2e
