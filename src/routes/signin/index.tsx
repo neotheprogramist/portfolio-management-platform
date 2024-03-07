@@ -51,22 +51,35 @@ export default component$(() => {
 
   return (
     <>
-      <Navbar class="fixed"/>
-      <div class="grid grid-cols-[1fr_2fr_auto] h-full items-center">
+      <Navbar class="fixed" />
+      <div class="grid h-full grid-cols-[1fr_2fr_auto] items-center">
         <div class="h-[766px] w-[655px]">
-          <ImgGradientMain class="h-full" alt="gradient" style="object-position: -129px 0;"/>
-        </div>  
+          <ImgGradientMain
+            class="h-full"
+            alt="gradient"
+            style="object-position: -129px 0;"
+          />
+        </div>
         <div class="grid grid-rows-[2fr_1fr] pt-52">
           <div class="grid content-end justify-items-center gap-10 pb-10">
             <WelcomeText />
             <div class="flex gap-4 text-[14px]">
-              <Button text="Cancel" border="border-white border-opacity-20" width="w-[98px]"/>
-              <Button text="Accept and Sign" width="w-[180px]" class="rounded-[48px] bg-black py-[15px]" background="border-none bg-gradient-to-r from-orange-500 via-red-500 to-blue-500 p-[2px]"/>
+              <Button
+                text="Cancel"
+                border="border-white border-opacity-20"
+                width="w-[98px]"
+              />
+              <Button
+                text="Accept and Sign"
+                width="w-[180px]"
+                class="rounded-[48px] bg-black py-[15px]"
+                background="border-none bg-gradient-to-r from-orange-500 via-red-500 to-blue-500 p-[2px]"
+              />
               <button
                 class="hidden font-sora cursor-pointer rounded-full border-none bg-gradient-to-r from-orange-500 via-yellow-500 to-blue-500 px-2"
                 onClick$={signInHandler}
               >
-              <div class="rounded-full bg-black px-6 py-4">Dashboard</div>
+                <div class="rounded-full bg-black px-6 py-4">Dashboard</div>
               </button>
             </div>
           </div>

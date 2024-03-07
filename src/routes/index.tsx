@@ -10,12 +10,16 @@ import { Paragraph } from "~/components/paragraph/paragraph";
 export default component$(() => {
   return (
     <>
-      <Navbar class="fixed"/>
-      <div class="grid grid-cols-[1fr_2fr_auto] h-full items-center">
+      <Navbar class="fixed" />
+      <div class="grid h-full grid-cols-[1fr_2fr_auto] items-center">
         <div class="h-[766px] w-[655px]">
-          <ImgGradientMain class="h-full" alt="gradient" style="object-position: -129px 0;"/>
+          <ImgGradientMain
+            class="h-full"
+            alt="gradient"
+            style="object-position: -129px 0;"
+          />
         </div>
-        <div class="grid grid-rows-[2fr_2fr] pt-52 min-w-[340px]">
+        <div class="grid min-w-[340px] grid-rows-[2fr_2fr] pt-52">
           <div class="grid justify-items-center gap-10">
             <LoginText />
             <div>

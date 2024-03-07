@@ -11,7 +11,14 @@ export interface ButtonProps {
 
 export const Button = component$<ButtonProps>((props) => {
   return (
-    <button class={twMerge("cursor-pointer rounded-[48px] border-2 h-[48px]", props.background, props.border, props.width)}>
+    <button
+      class={twMerge(
+        "h-[48px] cursor-pointer rounded-[48px] border-2",
+        props.background,
+        props.border,
+        props.width,
+      )}
+    >
       <div class={props.class}>{props.text}</div>
     </button>
   );
