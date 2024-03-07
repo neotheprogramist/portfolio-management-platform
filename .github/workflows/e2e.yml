@@ -77,11 +77,14 @@ jobs:
       - name: Provision app database data
         run: ./scripts/database-provision.sh
 
+      # - name: Start app in development mode
+      #   uses: JarvusInnovations/background-action@v1
+      #   with:
+      #     run: npm run dev
+      #     wait-on: http-get://localhost:${{ env.APP_PORT }}
+
       - name: Start app in development mode
-        uses: JarvusInnovations/background-action@v1
-        with:
-          run: npm run dev
-          wait-on: http-get://localhost:${{ env.APP_PORT }}
+        run: npm run dev
 
       - name: Run tests
         run: npm run test.e2e
