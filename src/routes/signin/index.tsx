@@ -7,7 +7,10 @@ import { WelcomeText } from "~/components/welcome-text/welcome-text";
 import { Navbar } from "~/components/navbar/navbar";
 import ImgGradientMain from "/public/images/Gradient.png?jsx";
 import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
-import { getNonceServer, verifyMessageServer } from "~/components/wallet-connect/server";
+import {
+  getNonceServer,
+  verifyMessageServer,
+} from "~/components/wallet-connect/server";
 import { getAccount, getChainId, signMessage } from "@wagmi/core";
 import { SiweMessage } from "siwe";
 

@@ -1,4 +1,4 @@
-import { QRL, component$ } from "@builder.io/qwik";
+import { type QRL, component$ } from "@builder.io/qwik";
 import { twMerge } from "tailwind-merge";
 
 export interface ButtonProps {
@@ -12,7 +12,8 @@ export interface ButtonProps {
 
 export const Button = component$<ButtonProps>((props) => {
   return (
-    <button onClick$={props.onClick$}
+    <button
+      onClick$={props.onClick$}
       class={twMerge(
         "h-[48px] cursor-pointer rounded-[48px] border-2",
         props.background,
