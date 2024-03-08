@@ -87,11 +87,11 @@ jobs:
         if: steps.app-build-cache.outputs.cache-hit != 'true'
         run: npm run build
 
-      # - name: Serve app production build
-      #   uses: JarvusInnovations/background-action@v1
-      #   with:
-      #     run: npm run serve
-      #     wait-on: http-get://localhost:${{ env.APP_PORT }}
+      - name: Serve app production build
+        uses: JarvusInnovations/background-action@v1
+        with:
+          run: npm run serve
+          wait-on: http-get://localhost:${{ env.APP_PORT }}
 
       - name: Run tests
         run: npm run test.e2e
