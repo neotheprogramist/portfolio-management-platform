@@ -18,7 +18,7 @@ env:
   PUBLIC_PROJECT_ID:
   PUBLIC_METADATA_NAME:
   PUBLIC_METADATA_DESCRIPTION:
-  PW_BASE_URL: http://localhost:3000
+  PW_BASE_URL:
   SURREALDB_URL:
   SURREALDB_USER:
   SURREALDB_PASS:
@@ -77,7 +77,9 @@ jobs:
         uses: actions/cache@v4
         id: app-build-cache
         with:
-          path: ./dist
+          path: |
+            ./dist
+            ./server
           key: ${{ runner.os }}-build-${{ hashFiles('**/src/**', '**/public/**', '**/package-lock.json') }}
 
       - name: Run build
@@ -91,9 +93,7 @@ jobs:
       #     wait-on: http-get://localhost:${{ env.APP_PORT }}
 
       - name: Run tests
-        run: |
-          ls -la
-          npm run test.e2e
+        run: npm run test.e2e
 
       - name: Save results artifact
         if: failure()
