@@ -22,7 +22,8 @@ const config: PlaywrightTestConfig = {
     },
   ],
   webServer: {
-    command: "npm run serve",
+    // Use `dev` mode locally and `production` mode in CI.
+    command: !process.env.CI ? "npm run dev" : "npm run serve",
     url: process.env.PW_BASE_URL,
     reuseExistingServer: !process.env.CI,
   },
