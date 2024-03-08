@@ -61,10 +61,13 @@ jobs:
       - name: Provision app database data
         run: ./scripts/database-provision.sh
 
-      - name: Start app in development mode
+      - name: Run build
+        run: npm run build
+
+      - name: Serve app's production build
         uses: JarvusInnovations/background-action@v1
         with:
-          run: npm run dev
+          run: npm run serve
           wait-on: http://localhost:${{ env.APP_PORT }}
 
       - name: Run tests
