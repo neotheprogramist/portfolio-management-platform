@@ -8,20 +8,17 @@ import {
 } from "@builder.io/qwik-city";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 import { type RawQueryResult } from "surrealdb.js/script/types";
-import { contractABI, publicClient } from "~/abi/abi";
+import { publicClient } from "~/abi/abi";
 import { type Wallet } from "~/interface/auth/Wallet";
 import { connectToDB } from "~/utils/db";
 import { chainIdToNetworkName } from "~/utils/chains";
 import { Modal } from "~/components/modal";
 import { SelectedWalletDetails } from "~/components/wallets/details";
 import { ObservedWallet } from "~/components/wallets/observed";
-import { type Token } from "~/interface/token/Token";
 import { type Balance } from "~/interface/balance/Balance";
 import { type WalletTokensBalances } from "~/interface/walletsTokensBalances/walletsTokensBalances";
 import { formatTokenBalance } from "~/utils/formatBalances/formatTokenBalance";
-import { isAddress } from "viem";
-// import ImgSearch from "/public/images/svg/search.svg?jsx";
-// import ImgSearch from "../../../../../public/images/svg/search.svg?jsx";
+import { isAddress, getAddress } from "viem";
 import ImgArrowDown from "/public/images/arrowDown.svg?jsx";
 import ImgI from "/public/images/svg/i.svg?jsx";
 
@@ -67,25 +64,53 @@ export const useAddWallet = routeAction$(
         `UPDATE ${walletId} SET nativeBalance = '${nativeBalance}';`,
       );
 
-      // create balances for tokens
-      const tokens = await db.select<Token>("token");
-      for (const token of tokens) {
-        // for each token create balance
-        const readBalance = await publicClient.readContract({
-          address: token.address as `0x${string}`,
-          abi: contractABI,
-          functionName: "balanceOf",
-          args: [createWalletQueryResult.address as `0x${string}`],
+      const subgraphURL = requestEvent.env.get("SUBGRAPH_URL");
+      if (!subgraphURL) {
+        throw new Error("Missing SUBGRAPH_URL");
+      }
+      const response = await fetch(subgraphURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          query: `
+              {
+                account(id: "${data.address.toLowerCase()}") {
+                  balances {
+                    id
+                    token {
+                      id
+                      name
+                      symbol
+                      decimals
+                    }
+                    amount
+                  }
+                }
+              }
+            `,
+        }),
+      });
+
+      const walletData = await response.json();
+      console.log("walletData", walletData);
+      walletData.data.account.balances.forEach(async (bal: any) => {
+        const [balance] = await db.create<Balance>("balance", {
+          value: bal.amount,
         });
-        const [balance] = await db.create<Balance>(`balance`, {
-          value: readBalance.toString(),
-        });
-        // balance -> token && balance -> wallet
-        await db.query(`RELATE ONLY ${balance.id}->for_token->${token.id}`);
-        await db.query(
+        console.log("balance", balance);
+        const [[token]]: any = await db.query(
+          `SELECT id FROM token where address = '${getAddress(bal.token.id)}'`,
+        );
+        console.log("token", token);
+        const relation1 = await db.query(
+          `RELATE ONLY ${balance.id}->for_token->${token.id}`,
+        );
+        console.log("relation1", relation1);
+        const relation2 = await db.query(
           `RELATE ONLY ${balance.id}->for_wallet->${createWalletQueryResult.id}`,
         );
-      }
+        console.log("relation2", relation2);
+      });
     }
 
     const [existingRelation] = await db.query(
@@ -151,72 +176,112 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
   }
   const { userId } = jwt.decode(cookie.value) as JwtPayload;
 
-  const [result]: any = await db.query(
-    `SELECT ->observes_wallet.out FROM ${userId};`,
+  const [resultAddresses]: any = await db.query(
+    `SELECT ->observes_wallet.out.address FROM ${userId};`,
   );
-  if (!result) throw new Error("No observed wallets");
-  const observedWalletsQueryResult = result[0]["->observes_wallet"].out;
+  if (!resultAddresses) throw new Error("No observed wallets");
+  const observedWalletsAddressesQueryResult =
+    resultAddresses[0]["->observes_wallet"].out.address;
+  console.log(
+    "observedWalletsAddressesQueryResult",
+    observedWalletsAddressesQueryResult,
+  );
 
-  const observedWallets: any[] = [];
-  for (const observedWallet of observedWalletsQueryResult) {
-    const [wallet] = await db.select<Wallet>(`${observedWallet}`);
-    const nativeBalance = await publicClient.getBalance({
-      address: wallet.address as `0x${string}`,
-      blockTag: "safe",
-    });
-    await db.query(
-      `UPDATE ${observedWallet} SET nativeBalance = '${nativeBalance}';`,
-    );
-
-    const walletTokensBalances: WalletTokensBalances = {
-      wallet: {
-        id: wallet.id,
-        name: wallet.name,
-        chainId: wallet.chainId,
-        address: wallet.address,
-        nativeBalance: nativeBalance,
-      },
-      tokens: [],
-    };
-
-    // For each token update balance
-    const tokens = await db.select<Token>("token");
-    for (const token of tokens) {
-      const readBalance = await publicClient.readContract({
-        address: token.address as `0x${string}`,
-        abi: contractABI,
-        functionName: "balanceOf",
-        args: [wallet.address as `0x${string}`],
-      });
-
-      // Certain balance which shall be updated
-      const [[balanceToUpdate]]: any = await db.query(
-        `SELECT * FROM balance WHERE ->(for_wallet WHERE out = '${wallet.id}') AND ->(for_token WHERE out = '${token.id}');`,
-      );
-
-      await db.update<Balance>(`${balanceToUpdate.id}`, {
-        value: readBalance.toString(),
-      });
-
-      const formattedBalance = formatTokenBalance(
-        readBalance.toString(),
-        token.decimals,
-      );
-
-      if (readBalance !== BigInt(0) && formattedBalance !== "0.000") {
-        // Add the token to the wallet object
-        walletTokensBalances.tokens.push({
-          id: token.id,
-          name: token.name,
-          symbol: token.symbol,
-          decimals: token.decimals,
-          balance: formattedBalance,
-        });
+  const subgraphURL = requestEvent.env.get("SUBGRAPH_URL");
+  if (!subgraphURL) {
+    throw new Error("Missing SUBGRAPH_URL");
+  }
+  const response = await fetch(subgraphURL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      query: `
+    {
+      accounts(where: { id_in: ${JSON.stringify(observedWalletsAddressesQueryResult).toLowerCase()} }) {
+        id
+        balances {
+          id
+          token {
+            id
+            name
+            symbol
+            decimals
+          }
+          amount
+        }
       }
     }
-    observedWallets.push(walletTokensBalances);
+  `,
+    }),
+  });
+
+  const data = await response.json();
+  const observedWallets: WalletTokensBalances[] = [];
+  if (data.data) {
+    for (const acc of data.data.accounts) {
+      const nativeBalance = await publicClient.getBalance({
+        address: getAddress(acc.id) as `0x${string}`,
+        blockTag: "safe",
+      });
+      await db.query(
+        `UPDATE wallet SET nativeBalance = '${nativeBalance}' WHERE address = ${getAddress(acc.id)};`,
+      );
+      console.log("account", acc);
+
+      const [[walletDetails]]: any = await db.query(
+        `SELECT id, name, chainId FROM wallet WHERE address = '${getAddress(acc.id)}';`,
+      );
+      console.log("walletDetails", walletDetails);
+
+      const walletTokensBalances: WalletTokensBalances = {
+        wallet: {
+          id: walletDetails.id,
+          name: walletDetails.name,
+          chainId: walletDetails.chainId,
+          address: getAddress(acc.id),
+          nativeBalance: nativeBalance,
+        },
+        tokens: [],
+      };
+
+      for (const bal of acc.balances) {
+        // console.log("Balance:", bal);
+        const [[balanceToUpdate]]: any = await db.query(
+          `SELECT * FROM balance WHERE ->(for_wallet WHERE out.address = '${getAddress(acc.id)}') AND ->(for_token WHERE out.address = '${getAddress(bal.token.id)}');`,
+        );
+        // console.log("balanceToUpdate", balanceToUpdate);
+        const [updatedBalance] = await db.update<Balance>(
+          `${balanceToUpdate.id}`,
+          {
+            value: bal.amount.toString(),
+          },
+        );
+        // console.log("updatedBalance", updatedBalance);
+
+        const formattedBalance = formatTokenBalance(
+          updatedBalance.value.toString(),
+          bal.token.decimals,
+        );
+
+        if (
+          BigInt(updatedBalance.value) !== BigInt(0) &&
+          formattedBalance !== "0.000"
+        ) {
+          walletTokensBalances.tokens.push({
+            id: bal.token.id,
+            name: bal.token.name,
+            symbol: bal.token.symbol,
+            decimals: bal.token.decimals,
+            balance: formattedBalance,
+          });
+        }
+      }
+
+      observedWallets.push(walletTokensBalances);
+    }
+    console.log("observedWallets", observedWallets);
+    return observedWallets;
   }
-  return observedWallets;
 });
 
 export default component$(() => {
@@ -254,14 +319,15 @@ export default component$(() => {
         </div>
 
         <div class="flex flex-col">
-          {observedWallets.value.map((observedWallet) => (
-            <ObservedWallet
-              key={observedWallet.wallet.address}
-              observedWallet={observedWallet}
-              selectedWallet={selectedWallet}
-              chainIdToNetworkName={chainIdToNetworkName}
-            />
-          ))}
+          {observedWallets.value &&
+            observedWallets.value.map((observedWallet) => (
+              <ObservedWallet
+                key={observedWallet.wallet.address}
+                observedWallet={observedWallet}
+                selectedWallet={selectedWallet}
+                chainIdToNetworkName={chainIdToNetworkName}
+              />
+            ))}
         </div>
       </div>
 
