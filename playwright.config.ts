@@ -8,7 +8,7 @@ const config: PlaywrightTestConfig = {
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: [["list"], ["html"]],
+  reporter: [["list"]],
   use: {
     baseURL: process.env.PW_BASE_URL,
     trace: "on-first-retry",
