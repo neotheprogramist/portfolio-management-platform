@@ -41,8 +41,7 @@ jobs:
         uses: actions/cache@v4
         id: playwright-cache
         with:
-          path: |
-            ~/.cache/ms-playwright
+          path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
 
       - name: Install Playwright dependencies
@@ -61,8 +60,16 @@ jobs:
       - name: Provision app database data
         run: ./scripts/database-provision.sh
 
+      - name: Cache app build
+        uses: actions/cache@v4
+        id: app-build-cache
+        with:
+          path: ./dist
+          key: ${{ runner.os }}-app-build
+
       - name: Run build
         run: npm run build
+        if: steps.app-build-cache.outputs.cache-hit != 'true'
 
       - name: Serve app production build
         uses: JarvusInnovations/background-action@v1
