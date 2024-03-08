@@ -21,6 +21,7 @@ import { formatTokenBalance } from "~/utils/formatBalances/formatTokenBalance";
 import { isAddress, getAddress } from "viem";
 import ImgArrowDown from "/public/images/arrowDown.svg?jsx";
 import ImgI from "/public/images/svg/i.svg?jsx";
+import { fetchSubgraphAccountsData, fetchSubgraphOneAccount } from "~/utils/subgraph/fetch";
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
@@ -68,48 +69,26 @@ export const useAddWallet = routeAction$(
       if (!subgraphURL) {
         throw new Error("Missing SUBGRAPH_URL");
       }
-      const response = await fetch(subgraphURL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          query: `
-              {
-                account(id: "${data.address.toLowerCase()}") {
-                  balances {
-                    id
-                    token {
-                      id
-                      name
-                      symbol
-                      decimals
-                    }
-                    amount
-                  }
-                }
-              }
-            `,
-        }),
-      });
 
-      const walletData = await response.json();
-      console.log("walletData", walletData);
-      walletData.data.account.balances.forEach(async (bal: any) => {
+      const account_ = await fetchSubgraphOneAccount(data.address.toLowerCase(), subgraphURL);
+      
+      account_.balances.forEach(async (bal: any) => {
         const [balance] = await db.create<Balance>("balance", {
           value: bal.amount,
         });
-        console.log("balance", balance);
+
         const [[token]]: any = await db.query(
           `SELECT id FROM token where address = '${getAddress(bal.token.id)}'`,
         );
-        console.log("token", token);
-        const relation1 = await db.query(
+
+        await db.query(
           `RELATE ONLY ${balance.id}->for_token->${token.id}`,
         );
-        console.log("relation1", relation1);
-        const relation2 = await db.query(
+
+        await db.query(
           `RELATE ONLY ${balance.id}->for_wallet->${createWalletQueryResult.id}`,
         );
-        console.log("relation2", relation2);
+
       });
     }
 
@@ -176,49 +155,23 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
   }
   const { userId } = jwt.decode(cookie.value) as JwtPayload;
 
-  const [resultAddresses]: any = await db.query(
+  const [[resultAddresses]]: any = await db.query(
     `SELECT ->observes_wallet.out.address FROM ${userId};`,
   );
   if (!resultAddresses) throw new Error("No observed wallets");
   const observedWalletsAddressesQueryResult =
-    resultAddresses[0]["->observes_wallet"].out.address;
-  console.log(
-    "observedWalletsAddressesQueryResult",
-    observedWalletsAddressesQueryResult,
-  );
+    resultAddresses["->observes_wallet"].out.addres;
 
   const subgraphURL = requestEvent.env.get("SUBGRAPH_URL");
   if (!subgraphURL) {
     throw new Error("Missing SUBGRAPH_URL");
   }
-  const response = await fetch(subgraphURL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      query: `
-    {
-      accounts(where: { id_in: ${JSON.stringify(observedWalletsAddressesQueryResult).toLowerCase()} }) {
-        id
-        balances {
-          id
-          token {
-            id
-            name
-            symbol
-            decimals
-          }
-          amount
-        }
-      }
-    }
-  `,
-    }),
-  });
 
-  const data = await response.json();
+  const accounts_ = await fetchSubgraphAccountsData(observedWalletsAddressesQueryResult, subgraphURL);
+
   const observedWallets: WalletTokensBalances[] = [];
-  if (data.data) {
-    for (const acc of data.data.accounts) {
+  if (accounts_) {
+    for (const acc of accounts_) {
       const nativeBalance = await publicClient.getBalance({
         address: getAddress(acc.id) as `0x${string}`,
         blockTag: "safe",
@@ -226,12 +179,10 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
       await db.query(
         `UPDATE wallet SET nativeBalance = '${nativeBalance}' WHERE address = ${getAddress(acc.id)};`,
       );
-      console.log("account", acc);
 
       const [[walletDetails]]: any = await db.query(
         `SELECT id, name, chainId FROM wallet WHERE address = '${getAddress(acc.id)}';`,
       );
-      console.log("walletDetails", walletDetails);
 
       const walletTokensBalances: WalletTokensBalances = {
         wallet: {
@@ -245,22 +196,19 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
       };
 
       for (const bal of acc.balances) {
-        // console.log("Balance:", bal);
         const [[balanceToUpdate]]: any = await db.query(
           `SELECT * FROM balance WHERE ->(for_wallet WHERE out.address = '${getAddress(acc.id)}') AND ->(for_token WHERE out.address = '${getAddress(bal.token.id)}');`,
         );
-        // console.log("balanceToUpdate", balanceToUpdate);
         const [updatedBalance] = await db.update<Balance>(
           `${balanceToUpdate.id}`,
           {
             value: bal.amount.toString(),
           },
         );
-        // console.log("updatedBalance", updatedBalance);
 
         const formattedBalance = formatTokenBalance(
           updatedBalance.value.toString(),
-          bal.token.decimals,
+          parseInt(bal.token.decimals),
         );
 
         if (
@@ -271,15 +219,14 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
             id: bal.token.id,
             name: bal.token.name,
             symbol: bal.token.symbol,
-            decimals: bal.token.decimals,
+            decimals: parseInt(bal.token.decimals),
             balance: formattedBalance,
           });
         }
       }
 
       observedWallets.push(walletTokensBalances);
-    }
-    console.log("observedWallets", observedWallets);
+    
     return observedWallets;
   }
 });
