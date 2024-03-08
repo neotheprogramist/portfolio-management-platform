@@ -45,8 +45,8 @@ jobs:
           key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
 
       - name: Install Playwright dependencies
-        run: npm run test.e2e.setup
         if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npm run test.e2e.setup
 
       - name: Install SurrealDB CLI
         run: curl -sSf https://install.surrealdb.com | sh
@@ -65,11 +65,11 @@ jobs:
         id: app-build-cache
         with:
           path: ./dist
-          key: ${{ runner.os }}-app-build
+          key: ${{ runner.os }}-build-${{ hashFiles('**/src/**', '**/public/**', '**/package-lock.json') }}
 
       - name: Run build
-        run: npm run build
         if: steps.app-build-cache.outputs.cache-hit != 'true'
+        run: npm run build
 
       - name: Serve app production build
         uses: JarvusInnovations/background-action@v1
@@ -81,8 +81,8 @@ jobs:
         run: npm run test.e2e
 
       - name: Save results artifact
-        uses: actions/upload-artifact@v4
         if: failure()
+        uses: actions/upload-artifact@v4
         with:
           name: playwright-test-results
           path: ${{ env.PLAYWRIGHT_TEST_RESULTS_RELATIVE_PATH }}
