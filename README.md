@@ -16,6 +16,8 @@ Create `.env` (public values, used by client) and `.env.local` (secret values, u
 PUBLIC_PROJECT_ID=
 PUBLIC_METADATA_NAME=emeth
 PUBLIC_METADATA_DESCRIPTION=emeth
+
+PW_BASE_URL=
 ```
 
 ```
@@ -26,6 +28,7 @@ SURREALDB_USER=
 SURREALDB_PASS=
 SURREALDB_NS=
 SURREALDB_DB=
+
 ACCESS_TOKEN_SECRET=
 REFRESH_TOKEN_SECRET=
 ```
@@ -76,4 +79,28 @@ Serve `production` mode:
 
 ```bash
 npm run serve
+```
+
+## Test
+
+#### Setup
+
+You need to install extra dependencies (like browser drivers):
+
+```bash
+npm run test.e2e.setup
+```
+
+#### Run
+
+Run e2e scenarios:
+
+```bash
+npm run test.e2e
+```
+
+After every run you can serve report to your browser:
+
+```bash
+npm run test.e2e.report
 ```
