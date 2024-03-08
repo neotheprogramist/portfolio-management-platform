@@ -191,7 +191,7 @@ export default component$(() => {
                   <Token/>
                 </Group>
                 <Group name="Operating Costs">
-                  
+
                 </Group>
               </tbody>
             </table> */}
