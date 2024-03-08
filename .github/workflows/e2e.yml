@@ -64,7 +64,7 @@ jobs:
       - name: Run build
         run: npm run build
 
-      - name: Serve app's production build
+      - name: Serve app production build
         uses: JarvusInnovations/background-action@v1
         with:
           run: npm run serve
