@@ -21,6 +21,11 @@ const config: PlaywrightTestConfig = {
       },
     },
   ],
+  webServer: {
+    command: "npm run serve",
+    url: process.env.PW_BASE_URL,
+    reuseExistingServer: !process.env.CI,
+  },
 };
 
 export default config;

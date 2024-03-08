@@ -18,7 +18,7 @@ env:
   PUBLIC_PROJECT_ID:
   PUBLIC_METADATA_NAME:
   PUBLIC_METADATA_DESCRIPTION:
-  PW_BASE_URL:
+  PW_BASE_URL: http://localhost:3000
   SURREALDB_URL:
   SURREALDB_USER:
   SURREALDB_PASS:
@@ -76,11 +76,11 @@ jobs:
       - name: Run build
         run: npm run build
 
-      - name: Serve app production build
-        uses: JarvusInnovations/background-action@v1
-        with:
-          run: npm run serve
-          wait-on: http-get://localhost:${{ env.APP_PORT }}
+      # - name: Serve app production build
+      #   uses: JarvusInnovations/background-action@v1
+      #   with:
+      #     run: npm run serve
+      #     wait-on: http-get://localhost:${{ env.APP_PORT }}
 
       - name: Run tests
         run: npm run test.e2e
