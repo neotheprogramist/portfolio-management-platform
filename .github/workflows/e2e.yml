@@ -73,7 +73,15 @@ jobs:
       - name: Provision app database data
         run: ./scripts/database-provision.sh
 
+      - name: Cache app build
+        uses: actions/cache@v4
+        id: app-build-cache
+        with:
+          path: ./dist
+          key: ${{ runner.os }}-build-${{ hashFiles('**/src/**', '**/public/**', '**/package-lock.json') }}
+
       - name: Run build
+        if: steps.app-build-cache.outputs.cache-hit != 'true'
         run: npm run build
 
       # - name: Serve app production build
