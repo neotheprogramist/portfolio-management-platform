@@ -51,7 +51,7 @@ export default component$(() => {
                 </div>
             </div>
             <div class="p-[20px] bg-white rounded-lg flex flex-col gap-[25px] min-w-[440px]">
-                <div class="h-[32px] flex items-center justify-between gap-[5px]">
+                <div class="h-[32px] flex items-center justify-between gap-[5px] ">
                     <p class="text-base">Details</p>
                     <div class="flex gap-[5px]">
                         <Button image="/images/svg/portfolio/rebalance.svg" text="Rebalance" newClass="min-w-[116px]"/>
