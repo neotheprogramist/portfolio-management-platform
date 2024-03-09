@@ -192,7 +192,7 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
       `SELECT id, name, chainId FROM wallet WHERE address = '${getAddress(acc.id)}';`,
     );
 
-    if(!walletDetails) return [];
+    if (!walletDetails) return [];
 
     const walletTokensBalances: WalletTokensBalances = {
       wallet: {
@@ -335,8 +335,13 @@ export default component$(() => {
             <div class="mb-5">
               <p class="pb-1 text-xs text-white">Type</p>
               <div class="bg-glass border-white-opacity-20 grid grid-cols-[50%_50%] rounded p-1">
-                <button type="button" class="col-span-1 text-white">Executable</button>
-                <button type="button" class="color-gradient col-span-1 rounded p-2.5  text-white">
+                <button type="button" class="col-span-1 text-white">
+                  Executable
+                </button>
+                <button
+                  type="button"
+                  class="color-gradient col-span-1 rounded p-2.5  text-white"
+                >
                   Read-only
                 </button>
               </div>
@@ -438,4 +443,3 @@ export default component$(() => {
     </div>
   );
 });
-

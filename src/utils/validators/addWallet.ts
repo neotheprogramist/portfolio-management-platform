@@ -9,4 +9,3 @@ export function isValidAddress(address: string): boolean {
     ? address.trim() !== "" && isAddress(address)
     : true;
 }
-

@@ -58,7 +58,7 @@ export async function fetchSubgraphOneAccount(
   const {
     data: { account },
   } = await response.json();
-  console.log("account", account)
+  console.log("account", account);
 
   return AccountSchemaWithoutID.parse(account);
 }
