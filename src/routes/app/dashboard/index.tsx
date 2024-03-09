@@ -189,7 +189,7 @@ export default component$(() => {
               <TokenRow />
               <TokenRow />
             </tbody>
-          </table>
+          </table> 
         </div>
       </div>
     </div>
