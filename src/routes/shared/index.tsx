@@ -82,6 +82,5 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
     }
     observedWallets.push(walletTokensBalances);
   }
-  // console.log(observedWallets);
   return observedWallets;
 });
