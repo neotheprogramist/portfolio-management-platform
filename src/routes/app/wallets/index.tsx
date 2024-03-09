@@ -21,7 +21,11 @@ import { formatTokenBalance } from "~/utils/formatBalances/formatTokenBalance";
 import { isAddress, getAddress } from "viem";
 import ImgArrowDown from "/public/images/arrowDown.svg?jsx";
 import ImgI from "/public/images/svg/i.svg?jsx";
-import { fetchSubgraphAccountsData, fetchSubgraphOneAccount } from "~/utils/subgraph/fetch";
+import {
+  fetchSubgraphAccountsData,
+  fetchSubgraphOneAccount,
+} from "~/utils/subgraph/fetch";
+import { isValidName, isValidAddress } from "~/utils/validators/addWallet";
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
@@ -55,6 +59,7 @@ export const useAddWallet = routeAction$(
         address: data.address,
         name: data.name,
       });
+      console.log("created wallet", createWalletQueryResult);
       walletId = createWalletQueryResult.id;
       // native balance for created wallet
       const nativeBalance = await publicClient.getBalance({
@@ -70,8 +75,11 @@ export const useAddWallet = routeAction$(
         throw new Error("Missing SUBGRAPH_URL");
       }
 
-      const account_ = await fetchSubgraphOneAccount(data.address.toLowerCase(), subgraphURL);
-      
+      const account_ = await fetchSubgraphOneAccount(
+        data.address.toLowerCase(),
+        subgraphURL,
+      );
+
       account_.balances.forEach(async (bal: any) => {
         const [balance] = await db.create<Balance>("balance", {
           value: bal.amount,
@@ -81,14 +89,11 @@ export const useAddWallet = routeAction$(
           `SELECT id FROM token where address = '${getAddress(bal.token.id)}'`,
         );
 
-        await db.query(
-          `RELATE ONLY ${balance.id}->for_token->${token.id}`,
-        );
+        await db.query(`RELATE ONLY ${balance.id}->for_token->${token.id}`);
 
         await db.query(
           `RELATE ONLY ${balance.id}->for_wallet->${createWalletQueryResult.id}`,
         );
-
       });
     }
 
@@ -158,77 +163,80 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
   const [[resultAddresses]]: any = await db.query(
     `SELECT ->observes_wallet.out.address FROM ${userId};`,
   );
-  if (!resultAddresses) throw new Error("No observed wallets");
+  if (!resultAddresses) return [];
   const observedWalletsAddressesQueryResult =
-    resultAddresses["->observes_wallet"].out.addres;
-
+    resultAddresses["->observes_wallet"].out.address;
+  if (!observedWalletsAddressesQueryResult) return [];
   const subgraphURL = requestEvent.env.get("SUBGRAPH_URL");
   if (!subgraphURL) {
     throw new Error("Missing SUBGRAPH_URL");
   }
 
-  const accounts_ = await fetchSubgraphAccountsData(observedWalletsAddressesQueryResult, subgraphURL);
+  const accounts_ = await fetchSubgraphAccountsData(
+    observedWalletsAddressesQueryResult,
+    subgraphURL,
+  );
 
   const observedWallets: WalletTokensBalances[] = [];
-  if (accounts_) {
-    for (const acc of accounts_) {
-      const nativeBalance = await publicClient.getBalance({
-        address: getAddress(acc.id) as `0x${string}`,
-        blockTag: "safe",
-      });
-      await db.query(
-        `UPDATE wallet SET nativeBalance = '${nativeBalance}' WHERE address = ${getAddress(acc.id)};`,
-      );
 
-      const [[walletDetails]]: any = await db.query(
-        `SELECT id, name, chainId FROM wallet WHERE address = '${getAddress(acc.id)}';`,
-      );
+  for (const acc of accounts_) {
+    const nativeBalance = await publicClient.getBalance({
+      address: getAddress(acc.id) as `0x${string}`,
+      blockTag: "safe",
+    });
+    await db.query(
+      `UPDATE wallet SET nativeBalance = '${nativeBalance}' WHERE address = ${getAddress(acc.id)};`,
+    );
 
-      const walletTokensBalances: WalletTokensBalances = {
-        wallet: {
-          id: walletDetails.id,
-          name: walletDetails.name,
-          chainId: walletDetails.chainId,
-          address: getAddress(acc.id),
-          nativeBalance: nativeBalance,
+    const [[walletDetails]]: any = await db.query(
+      `SELECT id, name, chainId FROM wallet WHERE address = '${getAddress(acc.id)}';`,
+    );
+
+    if(!walletDetails) return [];
+
+    const walletTokensBalances: WalletTokensBalances = {
+      wallet: {
+        id: walletDetails.id,
+        name: walletDetails.name,
+        chainId: walletDetails.chainId,
+        address: getAddress(acc.id),
+        nativeBalance: nativeBalance,
+      },
+      tokens: [],
+    };
+
+    for (const bal of acc.balances) {
+      const [[balanceToUpdate]]: any = await db.query(
+        `SELECT * FROM balance WHERE ->(for_wallet WHERE out.address = '${getAddress(acc.id)}') AND ->(for_token WHERE out.address = '${getAddress(bal.token.id)}');`,
+      );
+      const [updatedBalance] = await db.update<Balance>(
+        `${balanceToUpdate.id}`,
+        {
+          value: bal.amount.toString(),
         },
-        tokens: [],
-      };
+      );
 
-      for (const bal of acc.balances) {
-        const [[balanceToUpdate]]: any = await db.query(
-          `SELECT * FROM balance WHERE ->(for_wallet WHERE out.address = '${getAddress(acc.id)}') AND ->(for_token WHERE out.address = '${getAddress(bal.token.id)}');`,
-        );
-        const [updatedBalance] = await db.update<Balance>(
-          `${balanceToUpdate.id}`,
-          {
-            value: bal.amount.toString(),
-          },
-        );
+      const formattedBalance = formatTokenBalance(
+        updatedBalance.value.toString(),
+        parseInt(bal.token.decimals),
+      );
 
-        const formattedBalance = formatTokenBalance(
-          updatedBalance.value.toString(),
-          parseInt(bal.token.decimals),
-        );
-
-        if (
-          BigInt(updatedBalance.value) !== BigInt(0) &&
-          formattedBalance !== "0.000"
-        ) {
-          walletTokensBalances.tokens.push({
-            id: bal.token.id,
-            name: bal.token.name,
-            symbol: bal.token.symbol,
-            decimals: parseInt(bal.token.decimals),
-            balance: formattedBalance,
-          });
-        }
+      if (
+        BigInt(updatedBalance.value) !== BigInt(0) &&
+        formattedBalance !== "0.000"
+      ) {
+        walletTokensBalances.tokens.push({
+          id: bal.token.id,
+          name: bal.token.name,
+          symbol: bal.token.symbol,
+          decimals: parseInt(bal.token.decimals),
+          balance: formattedBalance,
+        });
       }
-
-      observedWallets.push(walletTokensBalances);
-    
-    return observedWallets;
+    }
+    observedWallets.push(walletTokensBalances);
   }
+  return observedWallets;
 });
 
 export default component$(() => {
@@ -266,15 +274,14 @@ export default component$(() => {
         </div>
 
         <div class="flex flex-col">
-          {observedWallets.value &&
-            observedWallets.value.map((observedWallet) => (
-              <ObservedWallet
-                key={observedWallet.wallet.address}
-                observedWallet={observedWallet}
-                selectedWallet={selectedWallet}
-                chainIdToNetworkName={chainIdToNetworkName}
-              />
-            ))}
+          {observedWallets.value.map((observedWallet) => (
+            <ObservedWallet
+              key={observedWallet.wallet.address}
+              observedWallet={observedWallet}
+              selectedWallet={selectedWallet}
+              chainIdToNetworkName={chainIdToNetworkName}
+            />
+          ))}
         </div>
       </div>
 
@@ -309,12 +316,18 @@ export default component$(() => {
         )}
       </div>
       {isAddWalletModalOpen.value && (
-        <Modal isOpen={isAddWalletModalOpen} title="Add Wallet">
+        <Modal
+          isOpen={isAddWalletModalOpen}
+          formStore={addWalletFormStore}
+          title="Add Wallet"
+        >
           <Form
             action={addWalletAction}
             onSubmitCompleted$={() => {
               if (addWalletAction.value?.success) {
                 isAddWalletModalOpen.value = false;
+                addWalletFormStore.address = "";
+                addWalletFormStore.name = "";
               }
             }}
             class="p-5"
@@ -322,10 +335,10 @@ export default component$(() => {
             <div class="mb-5">
               <p class="pb-1 text-xs text-white">Type</p>
               <div class="bg-glass border-white-opacity-20 grid grid-cols-[50%_50%] rounded p-1">
-                <button class="color-gradient col-span-1 rounded p-2.5 text-white">
-                  Executable
+                <button type="button" class="col-span-1 text-white">Executable</button>
+                <button type="button" class="color-gradient col-span-1 rounded p-2.5  text-white">
+                  Read-only
                 </button>
-                <button class="col-span-1 text-white">Read-only</button>
               </div>
             </div>
             <label for="name" class="flex gap-2 pb-1 text-xs text-white">
@@ -376,14 +389,16 @@ export default component$(() => {
               //   addWalletFormStore.address = target.value;
               // }}
               placeholder="Select network"
+              disabled={true}
             />
             <button
               type="reset"
               class="border-buttons absolute bottom-5 right-36 rounded-3xl p-3 font-normal text-white"
-              disabled={
-                !isValidName(addWalletFormStore.name) ||
-                !isValidAddress(addWalletFormStore.address)
-              }
+              onClick$={() => {
+                isAddWalletModalOpen.value = false;
+                addWalletFormStore.address = "";
+                addWalletFormStore.name = "";
+              }}
             >
               Cancel
             </button>
@@ -391,6 +406,8 @@ export default component$(() => {
               type="submit"
               class="color-gradient absolute bottom-5 right-4 rounded-3xl p-0.5 font-normal text-white"
               disabled={
+                addWalletFormStore.name === "" ||
+                addWalletFormStore.address === "" ||
                 !isValidName(addWalletFormStore.name) ||
                 !isValidAddress(addWalletFormStore.address)
               }
@@ -422,12 +439,3 @@ export default component$(() => {
   );
 });
 
-function isValidName(name: string): boolean {
-  return name.length > 0 ? name.trim().length > 3 : true;
-}
-
-function isValidAddress(address: string): boolean {
-  return address.length > 0
-    ? address.trim() !== "" && isAddress(address)
-    : true;
-}
