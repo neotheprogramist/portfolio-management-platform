@@ -19,7 +19,7 @@ export const SelectedWalletDetails = component$<SelectedWalletProps>(
       selectedWallet.value.wallet.nativeBalance,
     );
     return (
-      <div class="text-white grid grid-rows-[64px_1fr] overflow-auto gap-4">
+      <div class="text-white grid grid-rows-[64px_1fr] gap-4 overflow-auto">
         <div class="flex w-full items-center justify-between rounded row-span-1 row-start-1">
           <div class="">
             <h1 class="font-semibold text-xl">{selectedWallet.value.wallet.name}</h1>
@@ -68,6 +68,11 @@ export const SelectedWalletDetails = component$<SelectedWalletProps>(
               </tr>
             </thead>
             <tbody class="overflow-auto">
+              <TokenRowWallets/>
+              <TokenRowWallets/>
+              <TokenRowWallets/>
+              <TokenRowWallets/>
+              <TokenRowWallets/>
               <TokenRowWallets/>
               <TokenRowWallets/>
               <TokenRowWallets/>

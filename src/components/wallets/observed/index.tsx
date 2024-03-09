@@ -13,7 +13,7 @@ export const ObservedWallet = component$<ObservedWalletProps>(
   ({ observedWallet, selectedWallet, chainIdToNetworkName }) => {
     return (
       <div
-        class=" cursor-pointer flex items-center justify-between border-b border-white border-opacity-20 py-4"
+        class="cursor-pointer flex items-center justify-between border-b border-white border-opacity-20 py-4"
         onClick$={() => {
           selectedWallet.value = observedWallet;
         }}
