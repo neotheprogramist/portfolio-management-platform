@@ -9,7 +9,6 @@ import {
 import { connectToDB } from "~/utils/db";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { Modal } from "~/components/modal";
-import { isAddress } from "viem";
 import { CreatedStructure } from "~/components/structures/created";
 import { Structure, StructureBalance } from "~/interface/structure/Structure";
 import { SelectedStructureDetails } from "~/components/structures/details";
@@ -207,7 +206,7 @@ export default component$(() => {
                       (observedWallet) =>
                         observedWallet.wallet.id === option.value,
                     );
-                    return wallet || null;
+                    return wallet as WalletTokensBalances ;
                   },
                 ).filter(Boolean);
               }}

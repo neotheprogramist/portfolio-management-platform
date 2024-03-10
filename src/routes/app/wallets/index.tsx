@@ -4,7 +4,6 @@ import {
   routeAction$,
   zod$,
   z,
-  routeLoader$,
 } from "@builder.io/qwik-city";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 import { publicClient } from "~/abi/abi";
@@ -19,8 +18,6 @@ import { type WalletTokensBalances } from "~/interface/walletsTokensBalances/wal
 import { isAddress } from "viem";
 // import ImgSearch from "/public/images/svg/search.svg?jsx";
 // import ImgSearch from "../../../../../public/images/svg/search.svg?jsx";
-import { formatTokenBalance } from "~/utils/formatBalances/formatTokenBalance";
-import { isAddress, getAddress } from "viem";
 import ImgArrowDown from "/public/images/arrowDown.svg?jsx";
 import ImgI from "/public/images/svg/i.svg?jsx";
 import { useObservedWallets } from "~/routes/shared";
