@@ -7,7 +7,6 @@ import {
   routeLoader$,
 } from "@builder.io/qwik-city";
 import jwt, { type JwtPayload } from "jsonwebtoken";
-import { type RawQueryResult } from "surrealdb.js/script/types";
 import { publicClient } from "~/abi/abi";
 import { type Wallet } from "~/interface/auth/Wallet";
 import { connectToDB } from "~/utils/db";
@@ -26,6 +25,20 @@ import {
   fetchSubgraphOneAccount,
 } from "~/utils/subgraph/fetch";
 import { isValidName, isValidAddress } from "~/utils/validators/addWallet";
+import {
+  getUsersObservingWallet,
+  walletExists,
+} from "~/interface/wallets/removeWallet";
+import {
+  getExistingRelation,
+  getExistingWallet,
+  getTokenByAddress,
+} from "~/interface/wallets/addWallet";
+import {
+  getBalanceToUpdate,
+  getResultAddresses,
+  getWalletDetails,
+} from "~/interface/wallets/observedWallets";
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
@@ -40,20 +53,16 @@ export const useAddWallet = routeAction$(
     }
     const { userId } = jwt.decode(cookie.value) as JwtPayload;
 
-    const existingWallet = await db.query(
-      `SELECT * FROM wallet WHERE address = type::string($addr);`,
-      { addr: data.address },
-    );
+    const existingWallet = await getExistingWallet(db, data.address);
+    console.log("existingWallet", existingWallet);
 
     let walletId;
-    if (
-      existingWallet[0] &&
-      Array.isArray(existingWallet[0]) &&
-      existingWallet[0][0]
-    ) {
-      const wallet = existingWallet[0][0] as Wallet;
-      walletId = wallet.id;
+    if (existingWallet.at(0)) {
+      console.log("wallet exists");
+
+      walletId = existingWallet[0].id;
     } else {
+      console.log("wallet does not exist");
       const [createWalletQueryResult] = await db.create<Wallet>("wallet", {
         chainId: 1,
         address: data.address,
@@ -85,9 +94,7 @@ export const useAddWallet = routeAction$(
           value: bal.amount,
         });
 
-        const [[token]]: any = await db.query(
-          `SELECT id FROM token where address = '${getAddress(bal.token.id)}'`,
-        );
+        const [token] = await getTokenByAddress(db, bal.token.id);
 
         await db.query(`RELATE ONLY ${balance.id}->for_token->${token.id}`);
 
@@ -97,11 +104,7 @@ export const useAddWallet = routeAction$(
       });
     }
 
-    const [existingRelation] = await db.query(
-      `SELECT * FROM ${userId}->observes_wallet WHERE out = ${walletId};`,
-    );
-
-    if ((existingRelation as RawQueryResult[]).length === 0) {
+    if (!(await getExistingRelation(db, userId, walletId)).at(0)) {
       await db.query(`RELATE ONLY ${userId}->observes_wallet->${walletId};`);
     }
 
@@ -127,18 +130,14 @@ export const useRemoveWallet = routeAction$(
       throw new Error("No cookie found");
     }
 
-    const walletToRemove = await db.select<Wallet>(`${wallet.id}`);
-
-    if (!walletToRemove[0]) {
-      return { success: false, error: "Wallet does not exist" };
+    if (!(await walletExists(db, wallet.id))) {
+      throw new Error("Wallet does not exist");
     }
 
     const { userId } = jwt.decode(cookie.value) as JwtPayload;
     await db.query(`DELETE ${userId}->observes_wallet WHERE out=${wallet.id};`);
 
-    const [[usersObservingWallet]]: any = await db.query(
-      `SELECT <-observes_wallet.in FROM ${wallet.id};`,
-    );
+    const [usersObservingWallet] = await getUsersObservingWallet(db, wallet.id);
 
     if (!usersObservingWallet["<-observes_wallet"].in.length) {
       await db.delete(`${wallet.id}`);
@@ -160,13 +159,13 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
   }
   const { userId } = jwt.decode(cookie.value) as JwtPayload;
 
-  const [[resultAddresses]]: any = await db.query(
-    `SELECT ->observes_wallet.out.address FROM ${userId};`,
-  );
-  if (!resultAddresses) return [];
+  const resultAddresses = await getResultAddresses(db, userId);
+  if (!resultAddresses[0]["->observes_wallet"].out.address.length) {
+    return [];
+  }
   const observedWalletsAddressesQueryResult =
-    resultAddresses["->observes_wallet"].out.address;
-  if (!observedWalletsAddressesQueryResult) return [];
+    resultAddresses[0]["->observes_wallet"].out.address;
+
   const subgraphURL = requestEvent.env.get("SUBGRAPH_URL");
   if (!subgraphURL) {
     throw new Error("Missing SUBGRAPH_URL");
@@ -188,37 +187,36 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
       `UPDATE wallet SET nativeBalance = '${nativeBalance}' WHERE address = ${getAddress(acc.id)};`,
     );
 
-    const [[walletDetails]]: any = await db.query(
-      `SELECT id, name, chainId FROM wallet WHERE address = '${getAddress(acc.id)}';`,
-    );
-
-    if (!walletDetails) return [];
+    const walletDetails = await getWalletDetails(db, acc.id);
+    if (!walletDetails.at(0)) return [];
 
     const walletTokensBalances: WalletTokensBalances = {
       wallet: {
-        id: walletDetails.id,
-        name: walletDetails.name,
-        chainId: walletDetails.chainId,
+        id: walletDetails[0].id,
+        name: walletDetails[0].name,
+        chainId: walletDetails[0].chainId,
         address: getAddress(acc.id),
         nativeBalance: nativeBalance,
       },
       tokens: [],
     };
 
-    for (const bal of acc.balances) {
-      const [[balanceToUpdate]]: any = await db.query(
-        `SELECT * FROM balance WHERE ->(for_wallet WHERE out.address = '${getAddress(acc.id)}') AND ->(for_token WHERE out.address = '${getAddress(bal.token.id)}');`,
+    for (const balance of acc.balances) {
+      const balanceToUpdate = await getBalanceToUpdate(
+        db,
+        acc.id,
+        balance.token.id,
       );
       const [updatedBalance] = await db.update<Balance>(
-        `${balanceToUpdate.id}`,
+        `${balanceToUpdate[0].id}`,
         {
-          value: bal.amount.toString(),
+          value: balance.amount.toString(),
         },
       );
 
       const formattedBalance = formatTokenBalance(
         updatedBalance.value.toString(),
-        parseInt(bal.token.decimals),
+        parseInt(balance.token.decimals),
       );
 
       if (
@@ -226,10 +224,10 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
         formattedBalance !== "0.000"
       ) {
         walletTokensBalances.tokens.push({
-          id: bal.token.id,
-          name: bal.token.name,
-          symbol: bal.token.symbol,
-          decimals: parseInt(bal.token.decimals),
+          id: balance.token.id,
+          name: balance.token.name,
+          symbol: balance.token.symbol,
+          decimals: parseInt(balance.token.decimals),
           balance: formattedBalance,
         });
       }

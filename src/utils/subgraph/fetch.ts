@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-// Definicja schematów
 const TokenSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -15,7 +14,7 @@ const BalanceSchema = z.object({
 });
 
 const AccountSchemaWithID = z.object({
-  id: z.string(), // id jest wymagane
+  id: z.string(),
   balances: z.array(BalanceSchema),
 });
 
