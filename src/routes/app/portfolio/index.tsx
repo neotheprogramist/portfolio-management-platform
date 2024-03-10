@@ -14,7 +14,12 @@ import { CreatedStructure } from "~/components/structures/created";
 import { Structure, StructureBalance } from "~/interface/structure/Structure";
 import { SelectedStructureDetails } from "~/components/structures/details";
 import { useObservedWallets } from "~/routes/shared";
-import {TokenWithBalance, WalletTokensBalances} from "~/interface/walletsTokensBalances/walletsTokensBalances";
+import {
+  TokenWithBalance,
+  WalletTokensBalances,
+} from "~/interface/walletsTokensBalances/walletsTokensBalances";
+import { Token } from "~/interface/token/Token";
+import { formatTokenBalance } from "~/utils/formatBalances/formatTokenBalance";
 export { useObservedWallets } from "~/routes/shared";
 
 type StructureStore = { name: string; walletsId: string[]; tokensId: number[] };
@@ -36,19 +41,45 @@ export const useAvailableStructures = routeLoader$(async (requestEvent) => {
 
   for (const createdStructure of createdStructureQueryResult) {
     const [structure] = await db.select<Structure>(`${createdStructure}`);
+    const structureTokens: any = [];
+    console.log(structure.id);
+    const [structureBalances]: any = await db.query(`
+    SELECT ->structure_balance.out FROM ${structure.id}`);
+    //   console.log(structureBalances[0]['->structure_balance'].out)
+    // console.log('-------------------------------------')
+
+    for (const balance of structureBalances[0]["->structure_balance"].out) {
+      const [tokenBalance]: any = await db.query(`
+    SELECT * FROM balance WHERE id=${balance}`);
+
+      const [tokenId]: any = await db.query(`
+    SELECT ->for_token.out FROM ${balance}`);
+      console.log(tokenId[0]["->for_token"].out[0]);
+
+      const [token]: any = await db.query(
+        `SELECT * FROM ${tokenId[0]["->for_token"].out[0]}`,
+      );
+
+      const tokenWithBalance: TokenWithBalance = {
+        id: token[0].id,
+        name: token[0].name,
+        symbol: token[0].symbol,
+        decimals: token[0].decimals,
+        balance: tokenBalance[0].value,
+      };
+
+      structureTokens.push(tokenWithBalance);
+    }
 
     availableStructures.push({
       structure: {
         id: structure.id,
         name: structure.name,
       },
+      tokens: structureTokens,
     });
   }
-  const groupDetails = await db.query(`
-    SELECT * FROM has_structure`);
-
-  // console.log("-----------------------------");
-  // console.log(groupDetails);
+  // console.log(availableStructures[0].tokens);
   return availableStructures;
 });
 export const useCreateStructure = routeAction$(
@@ -60,21 +91,25 @@ export const useCreateStructure = routeAction$(
     const { userId } = jwt.decode(cookie.value) as JwtPayload;
 
     const db = await connectToDB(requestEvent.env);
-    // const structure = await db.create("structure", {
-    //   name: data.name,
-    // });
+    const structure = await db.create("structure", {
+      name: data.name,
+    });
 
-    console.log("data");
-    console.log(data);
+    await db.query(`
+    relate only ${userId}-> has_structure -> ${structure[0].id}`);
 
-    // await db.query(`
-    // relate only ${userId}-> has_structure -> ${structure[0].id}`);
-    //
-    // await db.query(`
-    // relate only ${structure[0].id}-> in_structure -> ${data.walletsId}`);
+    for (const walletId of data.walletsId) {
+      await db.query(`
+      relate only ${structure[0].id}-> in_structure -> ${walletId}`);
 
-    // await db.query(`
-    // relate only ${data.tokensId[0].id}-> structure_balance -> ${structure[0].id}`);
+      for (const tokenId of data.tokensId) {
+        const [[balance]]: any = await db.query(
+          `SELECT id FROM balance WHERE ->(for_wallet WHERE out = '${walletId}') AND ->(for_token WHERE out = '${tokenId}')`,
+        );
+        await db.query(`
+    relate only ${structure[0].id}-> structure_balance -> ${balance.id}`);
+      }
+    }
 
     return {
       success: true,
@@ -84,7 +119,7 @@ export const useCreateStructure = routeAction$(
   zod$({
     name: z.string(),
     walletsId: z.array(z.string()),
-    tokensId: z.array(z.number())
+    tokensId: z.array(z.string()),
   }),
 );
 
@@ -93,8 +128,8 @@ export default component$(() => {
   const isCreateNewStructureModalOpen = useSignal(false);
   const createStructureAction = useCreateStructure();
   const observedWallets = useObservedWallets();
-  const structureStore = useStore( {name: '' });
-  const selectedWallets = useStore({ wallets: [] as WalletTokensBalances[]});
+  const structureStore = useStore({ name: "" });
+  const selectedWallets = useStore({ wallets: [] as WalletTokensBalances[] });
   const selectedStructure = useSignal<StructureBalance | null>(null);
   const isDeleteModalOpen = useSignal(false);
 
@@ -163,7 +198,7 @@ export default component$(() => {
               }}
             />
             {!isValidName(structureStore.name) && (
-                <p class="mb-4 text-red-500">Invalid name</p>
+              <p class="mb-4 text-red-500">Invalid name</p>
             )}
             <label for="walletsId" class="block">
               Wallet
@@ -183,9 +218,7 @@ export default component$(() => {
                     return wallet || null;
                   },
                 ).filter(Boolean);
-                console.log(selectedWallets)
-              }
-            }
+              }}
             >
               <option disabled={true}>Select Wallets</option>
               {observedWallets.value.map((option) => (
@@ -199,11 +232,11 @@ export default component$(() => {
             </label>
             <select name="tokensId[]" multiple>
               <option disabled={true}>Select Tokens</option>
-                {populateTokens(selectedWallets.wallets).map((token) => (
-                            <option key={token.id} value={token.id}>
-                              {token.name}
-                            </option>
-                ))}
+              {populateTokens(selectedWallets.wallets).map((token) => (
+                <option key={token.id} value={token.id}>
+                  {token.name}
+                </option>
+              ))}
             </select>
             <button
               type="submit"
@@ -229,7 +262,9 @@ function isValidAddress(address: string): boolean {
     : true;
 }
 
-function populateTokens(selectedWallets: WalletTokensBalances[]): TokenWithBalance[] {
+function populateTokens(
+  selectedWallets: WalletTokensBalances[],
+): TokenWithBalance[] {
   const selectedTokens: TokenWithBalance[] = [];
 
   selectedWallets.forEach((selectedWallet) => {

@@ -1,9 +1,39 @@
-import { type Signal, component$ } from "@builder.io/qwik";
+import { type Signal, component$, JSXOutput } from "@builder.io/qwik";
 import { StructureBalance } from "~/interface/structure/Structure";
+import { TokenWithBalance } from "~/interface/walletsTokensBalances/walletsTokensBalances";
 
 interface createdStructuresProps {
   createdStructure: StructureBalance;
   selectedStructure: Signal<StructureBalance | null>;
+}
+
+function aggregateTokenBalances(createdStructure: StructureBalance) {
+  const aggregatedTokens: { [tokenId: string]: TokenWithBalance } = {};
+
+  createdStructure.tokens.forEach((token) => {
+    const tokenId = token.id;
+
+    if (aggregatedTokens[tokenId]) {
+      aggregatedTokens[tokenId].balance = (
+        BigInt(aggregatedTokens[tokenId].balance) + BigInt(token.balance)
+      ).toString();
+    } else {
+      aggregatedTokens[tokenId] = {
+        id: tokenId,
+        name: token.name,
+        symbol: token.symbol,
+        decimals: token.decimals,
+        balance: token.balance,
+      };
+    }
+  });
+
+  const result: TokenWithBalance[] = Object.values(aggregatedTokens);
+  console.log(result);
+
+  return result.map((token) => (
+    <div class="text-lg font-bold">{`${token.symbol} - ${token.balance}`}</div>
+  ));
 }
 
 export const CreatedStructure = component$<createdStructuresProps>(
@@ -16,6 +46,7 @@ export const CreatedStructure = component$<createdStructuresProps>(
         }}
       >
         <div class="text-lg font-bold">{createdStructure.structure.name}</div>
+        {aggregateTokenBalances(createdStructure)}
       </div>
     );
   },
