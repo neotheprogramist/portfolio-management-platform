@@ -1,6 +1,5 @@
 import { type Signal, component$ } from "@builder.io/qwik";
 import { type WalletTokensBalances } from "~/interface/walletsTokensBalances/walletsTokensBalances";
-import { formatNativeBalance } from "~/utils/formatBalances/formatNativeBalance";
 import ImgDelete from "/public/images/svg/delete.svg?jsx";
 import ImgIcon from "/public/images/svg/ethereum.svg?jsx";
 import ImgWallet from "/public/images/svg/walletIcon.svg?jsx";
@@ -15,9 +14,6 @@ interface SelectedWalletProps {
 export const SelectedWalletDetails = component$<SelectedWalletProps>(
   ({ selectedWallet, chainIdToNetworkName, isDeleteModalopen }) => {
     if (!selectedWallet.value) return <></>;
-    const formattedNativeBalance = formatNativeBalance(
-      selectedWallet.value.wallet.nativeBalance,
-    );
     return (
       <div class="grid grid-rows-[64px_1fr] gap-4 overflow-auto text-white">
         <div class="row-span-1 row-start-1 flex w-full items-center justify-between rounded">
