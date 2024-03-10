@@ -7,7 +7,7 @@ interface createdStructuresProps {
   selectedStructure: Signal<StructureBalance | null>;
 }
 
-function aggregateTokenBalances(createdStructure: StructureBalance) {
+function aggregateTokenBalances(createdStructure: StructureBalance): JSXOutput[] {
   const aggregatedTokens: { [tokenId: string]: TokenWithBalance } = {};
 
   createdStructure.tokens.forEach((token) => {
