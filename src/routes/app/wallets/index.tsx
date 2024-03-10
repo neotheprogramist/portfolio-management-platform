@@ -26,6 +26,10 @@ import {
   fetchSubgraphOneAccount,
 } from "~/utils/subgraph/fetch";
 import { isValidName, isValidAddress } from "~/utils/validators/addWallet";
+import {
+  getUsersObservingWallet,
+  walletExists,
+} from "~/interface/wallets/removeWallet";
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
@@ -44,6 +48,7 @@ export const useAddWallet = routeAction$(
       `SELECT * FROM wallet WHERE address = type::string($addr);`,
       { addr: data.address },
     );
+    console.log("existingWallet", existingWallet);
 
     let walletId;
     if (
@@ -127,18 +132,14 @@ export const useRemoveWallet = routeAction$(
       throw new Error("No cookie found");
     }
 
-    const walletToRemove = await db.select<Wallet>(`${wallet.id}`);
-
-    if (!walletToRemove[0]) {
-      return { success: false, error: "Wallet does not exist" };
+    if (!(await walletExists(db, wallet.id))) {
+      throw new Error("Wallet does not exist");
     }
 
     const { userId } = jwt.decode(cookie.value) as JwtPayload;
     await db.query(`DELETE ${userId}->observes_wallet WHERE out=${wallet.id};`);
 
-    const [[usersObservingWallet]]: any = await db.query(
-      `SELECT <-observes_wallet.in FROM ${wallet.id};`,
-    );
+    const [usersObservingWallet] = await getUsersObservingWallet(db, wallet.id);
 
     if (!usersObservingWallet["<-observes_wallet"].in.length) {
       await db.delete(`${wallet.id}`);
