@@ -30,6 +30,11 @@ import {
   getUsersObservingWallet,
   walletExists,
 } from "~/interface/wallets/removeWallet";
+import {
+  getExistingRelation,
+  getExistingWallet,
+  getTokenByAddress,
+} from "~/interface/wallets/addWallet";
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
@@ -44,21 +49,16 @@ export const useAddWallet = routeAction$(
     }
     const { userId } = jwt.decode(cookie.value) as JwtPayload;
 
-    const existingWallet = await db.query(
-      `SELECT * FROM wallet WHERE address = type::string($addr);`,
-      { addr: data.address },
-    );
+    const existingWallet = await getExistingWallet(db, data.address);
     console.log("existingWallet", existingWallet);
 
     let walletId;
-    if (
-      existingWallet[0] &&
-      Array.isArray(existingWallet[0]) &&
-      existingWallet[0][0]
-    ) {
-      const wallet = existingWallet[0][0] as Wallet;
-      walletId = wallet.id;
+    if (existingWallet.at(0)) {
+      console.log("wallet exists");
+
+      walletId = existingWallet[0].id;
     } else {
+      console.log("wallet does not exist");
       const [createWalletQueryResult] = await db.create<Wallet>("wallet", {
         chainId: 1,
         address: data.address,
@@ -90,9 +90,7 @@ export const useAddWallet = routeAction$(
           value: bal.amount,
         });
 
-        const [[token]]: any = await db.query(
-          `SELECT id FROM token where address = '${getAddress(bal.token.id)}'`,
-        );
+        const [token] = await getTokenByAddress(db, bal.token.id);
 
         await db.query(`RELATE ONLY ${balance.id}->for_token->${token.id}`);
 
@@ -102,11 +100,7 @@ export const useAddWallet = routeAction$(
       });
     }
 
-    const [existingRelation] = await db.query(
-      `SELECT * FROM ${userId}->observes_wallet WHERE out = ${walletId};`,
-    );
-
-    if ((existingRelation as RawQueryResult[]).length === 0) {
+    if (!(await getExistingRelation(db, userId, walletId)).at(0)) {
       await db.query(`RELATE ONLY ${userId}->observes_wallet->${walletId};`);
     }
 

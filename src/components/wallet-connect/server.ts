@@ -27,19 +27,15 @@ export const verifyMessageServer = server$(async function (
   console.log("after connectToDB");
 
   const siweMessage = new SiweMessage(message);
-
-  console.log("before verify");
+  await deleteExpiredNonces(db);
+  const nonce = await getNonce(db, siweMessage.nonce);
+  if(!nonce.at(0)) throw new Error("Nonce not found");
   const verifiedSiweMessage = await siweMessage.verify({ signature });
-  console.log("after verify");
   if (!verifiedSiweMessage.success) {
     throw Error("Invalid signature");
   }
 
   const { address, chainId } = verifiedSiweMessage.data;
-  const deletedNonces = await deleteExpiredNonces(db);
-  console.log("Deleted nonces", deletedNonces);
-  const nonce = await getNonce(db, verifiedSiweMessage.data.nonce);
-  console.log("Nonce", nonce);
   const userId = await createUserIfNotExists(db, address);
   console.log("User ID", userId);
 
