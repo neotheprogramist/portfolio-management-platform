@@ -18,11 +18,8 @@ import {
   TokenWithBalance,
   WalletTokensBalances,
 } from "~/interface/walletsTokensBalances/walletsTokensBalances";
-import { Token } from "~/interface/token/Token";
-import { formatTokenBalance } from "~/utils/formatBalances/formatTokenBalance";
 export { useObservedWallets } from "~/routes/shared";
 
-type StructureStore = { name: string; walletsId: string[]; tokensId: number[] };
 
 export const useAvailableStructures = routeLoader$(async (requestEvent) => {
   const db = await connectToDB(requestEvent.env);
@@ -42,11 +39,8 @@ export const useAvailableStructures = routeLoader$(async (requestEvent) => {
   for (const createdStructure of createdStructureQueryResult) {
     const [structure] = await db.select<Structure>(`${createdStructure}`);
     const structureTokens: any = [];
-    console.log(structure.id);
     const [structureBalances]: any = await db.query(`
     SELECT ->structure_balance.out FROM ${structure.id}`);
-    //   console.log(structureBalances[0]['->structure_balance'].out)
-    // console.log('-------------------------------------')
 
     for (const balance of structureBalances[0]["->structure_balance"].out) {
       const [tokenBalance]: any = await db.query(`
@@ -54,7 +48,6 @@ export const useAvailableStructures = routeLoader$(async (requestEvent) => {
 
       const [tokenId]: any = await db.query(`
     SELECT ->for_token.out FROM ${balance}`);
-      console.log(tokenId[0]["->for_token"].out[0]);
 
       const [token]: any = await db.query(
         `SELECT * FROM ${tokenId[0]["->for_token"].out[0]}`,
@@ -79,7 +72,6 @@ export const useAvailableStructures = routeLoader$(async (requestEvent) => {
       tokens: structureTokens,
     });
   }
-  // console.log(availableStructures[0].tokens);
   return availableStructures;
 });
 export const useCreateStructure = routeAction$(
@@ -242,7 +234,6 @@ export default component$(() => {
               type="submit"
               class="absolute bottom-4 right-4"
               disabled={!isValidName(structureStore.name)}
-              onClick$={() => console.log(selectedWallets)}
             >
               Create structure
             </button>

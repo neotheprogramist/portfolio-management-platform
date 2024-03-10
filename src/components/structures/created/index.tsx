@@ -29,7 +29,6 @@ function aggregateTokenBalances(createdStructure: StructureBalance) {
   });
 
   const result: TokenWithBalance[] = Object.values(aggregatedTokens);
-  console.log(result);
 
   return result.map((token) => (
     <div class="text-lg font-bold">{`${token.symbol} - ${token.balance}`}</div>
