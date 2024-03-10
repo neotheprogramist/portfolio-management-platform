@@ -35,6 +35,7 @@ import {
   getExistingWallet,
   getTokenByAddress,
 } from "~/interface/wallets/addWallet";
+import { getBalanceToUpdate, getResultAddresses, getWalletDetails } from "~/interface/wallets/observedWallets";
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
@@ -155,13 +156,13 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
   }
   const { userId } = jwt.decode(cookie.value) as JwtPayload;
 
-  const [[resultAddresses]]: any = await db.query(
-    `SELECT ->observes_wallet.out.address FROM ${userId};`,
-  );
-  if (!resultAddresses) return [];
+  const resultAddresses = await getResultAddresses(db, userId);
+  if (!resultAddresses[0]["->observes_wallet"].out.address.length) {
+    return [];
+  }
   const observedWalletsAddressesQueryResult =
-    resultAddresses["->observes_wallet"].out.address;
-  if (!observedWalletsAddressesQueryResult) return [];
+    resultAddresses[0]["->observes_wallet"].out.address;
+
   const subgraphURL = requestEvent.env.get("SUBGRAPH_URL");
   if (!subgraphURL) {
     throw new Error("Missing SUBGRAPH_URL");
@@ -183,37 +184,32 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
       `UPDATE wallet SET nativeBalance = '${nativeBalance}' WHERE address = ${getAddress(acc.id)};`,
     );
 
-    const [[walletDetails]]: any = await db.query(
-      `SELECT id, name, chainId FROM wallet WHERE address = '${getAddress(acc.id)}';`,
-    );
-
-    if (!walletDetails) return [];
+    const walletDetails = await getWalletDetails(db, acc.id);
+    if (!walletDetails.at(0)) return [];
 
     const walletTokensBalances: WalletTokensBalances = {
       wallet: {
-        id: walletDetails.id,
-        name: walletDetails.name,
-        chainId: walletDetails.chainId,
+        id: walletDetails[0].id,
+        name: walletDetails[0].name,
+        chainId: walletDetails[0].chainId,
         address: getAddress(acc.id),
         nativeBalance: nativeBalance,
       },
       tokens: [],
     };
 
-    for (const bal of acc.balances) {
-      const [[balanceToUpdate]]: any = await db.query(
-        `SELECT * FROM balance WHERE ->(for_wallet WHERE out.address = '${getAddress(acc.id)}') AND ->(for_token WHERE out.address = '${getAddress(bal.token.id)}');`,
-      );
+    for (const balance of acc.balances) {
+      const balanceToUpdate = await getBalanceToUpdate(db, acc.id, balance.token.id);
       const [updatedBalance] = await db.update<Balance>(
-        `${balanceToUpdate.id}`,
+        `${balanceToUpdate[0].id}`,
         {
-          value: bal.amount.toString(),
+          value: balance.amount.toString(),
         },
       );
 
       const formattedBalance = formatTokenBalance(
         updatedBalance.value.toString(),
-        parseInt(bal.token.decimals),
+        parseInt(balance.token.decimals),
       );
 
       if (
@@ -221,10 +217,10 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
         formattedBalance !== "0.000"
       ) {
         walletTokensBalances.tokens.push({
-          id: bal.token.id,
-          name: bal.token.name,
-          symbol: bal.token.symbol,
-          decimals: parseInt(bal.token.decimals),
+          id: balance.token.id,
+          name: balance.token.name,
+          symbol: balance.token.symbol,
+          decimals: parseInt(balance.token.decimals),
           balance: formattedBalance,
         });
       }
