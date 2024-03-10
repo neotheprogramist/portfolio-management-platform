@@ -1,6 +1,4 @@
-import {
-  routeLoader$,
-} from "@builder.io/qwik-city";
+import { routeLoader$ } from "@builder.io/qwik-city";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 import { publicClient } from "~/abi/abi";
 import { connectToDB } from "~/utils/db";
@@ -8,9 +6,7 @@ import { type Balance } from "~/interface/balance/Balance";
 import { type WalletTokensBalances } from "~/interface/walletsTokensBalances/walletsTokensBalances";
 import { formatTokenBalance } from "~/utils/formatBalances/formatTokenBalance";
 import { getAddress } from "viem";
-import {
-  fetchSubgraphAccountsData,
-} from "~/utils/subgraph/fetch";
+import { fetchSubgraphAccountsData } from "~/utils/subgraph/fetch";
 import {
   getBalanceToUpdate,
   getResultAddresses,

@@ -19,7 +19,6 @@ import {
 } from "~/interface/walletsTokensBalances/walletsTokensBalances";
 export { useObservedWallets } from "~/routes/shared";
 
-
 export const useAvailableStructures = routeLoader$(async (requestEvent) => {
   const db = await connectToDB(requestEvent.env);
   const cookie = requestEvent.cookie.get("accessToken");
@@ -206,7 +205,7 @@ export default component$(() => {
                       (observedWallet) =>
                         observedWallet.wallet.id === option.value,
                     );
-                    return wallet as WalletTokensBalances ;
+                    return wallet as WalletTokensBalances;
                   },
                 ).filter(Boolean);
               }}
@@ -245,7 +244,6 @@ export default component$(() => {
 function isValidName(name: string): boolean {
   return name.length > 0 ? name.trim().length > 3 : true;
 }
-
 
 function populateTokens(
   selectedWallets: WalletTokensBalances[],
