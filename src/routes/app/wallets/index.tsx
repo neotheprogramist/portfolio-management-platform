@@ -7,7 +7,6 @@ import {
   routeLoader$,
 } from "@builder.io/qwik-city";
 import jwt, { type JwtPayload } from "jsonwebtoken";
-import { type RawQueryResult } from "surrealdb.js/script/types";
 import { publicClient } from "~/abi/abi";
 import { type Wallet } from "~/interface/auth/Wallet";
 import { connectToDB } from "~/utils/db";
@@ -35,7 +34,11 @@ import {
   getExistingWallet,
   getTokenByAddress,
 } from "~/interface/wallets/addWallet";
-import { getBalanceToUpdate, getResultAddresses, getWalletDetails } from "~/interface/wallets/observedWallets";
+import {
+  getBalanceToUpdate,
+  getResultAddresses,
+  getWalletDetails,
+} from "~/interface/wallets/observedWallets";
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
@@ -199,7 +202,11 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
     };
 
     for (const balance of acc.balances) {
-      const balanceToUpdate = await getBalanceToUpdate(db, acc.id, balance.token.id);
+      const balanceToUpdate = await getBalanceToUpdate(
+        db,
+        acc.id,
+        balance.token.id,
+      );
       const [updatedBalance] = await db.update<Balance>(
         `${balanceToUpdate[0].id}`,
         {

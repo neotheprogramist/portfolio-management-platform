@@ -29,7 +29,7 @@ export const verifyMessageServer = server$(async function (
   const siweMessage = new SiweMessage(message);
   await deleteExpiredNonces(db);
   const nonce = await getNonce(db, siweMessage.nonce);
-  if(!nonce.at(0)) throw new Error("Nonce not found");
+  if (!nonce.at(0)) throw new Error("Nonce not found");
   const verifiedSiweMessage = await siweMessage.verify({ signature });
   if (!verifiedSiweMessage.success) {
     throw Error("Invalid signature");

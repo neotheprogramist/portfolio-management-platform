@@ -23,29 +23,37 @@ export const getExistingWallet = async (db: Surreal, address: string) => {
 };
 
 export const TokenResult = z.object({
-    id: z.string(),
-  });
-  export type TokenResult = z.infer<typeof TokenResult>;
+  id: z.string(),
+});
+export type TokenResult = z.infer<typeof TokenResult>;
 
-  export const getTokenByAddress = async (db: Surreal, address: string) => {
-    const tokenQueryResult = (await db.query(
+export const getTokenByAddress = async (db: Surreal, address: string) => {
+  const tokenQueryResult = (
+    await db.query(
       `SELECT id FROM token where address = '${getAddress(address)}'`,
-    )).at(0);
-    console.log("token", tokenQueryResult);
-    return TokenResult.array().parse(tokenQueryResult);
-  };
+    )
+  ).at(0);
+  console.log("token", tokenQueryResult);
+  return TokenResult.array().parse(tokenQueryResult);
+};
 
-  export const ExistingRelationResult = z.object({
-    id: z.string(),
-    in: z.string(),
-    out: z.string(),
-  });
-  export type ExistingRelationResult = z.infer<typeof ExistingRelationResult>;
+export const ExistingRelationResult = z.object({
+  id: z.string(),
+  in: z.string(),
+  out: z.string(),
+});
+export type ExistingRelationResult = z.infer<typeof ExistingRelationResult>;
 
-  export const getExistingRelation = async (db: Surreal, userId: string, walletId: string) => {
-    const existingRelationQueryResult = (await db.query(
+export const getExistingRelation = async (
+  db: Surreal,
+  userId: string,
+  walletId: string,
+) => {
+  const existingRelationQueryResult = (
+    await db.query(
       `SELECT * FROM ${userId}->observes_wallet WHERE out = ${walletId};`,
-    )).at(0);
-    console.log("existingRelation", existingRelationQueryResult);
-    return ExistingRelationResult.array().parse(existingRelationQueryResult);
-  };
+    )
+  ).at(0);
+  console.log("existingRelation", existingRelationQueryResult);
+  return ExistingRelationResult.array().parse(existingRelationQueryResult);
+};
