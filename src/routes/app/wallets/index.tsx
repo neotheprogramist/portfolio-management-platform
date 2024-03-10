@@ -250,11 +250,11 @@ export default component$(() => {
 
   return (
     <div class="grid grid-cols-[24%_75%] grid-rows-[100px_1fr] gap-4 overflow-auto border-t border-white border-opacity-15 p-6">
-      <div class="col-start-1 col-span-1 row-span-2 row-start-1 row-end-3 grid grid-rows-[52px_40px_40px_1fr] overflow-auto bg-glass border-white-opacity-20 rounded-xl p-6 gap-2 ">
-        <div class="flex justify-between text-white items-center pb-4 row-start-1 row-span-1">
+      <div class="bg-glass border-white-opacity-20 col-span-1 col-start-1 row-span-2 row-start-1 row-end-3 grid grid-rows-[52px_40px_40px_1fr] gap-2 overflow-auto rounded-xl p-6 ">
+        <div class="row-span-1 row-start-1 flex items-center justify-between pb-4 text-white">
           <h1 class="text-xl">Wallets</h1>
           <button
-            class="cursor-pointer border-buttons rounded-3xl px-4 py-2 font-semibold text-white text-xs"
+            class="border-buttons cursor-pointer rounded-3xl px-4 py-2 text-xs font-semibold text-white"
             onClick$={() => {
               isAddWalletModalOpen.value = !isAddWalletModalOpen.value;
             }}
@@ -263,14 +263,14 @@ export default component$(() => {
           </button>
         </div>
 
-        <button class="cursor-pointer border-white-opacity-20 rounded-lg px-3 py-2 text-white text-opacity-50 text-xs bg-glass flex items-center gap-2 row-start-2 row-span-1">
+        <button class="border-white-opacity-20 bg-glass row-span-1 row-start-2 flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-xs text-white text-opacity-50">
           {/* <ImgSearch/> */}
           Search for wallet
         </button>
 
-        <button class="cursor-pointer border-white-opacity-20 rounded-lg px-3 py-2 text-white text-xs bg-glass flex items-center justify-between row-start-3 row-span-1">
+        <button class="border-white-opacity-20 bg-glass row-span-1 row-start-3 flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-xs text-white">
           Choose Network
-        <ImgArrowDown/>
+          <ImgArrowDown />
         </button>
 
         <div class="row-span-1 row-start-4 h-full overflow-auto">
@@ -422,7 +422,6 @@ export default component$(() => {
             >
               <p class="rounded-3xl bg-black p-3">Add wallet</p>
             </button>
-
           </Form>
         </Modal>
       )}
