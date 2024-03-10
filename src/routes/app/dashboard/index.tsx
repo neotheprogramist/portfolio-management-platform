@@ -28,6 +28,7 @@ export default component$(() => {
           <Alert />
         </div>
       </div>
+
       <div class="border-white-opacity-20 bg-glass col-start-4 row-span-1 row-start-1 rounded-3xl p-4 shadow">
         <div class="mb-4 flex items-center justify-between text-white">
           <h1 class="text-xl font-semibold">Actions</h1>
@@ -53,6 +54,7 @@ export default component$(() => {
           <Action />
         </div>
       </div>
+
       <div class="border-white-opacity-20 bg-glass col-start-1 col-end-5 row-span-1 row-start-2 grid grid-rows-[64px_1fr] overflow-auto rounded-3xl p-4">
         <div class="row-span-1 row-start-1 mb-6 flex items-center justify-between">
           <h1 class="text-xl font-semibold text-white">Favourite Tokens</h1>

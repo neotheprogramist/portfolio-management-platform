@@ -1,24 +1,49 @@
 import { component$, useSignal, useStore } from "@builder.io/qwik";
-import { Form, routeAction$, zod$, z } from "@builder.io/qwik-city";
+import {
+  Form,
+  routeAction$,
+  zod$,
+  z,
+  routeLoader$,
+} from "@builder.io/qwik-city";
 import jwt, { type JwtPayload } from "jsonwebtoken";
-import { type RawQueryResult } from "surrealdb.js/script/types";
-import { contractABI, publicClient } from "~/abi/abi";
+import { publicClient } from "~/abi/abi";
 import { type Wallet } from "~/interface/auth/Wallet";
 import { connectToDB } from "~/utils/db";
 import { chainIdToNetworkName } from "~/utils/chains";
 import { Modal } from "~/components/modal";
 import { SelectedWalletDetails } from "~/components/wallets/details";
 import { ObservedWallet } from "~/components/wallets/observed";
-import { type Token } from "~/interface/token/Token";
 import { type Balance } from "~/interface/balance/Balance";
 import { type WalletTokensBalances } from "~/interface/walletsTokensBalances/walletsTokensBalances";
 import { isAddress } from "viem";
 // import ImgSearch from "/public/images/svg/search.svg?jsx";
 // import ImgSearch from "../../../../../public/images/svg/search.svg?jsx";
+import { formatTokenBalance } from "~/utils/formatBalances/formatTokenBalance";
+import { isAddress, getAddress } from "viem";
 import ImgArrowDown from "/public/images/arrowDown.svg?jsx";
 import ImgI from "/public/images/svg/i.svg?jsx";
 import { useObservedWallets } from "~/routes/shared";
 export { useObservedWallets } from "~/routes/shared";
+import {
+  fetchSubgraphAccountsData,
+  fetchSubgraphOneAccount,
+} from "~/utils/subgraph/fetch";
+import { isValidName, isValidAddress } from "~/utils/validators/addWallet";
+import {
+  getUsersObservingWallet,
+  walletExists,
+} from "~/interface/wallets/removeWallet";
+import {
+  getExistingRelation,
+  getExistingWallet,
+  getTokenByAddress,
+} from "~/interface/wallets/addWallet";
+import {
+  getBalanceToUpdate,
+  getResultAddresses,
+  getWalletDetails,
+} from "~/interface/wallets/observedWallets";
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
@@ -33,25 +58,22 @@ export const useAddWallet = routeAction$(
     }
     const { userId } = jwt.decode(cookie.value) as JwtPayload;
 
-    const existingWallet = await db.query(
-      `SELECT * FROM wallet WHERE address = type::string($addr);`,
-      { addr: data.address },
-    );
+    const existingWallet = await getExistingWallet(db, data.address);
+    console.log("existingWallet", existingWallet);
 
     let walletId;
-    if (
-      existingWallet[0] &&
-      Array.isArray(existingWallet[0]) &&
-      existingWallet[0][0]
-    ) {
-      const wallet = existingWallet[0][0] as Wallet;
-      walletId = wallet.id;
+    if (existingWallet.at(0)) {
+      console.log("wallet exists");
+
+      walletId = existingWallet[0].id;
     } else {
+      console.log("wallet does not exist");
       const [createWalletQueryResult] = await db.create<Wallet>("wallet", {
         chainId: 1,
         address: data.address,
         name: data.name,
       });
+      console.log("created wallet", createWalletQueryResult);
       walletId = createWalletQueryResult.id;
       // native balance for created wallet
       const nativeBalance = await publicClient.getBalance({
@@ -62,32 +84,32 @@ export const useAddWallet = routeAction$(
         `UPDATE ${walletId} SET nativeBalance = '${nativeBalance}';`,
       );
 
-      // create balances for tokens
-      const tokens = await db.select<Token>("token");
-      for (const token of tokens) {
-        // for each token create balance
-        const readBalance = await publicClient.readContract({
-          address: token.address as `0x${string}`,
-          abi: contractABI,
-          functionName: "balanceOf",
-          args: [createWalletQueryResult.address as `0x${string}`],
+      const subgraphURL = requestEvent.env.get("SUBGRAPH_URL");
+      if (!subgraphURL) {
+        throw new Error("Missing SUBGRAPH_URL");
+      }
+
+      const account_ = await fetchSubgraphOneAccount(
+        data.address.toLowerCase(),
+        subgraphURL,
+      );
+
+      account_.balances.forEach(async (bal: any) => {
+        const [balance] = await db.create<Balance>("balance", {
+          value: bal.amount,
         });
-        const [balance] = await db.create<Balance>(`balance`, {
-          value: readBalance.toString(),
-        });
-        // balance -> token && balance -> wallet
+
+        const [token] = await getTokenByAddress(db, bal.token.id);
+
         await db.query(`RELATE ONLY ${balance.id}->for_token->${token.id}`);
+
         await db.query(
           `RELATE ONLY ${balance.id}->for_wallet->${createWalletQueryResult.id}`,
         );
-      }
+      });
     }
 
-    const [existingRelation] = await db.query(
-      `SELECT * FROM ${userId}->observes_wallet WHERE out = ${walletId};`,
-    );
-
-    if ((existingRelation as RawQueryResult[]).length === 0) {
+    if (!(await getExistingRelation(db, userId, walletId)).at(0)) {
       await db.query(`RELATE ONLY ${userId}->observes_wallet->${walletId};`);
     }
 
@@ -113,18 +135,14 @@ export const useRemoveWallet = routeAction$(
       throw new Error("No cookie found");
     }
 
-    const walletToRemove = await db.select<Wallet>(`${wallet.id}`);
-
-    if (!walletToRemove[0]) {
-      return { success: false, error: "Wallet does not exist" };
+    if (!(await walletExists(db, wallet.id))) {
+      throw new Error("Wallet does not exist");
     }
 
     const { userId } = jwt.decode(cookie.value) as JwtPayload;
     await db.query(`DELETE ${userId}->observes_wallet WHERE out=${wallet.id};`);
 
-    const [[usersObservingWallet]]: any = await db.query(
-      `SELECT <-observes_wallet.in FROM ${wallet.id};`,
-    );
+    const [usersObservingWallet] = await getUsersObservingWallet(db, wallet.id);
 
     if (!usersObservingWallet["<-observes_wallet"].in.length) {
       await db.delete(`${wallet.id}`);
@@ -147,9 +165,9 @@ export default component$(() => {
   const addWalletFormStore = useStore({ name: "", address: "" });
 
   return (
-    <div class="z-10 grid w-full grid-cols-[24%_75%] grid-rows-[14%_85%] gap-4 p-8">
-      <div class="bg-glass border-white-opacity-20 row-span-2 flex flex-col gap-6 overflow-auto rounded-xl p-6">
-        <div class="flex items-center justify-between text-white">
+    <div class="grid grid-cols-[24%_75%] grid-rows-[100px_1fr] gap-4 overflow-auto border-t border-white border-opacity-15 p-6">
+      <div class="bg-glass border-white-opacity-20 col-span-1 col-start-1 row-span-2 row-start-1 row-end-3 grid grid-rows-[52px_40px_40px_1fr] gap-2 overflow-auto rounded-xl p-6 ">
+        <div class="row-span-1 row-start-1 flex items-center justify-between pb-4 text-white">
           <h1 class="text-xl">Wallets</h1>
           <button
             class="border-buttons cursor-pointer rounded-3xl px-4 py-2 text-xs font-semibold text-white"
@@ -160,26 +178,28 @@ export default component$(() => {
             Add New Wallet
           </button>
         </div>
-        <div class="flex flex-col gap-2">
-          <button class="border-white-opacity-20 bg-glass flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-xs text-white text-opacity-50">
-            {/* <ImgSearch/> */}
-            Search for wallet
-          </button>
-          <button class="border-white-opacity-20 bg-glass flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-xs text-white">
-            Choose Network
-            <ImgArrowDown />
-          </button>
-        </div>
 
-        <div class="flex flex-col">
-          {observedWallets.value.map((observedWallet) => (
-            <ObservedWallet
-              key={observedWallet.wallet.address}
-              observedWallet={observedWallet}
-              selectedWallet={selectedWallet}
-              chainIdToNetworkName={chainIdToNetworkName}
-            />
-          ))}
+        <button class="border-white-opacity-20 bg-glass row-span-1 row-start-2 flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-xs text-white text-opacity-50">
+          {/* <ImgSearch/> */}
+          Search for wallet
+        </button>
+
+        <button class="border-white-opacity-20 bg-glass row-span-1 row-start-3 flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-xs text-white">
+          Choose Network
+          <ImgArrowDown />
+        </button>
+
+        <div class="row-span-1 row-start-4 h-full overflow-auto">
+          <div class="overflow-auto">
+            {observedWallets.value.map((observedWallet) => (
+              <ObservedWallet
+                key={observedWallet.wallet.address}
+                observedWallet={observedWallet}
+                selectedWallet={selectedWallet}
+                chainIdToNetworkName={chainIdToNetworkName}
+              />
+            ))}
+          </div>
         </div>
       </div>
 
@@ -213,13 +233,20 @@ export default component$(() => {
           />
         )}
       </div>
+
       {isAddWalletModalOpen.value && (
-        <Modal isOpen={isAddWalletModalOpen} title="Add Wallet">
+        <Modal
+          isOpen={isAddWalletModalOpen}
+          formStore={addWalletFormStore}
+          title="Add Wallet"
+        >
           <Form
             action={addWalletAction}
             onSubmitCompleted$={() => {
               if (addWalletAction.value?.success) {
                 isAddWalletModalOpen.value = false;
+                addWalletFormStore.address = "";
+                addWalletFormStore.name = "";
               }
             }}
             class="p-5"
@@ -227,10 +254,15 @@ export default component$(() => {
             <div class="mb-5">
               <p class="pb-1 text-xs text-white">Type</p>
               <div class="bg-glass border-white-opacity-20 grid grid-cols-[50%_50%] rounded p-1">
-                <button class="color-gradient col-span-1 rounded p-2.5 text-white">
+                <button type="button" class="col-span-1 text-white">
                   Executable
                 </button>
-                <button class="col-span-1 text-white">Read-only</button>
+                <button
+                  type="button"
+                  class="color-gradient col-span-1 rounded p-2.5  text-white"
+                >
+                  Read-only
+                </button>
               </div>
             </div>
             <label for="name" class="flex gap-2 pb-1 text-xs text-white">
@@ -281,14 +313,16 @@ export default component$(() => {
               //   addWalletFormStore.address = target.value;
               // }}
               placeholder="Select network"
+              disabled={true}
             />
             <button
               type="reset"
               class="border-buttons absolute bottom-5 right-36 rounded-3xl p-3 font-normal text-white"
-              disabled={
-                !isValidName(addWalletFormStore.name) ||
-                !isValidAddress(addWalletFormStore.address)
-              }
+              onClick$={() => {
+                isAddWalletModalOpen.value = false;
+                addWalletFormStore.address = "";
+                addWalletFormStore.name = "";
+              }}
             >
               Cancel
             </button>
@@ -296,6 +330,8 @@ export default component$(() => {
               type="submit"
               class="color-gradient absolute bottom-5 right-4 rounded-3xl p-0.5 font-normal text-white"
               disabled={
+                addWalletFormStore.name === "" ||
+                addWalletFormStore.address === "" ||
                 !isValidName(addWalletFormStore.name) ||
                 !isValidAddress(addWalletFormStore.address)
               }
@@ -305,6 +341,7 @@ export default component$(() => {
           </Form>
         </Modal>
       )}
+
       {isDeleteModalOpen.value && (
         <Modal isOpen={isDeleteModalOpen} title="Delete Wallet">
           <button
@@ -326,13 +363,3 @@ export default component$(() => {
     </div>
   );
 });
-
-function isValidName(name: string): boolean {
-  return name.length > 0 ? name.trim().length > 3 : true;
-}
-
-function isValidAddress(address: string): boolean {
-  return address.length > 0
-    ? address.trim() !== "" && isAddress(address)
-    : true;
-}
