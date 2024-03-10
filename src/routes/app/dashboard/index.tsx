@@ -136,7 +136,7 @@ export default component$(() => {
               <h3 class="text-sm">DCA</h3>
               <p class="text-xs text-white text-opacity-50">1 day ago</p>
             </div>
-            <div class="flex items-center gap-1 rounded-lg border border-yellow-400 p-2 bg-glass">
+            <div class="bg-glass flex items-center gap-1 rounded-lg border border-yellow-400 p-2">
               <ImgWarning />
               <p class="text-sm text-yellow-400">Warning</p>
             </div>
@@ -163,7 +163,7 @@ export default component$(() => {
                 <td>VALUE</td>
                 <td class="flex items-center justify-center gap-4">
                   CHANGE
-                  <div class="flex gap-1 rounded-lg border border-white border-opacity-20 bg-glass p-1 text-white ">
+                  <div class="bg-glass flex gap-1 rounded-lg border border-white border-opacity-20 p-1 text-white ">
                     <button class="color-gradient rounded-lg p-2">24h</button>
                     <button class="p-2">3d</button>
                     <button class="p-2">30d</button>
@@ -189,7 +189,7 @@ export default component$(() => {
               <TokenRow />
               <TokenRow />
             </tbody>
-          </table> 
+          </table>
         </div>
       </div>
     </div>
