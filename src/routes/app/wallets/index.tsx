@@ -264,7 +264,7 @@ export default component$(() => {
         </div>
 
         <button class="cursor-pointer border-white-opacity-20 rounded-lg px-3 py-2 text-white text-opacity-50 text-xs bg-glass flex items-center gap-2 row-start-2 row-span-1">
-          <ImgSearch/>
+          {/* <ImgSearch/> */}
           Search for wallet
         </button>
 
@@ -275,94 +275,6 @@ export default component$(() => {
 
         <div class="row-span-1 row-start-4 h-full overflow-auto">
           <div class="overflow-auto">
-            {observedWallets.value.map((observedWallet) => (
-              <ObservedWallet
-                key={observedWallet.wallet.address}
-                observedWallet={observedWallet}
-                selectedWallet={selectedWallet}
-                chainIdToNetworkName={chainIdToNetworkName}
-              />
-            ))}
-            {observedWallets.value.map((observedWallet) => (
-              <ObservedWallet
-                key={observedWallet.wallet.address}
-                observedWallet={observedWallet}
-                selectedWallet={selectedWallet}
-                chainIdToNetworkName={chainIdToNetworkName}
-              />
-            ))}
-            {observedWallets.value.map((observedWallet) => (
-              <ObservedWallet
-                key={observedWallet.wallet.address}
-                observedWallet={observedWallet}
-                selectedWallet={selectedWallet}
-                chainIdToNetworkName={chainIdToNetworkName}
-              />
-            ))}
-            {observedWallets.value.map((observedWallet) => (
-              <ObservedWallet
-                key={observedWallet.wallet.address}
-                observedWallet={observedWallet}
-                selectedWallet={selectedWallet}
-                chainIdToNetworkName={chainIdToNetworkName}
-              />
-            ))}
-            {observedWallets.value.map((observedWallet) => (
-              <ObservedWallet
-                key={observedWallet.wallet.address}
-                observedWallet={observedWallet}
-                selectedWallet={selectedWallet}
-                chainIdToNetworkName={chainIdToNetworkName}
-              />
-            ))}
-            {observedWallets.value.map((observedWallet) => (
-              <ObservedWallet
-                key={observedWallet.wallet.address}
-                observedWallet={observedWallet}
-                selectedWallet={selectedWallet}
-                chainIdToNetworkName={chainIdToNetworkName}
-              />
-            ))}
-            {observedWallets.value.map((observedWallet) => (
-              <ObservedWallet
-                key={observedWallet.wallet.address}
-                observedWallet={observedWallet}
-                selectedWallet={selectedWallet}
-                chainIdToNetworkName={chainIdToNetworkName}
-              />
-            ))}
-            {observedWallets.value.map((observedWallet) => (
-              <ObservedWallet
-                key={observedWallet.wallet.address}
-                observedWallet={observedWallet}
-                selectedWallet={selectedWallet}
-                chainIdToNetworkName={chainIdToNetworkName}
-              />
-            ))}
-            {observedWallets.value.map((observedWallet) => (
-              <ObservedWallet
-                key={observedWallet.wallet.address}
-                observedWallet={observedWallet}
-                selectedWallet={selectedWallet}
-                chainIdToNetworkName={chainIdToNetworkName}
-              />
-            ))}
-            {observedWallets.value.map((observedWallet) => (
-              <ObservedWallet
-                key={observedWallet.wallet.address}
-                observedWallet={observedWallet}
-                selectedWallet={selectedWallet}
-                chainIdToNetworkName={chainIdToNetworkName}
-              />
-            ))}
-            {observedWallets.value.map((observedWallet) => (
-              <ObservedWallet
-                key={observedWallet.wallet.address}
-                observedWallet={observedWallet}
-                selectedWallet={selectedWallet}
-                chainIdToNetworkName={chainIdToNetworkName}
-              />
-            ))}
             {observedWallets.value.map((observedWallet) => (
               <ObservedWallet
                 key={observedWallet.wallet.address}

@@ -68,30 +68,14 @@ export const SelectedWalletDetails = component$<SelectedWalletProps>(
               </tr>
             </thead>
             <tbody class="overflow-auto">
-              <TokenRowWallets/>
-              <TokenRowWallets/>
-              <TokenRowWallets/>
-              <TokenRowWallets/>
-              <TokenRowWallets/>
-              <TokenRowWallets/>
-              <TokenRowWallets/>
-              <TokenRowWallets/>
-              <TokenRowWallets/>
-              <TokenRowWallets/>
-              <TokenRowWallets/>
+              {selectedWallet.value.tokens.map((token: any) => {
+                return (
+                  <TokenRowWallets key={token.id}
+                  name={token.name} symbol={token.symbol} balance={token.balance}/>
+              );
+            })}
             </tbody>
           </table>
-          {/* <p>Native Balance: {formattedNativeBalance}</p>
-          {selectedWallet.value.tokens.map((token: any) => {
-            return (
-              <div key={token.id}>
-                <p class="mt-2">Token name: {token.name}</p>
-                <p>Token symbol: {token.symbol}</p>
-                <p>Token balance: {token.balance}</p>
-              </div>
-            );
-          })} */}
-
         </div>
       </div>
     );

@@ -11,7 +11,7 @@ export const Navbar = component$<NavbarProps>((props) => {
     <>
       <div
         class={twMerge(
-          "grid h-[80px] grid-cols-[1fr_2fr_1fr] items-center justify-between px-6 text-xs text-gray-400",
+          "grid h-[80px] grid-cols-[1fr_2fr_1fr] items-center justify-between px-6 text-xs text-gray-400 shadow",
           props.class,
         )}
       >
