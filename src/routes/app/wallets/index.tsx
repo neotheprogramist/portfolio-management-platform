@@ -249,9 +249,9 @@ export default component$(() => {
   const addWalletFormStore = useStore({ name: "", address: "" });
 
   return (
-    <div class="z-10 grid w-full grid-cols-[24%_75%] grid-rows-[14%_85%] gap-4 p-8">
-      <div class="bg-glass border-white-opacity-20 row-span-2 flex flex-col gap-6 overflow-auto rounded-xl p-6">
-        <div class="flex items-center justify-between text-white">
+    <div class="grid grid-cols-[24%_75%] grid-rows-[100px_1fr] gap-4 overflow-auto border-t border-white border-opacity-15 p-6">
+      <div class="bg-glass border-white-opacity-20 col-span-1 col-start-1 row-span-2 row-start-1 row-end-3 grid grid-rows-[52px_40px_40px_1fr] gap-2 overflow-auto rounded-xl p-6 ">
+        <div class="row-span-1 row-start-1 flex items-center justify-between pb-4 text-white">
           <h1 class="text-xl">Wallets</h1>
           <button
             class="border-buttons cursor-pointer rounded-3xl px-4 py-2 text-xs font-semibold text-white"
@@ -262,26 +262,28 @@ export default component$(() => {
             Add New Wallet
           </button>
         </div>
-        <div class="flex flex-col gap-2">
-          <button class="border-white-opacity-20 bg-glass flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-xs text-white text-opacity-50">
-            {/* <ImgSearch/> */}
-            Search for wallet
-          </button>
-          <button class="border-white-opacity-20 bg-glass flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-xs text-white">
-            Choose Network
-            <ImgArrowDown />
-          </button>
-        </div>
 
-        <div class="flex flex-col">
-          {observedWallets.value.map((observedWallet) => (
-            <ObservedWallet
-              key={observedWallet.wallet.address}
-              observedWallet={observedWallet}
-              selectedWallet={selectedWallet}
-              chainIdToNetworkName={chainIdToNetworkName}
-            />
-          ))}
+        <button class="border-white-opacity-20 bg-glass row-span-1 row-start-2 flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-xs text-white text-opacity-50">
+          {/* <ImgSearch/> */}
+          Search for wallet
+        </button>
+
+        <button class="border-white-opacity-20 bg-glass row-span-1 row-start-3 flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-xs text-white">
+          Choose Network
+          <ImgArrowDown />
+        </button>
+
+        <div class="row-span-1 row-start-4 h-full overflow-auto">
+          <div class="overflow-auto">
+            {observedWallets.value.map((observedWallet) => (
+              <ObservedWallet
+                key={observedWallet.wallet.address}
+                observedWallet={observedWallet}
+                selectedWallet={selectedWallet}
+                chainIdToNetworkName={chainIdToNetworkName}
+              />
+            ))}
+          </div>
         </div>
       </div>
 
@@ -315,6 +317,7 @@ export default component$(() => {
           />
         )}
       </div>
+
       {isAddWalletModalOpen.value && (
         <Modal
           isOpen={isAddWalletModalOpen}
@@ -422,6 +425,7 @@ export default component$(() => {
           </Form>
         </Modal>
       )}
+
       {isDeleteModalOpen.value && (
         <Modal isOpen={isDeleteModalOpen} title="Delete Wallet">
           <button
