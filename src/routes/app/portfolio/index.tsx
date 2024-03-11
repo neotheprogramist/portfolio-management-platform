@@ -3,7 +3,7 @@ import { Button } from "~/components/portfolio/button-master/button";
 import EditIcon from "/public/images/svg/portfolio/edit.svg?jsx";
 import Graph from "/public/images/chart.png?jsx";
 import Bitcoin from "/public/images/svg/portfolio/btc.svg?jsx";
-import ArrowDown from "/public/images/svg/portfolio/arrowDown.svg?jsx"
+import ArrowDown from "/public/images/svg/portfolio/arrowDown.svg?jsx";
 
 export default component$(() => {
   return (
@@ -43,7 +43,7 @@ export default component$(() => {
           </div>
         </div>
         <div class="grid grid-cols-[2fr_1fr] gap-[10px] overflow-auto pb-[20px]">
-          <div class="flex min-h-[200px] min-w-[300px] flex-col gap-[20px] overflow-auto rounded-lg bg-white p-[20px]">
+          <div class="flex min-h-[200px] min-w-[580px] flex-col gap-[20px] overflow-auto rounded-lg bg-white p-[20px]">
             <div>
               <p class="text-base">Token list</p>
             </div>
@@ -114,12 +114,12 @@ export default component$(() => {
               <tbody class="overflow-auto border-t-[1px] border-gray-500 border-opacity-50 text-black">
                 <tr class="flex h-[50px] pb-[8px] pt-[24px] text-[14px]">
                   <td class="flex items-center gap-[8px] ">
-                    <ArrowDown/>
+                    <ArrowDown />
                     <span>Investment</span>
                     <EditIcon />
                   </td>
                 </tr>
-                <tr class="h-[56px]">
+                {/* <tr class="h-[56px]">
                   <td class="ml-[20px] flex h-[56px] w-[200px] items-center gap-[6px] overflow-auto">
                     <div class="flex h-[32px] w-[32px] items-center justify-center rounded-full border border-[#E6E6E6]">
                       <Bitcoin width={32} height={32} class="min-w-[32px]" />
@@ -135,7 +135,7 @@ export default component$(() => {
                     <span class="font-normal">427</span>
                   </td>
                   <td class="min-w-[145px] overflow-auto">
-                    <span class="font-medium">$82 617,96</span>
+                    <span class="font-medium">$82 617,96 </span>
                   </td>
                   <td class="min-w-[175px] overflow-auto">
                     <span class="font-medium">H</span>
@@ -146,7 +146,7 @@ export default component$(() => {
                   <td class="min-w-[145px] overflow-auto">
                     <span class="font-medium">H</span>
                   </td>
-                </tr>
+                </tr> */}
               </tbody>
             </table>
           </div>
