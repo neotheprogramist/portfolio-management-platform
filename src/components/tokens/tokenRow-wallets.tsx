@@ -1,22 +1,24 @@
 import { component$ } from "@builder.io/qwik";
-import ImgBtc from "/public/images/bitcoin-btc-logo.svg?jsx";
+// import ImgBtc from "/public/images/bitcoin-btc-logo.svg?jsx";
 import ImgMore from "/public/images/svg/more.svg?jsx";
 
 type TokenRowWalletsProps = {
   name: string;
   symbol: string;
   balance: string;
+  imagePath: string;
   balanceValueUSD: string;
 };
 
 export const TokenRowWallets = component$<TokenRowWalletsProps>(
-  ({ name, symbol, balance, balanceValueUSD }) => {
+  ({ name, symbol, balance, imagePath, balanceValueUSD }) => {
     return (
       <>
         <tr class="text-sm">
           <td class="flex items-center gap-4 py-2">
             <div class="border-white-opacity-20 rounded-lg bg-white bg-opacity-10 p-2">
-              <ImgBtc />
+              {/* <ImgBtc /> */}
+              <img width={20} height={20} src={imagePath} alt={`${name} Token`} />
             </div>
             <p class="text-white">
               {name} <span class="text-white text-opacity-50">{symbol}</span>

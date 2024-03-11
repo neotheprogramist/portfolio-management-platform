@@ -40,6 +40,7 @@ import {
   getDBTokenPriceUSD,
   getDBTokensAddresses,
   getResultAddresses,
+  getTokenImagePath,
   getWalletDetails,
 } from "~/interface/wallets/observedWallets";
 
@@ -257,12 +258,14 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
         BigInt(updatedBalance.value) !== BigInt(0) &&
         formattedBalance !== "0.000"
       ) {
+        const [imagePath] = await getTokenImagePath(db, balance.token.symbol);
         walletTokensBalances.tokens.push({
           id: balance.token.id,
           name: balance.token.name,
           symbol: balance.token.symbol,
           decimals: parseInt(balance.token.decimals),
           balance: formattedBalance,
+          imagePath: imagePath.imagePath,
           balanceValueUSD: (
             Number(formattedBalance) * Number(priceUSD)
           ).toFixed(2),

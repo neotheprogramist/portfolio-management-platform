@@ -139,3 +139,19 @@ export async function fetchTokenDayData(
 
   return tokenDayDatas;
 }
+
+export const GetTokenImagePath = z.object({
+  imagePath: z.string()
+})
+
+export type GetTokenImagePath = z.infer<typeof GetTokenImagePath>;
+
+export const getTokenImagePath = async (db: Surreal, tokenSymbol: string) => {
+  const tokenImagePath = (
+    await db.query(
+      `SELECT imagePath FROM token WHERE symbol = '${tokenSymbol}';`
+    )
+  ).at(0);
+  console.log("tokenImagePath", tokenImagePath);
+  return GetTokenImagePath.array().parse(tokenImagePath);
+}

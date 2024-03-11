@@ -73,6 +73,7 @@ export const SelectedWalletDetails = component$<SelectedWalletProps>(
                     name={token.name}
                     symbol={token.symbol}
                     balance={token.balance}
+                    imagePath={token.imagePath}
                     balanceValueUSD={token.balanceValueUSD}
                   />
                 );
