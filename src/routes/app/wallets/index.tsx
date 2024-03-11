@@ -36,6 +36,7 @@ import {
 } from "~/interface/wallets/addWallet";
 import {
   getBalanceToUpdate,
+  getDBTokensAddresses,
   getResultAddresses,
   getWalletDetails,
 } from "~/interface/wallets/observedWallets";
@@ -182,14 +183,12 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
     throw new Error("Missing UNISWAP_SUBGRAPH_URL");
   }
 
-  const [dbTokens]: any = await db.query(`SELECT * FROM token;`);
-  console.log("dbTokens", dbTokens);
-  const tokenAddresses = dbTokens.map(token => token.address.toLowerCase());
-
+  const dbTokensAddresses = await getDBTokensAddresses(db);
+  const tokenAddresses = dbTokensAddresses.map(token => token.address.toLowerCase());
   const query = `
   {
     tokenDayDatas(
-      first: 4
+      first: ${tokenAddresses.length}
       where: {
         token_in: ${JSON.stringify(tokenAddresses)}
       }
@@ -214,8 +213,8 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
   });
   
   console.log("Response status:", response.status);
-  console.log("Response body:", await response.json());
-
+  const uniswapData = await response.json();
+  console.log("uniswapData.data.tokenDayDatas", uniswapData.data.tokenDayDatas);
 
   const observedWallets: WalletTokensBalances[] = [];
 
