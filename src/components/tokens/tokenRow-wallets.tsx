@@ -19,14 +19,11 @@ export const TokenRowWallets = component$<TokenRowWalletsProps>(
     console.log("imagePath", imagePath);
     const imageTransformer$ = $(
       ({ src, width, height }: ImageTransformerProps): string => {
-        // Here you can set your favorite image loaders service
         return `${src}?height=${height}&width=${width}&format=webp&fit=fill`;
       },
     );
 
-    // Global Provider (required)
     useImageProvider({
-      // You can set this prop to overwrite default values [3840, 1920, 1280, 960, 640]
       resolutions: [1920, 1280],
       imageTransformer$,
     });
