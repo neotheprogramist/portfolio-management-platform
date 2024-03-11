@@ -175,6 +175,47 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
     observedWalletsAddressesQueryResult,
     subgraphURL,
   );
+  console.log("accounts_", accounts_);
+
+  const uniswapSubgraphURL = requestEvent.env.get("UNISWAP_SUBGRAPH_URL");
+  if (!uniswapSubgraphURL) {
+    throw new Error("Missing UNISWAP_SUBGRAPH_URL");
+  }
+
+  const [dbTokens]: any = await db.query(`SELECT * FROM token;`);
+  console.log("dbTokens", dbTokens);
+  const tokenAddresses = dbTokens.map(token => token.address.toLowerCase());
+
+  const query = `
+  {
+    tokenDayDatas(
+      first: 4
+      where: {
+        token_in: ${JSON.stringify(tokenAddresses)}
+      }
+      orderBy: date
+      orderDirection: desc
+    ) {
+      token {
+        id
+      }
+      priceUSD
+    }
+  }`;
+
+  const response = await fetch(uniswapSubgraphURL, { 
+    method: "POST", 
+    headers: { 
+      "Content-Type": "application/json" 
+    }, 
+    body: JSON.stringify({ 
+      query, 
+    }), 
+  });
+  
+  console.log("Response status:", response.status);
+  console.log("Response body:", await response.json());
+
 
   const observedWallets: WalletTokensBalances[] = [];
 
