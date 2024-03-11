@@ -1,11 +1,8 @@
 import { type Signal, component$ } from "@builder.io/qwik";
-import {
-  type Structure,
-  StructureBalance,
-} from "~/interface/structure/Structure";
+import { Structure } from "~/interface/structure/Structure";
 
 interface SelectedStructureProps {
-  selectedStructure: Signal<StructureBalance | null>;
+  selectedStructure: Signal<Structure | null>;
   isDeleteModalopen: Signal<boolean>;
 }
 

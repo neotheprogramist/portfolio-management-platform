@@ -1,39 +1,33 @@
 import { type Signal, component$, JSXOutput } from "@builder.io/qwik";
-import { StructureBalance } from "~/interface/structure/Structure";
-import { TokenWithBalance } from "~/interface/walletsTokensBalances/walletsTokensBalances";
+import { Structure, StructureBalance } from "~/interface/structure/Structure";
 
 interface createdStructuresProps {
-  createdStructure: StructureBalance;
-  selectedStructure: Signal<StructureBalance | null>;
+  createdStructure: Structure;
+  selectedStructure: Signal<Structure | null>;
 }
 
-function aggregateTokenBalances(
-  createdStructure: StructureBalance,
-): JSXOutput[] {
-  const aggregatedTokens: { [tokenId: string]: TokenWithBalance } = {};
+function extractData(createdStructure: Structure): JSXOutput[] {
+  const extractedArray: {
+    walletName: string;
+    symbol: string;
+    value: string;
+  }[] = [];
 
-  createdStructure.tokens.forEach((token) => {
-    const tokenId = token.id;
+  createdStructure.structureBalance.forEach(
+    (balanceEntry: StructureBalance) => {
+      extractedArray.push({
+        walletName: balanceEntry.wallet.name,
+        symbol: balanceEntry.balance.symbol,
+        value: balanceEntry.balance.balance,
+      });
+    },
+  );
 
-    if (aggregatedTokens[tokenId]) {
-      aggregatedTokens[tokenId].balance = (
-        BigInt(aggregatedTokens[tokenId].balance) + BigInt(token.balance)
-      ).toString();
-    } else {
-      aggregatedTokens[tokenId] = {
-        id: tokenId,
-        name: token.name,
-        symbol: token.symbol,
-        decimals: token.decimals,
-        balance: token.balance,
-      };
-    }
-  });
-
-  const result: TokenWithBalance[] = Object.values(aggregatedTokens);
-
-  return result.map((token) => (
-    <div class="text-lg font-bold">{`${token.symbol} - ${token.balance}`}</div>
+  return extractedArray.map((entry: any) => (
+    <div
+      key={entry.value}
+      class="text-lg font-bold"
+    >{`${entry.value} : ${entry.symbol} - ${entry.walletName}`}</div>
   ));
 }
 
@@ -47,7 +41,7 @@ export const CreatedStructure = component$<createdStructuresProps>(
         }}
       >
         <div class="text-lg font-bold">{createdStructure.structure.name}</div>
-        {aggregateTokenBalances(createdStructure)}
+        {extractData(createdStructure)}
       </div>
     );
   },

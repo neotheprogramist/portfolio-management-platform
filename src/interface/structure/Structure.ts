@@ -1,11 +1,10 @@
 import { TokenWithBalance } from "~/interface/walletsTokensBalances/walletsTokensBalances";
 
 export type Structure = {
-  id?: string;
-  name: string;
+  structure: { id?: string; name: string };
+  structureBalance: StructureBalance[];
 };
-
 export type StructureBalance = {
-  structure: Structure;
-  tokens: TokenWithBalance[];
+  wallet: { id: string; name: string };
+  balance: TokenWithBalance;
 };
