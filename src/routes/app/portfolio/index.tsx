@@ -202,7 +202,7 @@ export default component$(() => {
                 Curabitur pretium, sem vitae scelerisque euismod, metus arcu
                 pretium tellus, ac interdum enim felis vitae diam. Vivamus quis
                 lacinia justo, in porttitor massa. Suspendisse blandit ex sed
-                gravida malesuada. Nam eleifend at dui non viverra. Nullam ut
+                gravida malesuada. Name eleifend at dui non viverra. Nullam ut
                 congue odio. Curabitur ac turpis ipsum. Nulla vel eros
                 scelerisque, vehicula diam vitae, cursus eros. Donec et turpis
                 eget sapien faucibus placerat quis vel mauris. Mauris ultricies
