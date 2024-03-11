@@ -1,7 +1,10 @@
-import { component$ } from "@builder.io/qwik";
-// import ImgBtc from "/public/images/bitcoin-btc-logo.svg?jsx";
+import { $, component$ } from "@builder.io/qwik";
 import ImgMore from "/public/images/svg/more.svg?jsx";
-
+import {
+  Image,
+  type ImageTransformerProps,
+  useImageProvider,
+} from "qwik-image";
 type TokenRowWalletsProps = {
   name: string;
   symbol: string;
@@ -11,14 +14,35 @@ type TokenRowWalletsProps = {
 };
 
 export const TokenRowWallets = component$<TokenRowWalletsProps>(
-  ({ name, symbol, balance, imagePath, balanceValueUSD }) => {
+
+  ({ name, symbol, balance, imagePath }) => {
+    console.log("imagePath", imagePath);
+    const imageTransformer$ = $(
+      ({ src, width, height }: ImageTransformerProps): string => {
+        // Here you can set your favorite image loaders service
+        return `${src}?height=${height}&width=${width}&format=webp&fit=fill`;
+      },
+    );
+
+    // Global Provider (required)
+    useImageProvider({
+      // You can set this prop to overwrite default values [3840, 1920, 1280, 960, 640]
+      resolutions: [1920, 1280],
+      imageTransformer$,
+    });
     return (
       <>
         <tr class="text-sm">
           <td class="flex items-center gap-4 py-2">
             <div class="border-white-opacity-20 rounded-lg bg-white bg-opacity-10 p-2">
-              {/* <ImgBtc /> */}
-              <img width={20} height={20} src={imagePath} alt={`${name} Token`} />
+              <Image
+                layout="constrained"
+                objectFit="fill"
+                width={20}
+                height={20}
+                alt="Tropical paradise"
+                src={imagePath}
+              />
             </div>
             <p class="text-white">
               {name} <span class="text-white text-opacity-50">{symbol}</span>
