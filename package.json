@@ -22,6 +22,7 @@
     "fmt": "prettier --write .",
     "fmt.check": "prettier --check .",
     "lint": "eslint .",
+    "type.check": "tsc -p tsconfig.json --noEmit",
     "preview": "qwik build preview && vite preview --open",
     "serve": "node server/entry.fastify",
     "start": "vite --open --mode ssr",
