@@ -98,7 +98,7 @@ const TokenDayDataSchema = z.object({
 
 const TokenDayDataResponseSchema = z.object({
   data: z.object({
-    tokenDayDatas: z.array(TokenDayDataSchema),
+    tokenDayData: z.array(TokenDayDataSchema),
   }),
 });
 
@@ -133,9 +133,12 @@ export async function fetchTokenDayData(
     }),
   });
 
+  const jsonResponse = await response.json();
+  jsonResponse.data.tokenDayData = jsonResponse.data.tokenDayDatas;
+  delete jsonResponse.data.tokenDayDatas;
   const {
-    data: { tokenDayDatas },
-  } = TokenDayDataResponseSchema.parse(await response.json());
+    data: { tokenDayData },
+  } = TokenDayDataResponseSchema.parse(jsonResponse);
 
-  return tokenDayDatas;
+  return tokenDayData;
 }
