@@ -1,6 +1,6 @@
 import { type Surreal } from "surrealdb.js";
 import { z } from "@builder.io/qwik-city";
-import { getAddress } from "viem";
+import { checksumAddress, getAddress } from "viem";
 
 export const GetResultAddresses = z.object({
   "->observes_wallet": z.object({
@@ -58,3 +58,84 @@ export const getBalanceToUpdate = async (
   console.log("balanceToUpdate", balanceToUpdate);
   return GetBalanceToUpdate.array().parse(balanceToUpdate);
 };
+
+export const GetDBTokensAddresses = z.array(
+  z.object({
+    address: z.string(),
+  }),
+);
+
+export type GetDBTokensAddresses = z.infer<typeof GetDBTokensAddresses>;
+
+export const getDBTokensAddresses = async (db: Surreal) => {
+  const tokensAddresses = (await db.query(`SELECT address FROM token;`)).at(0);
+  console.log("tokensAddresses", tokensAddresses);
+  return GetDBTokensAddresses.parse(tokensAddresses);
+};
+
+export const GetDBTokenPriceUSD = z.object({
+  priceUSD: z.string(),
+});
+
+export type GetDBTokenPriceUSD = z.infer<typeof GetDBTokenPriceUSD>;
+
+export const getDBTokenPriceUSD = async (db: Surreal, tokenAddress: string) => {
+  const tokenPriceUSD = (
+    await db.query(
+      `SELECT priceUSD FROM token WHERE address = '${checksumAddress(tokenAddress as `0x${string}`)}';`,
+    )
+  ).at(0);
+  console.log("tokenPriceUSD", tokenPriceUSD);
+  return GetDBTokenPriceUSD.array().parse(tokenPriceUSD);
+};
+
+const TokenDayDataSchema = z.object({
+  token: z.object({
+    id: z.string(),
+  }),
+  priceUSD: z.string(),
+});
+
+const TokenDayDataResponseSchema = z.object({
+  data: z.object({
+    tokenDayDatas: z.array(TokenDayDataSchema),
+  }),
+});
+
+export async function fetchTokenDayData(
+  uniswapSubgraphURL: string,
+  tokenAddresses: string[],
+) {
+  const query = `
+  {
+    tokenDayDatas(
+      first: ${tokenAddresses.length}
+      where: {
+        token_in: ${JSON.stringify(tokenAddresses)}
+      }
+      orderBy: date
+      orderDirection: desc
+    ) {
+      token {
+        id
+      }
+      priceUSD
+    }
+  }`;
+
+  const response = await fetch(uniswapSubgraphURL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      query,
+    }),
+  });
+
+  const {
+    data: { tokenDayDatas },
+  } = TokenDayDataResponseSchema.parse(await response.json());
+
+  return tokenDayDatas;
+}
