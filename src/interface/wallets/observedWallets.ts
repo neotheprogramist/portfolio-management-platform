@@ -89,7 +89,6 @@ export const getDBTokenPriceUSD = async (db: Surreal, tokenAddress: string) => {
   return GetDBTokenPriceUSD.array().parse(tokenPriceUSD);
 };
 
-// Define the schema for the response
 const TokenDayDataSchema = z.object({
   token: z.object({
     id: z.string(),
@@ -97,13 +96,12 @@ const TokenDayDataSchema = z.object({
   priceUSD: z.string(),
 });
 
-const ResponseSchema = z.object({
+const TokenDayDataResponseSchema = z.object({
   data: z.object({
     tokenDayDatas: z.array(TokenDayDataSchema),
   }),
 });
 
-// Define the fetch function
 export async function fetchTokenDayData(
   uniswapSubgraphURL: string,
   tokenAddresses: string[],
@@ -135,10 +133,9 @@ export async function fetchTokenDayData(
     }),
   });
 
-  // Parse the response
   const {
     data: { tokenDayDatas },
-  } = ResponseSchema.parse(await response.json());
+  } = TokenDayDataResponseSchema.parse(await response.json());
 
   return tokenDayDatas;
 }
