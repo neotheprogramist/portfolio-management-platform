@@ -6,10 +6,11 @@ type TokenRowWalletsProps = {
   name: string;
   symbol: string;
   balance: string;
+  balanceValueUSD: string;
 };
 
 export const TokenRowWallets = component$<TokenRowWalletsProps>(
-  ({ name, symbol, balance }) => {
+  ({ name, symbol, balance, balanceValueUSD }) => {
     return (
       <>
         <tr class="text-sm">
@@ -28,7 +29,7 @@ export const TokenRowWallets = component$<TokenRowWalletsProps>(
           </td>
           <td class="">
             <span class="bg-glass rounded-lg border border-white border-opacity-20 px-2 py-1 text-white">
-              $0
+              ${balanceValueUSD}
             </span>
           </td>
           <td class="text-center">

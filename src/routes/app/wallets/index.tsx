@@ -17,7 +17,7 @@ import { ObservedWallet } from "~/components/wallets/observed";
 import { type Balance } from "~/interface/balance/Balance";
 import { type WalletTokensBalances } from "~/interface/walletsTokensBalances/walletsTokensBalances";
 import { formatTokenBalance } from "~/utils/formatBalances/formatTokenBalance";
-import { isAddress, getAddress } from "viem";
+import { isAddress, getAddress, checksumAddress } from "viem";
 import ImgArrowDown from "/public/images/arrowDown.svg?jsx";
 import ImgI from "/public/images/svg/i.svg?jsx";
 import {
@@ -35,7 +35,9 @@ import {
   getTokenByAddress,
 } from "~/interface/wallets/addWallet";
 import {
+  fetchTokenDayDatas,
   getBalanceToUpdate,
+  getDBTokenPriceUSD,
   getDBTokensAddresses,
   getResultAddresses,
   getWalletDetails,
@@ -184,45 +186,36 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
   }
 
   const dbTokensAddresses = await getDBTokensAddresses(db);
-  const tokenAddresses = dbTokensAddresses.map(token => token.address.toLowerCase());
-  const query = `
-  {
-    tokenDayDatas(
-      first: ${tokenAddresses.length}
-      where: {
-        token_in: ${JSON.stringify(tokenAddresses)}
-      }
-      orderBy: date
-      orderDirection: desc
-    ) {
-      token {
-        id
-      }
-      priceUSD
-    }
-  }`;
+  const tokenAddresses = dbTokensAddresses.map((token) =>
+    token.address.toLowerCase(),
+  );
 
-  const response = await fetch(uniswapSubgraphURL, { 
-    method: "POST", 
-    headers: { 
-      "Content-Type": "application/json" 
-    }, 
-    body: JSON.stringify({ 
-      query, 
-    }), 
-  });
-  
-  console.log("Response status:", response.status);
-  const uniswapData = await response.json();
-  console.log("uniswapData.data.tokenDayDatas", uniswapData.data.tokenDayDatas);
+  const tokenDayDatas = await fetchTokenDayDatas(
+    uniswapSubgraphURL,
+    tokenAddresses,
+  );
+  console.log("tokenDayDatas", tokenDayDatas);
+  for (const {
+    token: { id },
+    priceUSD,
+  } of tokenDayDatas) {
+    console.log("update priceUsd", priceUSD);
+    await db.query(`
+      UPDATE token 
+      SET priceUSD = '${priceUSD}'
+      WHERE address = '${checksumAddress(id as `0x${string}`)}';
+    `);
+  }
 
   const observedWallets: WalletTokensBalances[] = [];
 
   for (const acc of accounts_) {
+    console.log("acc", acc);
     const nativeBalance = await publicClient.getBalance({
       address: getAddress(acc.id) as `0x${string}`,
       blockTag: "safe",
     });
+
     await db.query(
       `UPDATE wallet SET nativeBalance = '${nativeBalance}' WHERE address = ${getAddress(acc.id)};`,
     );
@@ -242,13 +235,13 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
     };
 
     for (const balance of acc.balances) {
-      const balanceToUpdate = await getBalanceToUpdate(
+      const [balanceToUpdate] = await getBalanceToUpdate(
         db,
         acc.id,
         balance.token.id,
       );
       const [updatedBalance] = await db.update<Balance>(
-        `${balanceToUpdate[0].id}`,
+        `${balanceToUpdate.id}`,
         {
           value: balance.amount.toString(),
         },
@@ -259,6 +252,7 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
         parseInt(balance.token.decimals),
       );
 
+      const [{ priceUSD }] = await getDBTokenPriceUSD(db, balance.token.id);
       if (
         BigInt(updatedBalance.value) !== BigInt(0) &&
         formattedBalance !== "0.000"
@@ -269,6 +263,9 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
           symbol: balance.token.symbol,
           decimals: parseInt(balance.token.decimals),
           balance: formattedBalance,
+          balanceValueUSD: (
+            Number(formattedBalance) * Number(priceUSD)
+          ).toFixed(2),
         });
       }
     }
