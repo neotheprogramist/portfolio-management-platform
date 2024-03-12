@@ -15,13 +15,18 @@ export const WalletConnect: Story = {
       {...props}
       image="/images/svg/walletconnect-icon.svg"
       text="Use WalletConnect"
+      dataTest="use-walletconnect"
     ></Button>
   ),
 };
 
 export const Metamask: Story = {
   render: () => (
-    <Button image="/images/svg/metamask-icon.svg" text="Use Metamask"></Button>
+    <Button
+      image="/images/svg/metamask-icon.svg"
+      text="Use Metamask"
+      dataTest="use-metamask"
+    ></Button>
   ),
 };
 
@@ -35,6 +40,7 @@ export const Info: Story = {
       borderColor="#2196F3"
       containerGap="8px"
       fontSize="12px"
+      dataTest="how-to-use-wallet"
     ></Button>
   ),
 };

@@ -1,11 +1,11 @@
-import { Gradient } from "~/components/gradient/gradient";
-import { LoginText } from "~/components/login-text/login-text";
 import { component$ } from "@builder.io/qwik";
 import { Button } from "~/components/button-login/button-login";
+import { Gradient } from "~/components/gradient/gradient";
+import { LoginText } from "~/components/login-text/login-text";
 import { Navbar } from "~/components/navbar/navbar";
-import ImgGradientMain from "/public/images/Gradient.png?jsx";
-import WalletConnect from "~/components/wallet-connect";
 import { Paragraph } from "~/components/paragraph/paragraph";
+import WalletConnect from "~/components/wallet-connect";
+import ImgGradientMain from "/public/images/Gradient.png?jsx";
 
 export default component$(() => {
   return (
@@ -26,11 +26,13 @@ export default component$(() => {
               <Button
                 image="/images/svg/metamask-icon.svg"
                 text="Use Metamask"
+                dataTest="use-metamask"
               />
               <WalletConnect
                 image="/images/svg/walletconnect-icon.svg"
                 text="Use WalletConnect"
                 class="mt-3"
+                dataTest="use-walletconnect"
               />
             </div>
           </div>
@@ -43,6 +45,7 @@ export default component$(() => {
               borderColor="#2196F3"
               containerGap="8px"
               fontSize="12px"
+              dataTest="how-to-use-wallet"
             />
             <Paragraph />
           </div>

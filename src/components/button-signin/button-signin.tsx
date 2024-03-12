@@ -1,4 +1,4 @@
-import { type QRL, component$ } from "@builder.io/qwik";
+import { component$, type QRL } from "@builder.io/qwik";
 import { twMerge } from "tailwind-merge";
 
 export interface ButtonProps {
@@ -8,6 +8,7 @@ export interface ButtonProps {
   background?: string;
   width?: string;
   onClick$?: QRL<() => Promise<void>>;
+  dataTest?: string;
 }
 
 export const Button = component$<ButtonProps>((props) => {
@@ -20,6 +21,7 @@ export const Button = component$<ButtonProps>((props) => {
         props.border,
         props.width,
       )}
+      data-test={props.dataTest ? `${props.dataTest}-button` : undefined}
     >
       <div class={props.class}>{props.text}</div>
     </button>

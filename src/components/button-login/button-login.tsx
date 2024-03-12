@@ -1,4 +1,4 @@
-import { type QRL, component$ } from "@builder.io/qwik";
+import { component$, type QRL } from "@builder.io/qwik";
 import { twMerge } from "tailwind-merge";
 
 export interface ButtonProps {
@@ -11,6 +11,7 @@ export interface ButtonProps {
   fontSize?: string;
   onClick$?: QRL<() => Promise<void>>;
   class?: string;
+  dataTest?: string;
 }
 
 export const Button = component$<ButtonProps>((props) => {
@@ -33,6 +34,7 @@ export const Button = component$<ButtonProps>((props) => {
         props.class,
       )}
       style={buttonStyle}
+      data-test={props.dataTest ? `${props.dataTest}-button` : undefined}
     >
       <div class="flex items-center" style={containerStyle}>
         {props.image && <img src={props.image} width="24" height="24" />}
