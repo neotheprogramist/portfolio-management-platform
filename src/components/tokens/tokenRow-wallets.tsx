@@ -1,22 +1,44 @@
-import { component$ } from "@builder.io/qwik";
-import ImgBtc from "/public/images/bitcoin-btc-logo.svg?jsx";
+import { $, component$ } from "@builder.io/qwik";
 import ImgMore from "/public/images/svg/more.svg?jsx";
-
+import {
+  Image,
+  type ImageTransformerProps,
+  useImageProvider,
+} from "qwik-image";
 type TokenRowWalletsProps = {
   name: string;
   symbol: string;
   balance: string;
+  imagePath: string;
   balanceValueUSD: string;
 };
 
 export const TokenRowWallets = component$<TokenRowWalletsProps>(
-  ({ name, symbol, balance, balanceValueUSD }) => {
+  ({ name, symbol, balance, imagePath, balanceValueUSD }) => {
+    console.log("imagePath", imagePath);
+    const imageTransformer$ = $(
+      ({ src, width, height }: ImageTransformerProps): string => {
+        return `${src}?height=${height}&width=${width}&format=webp&fit=fill`;
+      },
+    );
+
+    useImageProvider({
+      resolutions: [1920, 1280],
+      imageTransformer$,
+    });
     return (
       <>
         <tr class="text-sm">
           <td class="flex items-center gap-4 py-2">
             <div class="border-white-opacity-20 rounded-lg bg-white bg-opacity-10 p-2">
-              <ImgBtc />
+              <Image
+                layout="constrained"
+                objectFit="fill"
+                width={20}
+                height={20}
+                alt="Tropical paradise"
+                src={imagePath}
+              />
             </div>
             <p class="text-white">
               {name} <span class="text-white text-opacity-50">{symbol}</span>
