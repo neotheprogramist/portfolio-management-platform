@@ -4,11 +4,103 @@ import { Alert } from "~/components/alerts/alert";
 import { Action } from "~/components/actions/action";
 import { TokenRow } from "~/components/tokens/tokenRow";
 import ImgWarning from "/public/images/warning.svg?jsx";
+import jwt, { type JwtPayload } from "jsonwebtoken";
+import { connectToDB } from "~/utils/db";
+import { routeLoader$ } from "@builder.io/qwik-city";
+import {
+  fetchTokenDayData,
+  getDBTokenPriceUSD,
+  getDBTokensAddresses,
+  getResultAddresses,
+} from "~/interface/wallets/observedWallets";
+import { fetchSubgraphAccountsData } from "~/utils/subgraph/fetch";
+import { checksumAddress } from "viem";
+import { formatTokenBalance } from "~/utils/formatBalances/formatTokenBalance";
+
+export const useTotalPortfolioValue = routeLoader$(async (requestEvent) => {
+  const db = await connectToDB(requestEvent.env);
+
+  const cookie = requestEvent.cookie.get("accessToken");
+  if (!cookie) {
+    throw new Error("No cookie found");
+  }
+  const { userId } = jwt.decode(cookie.value) as JwtPayload;
+
+  const resultAddresses = await getResultAddresses(db, userId);
+  if (!resultAddresses[0]["->observes_wallet"].out.address.length) {
+    return "0";
+  }
+  console.log("resultAddresses", resultAddresses);
+
+  const observedWalletsAddressesQueryResult =
+    resultAddresses[0]["->observes_wallet"].out.address;
+  console.log(
+    "observedWalletsAddressesQueryResult",
+    observedWalletsAddressesQueryResult,
+  );
+
+  const subgraphURL = requestEvent.env.get("SUBGRAPH_URL");
+  if (!subgraphURL) {
+    throw new Error("Missing SUBGRAPH_URL");
+  }
+
+  const subgraphAccountsData = await fetchSubgraphAccountsData(
+    observedWalletsAddressesQueryResult,
+    subgraphURL,
+  );
+  console.log("subgraphAccountsData", subgraphAccountsData);
+
+  const uniswapSubgraphURL = requestEvent.env.get("UNISWAP_SUBGRAPH_URL");
+  if (!uniswapSubgraphURL) {
+    throw new Error("Missing UNISWAP_SUBGRAPH_URL");
+  }
+
+  const dbTokensAddresses = await getDBTokensAddresses(db);
+  const tokenAddresses = dbTokensAddresses.map((token) =>
+    token.address.toLowerCase(),
+  );
+
+  const tokenDayData = await fetchTokenDayData(
+    uniswapSubgraphURL,
+    tokenAddresses,
+  );
+
+  console.log("tokenDayData", tokenDayData);
+  for (const {
+    token: { id },
+    priceUSD,
+  } of tokenDayData) {
+    console.log("update priceUsd", priceUSD);
+    await db.query(`
+      UPDATE token 
+      SET priceUSD = '${priceUSD}'
+      WHERE address = '${checksumAddress(id as `0x${string}`)}';
+    `);
+  }
+
+  let totalValue = 0;
+
+  for (const account of subgraphAccountsData) {
+    console.log("account", account);
+    for (const balance of account.balances) {
+      const [{ priceUSD }] = await getDBTokenPriceUSD(db, balance.token.id);
+      const formattedBalance = formatTokenBalance(
+        balance.amount.toString(),
+        parseInt(balance.token.decimals),
+      );
+      const balanceValueUSD = Number(formattedBalance) * Number(priceUSD);
+      totalValue += balanceValueUSD;
+    }
+  }
+  console.log("totalvalue", totalValue);
+  return totalValue.toFixed(2);
+});
 
 export default component$(() => {
+  const totalPortfolioValue = useTotalPortfolioValue();
   return (
     <div class="grid grid-cols-4 grid-rows-[384px_1fr] gap-6 overflow-auto border-t border-white border-opacity-15 p-6">
-      <PortfolioValue />
+      <PortfolioValue totalPortfolioValue={totalPortfolioValue.value} />
       <div class="border-white-opacity-20 bg-glass col-start-3 row-span-1 row-start-1 rounded-3xl p-4">
         <div class="mb-4 flex items-center justify-between text-white">
           <h1 class="text-xl font-semibold">Alerts</h1>
