@@ -104,7 +104,7 @@ const ResponseSchema = z.object({
 });
 
 // Define the fetch function
-export async function fetchTokenDayDatas(
+export async function fetchTokenDayData(
   uniswapSubgraphURL: string,
   tokenAddresses: string[],
 ) {

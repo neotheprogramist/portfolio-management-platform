@@ -35,7 +35,7 @@ import {
   getTokenByAddress,
 } from "~/interface/wallets/addWallet";
 import {
-  fetchTokenDayDatas,
+  fetchTokenDayData,
   getBalanceToUpdate,
   getDBTokenPriceUSD,
   getDBTokensAddresses,
@@ -190,15 +190,15 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
     token.address.toLowerCase(),
   );
 
-  const tokenDayDatas = await fetchTokenDayDatas(
+  const tokenDayData = await fetchTokenDayData(
     uniswapSubgraphURL,
     tokenAddresses,
   );
-  console.log("tokenDayDatas", tokenDayDatas);
+  console.log("tokenDayData", tokenDayData);
   for (const {
     token: { id },
     priceUSD,
-  } of tokenDayDatas) {
+  } of tokenDayData) {
     console.log("update priceUsd", priceUSD);
     await db.query(`
       UPDATE token 
