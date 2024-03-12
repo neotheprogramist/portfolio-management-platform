@@ -3,12 +3,9 @@ import { type Token } from "../token/Token";
 
 type WalletWithNativeBalance = Wallet & { nativeBalance: bigint };
 type TokenWithBalance = Omit<Token, "address"> & {
- 
   balance: string;
- 
   balanceValueUSD: string;
   imagePath: string;
-;
 };
 
 export type WalletTokensBalances = {

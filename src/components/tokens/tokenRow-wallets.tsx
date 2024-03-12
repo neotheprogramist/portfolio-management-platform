@@ -15,7 +15,7 @@ type TokenRowWalletsProps = {
 
 export const TokenRowWallets = component$<TokenRowWalletsProps>(
 
-  ({ name, symbol, balance, imagePath }) => {
+  ({ name, symbol, balance, imagePath, balanceValueUSD }) => {
     console.log("imagePath", imagePath);
     const imageTransformer$ = $(
       ({ src, width, height }: ImageTransformerProps): string => {
