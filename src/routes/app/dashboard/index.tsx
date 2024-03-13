@@ -104,7 +104,7 @@ export default component$(() => {
       <div class="border-white-opacity-20 bg-glass col-start-3 row-span-1 row-start-1 rounded-3xl p-4">
         <div class="mb-4 flex items-center justify-between text-white">
           <h1 class="text-xl font-semibold">Alerts</h1>
-          <button class="border-buttons rounded-[40px] px-[14px] py-[6px] font-semibold text-xs">
+          <button class="border-buttons rounded-[40px] px-[14px] py-[6px] text-xs font-semibold">
             See All
           </button>
         </div>
@@ -121,24 +121,24 @@ export default component$(() => {
         </div>
       </div>
 
-      <div class="grid grid-rows-[32px_1fr] gap-[16px] overflow-auto border-white-opacity-20 bg-glass col-start-4 row-span-1 row-start-1 rounded-[16px] p-[24px] shadow">
+      <div class="border-white-opacity-20 bg-glass col-start-4 row-span-1 row-start-1 grid grid-rows-[32px_1fr] gap-[16px] overflow-auto rounded-[16px] p-[24px] shadow">
         <div class="flex items-center justify-between text-white">
           <h1 class="text-xl font-semibold">Actions</h1>
-          <button class="border-buttons rounded-[40px] px-[14px] py-[6px] font-semibold text-xs">
+          <button class="border-buttons rounded-[40px] px-[14px] py-[6px] text-xs font-semibold">
             See All
           </button>
         </div>
         <div class="h-full overflow-auto text-white">
           <Action />
           <Action />
-          <div class="flex justify-between items-center border-b border-white border-opacity-20 py-[20px]">
+          <div class="flex items-center justify-between border-b border-white border-opacity-20 py-[20px]">
             <div class="">
               <h3 class="text-sm">DCA</h3>
               <p class="text-xs text-white text-opacity-50">1 day ago</p>
             </div>
-            <div class="bg-glass flex items-center gap-1 rounded-lg border border-yellow-400 p-[8px] h-[28px]">
+            <div class="bg-glass flex h-[28px] items-center gap-1 rounded-lg border border-yellow-400 p-[8px]">
               <ImgWarning />
-              <p class="md:hidden text-xs text-yellow-400">Warning</p>
+              <p class="text-xs text-yellow-400 md:hidden">Warning</p>
             </div>
           </div>
           <Action />
@@ -147,10 +147,10 @@ export default component$(() => {
         </div>
       </div>
 
-      <div class="border-white-opacity-20 bg-glass col-start-1 col-end-5 row-span-1 row-start-2 grid grid-rows-[32px_1fr] overflow-auto rounded-[16px] p-[24px] gap-[8px]">
-        <div class="row-span-1 row-start-1 mb-6 flex items-center justify-between h-[32px]">
+      <div class="border-white-opacity-20 bg-glass col-start-1 col-end-5 row-span-1 row-start-2 grid grid-rows-[32px_1fr] gap-[8px] overflow-auto rounded-[16px] p-[24px]">
+        <div class="row-span-1 row-start-1 mb-6 flex h-[32px] items-center justify-between">
           <h1 class="text-xl font-semibold text-white">Favourite Tokens</h1>
-          <button class="border-buttons rounded-[40px] px-[14px] py-[6px] font-semibold text-xs">
+          <button class="border-buttons rounded-[40px] px-[14px] py-[6px] text-xs font-semibold">
             Go To Portfolio
           </button>
         </div>
@@ -178,7 +178,7 @@ export default component$(() => {
           </table>
         </div> */}
         <div class="row-span-1 row-start-3 h-full overflow-auto">
-          <table class="w-full overflow-hidden text-left text-sm table-auto">
+          <table class="w-full table-auto overflow-hidden text-left text-sm">
             <thead class="text-xs">
               <tr class="text-white text-opacity-50">
                 <td>TOKEN NAME</td>
@@ -197,7 +197,7 @@ export default component$(() => {
                 <td>SUBPORTFOLIO</td>
                 <td></td>
               </tr>
-            </thead> 
+            </thead>
             <tbody class="overflow-auto">
               <TokenRow />
               <TokenRow />
@@ -213,7 +213,7 @@ export default component$(() => {
               <TokenRow />
             </tbody>
           </table>
-        </div> 
+        </div>
       </div>
     </div>
   );
