@@ -104,11 +104,11 @@ export default component$(() => {
       <div class="border-white-opacity-20 bg-glass col-start-3 row-span-1 row-start-1 rounded-3xl p-4">
         <div class="mb-4 flex items-center justify-between text-white">
           <h1 class="text-xl font-semibold">Alerts</h1>
-          <button class="border-buttons rounded-3xl px-4 py-2 font-semibold">
+          <button class="border-buttons rounded-[40px] px-[14px] py-[6px] font-semibold text-xs">
             See All
           </button>
         </div>
-        <div class="h-72 overflow-scroll text-white">
+        <div class="h-full overflow-auto text-white">
           <Alert />
           <Alert />
           <Alert />
@@ -121,24 +121,24 @@ export default component$(() => {
         </div>
       </div>
 
-      <div class="border-white-opacity-20 bg-glass col-start-4 row-span-1 row-start-1 rounded-3xl p-4 shadow">
-        <div class="mb-4 flex items-center justify-between text-white">
+      <div class="grid grid-rows-[32px_1fr] gap-[16px] overflow-auto border-white-opacity-20 bg-glass col-start-4 row-span-1 row-start-1 rounded-[16px] p-[24px] shadow">
+        <div class="flex items-center justify-between text-white">
           <h1 class="text-xl font-semibold">Actions</h1>
-          <button class="border-buttons rounded-3xl px-4 py-2 font-semibold">
+          <button class="border-buttons rounded-[40px] px-[14px] py-[6px] font-semibold text-xs">
             See All
           </button>
         </div>
-        <div class="h-72 overflow-scroll text-white">
+        <div class="h-full overflow-auto text-white">
           <Action />
           <Action />
-          <div class="flex justify-between border-b border-white border-opacity-20 py-5">
+          <div class="flex justify-between items-center border-b border-white border-opacity-20 py-[20px]">
             <div class="">
               <h3 class="text-sm">DCA</h3>
               <p class="text-xs text-white text-opacity-50">1 day ago</p>
             </div>
-            <div class="bg-glass flex items-center gap-1 rounded-lg border border-yellow-400 p-2">
+            <div class="bg-glass flex items-center gap-1 rounded-lg border border-yellow-400 p-[8px] h-[28px]">
               <ImgWarning />
-              <p class="text-sm text-yellow-400">Warning</p>
+              <p class="md:hidden text-xs text-yellow-400">Warning</p>
             </div>
           </div>
           <Action />
@@ -147,16 +147,39 @@ export default component$(() => {
         </div>
       </div>
 
-      <div class="border-white-opacity-20 bg-glass col-start-1 col-end-5 row-span-1 row-start-2 grid grid-rows-[64px_1fr] overflow-auto rounded-3xl p-4">
-        <div class="row-span-1 row-start-1 mb-6 flex items-center justify-between">
+      <div class="border-white-opacity-20 bg-glass col-start-1 col-end-5 row-span-1 row-start-2 grid grid-rows-[32px_1fr] overflow-auto rounded-[16px] p-[24px] gap-[8px]">
+        <div class="row-span-1 row-start-1 mb-6 flex items-center justify-between h-[32px]">
           <h1 class="text-xl font-semibold text-white">Favourite Tokens</h1>
-          <button class="border-buttons rounded-3xl px-4 py-2 text-xs font-semibold text-white">
+          <button class="border-buttons rounded-[40px] px-[14px] py-[6px] font-semibold text-xs">
             Go To Portfolio
           </button>
         </div>
-        <div class="row-span-1 row-start-2 h-full overflow-auto">
-          <table class="w-full overflow-auto text-left">
+        {/* <div class="">
+          <table class="w-full overflow-auto text-left text-xs">
             <thead>
+              <tr class="text-white text-opacity-50">
+                <td>TOKEN NAME</td>
+                <td>QUANTITY</td>
+                <td>VALUE</td>
+                <td class="flex items-center justify-center gap-4">
+                  CHANGE
+                  <div class="bg-glass flex gap-[8px] rounded-[8px] border-white-opacity-20 text-white h-[32px] p-[2px] text-xs">
+                    <button class="color-gradient rounded-[6px] px-[8px]">24h</button>
+                    <button class="px-[8px]">3d</button>
+                    <button class="px-[8px]">30d</button>
+                  </div>
+                </td>
+                <td>WALLET</td>
+                <td>NETWORK</td>
+                <td>SUBPORTFOLIO</td>
+                <td></td>
+              </tr>
+            </thead>
+          </table>
+        </div> */}
+        <div class="row-span-1 row-start-3 h-full overflow-auto">
+          <table class="w-full overflow-hidden text-left text-sm table-auto">
+            <thead class="text-xs">
               <tr class="text-white text-opacity-50">
                 <td>TOKEN NAME</td>
                 <td>QUANTITY</td>
@@ -174,7 +197,7 @@ export default component$(() => {
                 <td>SUBPORTFOLIO</td>
                 <td></td>
               </tr>
-            </thead>
+            </thead> 
             <tbody class="overflow-auto">
               <TokenRow />
               <TokenRow />
@@ -190,7 +213,7 @@ export default component$(() => {
               <TokenRow />
             </tbody>
           </table>
-        </div>
+        </div> 
       </div>
     </div>
   );
