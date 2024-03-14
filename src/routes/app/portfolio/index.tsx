@@ -3,51 +3,47 @@ import { Button } from "~/components/portfolio/button-master/button";
 import EditIcon from "/public/images/svg/portfolio/edit.svg?jsx";
 import Graph from "/public/images/chart.png?jsx";
 import Bitcoin from "/public/images/svg/portfolio/btc.svg?jsx";
-import ArrowDown from "/public/images/svg/portfolio/arrowDown.svg?jsx";
+import { Group } from "~/components/groups/group";
+import { Token } from "~/components/groups/token";
+
 
 export default component$(() => {
   return (
     <>
       <div class="grid grid-rows-[64px_auto] overflow-auto bg-[#F4F4F4] px-[20px] text-black">
         <div class="flex h-[64px] items-center justify-between">
-          <div class="flex min-w-[158px] items-center gap-2 text-xl">
-            <span>Portfolio name</span>
+          <div class="flex items-center gap-[8px] text-[20px]">
+            <h2>Portfolio name</h2>
             <EditIcon />
           </div>
-          <div class="flex items-center justify-end gap-2">
+          <div class="flex items-center gap-[8px]">
             <Button
               image="/images/svg/portfolio/report-data.svg"
               text="Generate report"
-              newClass="min-w-[143px]"
             />
             <Button
               image="/images/svg/portfolio/rebalance.svg"
               text="Rebalance"
-              newClass="min-w-[108px]"
             />
             <Button
               image="/images/svg/portfolio/dca.svg"
               text="DCA"
-              newClass="min-w-[68px]"
             />
             <Button
               image="/images/svg/portfolio/structures.svg"
               text="See all structures"
-              newClass="min-w-[153px]"
             />
             <Button
               image="/images/svg/portfolio/add.svg"
               text="Create new structure"
-              newClass="bg-[#0C63E9] text-white min-w-[175px]"
+              newClass="bg-[#0C63E9] text-white"
             />
           </div>
         </div>
-        <div class="grid grid-cols-[2fr_1fr] gap-[10px] overflow-auto pb-[20px]">
-          <div class="flex min-h-[200px] min-w-[580px] flex-col gap-[20px] overflow-auto rounded-lg bg-white p-[20px]">
-            <div>
-              <p class="text-base">Token list</p>
-            </div>
-            <div class="flex gap-2">
+        <div class="grid grid-cols-[2fr_1fr] gap-[10px]  pb-[20px]">
+          <div class="flex flex-col min-h-[260px] min-w-[580px] gap-[20px] overflow-auto rounded-[8px] bg-white p-[20px]">
+            <p class="text-[16px] font-medium">Token list</p>
+            <div class="flex gap-[8px]">
               <Button
                 image="/images/svg/portfolio/search.svg"
                 text="Search for name"
@@ -56,38 +52,58 @@ export default component$(() => {
               <Button
                 image="/images/svg/portfolio/arrowDown.svg"
                 text="Subportfolio"
-                newClass="min-w-[118px] flex-row-reverse"
+                newClass="flex-row-reverse"
               />
               <Button
                 image="/images/svg/portfolio/arrowDown.svg"
                 text="Wallet"
-                newClass="min-w-[80px] flex-row-reverse "
+                newClass="flex-row-reverse "
               />
               <Button
                 image="/images/svg/portfolio/arrowDown.svg"
                 text="Network"
-                newClass="min-w-[94px] flex-row-reverse"
+                newClass="flex-row-reverse"
               />
             </div>
-            {/* <div class="overflow-auto">
-                        <div class="text-[10px] h-[40px] px-[20px] flex justify-between items-center gap-[8px]">
-                            <p class="text-opacity-50 min-w-[200px]">TOKEN NAME</p>
-                            <p class="text-opacity-50 min-w-[100px]">QANTITY</p>
-                            <p class="text-opacity-50 min-w-[145px]">VALUE</p>
-                            <div class="min-w-[145px] flex items-center gap-[8px]">
-                                <p class="text-opacity-50 min-w-[40px]">CHANGE</p>
-                                <div class="flex items-center justify-center bg-[#F0F0F0] w-[80px] h-[20px] rounded-sm ">
-                                    <button class="w-[25px] h-[16px] bg-white rounded-sm">24h</button>
-                                    <button class="w-[25px] h-[16px] text-[#A7A7A7]">3d</button>
-                                    <button class="w-[25px] h-[16px] text-[#A7A7A7]">30d</button>
-                                </div>
-                            </div>
-                            <p class="text-opacity-50 min-w-[145px]">WALLET</p>
-                            <p class="text-opacity-50 min-w-[145px]">NETWORK</p>
-                        </div>
-                        <div class="flex justify-between items-center border-b-[1px] border-opacity-50 border-gray-500"></div>
-                    </div> */}
-            <table class="overflow-auto">
+            {/* Start groups */}
+            <div class="overflow-auto grid grid-rows-[40px_auto] gap-[8px] items-center text-[14px] text-[#222222]" style="grid-template-columns: minmax(200px, auto) minmax(100px, auto) repeat(4, minmax(145px, auto)) 16px;">
+              <div class="font-normal text-[#222222] text-opacity-[50%] text-[10px] pl-[20px]">TOKEN NAME</div>
+              <div class="font-normal text-[#222222] text-opacity-[50%] text-[10px]">QUANTITY</div>
+              <div class="font-normal text-[#222222] text-opacity-[50%] text-[10px]">VALUE</div>
+              <div class="flex items-center gap-[8px] font-normal text-[#222222] text-opacity-[50%] text-[10px]">
+                CHANGE
+                <div class="flex items-center justify-center bg-[#F0F0F0] rounded-sm" style="height: 20px; width: 80px;">
+                  <button class="h-[16px] w-[25px] bg-white rounded-sm">24h</button>
+                  <button class="h-[16px] w-[25px] text-[#A7A7A7]">3d</button>
+                  <button class="h-[16px] w-[25px] text-[#A7A7A7]">30d</button>
+                </div>
+              </div>
+              <div class="font-normal text-[#222222] text-opacity-[50%] text-[10px]">WALLET</div>
+              <div class="font-normal text-[#222222] text-opacity-[50%] text-[10px]">NETWORK</div>
+              <div class="pr-[20px]"></div>
+              <div class="bg-[#EFEFEF] col-span-full h-[1px]"></div>
+              <Group name="Investment">
+                <Token
+                  icone="/images/svg/portfolio/btc.svg"
+                  name="Wrapped Bitcoin"
+                  symbol="WBTC"
+                  qauntity="427"
+                  value="$82 617,96"
+                  wallet="TreasuryWBTC"
+                  network="Ethereum"
+                />
+                <Token
+                  icone="/images/svg/portfolio/btc.svg"
+                  name="Wrapped Bitcoin"
+                  symbol="WBTC"
+                  qauntity="427"
+                  value="$82 617,96"
+                  wallet="TreasuryWBTC"
+                  network="Ethereum"
+                />
+              </Group>
+            </div>
+            {/* <table class="overflow-auto">
               <thead class="">
                 <tr class="h-[40px] overflow-auto text-[10px] font-normal text-[#222222]  text-opacity-[50%]">
                   <td class="pl-[20px]">TOKEN NAME</td>
@@ -112,45 +128,16 @@ export default component$(() => {
                 </tr>
               </thead>
               <tbody class="overflow-auto border-t-[1px] border-gray-500 border-opacity-50 text-black">
-                <tr class="flex h-[50px] pb-[8px] pt-[24px] text-[14px]">
-                  <td class="flex items-center gap-[8px] ">
-                    <ArrowDown />
-                    <span>Investment</span>
-                    <EditIcon />
-                  </td>
-                </tr>
-                {/* <tr class="h-[56px]">
-                  <td class="ml-[20px] flex h-[56px] w-[200px] items-center gap-[6px] overflow-auto">
-                    <div class="flex h-[32px] w-[32px] items-center justify-center rounded-full border border-[#E6E6E6]">
-                      <Bitcoin width={32} height={32} class="min-w-[32px]" />
-                    </div>
-                    <div class="flex items-end gap-[6px]">
-                      <p class="overflow-auto text-[14px]">Wrapped Bitcoin</p>
-                      <span class="text-[10px] text-[#22222280] text-opacity-[50%]">
-                        WBTC
-                      </span>
-                    </div>
-                  </td>
-                  <td class="min-w-[100px] overflow-auto">
-                    <span class="font-normal">427</span>
-                  </td>
-                  <td class="min-w-[145px] overflow-auto">
-                    <span class="font-medium">$82 617,96 </span>
-                  </td>
-                  <td class="min-w-[175px] overflow-auto">
-                    <span class="font-medium">H</span>
-                  </td>
-                  <td class="min-w-[145px] overflow-auto">
-                    <span class="font-medium">H</span>
-                  </td>
-                  <td class="min-w-[145px] overflow-auto">
-                    <span class="font-medium">H</span>
-                  </td>
-                </tr> */}
+                <Group text="Investment">
+                  <Token/>
+                </Group>
+                <Group text="Operating Costs">
+                  
+                </Group>
               </tbody>
-            </table>
+            </table> */}
           </div>
-          <div class="flex min-w-[440px] flex-col gap-[25px] overflow-auto rounded-lg bg-white p-[20px]">
+          <div class="flex flex-col gap-[25px] min-w-[440px] overflow-auto rounded-[8px] bg-white p-[20px]">
             <div class="flex h-[32px] items-center justify-between gap-[5px]">
               <p class="text-base">Details</p>
               <div class="flex gap-[5px]">
@@ -186,11 +173,11 @@ export default component$(() => {
                 <button class="h-[28px]  rounded-sm bg-white text-black">
                   Day
                 </button>
-                <button class="h-[28px] ">Month</button>
+                <button class="h-[28px]">Month</button>
                 <button class="h-[28px]">Year</button>
               </div>
               <div class="">
-                <Graph class="min-w-[400px]" />
+                <Graph class="min-w-[400px]"/>
               </div>
             </div>
             <div class="mt-[28px] flex min-w-[370px] flex-col gap-[20px]">
