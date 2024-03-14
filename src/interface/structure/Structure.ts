@@ -5,6 +5,6 @@ export type Structure = {
   structureBalance: StructureBalance[];
 };
 export type StructureBalance = {
-  wallet: { id: string; name: string, chainId: number };
+  wallet: { id: string; name: string; chainId: number };
   balance: TokenWithBalance;
 };

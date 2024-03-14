@@ -85,7 +85,7 @@ export const getDBTokenPriceUSD = async (db: Surreal, tokenAddress: string) => {
       `SELECT priceUSD FROM token WHERE address = '${checksumAddress(tokenAddress as `0x${string}`)}';`,
     )
   ).at(0);
-  console.log("tokenPriceUSD", tokenPriceUSD);
+  // console.log("tokenPriceUSD", tokenPriceUSD);
   return GetDBTokenPriceUSD.array().parse(tokenPriceUSD);
 };
 

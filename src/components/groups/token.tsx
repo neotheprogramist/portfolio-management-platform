@@ -1,13 +1,11 @@
 import { component$ } from "@builder.io/qwik";
-import { twMerge } from "tailwind-merge";
-import Bitcoin from "/public/images/svg/portfolio/btc.svg?jsx";
 import MenuDots from "/public/images/svg/portfolio/menuDots.svg?jsx";
 
 export interface TokenProps {
-  icone?: string;
+  icon?: string;
   name?: string;
   symbol?: string;
-  qauntity?: string;
+  quantity?: string;
   value?: string;
   wallet?: string;
   network?: string;
@@ -22,7 +20,7 @@ export const Token = component$<TokenProps>((props) => {
       >
         <div class="flex h-[40px] items-center gap-[6px]">
           <div class="flex min-h-[32px] min-w-[32px] items-center justify-center rounded-full border border-[#E6E6E6]">
-            {props.icone && <img src={props.icone} width="20" height="20" />}
+            {props.icon && <img src={props.icon} width="20" height="20" />}
           </div>
           <div class="flex h-full items-center gap-[6px] overflow-x-auto">
             <p>{props.name}</p>
@@ -31,7 +29,7 @@ export const Token = component$<TokenProps>((props) => {
             </span>
           </div>
         </div>
-        <p class="flex h-full items-center overflow-x-auto">{props.qauntity}</p>
+        <p class="flex h-full items-center overflow-x-auto">{props.quantity}</p>
         <p class="font-mediumh-full flex items-center overflow-x-auto">
           {props.value}
         </p>
