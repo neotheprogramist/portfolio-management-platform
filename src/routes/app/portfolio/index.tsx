@@ -1,5 +1,6 @@
 import { component$ } from "@builder.io/qwik";
 import { Button } from "~/components/portfolio/button-master/button";
+import ArrowDown from "/public/images/svg/portfolio/arrowDown.svg?jsx";
 import EditIcon from "/public/images/svg/portfolio/edit.svg?jsx";
 import Graph from "/public/images/chart.png?jsx";
 import Bitcoin from "/public/images/svg/portfolio/btc.svg?jsx";
@@ -40,7 +41,7 @@ export default component$(() => {
             />
           </div>
         </div>
-        <div class="grid grid-cols-[2fr_1fr] gap-[10px]  pb-[20px]">
+        <div class="grid grid-cols-[2fr_1fr] gap-[10px] pb-[20px]">
           <div class="flex flex-col min-h-[260px] min-w-[580px] gap-[20px] overflow-auto rounded-[8px] bg-white p-[20px]">
             <p class="text-[16px] font-medium">Token list</p>
             <div class="flex gap-[8px]">
@@ -66,10 +67,10 @@ export default component$(() => {
               />
             </div>
             {/* Start groups */}
-            <div class="overflow-auto grid grid-rows-[40px_auto] gap-[8px] items-center text-[14px] text-[#222222]" style="grid-template-columns: minmax(200px, auto) minmax(100px, auto) repeat(4, minmax(145px, auto)) 16px;">
-              <div class="font-normal text-[#222222] text-opacity-[50%] text-[10px] pl-[20px]">TOKEN NAME</div>
-              <div class="font-normal text-[#222222] text-opacity-[50%] text-[10px]">QUANTITY</div>
-              <div class="font-normal text-[#222222] text-opacity-[50%] text-[10px]">VALUE</div>
+            {/* <div class="overflow-auto grid grid-rows-[40px_auto]  gap-y-[8px] items-center text-[14px] text-[#222222]" style="grid-template-columns: minmax(200px, auto) minmax(100px, auto) repeat(4, minmax(145px, auto)) 16px;">
+              <div class="text-[#222222] text-opacity-[50%] text-[10px] pl-[20px]">TOKEN NAME</div>
+              <div class="text-[#222222] text-opacity-[50%] text-[10px]">QUANTITY</div>
+              <div class="text-[#222222] text-opacity-[50%] text-[10px]">VALUE</div>
               <div class="flex items-center gap-[8px] font-normal text-[#222222] text-opacity-[50%] text-[10px]">
                 CHANGE
                 <div class="flex items-center justify-center bg-[#F0F0F0] rounded-sm" style="height: 20px; width: 80px;">
@@ -82,6 +83,64 @@ export default component$(() => {
               <div class="font-normal text-[#222222] text-opacity-[50%] text-[10px]">NETWORK</div>
               <div class="pr-[20px]"></div>
               <div class="bg-[#EFEFEF] col-span-full h-[1px]"></div>
+              <Group name="Investment">
+                <Token
+                  icone="/images/svg/portfolio/btc.svg"
+                  name="Wrapped Bitcoin"
+                  symbol="WBTC"
+                  qauntity="427"
+                  value="$82 617,96"
+                  wallet="TreasuryWBTC"
+                  network="Ethereum"
+                />
+                <Token
+                  icone="/images/svg/portfolio/btc.svg"
+                  name="Wrapped Bitcoin"
+                  symbol="WBTC"
+                  qauntity="427"
+                  value="$82 617,96"
+                  wallet="TreasuryWBTC"
+                  network="Ethereum"
+                />
+              </Group>
+              <Group name="Investment">
+                <Token
+                  icone="/images/svg/portfolio/btc.svg"
+                  name="Wrapped Bitcoin"
+                  symbol="WBTC"
+                  qauntity="427"
+                  value="$82 617,96"
+                  wallet="TreasuryWBTC"
+                  network="Ethereum"
+                />
+                <Token
+                  icone="/images/svg/portfolio/btc.svg"
+                  name="Wrapped Bitcoin"
+                  symbol="WBTC"
+                  qauntity="427"
+                  value="$82 617,96"
+                  wallet="TreasuryWBTC"
+                  network="Ethereum"
+                />
+              </Group>
+            </div> */}
+            <div class="overflow-auto grid grid-rows-[40px_auto] items-center text-[14px] text-[#222222]">
+              <div style="grid-template-columns: minmax(200px, 400px) minmax(100px, 200px) repeat(4, minmax(145px, 300px)) 16px;" class="grid items-center gap-[8px] px-[20px] text-[#222222] text-opacity-[50%] text-[10px] h-full border-b">
+                <div class="">TOKEN NAME</div>
+                <div class="">QUANTITY</div>
+                <div class="">VALUE</div>
+                <div class="flex items-center gap-[8px]">
+                  CHANGE
+                  <div class="flex items-center justify-center bg-[#F0F0F0] rounded-sm" style="height: 20px; width: 80px;">
+                    <button class="h-[16px] w-[25px] bg-white rounded-sm">24h</button>
+                    <button class="h-[16px] w-[25px] text-[#A7A7A7]">3d</button>
+                    <button class="h-[16px] w-[25px] text-[#A7A7A7]">30d</button>
+                  </div>
+                </div>
+                <div class="font-normal text-[#222222] text-opacity-[50%] text-[10px]">WALLET</div>
+                <div class="font-normal text-[#222222] text-opacity-[50%] text-[10px]">NETWORK</div>
+                <div class="pr-[20px]"></div>
+              </div>
               <Group name="Investment">
                 <Token
                   icone="/images/svg/portfolio/btc.svg"
@@ -128,10 +187,10 @@ export default component$(() => {
                 </tr>
               </thead>
               <tbody class="overflow-auto border-t-[1px] border-gray-500 border-opacity-50 text-black">
-                <Group text="Investment">
+                <Group name="Investment">
                   <Token/>
                 </Group>
-                <Group text="Operating Costs">
+                <Group name="Operating Costs">
                   
                 </Group>
               </tbody>
