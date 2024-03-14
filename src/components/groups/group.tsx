@@ -9,14 +9,16 @@ export interface GroupProps {
 export const Group = component$<GroupProps>((props) => {
     return (
         <>
-        <div class="col-span-full flex h-[50px] pb-[8px] pt-[24px] text-[14px]">
-            <div class="flex items-center gap-[8px] ">
-            <ArrowDown />
-            <h3>{props.name}</h3>
-            <EditIcon />
-            </div>
+        <div>
+          <div class="flex h-[50px] pb-[8px] pt-[24px] text-[14px]">
+              <div class="flex items-center gap-[8px] ">
+              <ArrowDown />
+              <h3>{props.name}</h3>
+              <EditIcon />
+              </div>
+          </div>
+          <Slot/>
         </div>
-        <Slot/>
         </>
     );
 })
