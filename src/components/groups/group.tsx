@@ -4,37 +4,44 @@ import EditIcon from "/public/images/svg/portfolio/edit.svg?jsx";
 import {Structure, StructureBalance} from "~/interface/structure/Structure";
 import {Token} from "~/components/groups/token";
 import {formatTokenBalance} from "~/utils/formatBalances/formatTokenBalance";
+import {chainIdToNetworkName} from "~/utils/chains";
 
 export interface GroupProps {
   createdStructure: Structure
 }
 
 function extractData(createdStructure: Structure): JSXOutput[] {
+
   const extractedArray: {
     walletName: string;
     symbol: string;
-    balance: string;
+    quantity: string
+      networkName: string
+      value: number
   }[] = [];
 
   createdStructure.structureBalance.forEach(
-      (balanceEntry: StructureBalance) => {
+      (balanceEntry ) => {
+          console.log(balanceEntry)
         extractedArray.push({
           walletName: balanceEntry.wallet.name,
+            networkName: chainIdToNetworkName[balanceEntry.wallet.chainId.toString()],
           symbol: balanceEntry.balance.symbol,
-          balance: balanceEntry.balance.balance,
+          quantity: formatTokenBalance(balanceEntry.balance.balance, balanceEntry.balance.decimals),
+            value: 0
         });
       },
   );
 
   return extractedArray.map((entry: any) => (
       <Token
-          icone="/images/svg/tokens/eth.svg"
+          icone={`/images/svg/tokens/${entry.symbol}.svg`}
           name={entry.name}
           symbol={entry.symbol}
-          qauntity={(parseInt(formatTokenBalance(entry.balance, 2), 10) / 10000).toString()}
+          qauntity={entry.quantity}
           value="$-"
           wallet={entry.walletName}
-          network="Ethereum"
+          network={entry.networkName}
       />
   ));
 }

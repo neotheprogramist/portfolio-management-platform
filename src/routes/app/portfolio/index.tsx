@@ -1,24 +1,17 @@
-import { Button } from "~/components/portfolio/button-master/button";
+import {Button} from "~/components/portfolio/button-master/button";
 import EditIcon from "/public/images/svg/portfolio/edit.svg?jsx";
 import Graph from "/public/images/chart.png?jsx";
 import Bitcoin from "/public/images/svg/portfolio/btc.svg?jsx";
-import { Group } from "~/components/groups/group";
-import { component$, JSXOutput, useSignal, useStore } from "@builder.io/qwik";
-import {
-  Form,
-  routeAction$,
-  routeLoader$,
-  z,
-  zod$,
-} from "@builder.io/qwik-city";
-import { connectToDB } from "~/utils/db";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import {
-  getResultAddresses,
-  getWalletDetails,
-} from "~/interface/wallets/observedWallets";
-import { Wallet } from "~/interface/auth/Wallet";
+import {Group} from "~/components/groups/group";
+import {component$, JSXOutput, useSignal, useStore} from "@builder.io/qwik";
+import {Form, routeAction$, routeLoader$, z, zod$,} from "@builder.io/qwik-city";
+import {connectToDB} from "~/utils/db";
+import jwt, {JwtPayload} from "jsonwebtoken";
+import {getResultAddresses, getWalletDetails,} from "~/interface/wallets/observedWallets";
+import {Wallet} from "~/interface/auth/Wallet";
 import {Modal} from "~/components/modal";
+import {isValidName} from "~/utils/validators/addWallet";
+import {chainIdToNetworkName} from "~/utils/chains";
 
 type WalletWithBalance = {
   wallet: { id: string; chainID: number; name: string };
@@ -43,7 +36,6 @@ export const useObservedWalletBalances = routeLoader$(async (requestEvent) => {
   for (const observedWalletAddress of resultAddresses[0]["->observes_wallet"]
     .out.address) {
     const walletDetails = await getWalletDetails(db, observedWalletAddress);
-
     const [balances]: any = await db.query(
       `SELECT id FROM balance WHERE ->(for_wallet WHERE out = '${walletDetails[0].id}')`,
     );
@@ -121,6 +113,7 @@ export const useAvailableStructures = routeLoader$(async (requestEvent) => {
         wallet: {
           id: wallet.id,
           name: wallet.name,
+          chainId: wallet.chainId
         },
         balance: tokenWithBalance,
       });
@@ -134,8 +127,6 @@ export const useAvailableStructures = routeLoader$(async (requestEvent) => {
       structureBalance: structureTokens,
     });
   }
-  console.log('----------------- AVAILABLE STRUCTURES --------------------')
-    console.log(availableStructures[0].structureBalance)
   return availableStructures;
 });
 export const useCreateStructure = routeAction$(
@@ -331,28 +322,7 @@ export default component$(() => {
                createdStructure={createdStructures}
              />
            ))}
-              {/*<Group name="Investment">*/}
-              {/*  <Token*/}
-              {/*    icone="/images/svg/portfolio/btc.svg"*/}
-              {/*    name="Wrapped Bitcoin"*/}
-              {/*    symbol="WBTC"*/}
-              {/*    qauntity="427"*/}
-              {/*    value="$82 617,96"*/}
-              {/*    wallet="TreasuryWBTC"*/}
-              {/*    network="Ethereum"*/}
-              {/*  />*/}
-              {/*  <Token*/}
-              {/*    icone="/images/svg/portfolio/btc.svg"*/}
-              {/*    name="Wrapped Bitcoin"*/}
-              {/*    symbol="WBTC"*/}
-              {/*    qauntity="427"*/}
-              {/*    value="$82 617,96"*/}
-              {/*    wallet="TreasuryWBTC"*/}
-              {/*    network="Ethereum"*/}
-              {/*  />*/}
-              {/*</Group>*/}
             </div>
-
               {isCreateNewStructureModalOpen.value && (
                   <Modal
                       isOpen={isCreateNewStructureModalOpen}
@@ -526,132 +496,6 @@ export default component$(() => {
     </>
   );
 });
-// export default component$(() => {
-//   const availableStructures = useAvailableStructures();
-//   const isCreateNewStructureModalOpen = useSignal(false);
-//   const createStructureAction = useCreateStructure();
-//   const structureStore = useStore({ name: "" });
-//   const selectedWallets = useStore({ wallets: [] as any[] });
-//   const selectedStructure = useSignal<Structure | null>(null);
-//   const isDeleteModalOpen = useSignal(false);
-//   const observedWalletsWithBalance = useObservedWalletBalances();
-//
-//   return (
-//     <div class="grid  grid-cols-2 gap-4 p-8">
-//       <div class="max-h-600 flex flex-col overflow-auto p-2">
-//         <div class="flex justify-between">
-//           <span>Portfolio</span>
-//           <button
-//             class="cursor-pointer rounded bg-blue-500 p-2 text-white"
-//             onClick$={() => {
-//               isCreateNewStructureModalOpen.value =
-//                 !isCreateNewStructureModalOpen.value;
-//             }}
-//           >
-//             Create new structure
-//           </button>
-//         </div>
-//
-//         <div class="flex flex-col">
-//           {availableStructures.value.map((createdStructures) => (
-//             <CreatedStructure
-//               key={createdStructures.structure.name}
-//               createdStructure={createdStructures}
-//               selectedStructure={selectedStructure}
-//             />
-//           ))}
-//         </div>
-//       </div>
-//
-//       <div class="max-h-600 flex flex-col overflow-auto p-2">
-//         {selectedStructure.value && (
-//           <SelectedStructureDetails
-//             key={selectedStructure.value.structure.name}
-//             selectedStructure={selectedStructure}
-//             isDeleteModalopen={isDeleteModalOpen}
-//           />
-//         )}
-//       </div>
-//
-//       {isCreateNewStructureModalOpen.value && (
-//         <Modal
-//           isOpen={isCreateNewStructureModalOpen}
-//           title="Create new structure"
-//         >
-//           <Form
-//             action={createStructureAction}
-//             onSubmitCompleted$={() => {
-//               if (createStructureAction.value?.success) {
-//                 isCreateNewStructureModalOpen.value = false;
-//               }
-//             }}
-//             class="mt-4"
-//           >
-//             <label for="name" class="block">
-//               Name
-//             </label>
-//             <input
-//               type="text"
-//               name="name"
-//               class={`mb-1 block w-full ${!isValidName(structureStore.name) ? "bg-red-300" : ""}`}
-//               value={structureStore.name}
-//               onInput$={(e) => {
-//                 const target = e.target as HTMLInputElement;
-//                 structureStore.name = target.value;
-//               }}
-//             />
-//             {!isValidName(structureStore.name) && (
-//               <p class="mb-4 text-red-500">Invalid name</p>
-//             )}
-//             <label for="walletsId" class="block">
-//               Wallet
-//             </label>
-//             <select
-//               name="walletsId[]"
-//               multiple
-//               onChange$={(e) => {
-//                 const target = e.target as HTMLSelectElement;
-//                 selectedWallets.wallets = Array.from(
-//                   target.selectedOptions,
-//                   (option) => {
-//                     return observedWalletsWithBalance.value.find(
-//                       (observedWallet) =>
-//                         observedWallet.wallet.id === option.value,
-//                     );
-//                   },
-//                 ).filter(Boolean);
-//               }}
-//             >
-//               <option disabled={true}>Select Wallets</option>
-//               {observedWalletsWithBalance.value.map((option) => (
-//                 <option key={option.wallet.id} value={option.wallet.id}>
-//                   {option.wallet.name}
-//                 </option>
-//               ))}
-//             </select>
-//             <label for="balance" class="block">
-//               Tokens
-//             </label>
-//             <select name="balancesId[]" multiple>
-//               <option disabled={true}>Select Tokens</option>
-//               {parseWalletsToOptions(selectedWallets.wallets)}
-//             </select>
-//             <button
-//               type="submit"
-//               class="absolute bottom-4 right-4"
-//               disabled={!isValidName(structureStore.name)}
-//             >
-//               Create structure
-//             </button>
-//           </Form>
-//         </Modal>
-//       )}
-//     </div>
-//   );
-// });
-function isValidName(name: string): boolean {
-  return name.length > 0 ? name.trim().length > 3 : true;
-}
 
 function parseWalletsToOptions(wallets: WalletWithBalance[]): JSXOutput[] {
   const options: JSXOutput[] = [];
