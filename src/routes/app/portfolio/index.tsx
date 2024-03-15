@@ -438,6 +438,12 @@ export default component$(() => {
                 <Group name="Operating Costs">
 
                 </Group>
+                <Group name="Investment">
+                  <Token/>
+                </Group>
+                <Group name="Operating Costs">
+
+                </Group>
               </tbody>
             </table> */}
           </div>
@@ -472,16 +478,16 @@ export default component$(() => {
                 <p>TRANSFER</p>
                 <p>RECEIVE</p>
               </div>
-              <div class="grid h-[32px] w-[398px] grid-cols-4 items-center rounded-[4px] bg-[#F0F0F0] text-[10px] text-[#A7A7A7]">
+              <div class="grid h-[32px] grid-cols-4 items-center rounded-[4px] bg-[#F0F0F0] text-[10px] text-[#A7A7A7]">
                 <button class="h-[28px]">Hour</button>
-                <button class="h-[28px]  rounded-sm bg-white text-black">
+                <button class="h-[28px] rounded-sm bg-white text-black">
                   Day
                 </button>
                 <button class="h-[28px]">Month</button>
                 <button class="h-[28px]">Year</button>
               </div>
               <div class="">
-                <Graph class="min-w-[400px]" />
+                <Graph class="max-w-auto min-w-[400px]" />
               </div>
             </div>
             <div class="mt-[28px] flex min-w-[370px] flex-col gap-[20px]">
