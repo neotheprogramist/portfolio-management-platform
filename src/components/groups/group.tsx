@@ -37,7 +37,7 @@ function extractData(createdStructure: Structure): JSXOutput[] {
 
   return extractedArray.map((entry: any) => (
     <Token
-      icon={`/images/svg/tokens/${entry.symbol}.svg`}
+      icon={`/images/svg/tokens/${entry.symbol.toLowerCase()}.svg`}
       name={entry.name}
       symbol={entry.symbol}
       quantity={entry.quantity}
