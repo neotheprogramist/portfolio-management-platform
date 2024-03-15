@@ -3,7 +3,12 @@ import EditIcon from "/public/images/svg/portfolio/edit.svg?jsx";
 import Graph from "/public/images/chart.png?jsx";
 import Bitcoin from "/public/images/svg/portfolio/btc.svg?jsx";
 import { Group } from "~/components/groups/group";
-import { component$, JSXOutput, useSignal, useStore } from "@builder.io/qwik";
+import {
+  component$,
+  type JSXOutput,
+  useSignal,
+  useStore,
+} from "@builder.io/qwik";
 import {
   Form,
   routeAction$,
@@ -12,13 +17,13 @@ import {
   zod$,
 } from "@builder.io/qwik-city";
 import { connectToDB } from "~/utils/db";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt, { type JwtPayload } from "jsonwebtoken";
 import {
   getDBTokenPriceUSD,
   getResultAddresses,
   getWalletDetails,
 } from "~/interface/wallets/observedWallets";
-import { Wallet } from "~/interface/auth/Wallet";
+import { type Wallet } from "~/interface/auth/Wallet";
 import { Modal } from "~/components/modal";
 import { isValidName } from "~/utils/validators/addWallet";
 

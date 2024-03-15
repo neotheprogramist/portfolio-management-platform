@@ -1,7 +1,10 @@
-import { Slot, component$, JSXOutput } from "@builder.io/qwik";
+import { Slot, component$, type JSXOutput } from "@builder.io/qwik";
 import ArrowDown from "/public/images/svg/portfolio/arrowDown.svg?jsx";
 import EditIcon from "/public/images/svg/portfolio/edit.svg?jsx";
-import { Structure, StructureBalance } from "~/interface/structure/Structure";
+import {
+  type Structure,
+  type StructureBalance,
+} from "~/interface/structure/Structure";
 import { Token } from "~/components/groups/token";
 import { formatTokenBalance } from "~/utils/formatBalances/formatTokenBalance";
 import { chainIdToNetworkName } from "~/utils/chains";
@@ -35,8 +38,9 @@ function extractData(createdStructure: Structure): JSXOutput[] {
     },
   );
 
-  return extractedArray.map((entry: any) => (
+  return extractedArray.map((entry: any, index: number) => (
     <Token
+      key={`token_${index}`}
       icon={`/images/svg/tokens/${entry.symbol.toLowerCase()}.svg`}
       name={entry.name}
       symbol={entry.symbol}

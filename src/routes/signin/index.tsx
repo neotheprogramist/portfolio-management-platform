@@ -11,7 +11,7 @@ import {
   getNonceServer,
   verifyMessageServer,
 } from "~/components/wallet-connect/server";
-import { getAccount, getChainId, signMessage } from "@wagmi/core";
+import { disconnect, getAccount, getChainId, signMessage } from "@wagmi/core";
 import { SiweMessage } from "siwe";
 
 export default component$(() => {
@@ -52,6 +52,14 @@ export default component$(() => {
     }
   });
 
+  const cancelHandler = $(async () => {
+    console.log("clicked");
+    if (modalStore.isConnected && modalStore.config) {
+      await disconnect(modalStore.config);
+      await nav("/");
+    }
+  });
+
   return (
     <>
       <Navbar class="fixed" />
@@ -68,6 +76,7 @@ export default component$(() => {
             <WelcomeText />
             <div class="flex gap-4 text-[14px]">
               <Button
+                onClick$={cancelHandler}
                 text="Cancel"
                 border="border-white border-opacity-20"
                 width="w-[98px]"
