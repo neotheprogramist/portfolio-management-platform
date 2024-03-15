@@ -3,7 +3,12 @@ import EditIcon from "/public/images/svg/portfolio/edit.svg?jsx";
 import Graph from "/public/images/chart.png?jsx";
 import Bitcoin from "/public/images/svg/portfolio/btc.svg?jsx";
 import { Group } from "~/components/groups/group";
-import { component$, JSXOutput, useSignal, useStore } from "@builder.io/qwik";
+import {
+  component$,
+  type JSXOutput,
+  useSignal,
+  useStore,
+} from "@builder.io/qwik";
 import {
   Form,
   routeAction$,
@@ -12,13 +17,13 @@ import {
   zod$,
 } from "@builder.io/qwik-city";
 import { connectToDB } from "~/utils/db";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt, { type JwtPayload } from "jsonwebtoken";
 import {
   getDBTokenPriceUSD,
   getResultAddresses,
   getWalletDetails,
 } from "~/interface/wallets/observedWallets";
-import { Wallet } from "~/interface/auth/Wallet";
+import { type Wallet } from "~/interface/auth/Wallet";
 import { Modal } from "~/components/modal";
 import { isValidName } from "~/utils/validators/addWallet";
 
@@ -237,64 +242,6 @@ export default component$(() => {
                 newClass="flex-row-reverse"
               />
             </div>
-            {/* Start groups */}
-            {/* <div class="overflow-auto grid grid-rows-[40px_auto]  gap-y-[8px] items-center text-[14px] text-[#222222]" style="grid-template-columns: minmax(200px, auto) minmax(100px, auto) repeat(4, minmax(145px, auto)) 16px;">
-              <div class="text-[#222222] text-opacity-[50%] text-[10px] pl-[20px]">TOKEN NAME</div>
-              <div class="text-[#222222] text-opacity-[50%] text-[10px]">QUANTITY</div>
-              <div class="text-[#222222] text-opacity-[50%] text-[10px]">VALUE</div>
-              <div class="flex items-center gap-[8px] font-normal text-[#222222] text-opacity-[50%] text-[10px]">
-                CHANGE
-                <div class="flex items-center justify-center bg-[#F0F0F0] rounded-sm" style="height: 20px; width: 80px;">
-                  <button class="h-[16px] w-[25px] bg-white rounded-sm">24h</button>
-                  <button class="h-[16px] w-[25px] text-[#A7A7A7]">3d</button>
-                  <button class="h-[16px] w-[25px] text-[#A7A7A7]">30d</button>
-                </div>
-              </div>
-              <div class="font-normal text-[#222222] text-opacity-[50%] text-[10px]">WALLET</div>
-              <div class="font-normal text-[#222222] text-opacity-[50%] text-[10px]">NETWORK</div>
-              <div class="pr-[20px]"></div>
-              <div class="bg-[#EFEFEF] col-span-full h-[1px]"></div>
-              <Group name="Investment">
-                <Token
-                  icone="/images/svg/portfolio/btc.svg"
-                  name="Wrapped Bitcoin"
-                  symbol="WBTC"
-                  quantity="427"
-                  value="$82 617,96"
-                  wallet="TreasuryWBTC"
-                  network="Ethereum"
-                />
-                <Token
-                  icone="/images/svg/portfolio/btc.svg"
-                  name="Wrapped Bitcoin"
-                  symbol="WBTC"
-                  quantity="427"
-                  value="$82 617,96"
-                  wallet="TreasuryWBTC"
-                  network="Ethereum"
-                />
-              </Group>
-              <Group name="Investment">
-                <Token
-                  icone="/images/svg/portfolio/btc.svg"
-                  name="Wrapped Bitcoin"
-                  symbol="WBTC"
-                  quantity="427"
-                  value="$82 617,96"
-                  wallet="TreasuryWBTC"
-                  network="Ethereum"
-                />
-                <Token
-                  icone="/images/svg/portfolio/btc.svg"
-                  name="Wrapped Bitcoin"
-                  symbol="WBTC"
-                  quantity="427"
-                  value="$82 617,96"
-                  wallet="TreasuryWBTC"
-                  network="Ethereum"
-                />
-              </Group>
-            </div> */}
             <div class="grid grid-rows-[40px_auto] items-center overflow-auto text-[14px] text-[#222222]">
               <div
                 style="grid-template-columns: minmax(200px, 400px) minmax(100px, 200px) repeat(4, minmax(145px, 300px)) 16px;"
@@ -406,45 +353,6 @@ export default component$(() => {
                 </Form>
               </Modal>
             )}
-            {/* <table class="overflow-auto">
-              <thead class="">
-                <tr class="h-[40px] overflow-auto text-[10px] font-normal text-[#222222]  text-opacity-[50%]">
-                  <td class="pl-[20px]">TOKEN NAME</td>
-                  <td class="">QUANTITY</td>
-                  <td class="">VALUE</td>
-                  <td class="flex h-[40px] items-center gap-[8px]">
-                    CHANGE
-                    <div class="flex h-[20px] w-[80px] items-center justify-center rounded-sm bg-[#F0F0F0] ">
-                      <button class="h-[16px] w-[25px] rounded-sm bg-white">
-                        24h
-                      </button>
-                      <button class="h-[16px] w-[25px] text-[#A7A7A7]">
-                        3d
-                      </button>
-                      <button class="h-[16px] w-[25px] text-[#A7A7A7]">
-                        30d
-                      </button>
-                    </div>
-                  </td>
-                  <td class="">WALLET</td>
-                  <td class="">NETWORK</td>
-                </tr>
-              </thead>
-              <tbody class="overflow-auto border-t-[1px] border-gray-500 border-opacity-50 text-black">
-                <Group name="Investment">
-                  <Token/>
-                </Group>
-                <Group name="Operating Costs">
-
-                </Group>
-                <Group name="Investment">
-                  <Token/>
-                </Group>
-                <Group name="Operating Costs">
-
-                </Group>
-              </tbody>
-            </table> */}
           </div>
           <div class="flex min-w-[440px] flex-col gap-[25px] overflow-auto rounded-[8px] bg-white p-[20px]">
             <div class="flex h-[32px] items-center justify-between gap-[5px]">

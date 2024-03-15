@@ -1,6 +1,4 @@
 import { component$ } from "@builder.io/qwik";
-import { twMerge } from "tailwind-merge";
-import Bitcoin from "/public/images/svg/portfolio/btc.svg?jsx";
 import MenuDots from "/public/images/svg/portfolio/menuDots.svg?jsx";
 
 export interface TokenProps {

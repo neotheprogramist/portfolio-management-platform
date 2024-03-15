@@ -35,9 +35,9 @@ export const TokenRowWallets = component$<TokenRowWalletsProps>(
               <Image
                 layout="constrained"
                 objectFit="fill"
-                width={20}
-                height={20}
-                alt="Tropical paradise"
+                width={24}
+                height={24}
+                alt={`${name} logo`}
                 src={imagePath}
               />
             </div>

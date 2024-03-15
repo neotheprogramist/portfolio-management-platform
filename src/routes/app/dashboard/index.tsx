@@ -12,10 +12,13 @@ import {
   getDBTokenPriceUSD,
   getDBTokensAddresses,
   getResultAddresses,
+  getTokenImagePath,
 } from "~/interface/wallets/observedWallets";
 import { fetchSubgraphAccountsData } from "~/utils/subgraph/fetch";
 import { checksumAddress } from "viem";
+import { type Wallet } from "~/interface/auth/Wallet";
 import { formatTokenBalance } from "~/utils/formatBalances/formatTokenBalance";
+import { chainIdToNetworkName } from "~/utils/chains";
 
 export const useTotalPortfolioValue = routeLoader$(async (requestEvent) => {
   const db = await connectToDB(requestEvent.env);
@@ -25,19 +28,13 @@ export const useTotalPortfolioValue = routeLoader$(async (requestEvent) => {
     throw new Error("No cookie found");
   }
   const { userId } = jwt.decode(cookie.value) as JwtPayload;
-
   const resultAddresses = await getResultAddresses(db, userId);
   if (!resultAddresses[0]["->observes_wallet"].out.address.length) {
     return "0";
   }
-  console.log("resultAddresses", resultAddresses);
 
   const observedWalletsAddressesQueryResult =
     resultAddresses[0]["->observes_wallet"].out.address;
-  console.log(
-    "observedWalletsAddressesQueryResult",
-    observedWalletsAddressesQueryResult,
-  );
 
   const subgraphURL = requestEvent.env.get("SUBGRAPH_URL");
   if (!subgraphURL) {
@@ -48,7 +45,6 @@ export const useTotalPortfolioValue = routeLoader$(async (requestEvent) => {
     observedWalletsAddressesQueryResult,
     subgraphURL,
   );
-  console.log("subgraphAccountsData", subgraphAccountsData);
 
   const uniswapSubgraphURL = requestEvent.env.get("UNISWAP_SUBGRAPH_URL");
   if (!uniswapSubgraphURL) {
@@ -65,12 +61,10 @@ export const useTotalPortfolioValue = routeLoader$(async (requestEvent) => {
     tokenAddresses,
   );
 
-  console.log("tokenDayData", tokenDayData);
   for (const {
     token: { id },
     priceUSD,
   } of tokenDayData) {
-    console.log("update priceUsd", priceUSD);
     await db.query(`
       UPDATE token 
       SET priceUSD = '${priceUSD}'
@@ -81,7 +75,6 @@ export const useTotalPortfolioValue = routeLoader$(async (requestEvent) => {
   let totalValue = 0;
 
   for (const account of subgraphAccountsData) {
-    console.log("account", account);
     for (const balance of account.balances) {
       const [{ priceUSD }] = await getDBTokenPriceUSD(db, balance.token.id);
       const formattedBalance = formatTokenBalance(
@@ -92,12 +85,85 @@ export const useTotalPortfolioValue = routeLoader$(async (requestEvent) => {
       totalValue += balanceValueUSD;
     }
   }
-  console.log("totalvalue", totalValue);
+
   return totalValue.toFixed(2);
+});
+
+export const useGetFavoriteTokens = routeLoader$(async (requestEvent) => {
+  const db = await connectToDB(requestEvent.env);
+
+  const cookie = requestEvent.cookie.get("accessToken");
+  if (!cookie) {
+    throw new Error("No cookie found");
+  }
+  const { userId } = jwt.decode(cookie.value) as JwtPayload;
+  const [result]: any = await db.query(
+    `SELECT * FROM ${userId}->has_structure WHERE out.name = 'favorite tokens';`,
+  );
+  if (!result.length) return [];
+  console.log("result", result);
+  const createdStructure = result[0].out;
+
+  console.log("createdStructure", createdStructure);
+  const availableStructures: any[] = [];
+
+  const [structure] = await db.select(`${createdStructure}`);
+  const structureTokens: any = [];
+  const [structureBalances]: any = await db.query(`
+    SELECT ->structure_balance.out FROM ${structure.id}`);
+
+  for (const balance of structureBalances[0]["->structure_balance"].out) {
+    const [walletId]: any = await db.query(`
+      SELECT out  FROM for_wallet WHERE in = ${balance}`);
+    const [wallet] = await db.select<Wallet>(`${walletId[0].out}`);
+
+    const [tokenBalance]: any = await db.query(`
+      SELECT * FROM balance WHERE id=${balance}`);
+
+    const [tokenId]: any = await db.query(`
+      SELECT ->for_token.out FROM ${balance}`);
+
+    const [token]: any = await db.query(
+      `SELECT * FROM ${tokenId[0]["->for_token"].out[0]}`,
+    );
+    const [tokenValue] = await getDBTokenPriceUSD(db, token[0].address);
+    const [imagePath] = await getTokenImagePath(db, token[0].symbol);
+    console.log("---------IMAGE PATH---------", imagePath.imagePath);
+    const tokenWithBalance = {
+      id: token[0].id,
+      name: token[0].name,
+      symbol: token[0].symbol,
+      decimals: token[0].decimals,
+      balance: tokenBalance[0].value,
+      balanceValueUSD: tokenValue.priceUSD,
+      imagePath: imagePath.imagePath,
+    };
+
+    structureTokens.push({
+      wallet: {
+        id: wallet.id,
+        name: wallet.name,
+        chainId: wallet.chainId,
+      },
+      balance: tokenWithBalance,
+    });
+  }
+
+  availableStructures.push({
+    structure: {
+      id: structure.id,
+      name: structure.name,
+    },
+    structureBalance: structureTokens,
+  });
+
+  console.log("Available Structures from routeloader: ", availableStructures);
+  return availableStructures;
 });
 
 export default component$(() => {
   const totalPortfolioValue = useTotalPortfolioValue();
+  const favoriteTokens = useGetFavoriteTokens();
   return (
     <div class="grid grid-cols-4 grid-rows-[48%_48%] gap-6 overflow-auto border-t border-white border-opacity-15 p-6">
       <PortfolioValue totalPortfolioValue={totalPortfolioValue.value} />
@@ -178,28 +244,31 @@ export default component$(() => {
 
         <div class="row-span-1 row-start-3 inline-block h-full min-w-full overflow-auto">
           <div class="overflow-auto">
-            <TokenRow />
-            <TokenRow />
-            <TokenRow />
-            <TokenRow />
-            <TokenRow />
-            <TokenRow />
-            <TokenRow />
-            <TokenRow />
-            <TokenRow />
-            <TokenRow />
-            <TokenRow />
-            <TokenRow />
-            <TokenRow />
-            <TokenRow />
-            <TokenRow />
-            <TokenRow />
-            <TokenRow />
-            <TokenRow />
-            <TokenRow />
-            <TokenRow />
-            <TokenRow />
-            <TokenRow />
+            {favoriteTokens.value[0] &&
+              favoriteTokens.value[0].structureBalance.map(
+                async (token: any, index: number) => {
+                  const formattedBalance = formatTokenBalance(
+                    token.balance.balance.toString(),
+                    parseInt(token.balance.decimals),
+                  );
+                  return (
+                    <TokenRow
+                      key={`id_${index}_${token.balance.name}`}
+                      subportfolio={favoriteTokens.value[0].structure.name}
+                      tokenName={token.balance.name}
+                      tokenSymbol={token.balance.symbol}
+                      quantity={formattedBalance}
+                      value={(
+                        Number(formattedBalance) *
+                        Number(token.balance.balanceValueUSD)
+                      ).toFixed(2)}
+                      wallet={token.wallet.name}
+                      networkName={chainIdToNetworkName[token.wallet.chainId]}
+                      imagePath={token.balance.imagePath}
+                    />
+                  );
+                },
+              )}
           </div>
         </div>
       </div>

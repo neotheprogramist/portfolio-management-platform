@@ -59,21 +59,16 @@ export const useAddWallet = routeAction$(
     const { userId } = jwt.decode(cookie.value) as JwtPayload;
 
     const existingWallet = await getExistingWallet(db, data.address);
-    console.log("existingWallet", existingWallet);
 
     let walletId;
     if (existingWallet.at(0)) {
-      console.log("wallet exists");
-
       walletId = existingWallet[0].id;
     } else {
-      console.log("wallet does not exist");
       const [createWalletQueryResult] = await db.create<Wallet>("wallet", {
         chainId: 1,
         address: data.address,
         name: data.name,
       });
-      console.log("created wallet", createWalletQueryResult);
       walletId = createWalletQueryResult.id;
       // native balance for created wallet
       const nativeBalance = await publicClient.getBalance({
@@ -180,7 +175,6 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
     observedWalletsAddressesQueryResult,
     subgraphURL,
   );
-  console.log("accounts_", accounts_);
 
   const uniswapSubgraphURL = requestEvent.env.get("UNISWAP_SUBGRAPH_URL");
   if (!uniswapSubgraphURL) {
@@ -196,23 +190,18 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
     uniswapSubgraphURL,
     tokenAddresses,
   );
-  console.log("tokenDayData", tokenDayData);
   for (const {
     token: { id },
     priceUSD,
   } of tokenDayData) {
-    console.log("update priceUsd", priceUSD);
     await db.query(`
       UPDATE token 
       SET priceUSD = '${priceUSD}'
       WHERE address = '${checksumAddress(id as `0x${string}`)}';
     `);
   }
-
   const observedWallets: WalletTokensBalances[] = [];
-
   for (const acc of accounts_) {
-    console.log("acc", acc);
     const nativeBalance = await publicClient.getBalance({
       address: getAddress(acc.id) as `0x${string}`,
       blockTag: "safe",
