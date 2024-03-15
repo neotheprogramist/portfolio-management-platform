@@ -98,7 +98,7 @@ export const useGetFavoriteTokens = routeLoader$(async (requestEvent) => {
   }
   const { userId } = jwt.decode(cookie.value) as JwtPayload;
   const [result]: any = await db.query(
-    `SELECT * FROM ${userId}->has_structure WHERE out.name = 'favorite tokens';`,
+    `SELECT * FROM ${userId}->has_structure WHERE out.name = 'Favourite Tokens';`,
   );
   if (!result.length) return [];
   console.log("result", result);
