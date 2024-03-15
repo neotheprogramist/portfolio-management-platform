@@ -5,7 +5,7 @@ import ImgGraf from "/public/images/svg/graf.svg?jsx";
 
 export const TokenRow = component$(() => {
   return (
-    <div class="grid grid-cols-[17%_8%_11%_20%_14%_11%_12%_3%] items-center gap-[8px] border-b border-white border-opacity-10 py-[16px] text-left text-[14px] text-white text-opacity-50">
+    <div class="grid grid-cols-[17%_8%_11%_20%_14%_11%_12%_3%] items-center gap-[8px] border-b border-white border-opacity-10 py-[16px] text-left text-[14px]">
       <div class="flex items-center gap-4 py-2">
         <div class="rounded-lg border border-white border-opacity-20 bg-white bg-opacity-10 p-2">
           <ImgBtc />
