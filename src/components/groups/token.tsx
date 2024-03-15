@@ -15,27 +15,43 @@ export const Token = component$<TokenProps>((props) => {
   return (
     <>
       <div
-        class="grid max-h-[56px] items-center gap-[8px] text-nowrap px-[20px]"
-        style="grid-template-columns: minmax(200px, 400px) minmax(100px, 200px) repeat(4, minmax(145px, 300px)) 16px;"
+        class="grid text-[12px] items-center text-nowrap border-b-[1px] border-white border-opacity-10 pb-[12.5px]"
+        style="grid-template-columns: minmax(200px, 400px) minmax(100px, 200px) repeat(4, minmax(145px, 300px)) 40px;"
       >
         <div class="flex h-[40px] items-center gap-[6px]">
-          <div class="flex min-h-[32px] min-w-[32px] items-center justify-center rounded-full border border-[#E6E6E6]">
+          <div class="flex p-[8px] items-center justify-center rounded-[8px] custom-border-1">
             {props.icon && <img src={props.icon} width="20" height="20" />}
           </div>
           <div class="flex h-full items-center gap-[6px] overflow-x-auto">
-            <p>{props.name}</p>
-            <span class="text-[10px] text-[#222222] text-opacity-[50%]">
-              {props.symbol}
+            <p>{props.name}Hello</p>
+            <span class="text-[12px] text-white text-opacity-[50%]">
+              {props.symbol} 
             </span>
           </div>
         </div>
-        <p class="flex h-full items-center overflow-x-auto">{props.quantity}</p>
-        <p class="font-mediumh-full flex items-center overflow-x-auto">
+        <div class="font-medium overflow-auto h-full flex items-center">
+          <span class="p-[8px] rounded-[8px] custom-border-1">
+          {props.quantity}
+          </span>
+        </div>
+        <div class="font-medium overflow-auto h-full flex items-center">
+          <span class="p-[8px] rounded-[8px] custom-border-1">
           {props.value}
-        </p>
-        <p class="flex h-full items-center overflow-x-auto"></p>
-        <p class="flex h-full items-center overflow-x-auto">{props.wallet}</p>
-        <p class="flex h-full items-center overflow-x-auto underline underline-offset-2">
+          </span>
+        </div>
+        
+        <div class="font-medium overflow-auto h-full flex items-center">
+          <span class="p-[8px] rounded-[8px]">
+          
+          </span>
+        </div>
+        <div class="font-medium overflow-auto h-full flex items-center">
+          <span class="p-[8px] rounded-[8px] custom-border-1">
+          {props.wallet}
+          </span>
+        </div>
+        <div class="font-medium overflow-auto h-full flex items-center">
+          <span class="p-[8px] rounded-[8px] custom-border-1 ">
           {props.network}
         </p>
         <button class="rounded-[2px] bg-[#22222214] bg-opacity-[8]">
