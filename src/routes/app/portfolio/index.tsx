@@ -7,7 +7,6 @@ import Bitcoin from "/public/images/svg/portfolio/btc.svg?jsx";
 import { Group } from "~/components/groups/group";
 import { Token } from "~/components/groups/token";
 
-
 export default component$(() => {
   return (
     <>
@@ -26,10 +25,7 @@ export default component$(() => {
               image="/images/svg/portfolio/rebalance.svg"
               text="Rebalance"
             />
-            <Button
-              image="/images/svg/portfolio/dca.svg"
-              text="DCA"
-            />
+            <Button image="/images/svg/portfolio/dca.svg" text="DCA" />
             <Button
               image="/images/svg/portfolio/structures.svg"
               text="See all structures"
@@ -42,7 +38,7 @@ export default component$(() => {
           </div>
         </div>
         <div class="grid grid-cols-[2fr_1fr] gap-[10px] pb-[20px]">
-          <div class="flex flex-col min-h-[260px] min-w-[580px] gap-[20px] overflow-auto rounded-[8px] bg-white p-[20px]">
+          <div class="flex min-h-[260px] min-w-[580px] flex-col gap-[20px] overflow-auto rounded-[8px] bg-white p-[20px]">
             <p class="text-[16px] font-medium">Token list</p>
             <div class="flex gap-[8px]">
               <Button
@@ -124,21 +120,35 @@ export default component$(() => {
                 />
               </Group>
             </div> */}
-            <div class="overflow-auto grid grid-rows-[40px_auto] items-center text-[14px] text-[#222222]">
-              <div style="grid-template-columns: minmax(200px, 400px) minmax(100px, 200px) repeat(4, minmax(145px, 300px)) 16px;" class="grid items-center gap-[8px] px-[20px] text-[#222222] text-opacity-[50%] text-[10px] h-full border-b">
+            <div class="grid grid-rows-[40px_auto] items-center overflow-auto text-[14px] text-[#222222]">
+              <div
+                style="grid-template-columns: minmax(200px, 400px) minmax(100px, 200px) repeat(4, minmax(145px, 300px)) 16px;"
+                class="grid h-full items-center gap-[8px] border-b px-[20px] text-[10px] text-[#222222] text-opacity-[50%]"
+              >
                 <div class="">TOKEN NAME</div>
                 <div class="">QUANTITY</div>
                 <div class="">VALUE</div>
                 <div class="flex items-center gap-[8px]">
                   CHANGE
-                  <div class="flex items-center justify-center bg-[#F0F0F0] rounded-sm" style="height: 20px; width: 80px;">
-                    <button class="h-[16px] w-[25px] bg-white rounded-sm">24h</button>
+                  <div
+                    class="flex items-center justify-center rounded-sm bg-[#F0F0F0]"
+                    style="height: 20px; width: 80px;"
+                  >
+                    <button class="h-[16px] w-[25px] rounded-sm bg-white">
+                      24h
+                    </button>
                     <button class="h-[16px] w-[25px] text-[#A7A7A7]">3d</button>
-                    <button class="h-[16px] w-[25px] text-[#A7A7A7]">30d</button>
+                    <button class="h-[16px] w-[25px] text-[#A7A7A7]">
+                      30d
+                    </button>
                   </div>
                 </div>
-                <div class="font-normal text-[#222222] text-opacity-[50%] text-[10px]">WALLET</div>
-                <div class="font-normal text-[#222222] text-opacity-[50%] text-[10px]">NETWORK</div>
+                <div class="text-[10px] font-normal text-[#222222] text-opacity-[50%]">
+                  WALLET
+                </div>
+                <div class="text-[10px] font-normal text-[#222222] text-opacity-[50%]">
+                  NETWORK
+                </div>
                 <div class="pr-[20px]"></div>
               </div>
               <Group name="Investment">
@@ -196,7 +206,7 @@ export default component$(() => {
               </tbody>
             </table> */}
           </div>
-          <div class="flex flex-col gap-[25px] min-w-[440px] overflow-auto rounded-[8px] bg-white p-[20px]">
+          <div class="flex min-w-[440px] flex-col gap-[25px] overflow-auto rounded-[8px] bg-white p-[20px]">
             <div class="flex h-[32px] items-center justify-between gap-[5px]">
               <p class="text-base">Details</p>
               <div class="flex gap-[5px]">
@@ -236,7 +246,7 @@ export default component$(() => {
                 <button class="h-[28px]">Year</button>
               </div>
               <div class="">
-                <Graph class="min-w-[400px] max-w-auto"/>
+                <Graph class="max-w-auto min-w-[400px]" />
               </div>
             </div>
             <div class="mt-[28px] flex min-w-[370px] flex-col gap-[20px]">
