@@ -1,4 +1,5 @@
 import { Button } from "~/components/portfolio/button-master/button";
+import ArrowDown from "/public/images/svg/portfolio/arrowDown.svg?jsx";
 import EditIcon from "/public/images/svg/portfolio/edit.svg?jsx";
 import Graph from "/public/images/chart.png?jsx";
 import Bitcoin from "/public/images/svg/portfolio/btc.svg?jsx";
