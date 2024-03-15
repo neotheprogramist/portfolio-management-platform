@@ -1,5 +1,4 @@
 import { Button } from "~/components/portfolio/button-master/button";
-import ArrowDown from "/public/images/svg/portfolio/arrowDown.svg?jsx";
 import EditIcon from "/public/images/svg/portfolio/edit.svg?jsx";
 import Graph from "/public/images/chart.png?jsx";
 import Bitcoin from "/public/images/svg/portfolio/btc.svg?jsx";
@@ -260,7 +259,7 @@ export default component$(() => {
                   icone="/images/svg/portfolio/btc.svg"
                   name="Wrapped Bitcoin"
                   symbol="WBTC"
-                  qauntity="427"
+                  quantity="427"
                   value="$82 617,96"
                   wallet="TreasuryWBTC"
                   network="Ethereum"
@@ -269,7 +268,7 @@ export default component$(() => {
                   icone="/images/svg/portfolio/btc.svg"
                   name="Wrapped Bitcoin"
                   symbol="WBTC"
-                  qauntity="427"
+                  quantity="427"
                   value="$82 617,96"
                   wallet="TreasuryWBTC"
                   network="Ethereum"
@@ -280,7 +279,7 @@ export default component$(() => {
                   icone="/images/svg/portfolio/btc.svg"
                   name="Wrapped Bitcoin"
                   symbol="WBTC"
-                  qauntity="427"
+                  quantity="427"
                   value="$82 617,96"
                   wallet="TreasuryWBTC"
                   network="Ethereum"
@@ -289,7 +288,7 @@ export default component$(() => {
                   icone="/images/svg/portfolio/btc.svg"
                   name="Wrapped Bitcoin"
                   symbol="WBTC"
-                  qauntity="427"
+                  quantity="427"
                   value="$82 617,96"
                   wallet="TreasuryWBTC"
                   network="Ethereum"
