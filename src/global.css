@@ -131,10 +131,24 @@ body {
     border: 2px solid rgba(255, 255, 255, 0.15);
   }
   .custom-bg-white {
-    background: linear-gradient(98deg, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0.00) 100%);
+    background: linear-gradient(
+      98deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0) 100%
+    );
     backdrop-filter: blur(100px);
   }
   .custom-bg-button {
-    background: linear-gradient(130deg, #DA301F 0.24%, #F48946 18.43%, #EE3560 35.57%, #FA4784 51.68%, #FF48C0 66.75%, #8E38B5 81.82%, #5542BB 89.09%, #0051C3 100%);
+    background: linear-gradient(
+      130deg,
+      #da301f 0.24%,
+      #f48946 18.43%,
+      #ee3560 35.57%,
+      #fa4784 51.68%,
+      #ff48c0 66.75%,
+      #8e38b5 81.82%,
+      #5542bb 89.09%,
+      #0051c3 100%
+    );
   }
 }

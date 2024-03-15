@@ -1,4 +1,7 @@
-import { Button, ButtonTokenList } from "~/components/portfolio/button-master/button";
+import {
+  Button,
+  ButtonTokenList,
+} from "~/components/portfolio/button-master/button";
 import EditIcon from "/public/images/svg/portfolio/edit.svg?jsx";
 import Graph from "/public/images/chart.png?jsx";
 import Bitcoin from "/public/images/svg/portfolio/btc.svg?jsx";
@@ -272,16 +275,21 @@ export default component$(() => {
   return (
     <>
       <div class="grid grid-rows-[auto_auto] overflow-auto px-[20px] ">
-        <div class="flex py-[32px] items-center justify-between">
-          <div class="flex items-center gap-[8px] font-semibold text-[24px]">
+        <div class="flex items-center justify-between py-[32px]">
+          <div class="flex items-center gap-[8px] text-[24px] font-semibold">
             <h2>Portfolio Name</h2>
             <EditIcon />
           </div>
           <div class="flex items-center gap-[8px]">
-            <Button image="/images/svg/portfolio/dca.svg" text="DCA" class="custom-border-2"/>
+            <Button
+              image="/images/svg/portfolio/dca.svg"
+              text="DCA"
+              class="custom-border-2"
+            />
             <Button
               image="/images/svg/portfolio/structures.svg"
-              text="See All Structures" class="custom-border-2"
+              text="See All Structures"
+              class="custom-border-2"
             />
             <Button
               image="/images/svg/portfolio/add.svg"
@@ -294,8 +302,8 @@ export default component$(() => {
             />
           </div>
         </div>
-        <div class="grid grid-cols-[auto_auto] overflow-auto gap-[24px] pb-[145px]">
-          <div class="flex min-h-[260px] min-w-[580px] flex-col gap-[24px] overflow-auto rounded-[16px] custom-bg-white custom-border-1 p-[24px]">
+        <div class="grid grid-cols-[auto_auto] gap-[24px] overflow-auto pb-[145px]">
+          <div class="custom-bg-white custom-border-1 flex min-h-[260px] min-w-[580px] flex-col gap-[24px] overflow-auto rounded-[16px] p-[24px]">
             <p class="text-[20px] font-semibold">Token list</p>
             <div class="grid grid-cols-4 gap-[8px]">
               <ButtonTokenList
@@ -319,7 +327,7 @@ export default component$(() => {
                 class=""
               />
             </div>
-            <div class="grid grid-rows-[40px_auto] gap-[24px] items-center overflow-auto text-[14px]">
+            <div class="grid grid-rows-[40px_auto] items-center gap-[24px] overflow-auto text-[14px]">
               <div
                 style="grid-template-columns: minmax(200px, 400px) minmax(100px, 200px) repeat(4, minmax(145px, 300px)) 40px;"
                 class="grid items-center text-[12px] font-normal text-white text-opacity-[50%]"
@@ -327,17 +335,15 @@ export default component$(() => {
                 <div class="">TOKEN NAME</div>
                 <div class="">QUANTITY</div>
                 <div class="">VALUE</div>
-                <div class="grid w-[120px] grid-cols-3 items-center rounded-[8px] text-[12px] font-normal custom-border-1 custom-bg-white p-[4px]">
-                  <button class="p-[8px] rounded-[6px] custom-bg-button">24h</button>
-                  <button class="p-[8px] rounded-[6px]">3d</button>
-                  <button class="p-[8px] rounded-[6px]">30d</button>
+                <div class="custom-border-1 custom-bg-white grid w-[120px] grid-cols-3 items-center rounded-[8px] p-[4px] text-[12px] font-normal text-white">
+                  <button class="custom-bg-button rounded-[6px] p-[8px]">
+                    24h
+                  </button>
+                  <button class="rounded-[6px] p-[8px]">3d</button>
+                  <button class="rounded-[6px] p-[8px]">30d</button>
                 </div>
-                <div class="">
-                  WALLET
-                </div>
-                <div class="">
-                  NETWORK
-                </div>
+                <div class="">WALLET</div>
+                <div class="">NETWORK</div>
                 <div class=""></div>
               </div>
               <div class="flex flex-col gap-[20px]">
@@ -429,7 +435,7 @@ export default component$(() => {
               </Modal>
             )}
           </div>
-          <div class="flex w-[322px] flex-col gap-[24px] overflow-auto rounded-[16px] custom-border-1 custom-bg-white p-[24px]">
+          <div class="custom-border-1 custom-bg-white flex w-[322px] flex-col gap-[24px] overflow-auto rounded-[16px] p-[24px]">
             <div class="flex h-[32px] items-center justify-between">
               <p class="text-[20px] font-semibold">Details</p>
               <Button
@@ -439,7 +445,7 @@ export default component$(() => {
               />
             </div>
             <div class="flex h-auto items-center gap-[16px]">
-              <div class="flex h-[44px] w-[44px] items-center justify-center rounded-[8px] custom-border-1">
+              <div class="custom-border-1 flex h-[44px] w-[44px] items-center justify-center rounded-[8px]">
                 <Bitcoin width={40} height={40} class="min-w-[40px]" />
               </div>
               <div class="flex flex-col gap-[8px]">
@@ -448,19 +454,27 @@ export default component$(() => {
               </div>
             </div>
             <p class="text-[16px] font-medium">$82 617,96</p>
-            <div class="grid  grid-cols-4 items-center rounded-[8px] text-[12px] font-normal custom-border-1 custom-bg-white px-[4px] py-[3.5px]">
-              <button class="p-[8px] rounded-[6px] custom-bg-button">Hour</button>
-              <button class="p-[8px] rounded-[6px]">Day</button>
-              <button class="p-[8px] rounded-[6px]">Month</button>
-              <button class="p-[8px] rounded-[6px]">Year</button>
+            <div class="custom-border-1  custom-bg-white grid grid-cols-4 items-center rounded-[8px] px-[4px] py-[3.5px] text-[12px] font-normal">
+              <button class="custom-bg-button rounded-[6px] p-[8px]">
+                Hour
+              </button>
+              <button class="rounded-[6px] p-[8px]">Day</button>
+              <button class="rounded-[6px] p-[8px]">Month</button>
+              <button class="rounded-[6px] p-[8px]">Year</button>
             </div>
-            <Graph/>
+            <Graph />
             <div class="flex flex-col gap-[16px]">
               <h4 class="text-[14px] font-medium">Market data</h4>
-              <p class="font-thin text-[12px] leading-[180%]">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque quis rutrum mi. Fusce elit est, condimentum eget varius et, tempor in erat. Fusce vulputate faucibus arcu id molestie. Sed auctor tortor eu arcu feugiat, ut placerat nisl convallis. Pellentesque sodales congue vulputate.
-                       
-              Aliquam erat volutpat. Fusce convallis sit amet dui at gravida. Aliquam a elit nec justo gravida tristique. Praesent non semper felis. Mauris ornare, purus vel luctus aliquam, erat lorem placerat sem, posuere condimentum dolor justo convallis leo.
+              <p class="text-[12px] font-thin leading-[180%]">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Pellentesque quis rutrum mi. Fusce elit est, condimentum eget
+                varius et, tempor in erat. Fusce vulputate faucibus arcu id
+                molestie. Sed auctor tortor eu arcu feugiat, ut placerat nisl
+                convallis. Pellentesque sodales congue vulputate. Aliquam erat
+                volutpat. Fusce convallis sit amet dui at gravida. Aliquam a
+                elit nec justo gravida tristique. Praesent non semper felis.
+                Mauris ornare, purus vel luctus aliquam, erat lorem placerat
+                sem, posuere condimentum dolor justo convallis leo.
               </p>
             </div>
           </div>
