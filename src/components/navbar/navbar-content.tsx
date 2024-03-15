@@ -1,29 +1,8 @@
 import { component$, Slot } from "@builder.io/qwik";
-import { Link, useLocation, type LinkProps } from '@builder.io/qwik-city';
 import ImgAvatar from "/public/images/avatar.png?jsx";
 import ArrowDown from "/public/images/arrowDown.svg?jsx";
 
-type NavbarContentProps = LinkProps & { activeClass?: string };
-
-export const NavbarContent = component$(
-  ({ activeClass, ...props }: NavbarContentProps) => {
-    const location = useLocation();
-    const toPathname = props.href ?? '';
-    const locationPathname = location.url.pathname;
- 
-    const startSlashPosition =
-      toPathname !== '/' && toPathname.startsWith('/')
-        ? toPathname.length - 1
-        : toPathname.length;
-    const endSlashPosition =
-      toPathname !== '/' && toPathname.endsWith('/')
-        ? toPathname.length - 1
-        : toPathname.length;
-    const isActive =
-      locationPathname === toPathname ||
-      (locationPathname.endsWith(toPathname) &&
-        (locationPathname.charAt(endSlashPosition) === '/' ||
-          locationPathname.charAt(startSlashPosition) === '/'));
+export const NavbarContent = component$(() => {
   return (
     <>
       <div class="flex items-center gap-10">
