@@ -110,14 +110,14 @@ export const useAvailableStructures = routeLoader$(async (requestEvent) => {
       const [token]: any = await db.query(
         `SELECT * FROM ${tokenId[0]["->for_token"].out[0]}`,
       );
-      const [tokenValue] = await getDBTokenPriceUSD(db, token[0].address)
+      const [tokenValue] = await getDBTokenPriceUSD(db, token[0].address);
       const tokenWithBalance = {
         id: token[0].id,
         name: token[0].name,
         symbol: token[0].symbol,
         decimals: token[0].decimals,
         balance: tokenBalance[0].value,
-        balanceValueUSD: tokenValue.priceUSD
+        balanceValueUSD: tokenValue.priceUSD,
       };
 
       structureTokens.push({

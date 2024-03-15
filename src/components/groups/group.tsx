@@ -16,21 +16,24 @@ function extractData(createdStructure: Structure): JSXOutput[] {
     symbol: string;
     quantity: string;
     networkName: string;
-    value: string
+    value: string;
   }[] = [];
 
-  createdStructure.structureBalance.forEach((balanceEntry: StructureBalance) => {
-    extractedArray.push({
-      walletName: balanceEntry.wallet.name,
-      networkName: chainIdToNetworkName[balanceEntry.wallet.chainId.toString()],
-      symbol: balanceEntry.balance.symbol,
-      quantity: formatTokenBalance(
-        balanceEntry.balance.balance,
-        balanceEntry.balance.decimals,
-      ),
-      value: balanceEntry.balance.balanceValueUSD
-    });
-  });
+  createdStructure.structureBalance.forEach(
+    (balanceEntry: StructureBalance) => {
+      extractedArray.push({
+        walletName: balanceEntry.wallet.name,
+        networkName:
+          chainIdToNetworkName[balanceEntry.wallet.chainId.toString()],
+        symbol: balanceEntry.balance.symbol,
+        quantity: formatTokenBalance(
+          balanceEntry.balance.balance,
+          balanceEntry.balance.decimals,
+        ),
+        value: balanceEntry.balance.balanceValueUSD,
+      });
+    },
+  );
 
   return extractedArray.map((entry: any) => (
     <Token
