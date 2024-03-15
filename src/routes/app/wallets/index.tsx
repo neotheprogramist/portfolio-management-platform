@@ -398,7 +398,7 @@ export default component$(() => {
               type="text"
               name="name"
               class={`border-white-opacity-20 mb-5 block w-[80%] rounded bg-transparent p-3 text-white 
-              ${!isValidName(addWalletFormStore.name) ? "text-red-500" : ""}`}
+              ${!isValidName(addWalletFormStore.name) ? "border-red-700" : ""}`}
               value={addWalletFormStore.name}
               onInput$={(e) => {
                 const target = e.target as HTMLInputElement;
@@ -415,7 +415,7 @@ export default component$(() => {
               type="text"
               name="address"
               class={`border-white-opacity-20 mb-5 block w-[80%] rounded bg-transparent p-3 text-white 
-              ${!isValidAddress(addWalletFormStore.address) ? "bg-red-300" : ""}`}
+              ${!isValidAddress(addWalletFormStore.address) ? "border-red-700" : ""}`}
               value={addWalletFormStore.address}
               onInput$={(e) => {
                 const target = e.target as HTMLInputElement;
@@ -447,7 +447,7 @@ export default component$(() => {
             </button>
             <button
               type="submit"
-              class="color-gradient absolute bottom-[20px] right-[24px] h-[32px] rounded-3xl p-[1px] font-normal text-white duration-300 ease-in-out hover:scale-110"
+              class="color-gradient absolute bottom-[20px] right-[24px] h-[32px] rounded-3xl p-[1px] font-normal text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
               disabled={
                 addWalletFormStore.name === "" ||
                 addWalletFormStore.address === "" ||
@@ -455,7 +455,16 @@ export default component$(() => {
                 !isValidAddress(addWalletFormStore.address)
               }
             >
-              <p class="cursor-pointer rounded-3xl bg-black px-[8px] py-[7px] text-xs">
+              <p
+                class={`rounded-3xl px-[8px] py-[7px] text-xs ${
+                  addWalletFormStore.name === "" ||
+                  addWalletFormStore.address === "" ||
+                  !isValidName(addWalletFormStore.name) ||
+                  !isValidAddress(addWalletFormStore.address)
+                    ? "bg-modal-button text-gray-400"
+                    : "bg-black"
+                }`}
+              >
                 Add wallet
               </p>
             </button>
