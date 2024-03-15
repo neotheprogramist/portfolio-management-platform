@@ -53,7 +53,6 @@ export default component$(() => {
   });
 
   const cancelHandler = $(async () => {
-    console.log("clicked");
     if (modalStore.isConnected && modalStore.config) {
       await disconnect(modalStore.config);
       await nav("/");
