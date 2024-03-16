@@ -12,42 +12,39 @@ export const NavbarContent = component$(() => {
     address && (address = address.slice(0, 4) + "..." + address.slice(-4)));
   return (
     <>
-      <div class="flex items-center gap-10">
-        <a href="/app/dashboard" class="m-2.5 text-white no-underline">
+      <div class="flex items-center custom-text-50 gap-[40px]">
+        <a href="/app/dashboard" class="">
           Dashboard
         </a>
-        <a href="/app/portfolio" class="text-grey m-2.5 no-underline">
+        <a href="/app/portfolio" class="">
           Portfolio
         </a>
-        <a href="/app/wallets" class="text-grey m-2.5 no-underline">
+        <a href="/app/wallets" class="">
           Wallets
         </a>
-        <a href="/app/action" class="text-grey m-2.5 no-underline">
+        <a href="/app/action" class="">
           Action
         </a>
-        <a href="/app/automation" class="text-grey m-2.5 no-underline">
+        <a href="/app/automation" class="">
           Automation
         </a>
-        <a href="/app/alerts" class="text-grey m-2.5 no-underline">
+        <a href="/app/alerts" class="">
           Alerts
         </a>
-        <a href="/app/reports" class="text-grey m-2.5 no-underline">
+        <a href="/app/reports" class="">
           Reports
         </a>
       </div>
-      <div class="grid justify-items-end">
-        <div class="flex items-center gap-1">
-          <Slot />
-          <ImgAvatar />
-          <div class="">
-            <p>{address}</p>
+      <div class="flex items-center gap-[8px]">
+        <ImgAvatar />
+        <div class="flex flex-col gap-[4px]">
+          <p>{address}</p>
 
-            <p class="text-green-500">Account verified</p>
-          </div>
-          <button>
-            <ArrowDown />
-          </button>
+          <p class="text-[#12A58C] text-[10px]">Account verified</p>
         </div>
+        <button>
+          <ArrowDown />
+        </button>
       </div>
     </>
   );

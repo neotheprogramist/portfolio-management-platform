@@ -64,35 +64,31 @@ body {
   }
 }
 
-.shadow {
+.custom-text-50 {
+  color: rgba(255, 255, 255, 0.50);
+}
+
+.custom-shadow {
   box-shadow: 0px 5px 15px 0px #000;
 }
 
-.border-white-opacity-20 {
+.custom-border-1 {
   border: 1px solid rgba(255, 255, 255, 0.15);
 }
-
-.bg-glass {
+.custom-border-2 {
+  border: 2px solid rgba(255, 255, 255, 0.15);
+}
+.custom-border-1-b {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+.custom-bg-white {
   background: linear-gradient(
     98deg,
     rgba(255, 255, 255, 0.1) 0%,
     rgba(255, 255, 255, 0) 100%
   );
 }
-
-.bg-modal-glass {
-  background: linear-gradient(98deg, rgb(27, 27, 27) 0%, rgb(0, 0, 0) 100%);
-}
-
-.bg-modal-button {
-  background: linear-gradient(98deg, rgb(34, 34, 34) 0%, rgb(22, 22, 22) 100%);
-}
-
-.border-buttons {
-  border: 2px solid rgba(255, 255, 255, 0.3);
-}
-
-.color-gradient {
+.custom-bg-button {
   background: linear-gradient(
     130deg,
     #da301f 0.24%,
@@ -123,32 +119,11 @@ body {
   z-index: -1;
 }
 
-@layer utilities {
-  .custom-border-1 {
-    border: 1px solid rgba(255, 255, 255, 0.15);
-  }
-  .custom-border-2 {
-    border: 2px solid rgba(255, 255, 255, 0.15);
-  }
-  .custom-bg-white {
-    background: linear-gradient(
-      98deg,
-      rgba(255, 255, 255, 0.1) 0%,
-      rgba(255, 255, 255, 0) 100%
-    );
-    backdrop-filter: blur(100px);
-  }
-  .custom-bg-button {
-    background: linear-gradient(
-      130deg,
-      #da301f 0.24%,
-      #f48946 18.43%,
-      #ee3560 35.57%,
-      #fa4784 51.68%,
-      #ff48c0 66.75%,
-      #8e38b5 81.82%,
-      #5542bb 89.09%,
-      #0051c3 100%
-    );
-  }
+.bg-modal-glass {
+  background: linear-gradient(98deg, rgb(27, 27, 27) 0%, rgb(0, 0, 0) 100%);
 }
+
+.bg-modal-button {
+  background: linear-gradient(98deg, rgb(34, 34, 34) 0%, rgb(22, 22, 22) 100%);
+}
+

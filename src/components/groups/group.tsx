@@ -91,7 +91,9 @@ export const Group = component$<GroupProps>((props) => {
             </svg>
           </div>
         </div>
-        <Slot />
+        <div>
+          {extractData(props.createdStructure)}
+        </div>
       </div>
       {extractData(props.createdStructure, props.tokenStore)}
     </>

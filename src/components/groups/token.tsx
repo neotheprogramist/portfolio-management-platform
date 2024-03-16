@@ -77,6 +77,51 @@ export const Token = component$<TokenProps>((props) => {
           </svg>
         </button>
       </div>
+      <div
+        class="grid items-center text-nowrap border-b-[1px] border-white border-opacity-10 pb-[12.5px] text-[12px]"
+        style="grid-template-columns: minmax(200px, 400px) minmax(100px, 200px) repeat(4, minmax(145px, 300px)) 40px;"
+      >
+        <div class="flex h-[40px] items-center gap-[6px]">
+          <div class="custom-border-1 flex items-center justify-center rounded-[8px] p-[8px]">
+            {props.icon && <img src={props.icon} width="20" height="20" />}
+          </div>
+          <div class="flex h-full items-center gap-[6px] overflow-x-auto">
+            <p>{props.name}Hello</p>
+            <span class="text-[12px] text-white text-opacity-[50%]">
+              {props.symbol}
+            </span>
+          </div>
+        </div>
+        <div class="flex h-full items-center overflow-auto font-medium">
+          <span class="custom-border-1 rounded-[8px] p-[8px]">
+            {props.quantity}
+          </span>
+        </div>
+        <div class="flex h-full items-center overflow-auto font-medium">
+          <span class="custom-border-1 rounded-[8px] p-[8px]">
+            {props.value}
+          </span>
+        </div>
+
+        <div class="flex h-full items-center overflow-auto font-medium">
+          <span class="rounded-[8px] p-[8px]"></span>
+        </div>
+        <div class="flex h-full items-center overflow-auto font-medium">
+          <span class="custom-border-1 rounded-[8px] p-[8px]">
+            {props.wallet}
+          </span>
+        </div>
+        <div class="flex h-full items-center overflow-auto font-medium">
+          <span class="custom-border-1 rounded-[8px] p-[8px] ">
+            {props.network}
+          </span>
+        </div>
+        <div class="flex items-center">
+          <button class="custom-border-1 custom-bg-white rounded-[8px] p-[8px]">
+            <MenuDots class="min-w-[12px]" />
+          </button>
+        </div>
+      </div>
     </>
   );
 });

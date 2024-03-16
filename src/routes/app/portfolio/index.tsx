@@ -335,18 +335,15 @@ export default component$(() => {
                 <div class="">TOKEN NAME</div>
                 <div class="">QUANTITY</div>
                 <div class="">VALUE</div>
-                <div class="custom-border-1 custom-bg-white grid w-[120px] grid-cols-3 items-center rounded-[8px] p-[4px] text-[12px] font-normal text-white">
-                  <button class="custom-bg-button rounded-[6px] p-[8px]">
-                    24h
-                  </button>
-                  <button class="rounded-[6px] p-[8px]">3d</button>
-                  <button class="rounded-[6px] p-[8px]">30d</button>
+                <div class="bg-glass border-white-opacity-20 flex h-[32px] gap-[8px] w-fit rounded-lg p-[2px] text-white">
+                  <button class="color-gradient rounded-[8px] px-[8px]">24h</button>
+                  <button class="px-[8px]">3d</button>
+                  <button class="px-[8px]">30d</button>
                 </div>
                 <div class="">WALLET</div>
                 <div class="">NETWORK</div>
                 <div class=""></div>
               </div>
-              <div class="flex flex-col gap-[20px]">
                 {availableStructures.value.map((createdStructures) => (
                   <Group
                     key={createdStructures.structure.name}
@@ -359,7 +356,6 @@ export default component$(() => {
                   }}
                 />
                 ))}
-              </div>
             </div>
             {isCreateNewStructureModalOpen.value && (
               <Modal
