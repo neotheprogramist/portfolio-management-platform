@@ -1,4 +1,4 @@
-import { TokenWithBalance } from "~/interface/walletsTokensBalances/walletsTokensBalances";
+import { type TokenWithBalance } from "~/interface/walletsTokensBalances/walletsTokensBalances";
 
 export type Structure = {
   structure: { id?: string; name: string };
