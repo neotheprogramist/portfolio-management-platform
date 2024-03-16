@@ -99,7 +99,7 @@ export const useTotalPortfolioValue = routeLoader$(async (requestEvent) => {
 export default component$(() => {
   const totalPortfolioValue = useTotalPortfolioValue();
   return (
-    <div class="grid grid-cols-4 grid-rows-[48%_48%] gap-6 overflow-auto border-t border-white border-opacity-15 p-6">
+    <div class="grid grid-cols-4 grid-rows-[48%_48%] gap-[24px] overflow-auto  p-6">
       <PortfolioValue totalPortfolioValue={totalPortfolioValue.value} />
 
       <div class="border-white-opacity-20 bg-glass col-start-3 row-span-1 row-start-1 grid grid-rows-[32px_1fr] gap-[16px] overflow-auto rounded-[16px] p-[24px] shadow">

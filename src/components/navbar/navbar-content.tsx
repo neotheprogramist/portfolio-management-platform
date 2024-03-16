@@ -1,4 +1,5 @@
 import { component$, Slot } from "@builder.io/qwik";
+import { NavLink } from "./LinkProps";
 import ImgAvatar from "/public/images/avatar.png?jsx";
 import ArrowDown from "/public/images/arrowDown.svg?jsx";
 
@@ -6,15 +7,15 @@ export const NavbarContent = component$(() => {
   return (
     <>
       <div class="flex items-center gap-10">
-        <a href="/app/dashboard" class="m-2.5 text-white no-underline">
+        <NavLink href="/app/dashboard" class="m-2.5 no-underline" activeClass="text-white">
           Dashboard
-        </a>
-        <a href="/app/portfolio" class="text-grey m-2.5 no-underline">
+        </NavLink>
+        <NavLink href="/app/portfolio" class="text-grey m-2.5 no-underline" activeClass="text-white">
           Portfolio
-        </a>
-        <a href="/app/wallets" class="text-grey m-2.5 no-underline">
+        </NavLink>
+        <NavLink href="/app/wallets" class="text-grey m-2.5 no-underline" activeClass="text-white">
           Wallets
-        </a>
+        </NavLink>
         <a href="/app/action" class="text-grey m-2.5 no-underline">
           Action
         </a>
