@@ -13,27 +13,27 @@ export const NavbarContent = component$(() => {
   return (
     <>
       <div class="flex items-center gap-10">
-        <NavLink href="/app/dashboard" class="m-2.5 no-underline" activeClass="text-white">
+        <NavLink href="/app/dashboard" class="hover:text-white" activeClass="text-white">
           Dashboard
         </NavLink>
-        <NavLink href="/app/portfolio" class="text-grey m-2.5 no-underline" activeClass="text-white">
+        <NavLink href="/app/portfolio" class="hover:text-white" activeClass="text-white">
           Portfolio
         </NavLink>
-        <NavLink href="/app/wallets" class="text-grey m-2.5 no-underline" activeClass="text-white">
+        <NavLink href="/app/wallets" class="hover:text-white" activeClass="text-white">
           Wallets
         </NavLink>
-        <a href="/app/action" class="text-grey m-2.5 no-underline">
+        <NavLink href="/app/action" class="hover:text-white" activeClass="text-white">
           Action
-        </a>
-        <a href="/app/automation" class="text-grey m-2.5 no-underline">
+        </NavLink>
+        <NavLink href="/app/automation" class="hover:text-white" activeClass="text-white">
           Automation
-        </a>
-        <a href="/app/alerts" class="text-grey m-2.5 no-underline">
+        </NavLink>
+        <NavLink href="/app/alerts" class="hover:text-white" activeClass="text-white">
           Alerts
-        </a>
-        <a href="/app/reports" class="text-grey m-2.5 no-underline">
+        </NavLink>
+        <NavLink href="/app/reports" class="hover:text-white" activeClass="text-white">
           Reports
-        </a>
+        </NavLink>
       </div>
       <div class="grid justify-items-end">
         <div class="flex items-center gap-1">
