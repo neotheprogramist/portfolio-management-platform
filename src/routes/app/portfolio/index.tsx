@@ -26,36 +26,35 @@ import {
 import { type Wallet } from "~/interface/auth/Wallet";
 import { Modal } from "~/components/modal";
 import { isValidName } from "~/utils/validators/addWallet";
-import {structureExists} from "~/interface/structure/removeStructure";
+import { structureExists } from "~/interface/structure/removeStructure";
 
 type WalletWithBalance = {
   wallet: { id: string; chainID: number; name: string };
   balance: [{ balanceId: string; tokenId: string; tokenSymbol: string }];
 };
 export const useDeleteGroup = routeAction$(
-async (structure, requestEvent) => {
-  const db = await connectToDB(requestEvent.env);
+  async (structure, requestEvent) => {
+    const db = await connectToDB(requestEvent.env);
 
-  const cookie = requestEvent.cookie.get("accessToken");
-  if (!cookie) {
-    throw new Error("No cookie found");
-  }
-  await structureExists(db, structure.id)
-  if(!(await structureExists(db, structure.id))) {
-    throw new Error('Structure does not exist')
-  }
+    const cookie = requestEvent.cookie.get("accessToken");
+    if (!cookie) {
+      throw new Error("No cookie found");
+    }
+    if (!(await structureExists(db, structure.id))) {
+      throw new Error("Structure does not exist");
+    }
 
-  await db.delete(structure.id as string)
+    await db.delete(structure.id as string);
 
-  return {
-    success: true,
-    structure: { id: structure.id },
-  };
-},
-zod$({
-  id: z.string()
-}),
-)
+    return {
+      success: true,
+      structure: { id: structure.id },
+    };
+  },
+  zod$({
+    id: z.string(),
+  }),
+);
 export const useObservedWalletBalances = routeLoader$(async (requestEvent) => {
   const db = await connectToDB(requestEvent.env);
 
@@ -205,7 +204,7 @@ export default component$(() => {
   const availableStructures = useAvailableStructures();
   const isCreateNewStructureModalOpen = useSignal(false);
   const createStructureAction = useCreateStructure();
-  const deleteStructureAction = useDeleteGroup()
+  const deleteStructureAction = useDeleteGroup();
   const structureStore = useStore({ name: "" });
   const selectedWallets = useStore({ wallets: [] as any[] });
   const observedWalletsWithBalance = useObservedWalletBalances();
@@ -304,7 +303,9 @@ export default component$(() => {
                   key={createdStructures.structure.name}
                   createdStructure={createdStructures}
                   onClick$={async () => {
-                    await deleteStructureAction.submit({id: createdStructures.structure.id})
+                    await deleteStructureAction.submit({
+                      id: createdStructures.structure.id,
+                    });
                   }}
                 />
               ))}

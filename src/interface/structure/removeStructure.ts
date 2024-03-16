@@ -1,5 +1,5 @@
-import type {Surreal} from "surrealdb.js";
-import {Structure} from "~/interface/structure/Structure";
+import type { Surreal } from "surrealdb.js";
+import type { Structure } from "~/interface/structure/Structure";
 
 export const structureExists = async (
   db: Surreal,

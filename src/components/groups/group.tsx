@@ -1,6 +1,6 @@
-import {Slot, component$, type JSXOutput, QRL} from "@builder.io/qwik";
+import { Slot, component$, type JSXOutput } from "@builder.io/qwik";
+import type { QRL } from "@builder.io/qwik";
 import ArrowDown from "/public/images/svg/portfolio/arrowDown.svg?jsx";
-import EditIcon from "/public/images/svg/portfolio/edit.svg?jsx";
 import {
   type Structure,
   type StructureBalance,
@@ -59,18 +59,26 @@ export const Group = component$<GroupProps>((props) => {
       <div>
         <div class="flex h-[50px] pb-[8px] pt-[24px] text-[14px]">
           <div class="flex items-center gap-[8px] ">
-            <ArrowDown/>
+            <ArrowDown />
             <h3>{props.createdStructure.structure.name}</h3>
-            <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                 xmlns="http://www.w3.org/2000/svg" onClick$={props.onClick$}>
+            <svg
+              class="icon"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              onClick$={props.onClick$}
+            >
               <path
-                  d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM17 13H13V17H11V13H7V11H11V7H13V11H17V13Z"
-                  fill="black"/>
+                d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM17 13H13V17H11V13H7V11H11V7H13V11H17V13Z"
+                fill="black"
+              />
             </svg>
             {/*<EditIcon onClick$={() => console.log('click click')}></EditIcon>*/}
           </div>
         </div>
-        <Slot/>
+        <Slot />
       </div>
       {extractData(props.createdStructure)}
     </>
