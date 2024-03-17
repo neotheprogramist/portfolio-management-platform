@@ -1,5 +1,5 @@
 import { component$ } from "@builder.io/qwik";
-import MenuDots from "/public/images/svg/portfolio/menuDots.svg?jsx";
+import type { QRL } from "@builder.io/qwik";
 
 export interface TokenProps {
   icon?: string;
@@ -9,8 +9,8 @@ export interface TokenProps {
   value?: string;
   wallet?: string;
   network?: string;
+  onClick$?: QRL<() => void>;
 }
-
 export const Token = component$<TokenProps>((props) => {
   return (
     <>
@@ -39,7 +39,21 @@ export const Token = component$<TokenProps>((props) => {
           {props.network}
         </p>
         <button class="rounded-[2px] bg-[#22222214] bg-opacity-[8]">
-          <MenuDots />
+          <svg
+            class="icon"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            onClick$={props.onClick$}
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM17 13H13V17H11V13H7V11H11V7H13V11H17V13Z"
+              fill="black"
+            />
+          </svg>
+          {/*<MenuDots/>*/}
         </button>
       </div>
     </>

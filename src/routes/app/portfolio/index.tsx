@@ -8,6 +8,7 @@ import {
   type JSXOutput,
   useSignal,
   useStore,
+  useTask$,
 } from "@builder.io/qwik";
 import {
   Form,
@@ -55,6 +56,26 @@ export const useDeleteGroup = routeAction$(
     id: z.string(),
   }),
 );
+export const useDeleteToken = routeAction$(
+  async (data, requestEvent) => {
+    const db = await connectToDB(requestEvent.env);
+    const cookie = requestEvent.cookie.get("accessToken");
+    if (!cookie) {
+      throw new Error("No cookie found");
+    }
+    if (!(await structureExists(db, data.structureId))) {
+      throw new Error("Structure does not exist");
+    }
+
+    await db.query(`
+    DELETE structure_balance WHERE in=${data.structureId} AND out=${data.balanceId}`);
+  },
+  zod$({
+    structureId: z.string(),
+    balanceId: z.string(),
+  }),
+);
+
 export const useObservedWalletBalances = routeLoader$(async (requestEvent) => {
   const db = await connectToDB(requestEvent.env);
 
@@ -147,6 +168,7 @@ export const useAvailableStructures = routeLoader$(async (requestEvent) => {
         decimals: token[0].decimals,
         balance: tokenBalance[0].value,
         balanceValueUSD: tokenValue.priceUSD,
+        balanceId: balance,
       };
 
       structureTokens.push({
@@ -200,7 +222,10 @@ export const useCreateStructure = routeAction$(
     balancesId: z.array(z.string()),
   }),
 );
+
 export default component$(() => {
+  const clickedToken = useStore({ balanceId: "", structureId: "" });
+  const deleteToken = useDeleteToken();
   const availableStructures = useAvailableStructures();
   const isCreateNewStructureModalOpen = useSignal(false);
   const createStructureAction = useCreateStructure();
@@ -208,6 +233,18 @@ export default component$(() => {
   const structureStore = useStore({ name: "" });
   const selectedWallets = useStore({ wallets: [] as any[] });
   const observedWalletsWithBalance = useObservedWalletBalances();
+  useTask$(async ({ track }) => {
+    const trackTokenClick = async () => {
+      const structureId: string = track(() => clickedToken.structureId);
+      const balanceId: string = track(() => clickedToken.balanceId);
+
+      if (structureId !== "" && balanceId !== "") {
+        await deleteToken.submit({ balanceId, structureId });
+      }
+    };
+
+    await trackTokenClick();
+  });
 
   return (
     <>
@@ -302,6 +339,7 @@ export default component$(() => {
                 <Group
                   key={createdStructures.structure.name}
                   createdStructure={createdStructures}
+                  tokenStore={clickedToken}
                   onClick$={async () => {
                     await deleteStructureAction.submit({
                       id: createdStructures.structure.id,

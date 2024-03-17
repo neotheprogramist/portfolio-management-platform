@@ -12,15 +12,21 @@ import { chainIdToNetworkName } from "~/utils/chains";
 export interface GroupProps {
   createdStructure: Structure;
   onClick$?: QRL<() => void>;
+  tokenStore: { balanceId: string; structureId: string };
 }
 
-function extractData(createdStructure: Structure): JSXOutput[] {
+function extractData(
+  createdStructure: Structure,
+  tokenStore: { balanceId: string; structureId: string },
+): JSXOutput[] {
   const extractedArray: {
     walletName: string;
     symbol: string;
     quantity: string;
     networkName: string;
     value: string;
+    balanceId: string;
+    structureId: string;
   }[] = [];
 
   createdStructure.structureBalance.forEach(
@@ -35,6 +41,8 @@ function extractData(createdStructure: Structure): JSXOutput[] {
           balanceEntry.balance.decimals,
         ),
         value: balanceEntry.balance.balanceValueUSD,
+        balanceId: balanceEntry.balance.balanceId as string,
+        structureId: createdStructure.structure.id as string,
       });
     },
   );
@@ -49,6 +57,10 @@ function extractData(createdStructure: Structure): JSXOutput[] {
       value={`$${(entry.value * entry.quantity).toFixed(2)}`}
       wallet={entry.walletName}
       network={entry.networkName}
+      onClick$={() => {
+        tokenStore.balanceId = entry.balanceId;
+        tokenStore.structureId = entry.structureId;
+      }}
     />
   ));
 }
@@ -80,7 +92,7 @@ export const Group = component$<GroupProps>((props) => {
         </div>
         <Slot />
       </div>
-      {extractData(props.createdStructure)}
+      {extractData(props.createdStructure, props.tokenStore)}
     </>
   );
 });
