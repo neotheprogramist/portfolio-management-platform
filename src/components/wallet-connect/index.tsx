@@ -1,5 +1,5 @@
 import { component$, $, useContext, noSerialize } from "@builder.io/qwik";
-import { mainnet, arbitrum, type Chain } from "viem/chains";
+import { type Chain } from "viem/chains";
 import { reconnect, watchAccount } from "@wagmi/core";
 import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi";
 import { useNavigate } from "@builder.io/qwik-city";
