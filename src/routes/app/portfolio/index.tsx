@@ -234,7 +234,7 @@ export default component$(() => {
   const selectedWallets = useStore({ wallets: [] as any[] });
   const observedWalletsWithBalance = useObservedWalletBalances();
 
-    useTask$(async ({ track }) => {
+  useTask$(async ({ track }) => {
     track(() => {
       clickedToken.structureId;
       clickedToken.balanceId;
