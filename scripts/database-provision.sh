@@ -2,8 +2,9 @@
 
 set -euo pipefail
 
-# Check if we're not running in CI where we need to source environment variables.
-if [ "$CI" = "false" ]; then
+# Check if the CI environment variable exists and is set to `false`, which determines
+# that we run script locally and we need to source environment variables.
+if [ "${CI:-false}" = "false" ]; then
   # Get the directory of the current script.
   SCRIPT_DIR_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
