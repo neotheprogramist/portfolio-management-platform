@@ -6,6 +6,7 @@ import { Navbar } from "~/components/navbar/navbar";
 import ImgGradientMain from "/public/images/Gradient.png?jsx";
 import WalletConnect from "~/components/wallet-connect";
 import { Paragraph } from "~/components/paragraph/paragraph";
+import { mainnet, arbitrum } from "viem/chains";
 
 export default component$(() => {
   return (
@@ -23,14 +24,22 @@ export default component$(() => {
           <div class="grid justify-items-center gap-10">
             <LoginText />
             <div>
-              <Button
+              <WalletConnect
                 image="/images/svg/metamask-icon.svg"
                 text="Use Metamask"
+                enableWalletConnect={false}
+                enableInjected={false}
+                enableCoinbase={false}
+                chains={[mainnet]}
               />
               <WalletConnect
                 image="/images/svg/walletconnect-icon.svg"
                 text="Use WalletConnect"
                 class="mt-3"
+                enableWalletConnect={true}
+                enableInjected={true}
+                enableCoinbase={true}
+                chains={[arbitrum, mainnet]}
               />
             </div>
           </div>
