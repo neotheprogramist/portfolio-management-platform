@@ -233,17 +233,17 @@ export default component$(() => {
   const structureStore = useStore({ name: "" });
   const selectedWallets = useStore({ wallets: [] as any[] });
   const observedWalletsWithBalance = useObservedWalletBalances();
-  useTask$(async ({ track }) => {
-    const trackTokenClick = async () => {
-      const structureId: string = track(() => clickedToken.structureId);
-      const balanceId: string = track(() => clickedToken.balanceId);
 
-      if (structureId !== "" && balanceId !== "") {
-        await deleteToken.submit({ balanceId, structureId });
-      }
-    };
-
-    await trackTokenClick();
+    useTask$(async ({ track }) => {
+    track(() => {
+      clickedToken.structureId;
+      clickedToken.balanceId;
+      if (clickedToken.structureId !== "" && clickedToken.balanceId !== "")
+        deleteToken.submit({
+          balanceId: clickedToken.balanceId,
+          structureId: clickedToken.structureId,
+        });
+    });
   });
 
   return (

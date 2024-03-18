@@ -71,26 +71,16 @@ export const Group = component$<GroupProps>((props) => {
       <div>
         <div class="flex h-[50px] pb-[8px] pt-[24px] text-[14px]">
           <div class="flex items-center gap-[8px] ">
-            <ArrowDown />
+            <ArrowDown/>
             <h3>{props.createdStructure.structure.name}</h3>
-            <svg
-              class="icon"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              onClick$={props.onClick$}
-            >
-              <path
-                d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM17 13H13V17H11V13H7V11H11V7H13V11H17V13Z"
-                fill="black"
-              />
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" onClick$={props.onClick$}>
+              <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M9.5375 1.1375L11.1125 2.7125C11.4625 3.0625 11.4625 3.5875 11.1125 3.9375L4.55 10.5H1.75V7.7L8.3125 1.1375C8.6625 0.7875 9.1875 0.7875 9.5375 1.1375ZM10.5 3.325L8.925 1.75L7.6125 3.0625L9.1875 4.6375L10.5 3.325ZM2.625 8.05V9.625H4.2L8.575 5.25L7 3.675L2.625 8.05ZM0.875 12.25V11.375H13.125V12.25H0.875Z"
+                    fill="#222222" fill-opacity="0.5"/>
             </svg>
-            {/*<EditIcon onClick$={() => console.log('click click')}></EditIcon>*/}
           </div>
         </div>
-        <Slot />
+        <Slot/>
       </div>
       {extractData(props.createdStructure, props.tokenStore)}
     </>
