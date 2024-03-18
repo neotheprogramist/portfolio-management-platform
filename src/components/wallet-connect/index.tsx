@@ -1,5 +1,5 @@
 import { component$, $, useContext, noSerialize } from "@builder.io/qwik";
-import { mainnet, arbitrum, type Chain } from "viem/chains";
+import { type Chain } from "viem/chains";
 import { reconnect, watchAccount } from "@wagmi/core";
 import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi";
 import { useNavigate } from "@builder.io/qwik-city";
@@ -13,27 +13,39 @@ const metadata = {
   icons: ["https://avatars.githubusercontent.com/u/37784886"],
 };
 
-export const returnWeb3ModalAndClient = async (projectId: string) => {
-  const chains: [Chain, ...Chain[]] = [arbitrum, mainnet];
+export const returnWeb3ModalAndClient = async (
+  projectId: string,
+  enableWalletConnect: boolean,
+  enableInjected: boolean,
+  enableCoinbase: boolean,
+  chains: [Chain, ...Chain[]],
+) => {
   const config = defaultWagmiConfig({
-    chains, // required
-    projectId, // required
-    metadata, // required
-    enableWalletConnect: true, // Optional - true by default
-    enableInjected: true, // Optional - true by default
-    enableEIP6963: true, // Optional - true by default
-    enableCoinbase: true, // Optional - true by default
+    chains,
+    projectId,
+    metadata,
+    enableWalletConnect,
+    enableInjected,
+    enableEIP6963: true,
+    enableCoinbase,
   });
   reconnect(config);
   const modal = createWeb3Modal({
     wagmiConfig: config,
     projectId,
-    enableAnalytics: true, // Optional - defaults to your Cloud configuration
+    enableAnalytics: true,
   });
   return { config, modal };
 };
 
-export default component$<ButtonProps>((props) => {
+export default component$<
+  ButtonProps & {
+    enableWalletConnect: boolean;
+    enableInjected: boolean;
+    enableCoinbase: boolean;
+    chains: [Chain, ...Chain[]];
+  }
+>((props) => {
   const nav = useNavigate();
   const modalStore = useContext(ModalStoreContext);
 
@@ -42,7 +54,13 @@ export default component$<ButtonProps>((props) => {
     if (!projectId || typeof projectId !== "string") {
       throw new Error("Missing project ID");
     }
-    return returnWeb3ModalAndClient(projectId);
+    return returnWeb3ModalAndClient(
+      projectId,
+      props.enableWalletConnect,
+      props.enableInjected,
+      props.enableCoinbase,
+      props.chains,
+    );
   });
 
   const openWeb3Modal = $(async () => {
