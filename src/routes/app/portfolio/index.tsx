@@ -196,9 +196,7 @@ export const useAvailableStructures = routeLoader$(async (requestEvent) => {
       structureBalance: structureTokens,
     });
   }
-  console.log("------------------------------");
-  console.log("-------TEST CONSOLE LOG-------");
-  console.log("------------------------------");
+
   return availableStructures;
 });
 export const useCreateStructure = routeAction$(
