@@ -49,7 +49,7 @@ function extractData(
 
   return extractedArray.map((entry: any, index: number) => (
     <Token
-      key={`token_${index}`}
+      key={`${entry.balanceId} - ${index}`}
       icon={`/images/svg/tokens/${entry.symbol.toLowerCase()}.svg`}
       name={entry.name}
       symbol={entry.symbol}
