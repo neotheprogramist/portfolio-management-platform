@@ -33,7 +33,7 @@ type WalletWithBalance = {
   wallet: { id: string; chainID: number; name: string };
   balance: [{ balanceId: string; tokenId: string; tokenSymbol: string }];
 };
-export const useDeleteGroup = routeAction$(
+export const useDeleteStructure = routeAction$(
   async (structure, requestEvent) => {
     const db = await connectToDB(requestEvent.env);
 
@@ -69,6 +69,13 @@ export const useDeleteToken = routeAction$(
 
     await db.query(`
     DELETE structure_balance WHERE in=${data.structureId} AND out=${data.balanceId}`);
+
+    const [balanceCount]: any = await db.query(`
+    RETURN COUNT(SELECT id AS num_rows FROM structure_balance WHERE in=${data.structureId})`);
+
+    if (balanceCount === 0) {
+      await db.delete(data.structureId as string);
+    }
   },
   zod$({
     structureId: z.string(),
@@ -149,36 +156,39 @@ export const useAvailableStructures = routeLoader$(async (requestEvent) => {
     for (const balance of structureBalances[0]["->structure_balance"].out) {
       const [walletId]: any = await db.query(`
         SELECT out  FROM for_wallet WHERE in = ${balance}`);
-      const [wallet] = await db.select<Wallet>(`${walletId[0].out}`);
 
-      const [tokenBalance]: any = await db.query(`
+      if (walletId[0]) {
+        const [wallet] = await db.select<Wallet>(`${walletId[0].out}`);
+
+        const [tokenBalance]: any = await db.query(`
     SELECT * FROM balance WHERE id=${balance}`);
 
-      const [tokenId]: any = await db.query(`
+        const [tokenId]: any = await db.query(`
     SELECT ->for_token.out FROM ${balance}`);
 
-      const [token]: any = await db.query(
-        `SELECT * FROM ${tokenId[0]["->for_token"].out[0]}`,
-      );
-      const [tokenValue] = await getDBTokenPriceUSD(db, token[0].address);
-      const tokenWithBalance = {
-        id: token[0].id,
-        name: token[0].name,
-        symbol: token[0].symbol,
-        decimals: token[0].decimals,
-        balance: tokenBalance[0].value,
-        balanceValueUSD: tokenValue.priceUSD,
-        balanceId: balance,
-      };
+        const [token]: any = await db.query(
+          `SELECT * FROM ${tokenId[0]["->for_token"].out[0]}`,
+        );
+        const [tokenValue] = await getDBTokenPriceUSD(db, token[0].address);
+        const tokenWithBalance = {
+          id: token[0].id,
+          name: token[0].name,
+          symbol: token[0].symbol,
+          decimals: token[0].decimals,
+          balance: tokenBalance[0].value,
+          balanceValueUSD: tokenValue.priceUSD,
+          balanceId: balance,
+        };
 
-      structureTokens.push({
-        wallet: {
-          id: wallet.id,
-          name: wallet.name,
-          chainId: wallet.chainId,
-        },
-        balance: tokenWithBalance,
-      });
+        structureTokens.push({
+          wallet: {
+            id: wallet.id,
+            name: wallet.name,
+            chainId: wallet.chainId,
+          },
+          balance: tokenWithBalance,
+        });
+      }
     }
 
     availableStructures.push({
@@ -189,6 +199,7 @@ export const useAvailableStructures = routeLoader$(async (requestEvent) => {
       structureBalance: structureTokens,
     });
   }
+
   return availableStructures;
 });
 export const useCreateStructure = routeAction$(
@@ -200,6 +211,17 @@ export const useCreateStructure = routeAction$(
     const { userId } = jwt.decode(cookie.value) as JwtPayload;
 
     const db = await connectToDB(requestEvent.env);
+    let [namesList]: any = await db.query(`
+    SELECT name FROM structure GROUP BY name`);
+
+    namesList = namesList.map((item: { name: string }) => item.name.trim());
+
+    if (namesList.includes(data.name)) {
+      return {
+        success: false,
+        message: "Name already taken",
+      };
+    }
     const structure = await db.create("structure", {
       name: data.name,
     });
@@ -225,24 +247,25 @@ export const useCreateStructure = routeAction$(
 
 export default component$(() => {
   const clickedToken = useStore({ balanceId: "", structureId: "" });
-  const deleteToken = useDeleteToken();
-  const availableStructures = useAvailableStructures();
-  const isCreateNewStructureModalOpen = useSignal(false);
-  const createStructureAction = useCreateStructure();
-  const deleteStructureAction = useDeleteGroup();
   const structureStore = useStore({ name: "" });
   const selectedWallets = useStore({ wallets: [] as any[] });
+  const isCreateNewStructureModalOpen = useSignal(false);
+  const deleteToken = useDeleteToken();
+  const availableStructures = useAvailableStructures();
+  const createStructureAction = useCreateStructure();
+  const deleteStructureAction = useDeleteStructure();
   const observedWalletsWithBalance = useObservedWalletBalances();
 
   useTask$(async ({ track }) => {
     track(() => {
       clickedToken.structureId;
       clickedToken.balanceId;
-      if (clickedToken.structureId !== "" && clickedToken.balanceId !== "")
+      if (clickedToken.structureId !== "" && clickedToken.balanceId !== "") {
         deleteToken.submit({
           balanceId: clickedToken.balanceId,
           structureId: clickedToken.structureId,
         });
+      }
     });
   });
 

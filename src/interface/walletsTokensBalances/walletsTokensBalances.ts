@@ -6,7 +6,6 @@ export type TokenWithBalance = Omit<Token, "address"> & {
   balance: string;
   balanceValueUSD: string;
   imagePath: string;
-  // TODO check with Gumis if ok
   balanceId?: string;
 };
 
