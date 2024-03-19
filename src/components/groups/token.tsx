@@ -61,8 +61,6 @@ export const Token = component$<TokenProps>((props) => {
               fill="#222222"
             />
           </svg>
-
-          {/*<MenuDots/>*/}
         </button>
       </div>
     </>
