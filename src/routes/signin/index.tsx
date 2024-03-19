@@ -1,6 +1,6 @@
 import { $, component$, useContext } from "@builder.io/qwik";
 import { useLocation, useNavigate } from "@builder.io/qwik-city";
-import { getAccount, getChainId, signMessage } from "@wagmi/core";
+import { disconnect, getAccount, getChainId, signMessage } from "@wagmi/core";
 import { SiweMessage } from "siwe";
 import { Button } from "~/components/button-signin/button-signin";
 import { Gradient } from "~/components/gradient/gradient";
@@ -52,6 +52,13 @@ export default component$(() => {
     }
   });
 
+  const cancelHandler = $(async () => {
+    if (modalStore.isConnected && modalStore.config) {
+      await disconnect(modalStore.config);
+      await nav("/");
+    }
+  });
+
   return (
     <>
       <Navbar class="fixed" />
@@ -68,6 +75,7 @@ export default component$(() => {
             <WelcomeText />
             <div class="flex gap-4 text-[14px]">
               <Button
+                onClick$={cancelHandler}
                 text="Cancel"
                 border="border-white border-opacity-20"
                 width="w-[98px]"

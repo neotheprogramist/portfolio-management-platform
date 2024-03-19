@@ -76,7 +76,7 @@
     "@web3modal/siwe": "4.0.13",
     "@web3modal/wagmi": "4.0.13",
     "jsonwebtoken": "9.0.2",
-    "qwik-image": "^0.0.8",
+    "qwik-image": "0.0.8",
     "siwe": "2.1.4",
     "surrealdb.js": "0.11.0",
     "tailwind-merge": "2.2.1",

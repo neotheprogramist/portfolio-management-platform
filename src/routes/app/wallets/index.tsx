@@ -20,6 +20,7 @@ import { formatTokenBalance } from "~/utils/formatBalances/formatTokenBalance";
 import { isAddress, getAddress, checksumAddress } from "viem";
 import ImgArrowDown from "/public/images/arrowDown.svg?jsx";
 import ImgI from "/public/images/svg/i.svg?jsx";
+import ImgSearch from "/public/images/svg/search.svg?jsx";
 import {
   fetchSubgraphAccountsData,
   fetchSubgraphOneAccount,
@@ -58,21 +59,16 @@ export const useAddWallet = routeAction$(
     const { userId } = jwt.decode(cookie.value) as JwtPayload;
 
     const existingWallet = await getExistingWallet(db, data.address);
-    console.log("existingWallet", existingWallet);
 
     let walletId;
     if (existingWallet.at(0)) {
-      console.log("wallet exists");
-
       walletId = existingWallet[0].id;
     } else {
-      console.log("wallet does not exist");
       const [createWalletQueryResult] = await db.create<Wallet>("wallet", {
         chainId: 1,
         address: data.address,
         name: data.name,
       });
-      console.log("created wallet", createWalletQueryResult);
       walletId = createWalletQueryResult.id;
       // native balance for created wallet
       const nativeBalance = await publicClient.getBalance({
@@ -179,7 +175,6 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
     observedWalletsAddressesQueryResult,
     subgraphURL,
   );
-  console.log("accounts_", accounts_);
 
   const uniswapSubgraphURL = requestEvent.env.get("UNISWAP_SUBGRAPH_URL");
   if (!uniswapSubgraphURL) {
@@ -195,23 +190,18 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
     uniswapSubgraphURL,
     tokenAddresses,
   );
-  console.log("tokenDayData", tokenDayData);
   for (const {
     token: { id },
     priceUSD,
   } of tokenDayData) {
-    console.log("update priceUsd", priceUSD);
     await db.query(`
       UPDATE token 
       SET priceUSD = '${priceUSD}'
       WHERE address = '${checksumAddress(id as `0x${string}`)}';
     `);
   }
-
   const observedWallets: WalletTokensBalances[] = [];
-
   for (const acc of accounts_) {
-    console.log("acc", acc);
     const nativeBalance = await publicClient.getBalance({
       address: getAddress(acc.id) as `0x${string}`,
       blockTag: "safe",
@@ -287,12 +277,12 @@ export default component$(() => {
   const addWalletFormStore = useStore({ name: "", address: "" });
 
   return (
-    <div class="grid grid-cols-[24%_75%] grid-rows-[100px_1fr] gap-4 overflow-auto border-t border-white border-opacity-15 p-6">
-      <div class="bg-glass border-white-opacity-20 col-span-1 col-start-1 row-span-2 row-start-1 row-end-3 grid grid-rows-[52px_40px_40px_1fr] gap-2 overflow-auto rounded-xl p-6 ">
-        <div class="row-span-1 row-start-1 flex items-center justify-between pb-4 text-white">
+    <div class="grid grid-cols-[24%_73%] grid-rows-[14%_1fr] gap-[24px] overflow-auto border-t border-white border-opacity-15 p-[24px]">
+      <div class="bg-glass border-white-opacity-20 col-span-1 col-start-1 row-span-2 row-start-1 row-end-3 grid grid-rows-[56px_48px_64px_1fr] overflow-auto rounded-[16px] p-[24px]">
+        <div class="row-span-1 row-start-1 mb-[24px] flex items-center justify-between gap-[10px] text-white">
           <h1 class="text-xl">Wallets</h1>
           <button
-            class="border-buttons cursor-pointer rounded-3xl px-4 py-2 text-xs font-semibold text-white"
+            class="border-buttons h-[32px] cursor-pointer rounded-[40px] px-4 text-xs font-semibold leading-none text-white duration-300 ease-in-out hover:scale-110 lg:text-[10px]"
             onClick$={() => {
               isAddWalletModalOpen.value = !isAddWalletModalOpen.value;
             }}
@@ -301,18 +291,18 @@ export default component$(() => {
           </button>
         </div>
 
-        <button class="border-white-opacity-20 bg-glass row-span-1 row-start-2 flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-xs text-white text-opacity-50">
-          {/* <ImgSearch/> */}
+        <button class="border-white-opacity-20 bg-glass row-span-1 row-start-2 mb-[8px] flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-xs text-white text-opacity-50">
+          <ImgSearch />
           Search for wallet
         </button>
 
-        <button class="border-white-opacity-20 bg-glass row-span-1 row-start-3 flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-xs text-white">
+        <button class="border-white-opacity-20 bg-glass row-span-1 row-start-3 mb-[24px] flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-xs text-white">
           Choose Network
           <ImgArrowDown />
         </button>
 
         <div class="row-span-1 row-start-4 h-full overflow-auto">
-          <div class="overflow-auto">
+          <div class="flex flex-col gap-[20px] overflow-auto">
             {observedWallets.value.map((observedWallet) => (
               <ObservedWallet
                 key={observedWallet.wallet.address}
@@ -325,9 +315,9 @@ export default component$(() => {
         </div>
       </div>
 
-      <div class="row-span-1 flex items-center justify-between gap-6 rounded-xl border border-blue-500 bg-blue-500 bg-opacity-20 p-6">
+      <div class="row-span-1 flex items-center justify-between gap-[24px] rounded-[16px] border border-blue-500 bg-blue-500 bg-opacity-20 p-[24px]">
         <div class="text-white">
-          <h2 class="mb-4 flex items-center gap-2 text-sm">
+          <h2 class="mb-[16px] flex items-center gap-2 text-sm">
             <ImgI /> Pending authorization
           </h2>
           <p class="text-xs">
@@ -335,17 +325,17 @@ export default component$(() => {
             this wallet and approve all associated tokens.
           </p>
         </div>
-        <div>
-          <button class="border-buttons mr-2 cursor-pointer rounded-3xl px-3.5 py-1.5 text-xs font-semibold text-white">
+        <div class="lg:flex lg:gap-[8px]">
+          <button class="border-buttons mr-[12px] h-[32px] cursor-pointer rounded-3xl px-[16px] text-xs font-semibold text-white duration-300 ease-in-out hover:scale-110">
             Dismiss
           </button>
-          <button class="rounded-3xl border-none bg-blue-500 px-4 py-2 text-xs font-semibold text-white">
+          <button class="h-[32px] rounded-3xl border-none bg-blue-500 px-[16px] text-xs font-semibold text-white duration-300 ease-in-out hover:scale-110">
             Authorize
           </button>
         </div>
       </div>
 
-      <div class="bg-glass border-white-opacity-20 row-span-1 flex flex-col gap-6 overflow-auto rounded-xl p-6">
+      <div class="bg-glass border-white-opacity-20 row-span-1 flex flex-col gap-[24px] overflow-auto rounded-[16px] p-[24px]">
         {selectedWallet.value && (
           <SelectedWalletDetails
             key={selectedWallet.value.wallet.address}
@@ -371,7 +361,7 @@ export default component$(() => {
                 addWalletFormStore.name = "";
               }
             }}
-            class="p-5"
+            class="p-[24px]"
           >
             <div class="mb-5">
               <p class="pb-1 text-xs text-white">Type</p>
@@ -397,7 +387,7 @@ export default component$(() => {
               type="text"
               name="name"
               class={`border-white-opacity-20 mb-5 block w-[80%] rounded bg-transparent p-3 text-white 
-              ${!isValidName(addWalletFormStore.name) ? "text-red-500" : ""}`}
+              ${!isValidName(addWalletFormStore.name) ? "border-red-700" : ""}`}
               value={addWalletFormStore.name}
               onInput$={(e) => {
                 const target = e.target as HTMLInputElement;
@@ -414,7 +404,7 @@ export default component$(() => {
               type="text"
               name="address"
               class={`border-white-opacity-20 mb-5 block w-[80%] rounded bg-transparent p-3 text-white 
-              ${!isValidAddress(addWalletFormStore.address) ? "bg-red-300" : ""}`}
+              ${!isValidAddress(addWalletFormStore.address) ? "border-red-700" : ""}`}
               value={addWalletFormStore.address}
               onInput$={(e) => {
                 const target = e.target as HTMLInputElement;
@@ -429,17 +419,13 @@ export default component$(() => {
               type="text"
               name="network"
               class={`border-white-opacity-20 mb-5 block w-full rounded bg-transparent p-3 text-sm placeholder-white placeholder-opacity-50`}
-              // value={addWalletFormStore.address}
-              // onInput$={(e) => {
-              //   const target = e.target as HTMLInputElement;
-              //   addWalletFormStore.address = target.value;
-              // }}
               placeholder="Select network"
               disabled={true}
             />
+
             <button
               type="reset"
-              class="border-buttons absolute bottom-5 right-36 rounded-3xl p-3 font-normal text-white"
+              class="border-buttons absolute bottom-[20px] right-[120px] h-[32px] rounded-3xl px-[8px] text-xs font-normal text-white duration-300 ease-in-out hover:scale-110"
               onClick$={() => {
                 isAddWalletModalOpen.value = false;
                 addWalletFormStore.address = "";
@@ -450,7 +436,7 @@ export default component$(() => {
             </button>
             <button
               type="submit"
-              class="color-gradient absolute bottom-5 right-4 rounded-3xl p-0.5 font-normal text-white"
+              class="color-gradient absolute bottom-[20px] right-[24px] h-[32px] rounded-3xl p-[1px] font-normal text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
               disabled={
                 addWalletFormStore.name === "" ||
                 addWalletFormStore.address === "" ||
@@ -458,7 +444,18 @@ export default component$(() => {
                 !isValidAddress(addWalletFormStore.address)
               }
             >
-              <p class="rounded-3xl bg-black p-3">Add wallet</p>
+              <p
+                class={`rounded-3xl px-[8px] py-[7px] text-xs ${
+                  addWalletFormStore.name === "" ||
+                  addWalletFormStore.address === "" ||
+                  !isValidName(addWalletFormStore.name) ||
+                  !isValidAddress(addWalletFormStore.address)
+                    ? "bg-modal-button text-gray-400"
+                    : "bg-black"
+                }`}
+              >
+                Add wallet
+              </p>
             </button>
           </Form>
         </Modal>
@@ -476,7 +473,7 @@ export default component$(() => {
                 isDeleteModalOpen.value = false;
               }
             }}
-            class="absolute bottom-5 right-4  rounded-3xl bg-red-500 p-3 text-center font-normal text-white"
+            class="absolute bottom-[20px] right-[24px] h-[32px] rounded-3xl bg-red-500 px-[8px] text-center text-xs text-white duration-300 ease-in-out hover:scale-110"
           >
             Confirm Delete
           </button>

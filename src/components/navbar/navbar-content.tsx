@@ -1,8 +1,15 @@
-import { component$, Slot } from "@builder.io/qwik";
+import { component$, Slot, useContext } from "@builder.io/qwik";
 import ImgAvatar from "/public/images/avatar.png?jsx";
 import ArrowDown from "/public/images/arrowDown.svg?jsx";
+import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
+import { getAccount } from "@wagmi/core";
 
 export const NavbarContent = component$(() => {
+  const modalStore = useContext(ModalStoreContext);
+  let address;
+  modalStore.config &&
+    (({ address } = getAccount(modalStore.config)),
+    address && (address = address.slice(0, 4) + "..." + address.slice(-4)));
   return (
     <>
       <div class="flex items-center gap-10">
@@ -33,7 +40,8 @@ export const NavbarContent = component$(() => {
           <Slot />
           <ImgAvatar />
           <div class="">
-            <p>0x5B...83bd</p>
+            <p>{address}</p>
+
             <p class="text-green-500">Account verified</p>
           </div>
           <button>

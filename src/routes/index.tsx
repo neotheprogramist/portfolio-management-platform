@@ -1,4 +1,5 @@
 import { component$ } from "@builder.io/qwik";
+import { arbitrum, mainnet } from "viem/chains";
 import { Button } from "~/components/button-login/button-login";
 import { Gradient } from "~/components/gradient/gradient";
 import { LoginText } from "~/components/login-text/login-text";
@@ -23,16 +24,22 @@ export default component$(() => {
           <div class="grid justify-items-center gap-10">
             <LoginText />
             <div>
-              <Button
+              <WalletConnect
                 image="/images/svg/metamask-icon.svg"
                 text="Use Metamask"
-                dataTest="use-metamask"
+                enableWalletConnect={false}
+                enableInjected={false}
+                enableCoinbase={false}
+                chains={[mainnet]}
               />
               <WalletConnect
                 image="/images/svg/walletconnect-icon.svg"
                 text="Use WalletConnect"
                 class="mt-3"
-                dataTest="use-walletconnect"
+                enableWalletConnect={true}
+                enableInjected={true}
+                enableCoinbase={true}
+                chains={[arbitrum, mainnet]}
               />
             </div>
           </div>
