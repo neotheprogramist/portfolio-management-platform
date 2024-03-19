@@ -8,6 +8,7 @@ import {
   type JSXOutput,
   useSignal,
   useStore,
+  useTask$,
 } from "@builder.io/qwik";
 import {
   Form,
@@ -26,11 +27,55 @@ import {
 import { type Wallet } from "~/interface/auth/Wallet";
 import { Modal } from "~/components/modal";
 import { isValidName } from "~/utils/validators/addWallet";
+import { structureExists } from "~/interface/structure/removeStructure";
 
 type WalletWithBalance = {
   wallet: { id: string; chainID: number; name: string };
   balance: [{ balanceId: string; tokenId: string; tokenSymbol: string }];
 };
+export const useDeleteGroup = routeAction$(
+  async (structure, requestEvent) => {
+    const db = await connectToDB(requestEvent.env);
+
+    const cookie = requestEvent.cookie.get("accessToken");
+    if (!cookie) {
+      throw new Error("No cookie found");
+    }
+    if (!(await structureExists(db, structure.id))) {
+      throw new Error("Structure does not exist");
+    }
+
+    await db.delete(structure.id as string);
+
+    return {
+      success: true,
+      structure: { id: structure.id },
+    };
+  },
+  zod$({
+    id: z.string(),
+  }),
+);
+export const useDeleteToken = routeAction$(
+  async (data, requestEvent) => {
+    const db = await connectToDB(requestEvent.env);
+    const cookie = requestEvent.cookie.get("accessToken");
+    if (!cookie) {
+      throw new Error("No cookie found");
+    }
+    if (!(await structureExists(db, data.structureId))) {
+      throw new Error("Structure does not exist");
+    }
+
+    await db.query(`
+    DELETE structure_balance WHERE in=${data.structureId} AND out=${data.balanceId}`);
+  },
+  zod$({
+    structureId: z.string(),
+    balanceId: z.string(),
+  }),
+);
+
 export const useObservedWalletBalances = routeLoader$(async (requestEvent) => {
   const db = await connectToDB(requestEvent.env);
 
@@ -123,6 +168,7 @@ export const useAvailableStructures = routeLoader$(async (requestEvent) => {
         decimals: token[0].decimals,
         balance: tokenBalance[0].value,
         balanceValueUSD: tokenValue.priceUSD,
+        balanceId: balance,
       };
 
       structureTokens.push({
@@ -176,13 +222,29 @@ export const useCreateStructure = routeAction$(
     balancesId: z.array(z.string()),
   }),
 );
+
 export default component$(() => {
+  const clickedToken = useStore({ balanceId: "", structureId: "" });
+  const deleteToken = useDeleteToken();
   const availableStructures = useAvailableStructures();
   const isCreateNewStructureModalOpen = useSignal(false);
   const createStructureAction = useCreateStructure();
+  const deleteStructureAction = useDeleteGroup();
   const structureStore = useStore({ name: "" });
   const selectedWallets = useStore({ wallets: [] as any[] });
   const observedWalletsWithBalance = useObservedWalletBalances();
+
+  useTask$(async ({ track }) => {
+    track(() => {
+      clickedToken.structureId;
+      clickedToken.balanceId;
+      if (clickedToken.structureId !== "" && clickedToken.balanceId !== "")
+        deleteToken.submit({
+          balanceId: clickedToken.balanceId,
+          structureId: clickedToken.structureId,
+        });
+    });
+  });
 
   return (
     <>
@@ -277,6 +339,12 @@ export default component$(() => {
                 <Group
                   key={createdStructures.structure.name}
                   createdStructure={createdStructures}
+                  tokenStore={clickedToken}
+                  onClick$={async () => {
+                    await deleteStructureAction.submit({
+                      id: createdStructures.structure.id,
+                    });
+                  }}
                 />
               ))}
             </div>
