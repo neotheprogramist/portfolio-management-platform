@@ -156,6 +156,8 @@ export const useAvailableStructures = routeLoader$(async (requestEvent) => {
     for (const balance of structureBalances[0]["->structure_balance"].out) {
       const [walletId]: any = await db.query(`
         SELECT out  FROM for_wallet WHERE in = ${balance}`);
+
+      if(walletId[0]) {
       const [wallet] = await db.select<Wallet>(`${walletId[0].out}`);
 
       const [tokenBalance]: any = await db.query(`
@@ -186,6 +188,7 @@ export const useAvailableStructures = routeLoader$(async (requestEvent) => {
         },
         balance: tokenWithBalance,
       });
+      }
     }
 
     availableStructures.push({
