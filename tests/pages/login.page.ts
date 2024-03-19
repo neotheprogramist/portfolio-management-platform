@@ -1,6 +1,6 @@
 import { expect, type Page } from "@playwright/test";
-import { routes } from "../data/routes";
-import { loginFixture } from "../fixtures/login.fixture";
+import { routes } from "data/routes";
+import { loginFixture } from "fixtures/login.fixture";
 import BasePage from "./base.page";
 
 class LoginPage extends BasePage {
