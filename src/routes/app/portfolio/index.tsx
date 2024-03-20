@@ -466,7 +466,7 @@ export default component$(() => {
               <p class="text-[12px] font-thin leading-[180%]">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                 Pellentesque quis rutrum mi. Fusce elit est, condimentum eget
-                varius et, tempor in erat. Fusce vulputate faucibus arcu id
+                varoius et, tempor in erat. Fusce vulputate faucibus arcu id
                 molestie. Sed auctor tortor eu arcu feugiat, ut placerat nisl
                 convallis. Pellentesque sodales congue vulputate. Aliquam erat
                 volutpat. Fusce convallis sit amet dui at gravida. Aliquam a
