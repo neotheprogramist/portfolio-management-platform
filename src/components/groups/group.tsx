@@ -1,4 +1,4 @@
-import { Slot, component$, type JSXOutput } from "@builder.io/qwik";
+import { component$, type JSXOutput } from "@builder.io/qwik";
 import type { QRL } from "@builder.io/qwik";
 import ArrowDown from "/public/images/svg/portfolio/arrowDown.svg?jsx";
 import {

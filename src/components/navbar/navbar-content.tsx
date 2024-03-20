@@ -12,7 +12,7 @@ export const NavbarContent = component$(() => {
     address && (address = address.slice(0, 4) + "..." + address.slice(-4)));
   return (
     <>
-      <div class="flex items-center custom-text-50 gap-[40px]">
+      <div class="custom-text-50 flex items-center gap-[40px]">
         <a href="/app/dashboard" class="">
           Dashboard
         </a>

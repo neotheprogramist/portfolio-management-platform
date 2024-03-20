@@ -274,7 +274,7 @@ export default component$(() => {
 
   return (
     <>
-      <div class="grid grid-rows-[auto_auto] overflow-auto px-[20px] ">
+      <div class="grid grid-rows-[auto_auto] overflow-auto px-[40px] ">
         <div class="flex items-center justify-between py-[32px]">
           <div class="flex items-center gap-[8px] text-[24px] font-semibold">
             <h2>Portfolio Name</h2>
@@ -329,14 +329,16 @@ export default component$(() => {
             </div>
             <div class="grid grid-rows-[40px_auto] items-center gap-[24px] overflow-auto text-[14px]">
               <div
-                style="grid-template-columns: minmax(200px, 400px) minmax(100px, 200px) repeat(4, minmax(145px, 300px)) 40px;"
+                style="grid-template-columns: minmax(200px, 400px) repeat(2, minmax(100px, 200px)) minmax(180px, 300px) repeat(2, minmax(145px, 300px)) 40px;"
                 class="grid items-center text-[12px] font-normal text-white text-opacity-[50%]"
               >
                 <div class="">TOKEN NAME</div>
                 <div class="">QUANTITY</div>
                 <div class="">VALUE</div>
-                <div class="bg-glass border-white-opacity-20 flex h-[32px] gap-[8px] w-fit rounded-lg p-[2px] text-white">
-                  <button class="color-gradient rounded-[8px] px-[8px]">24h</button>
+                <div class="custom-bg-white custom-border-1 flex h-[32px] w-fit gap-[8px] rounded-lg p-[2px] ">
+                  <button class="custom-bg-button rounded-[8px] px-[8px]">
+                    24h
+                  </button>
                   <button class="px-[8px]">3d</button>
                   <button class="px-[8px]">30d</button>
                 </div>
@@ -442,7 +444,7 @@ export default component$(() => {
             </div>
             <div class="flex h-auto items-center gap-[16px]">
               <div class="custom-border-1 flex h-[44px] w-[44px] items-center justify-center rounded-[8px]">
-                <Bitcoin width={40} height={40} class="min-w-[40px]" />
+                <Bitcoin width={24} height={24} class="min-w-[24px]" />
               </div>
               <div class="flex flex-col gap-[8px]">
                 <h4 class="text-[14px] font-medium">Bitcoin</h4>
