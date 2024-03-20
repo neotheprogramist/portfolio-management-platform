@@ -48,14 +48,18 @@ export const SelectedWalletDetails = component$<SelectedWalletProps>(
         </div>
 
         <div class="row-span-1 row-start-2">
-          <div class="custom-text-50 grid grid-cols-[30%_14%_14%_32%_10%] items-center gap-[8px] text-left text-xs uppercase">
+          <div class="custom-text-50 grid grid-cols-[25%_14%_15%_32%_9%] items-center gap-[8px] text-left text-xs uppercase">
             <div class="">Token name</div>
             <div class="">Quantity</div>
             <div class="">Value</div>
-            <div class="bg-glass custom-border-1 flex h-[32px] items-center gap-[8px] rounded-lg p-[2px] text-white">
-              <button class="color-gradient rounded-lg px-[8px]">24h</button>
-              <button class="px-[8px]">3d</button>
-              <button class="px-[8px]">30d</button>
+            <div class="flex justify-center">
+              <div class="custom-bg-white custom-border-1 m-[0, auto] flex h-[32px] w-fit gap-[8px] rounded-[8px] p-[3.5px] text-white">
+                <button class="custom-bg-button rounded-[8px] px-[8px]">
+                  24h
+                </button>
+                <button class="px-[8px]">3d</button>
+                <button class="px-[8px]">30d</button>
+              </div>
             </div>
             <div class=""></div>
           </div>

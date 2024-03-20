@@ -29,7 +29,7 @@ export const TokenRowWallets = component$<TokenRowWalletsProps>(
     });
     return (
       <>
-        <div class="custom-border-b-1 custom-text-50 grid grid-cols-[30%_14%_14%_28%_9%] items-center gap-[8px] py-[16px] text-left text-[14px]">
+        <div class="custom-border-b-1 custom-text-50 grid grid-cols-[25%_14%_15%_32%_9%] items-center gap-[8px] py-[16px] text-left text-[14px]">
           <div class="flex items-center gap-4 py-2">
             <div class="custom-border-1 rounded-lg bg-white bg-opacity-10 p-2">
               <Image
@@ -56,7 +56,7 @@ export const TokenRowWallets = component$<TokenRowWalletsProps>(
             </span>
           </div>
           <div class="flex justify-center gap-[16px]">
-            <span class="custom-bg-white rounded-lg border border-green-500 bg-green-500 px-2 py-1 text-green-500">
+            <span class="custom-bg-white rounded-lg border border-green-500  px-2 py-1 text-green-500">
               0%
             </span>
             <ImgGraf />
