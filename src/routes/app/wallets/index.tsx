@@ -176,7 +176,9 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
     subgraphURL,
   );
 
-  const uniswapSubgraphURL = requestEvent.env.get("UNIV3_OPTIMIST_SUBGRAPH_URL");
+  const uniswapSubgraphURL = requestEvent.env.get(
+    "UNIV3_OPTIMIST_SUBGRAPH_URL",
+  );
   if (!uniswapSubgraphURL) {
     throw new Error("Missing UNISWAP_SUBGRAPH_URL");
   }
