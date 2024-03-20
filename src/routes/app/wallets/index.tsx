@@ -176,7 +176,7 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
     subgraphURL,
   );
 
-  const uniswapSubgraphURL = requestEvent.env.get("UNISWAP_SUBGRAPH_URL");
+  const uniswapSubgraphURL = requestEvent.env.get("UNIV3_OPTIMIST_SUBGRAPH_URL");
   if (!uniswapSubgraphURL) {
     throw new Error("Missing UNISWAP_SUBGRAPH_URL");
   }
@@ -422,7 +422,6 @@ export default component$(() => {
               placeholder="Select network"
               disabled={true}
             />
-
             <button
               type="reset"
               class="border-buttons absolute bottom-[20px] right-[120px] h-[32px] rounded-3xl px-[8px] text-xs font-normal text-white duration-300 ease-in-out hover:scale-110"
