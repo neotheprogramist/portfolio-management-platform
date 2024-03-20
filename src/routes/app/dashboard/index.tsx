@@ -46,9 +46,9 @@ export const useTotalPortfolioValue = routeLoader$(async (requestEvent) => {
     subgraphURL,
   );
 
-  const uniswapSubgraphURL = requestEvent.env.get("UNISWAP_SUBGRAPH_URL");
+  const uniswapSubgraphURL = requestEvent.env.get("UNIV3_OPTIMIST_SUBGRAPH_URL");
   if (!uniswapSubgraphURL) {
-    throw new Error("Missing UNISWAP_SUBGRAPH_URL");
+    throw new Error("Missing UNIV3_OPTIMIST_SUBGRAPH_URL");
   }
 
   const dbTokensAddresses = await getDBTokensAddresses(db);
