@@ -1,4 +1,5 @@
-import { component$, Slot, useContext } from "@builder.io/qwik";
+import { component$, useContext } from "@builder.io/qwik";
+import { NavLink } from "./LinkProps";
 import ImgAvatar from "/public/images/avatar.png?jsx";
 import ArrowDown from "/public/images/arrowDown.svg?jsx";
 import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
@@ -12,17 +13,17 @@ export const NavbarContent = component$(() => {
     address && (address = address.slice(0, 4) + "..." + address.slice(-4)));
   return (
     <>
-      <div class="custom-text-50 flex items-center gap-[40px]">
-        <a href="/app/dashboard" class="">
+      <div class="flex items-center gap-10">
+        <NavLink href="/app/dashboard" class="m-2.5 no-underline" activeClass="text-white">
           Dashboard
-        </a>
-        <a href="/app/portfolio" class="">
+        </NavLink>
+        <NavLink href="/app/portfolio" class="text-grey m-2.5 no-underline" activeClass="text-white">
           Portfolio
-        </a>
-        <a href="/app/wallets" class="">
+        </NavLink>
+        <NavLink href="/app/wallets" class="text-grey m-2.5 no-underline" activeClass="text-white">
           Wallets
-        </a>
-        <a href="/app/action" class="">
+        </NavLink>
+        <a href="/app/action" class="text-grey m-2.5 no-underline">
           Action
         </a>
         <a href="/app/automation" class="">
