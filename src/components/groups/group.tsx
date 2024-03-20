@@ -73,29 +73,15 @@ export const Group = component$<GroupProps>((props) => {
           <div class="flex items-center gap-[8px] ">
             <ArrowDown />
             <h3>{props.createdStructure.structure.name}</h3>
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 14 14"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              onClick$={props.onClick$}
-            >
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M9.5375 1.1375L11.1125 2.7125C11.4625 3.0625 11.4625 3.5875 11.1125 3.9375L4.55 10.5H1.75V7.7L8.3125 1.1375C8.6625 0.7875 9.1875 0.7875 9.5375 1.1375ZM10.5 3.325L8.925 1.75L7.6125 3.0625L9.1875 4.6375L10.5 3.325ZM2.625 8.05V9.625H4.2L8.575 5.25L7 3.675L2.625 8.05ZM0.875 12.25V11.375H13.125V12.25H0.875Z"
-                fill="#222222"
-                fill-opacity="0.5"
-              />
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none" onClick$={props.onClick$}>
+              <path d="M2.91667 11.0833H3.74792L9.45 5.38125L8.61875 4.55L2.91667 10.2521V11.0833ZM1.75 12.25V9.77083L9.45 2.08542C9.56667 1.97847 9.69549 1.89583 9.83646 1.8375C9.97743 1.77917 10.1257 1.75 10.2812 1.75C10.4368 1.75 10.5875 1.77917 10.7333 1.8375C10.8792 1.89583 11.0056 1.98333 11.1125 2.1L11.9146 2.91667C12.0312 3.02361 12.1163 3.15 12.1698 3.29583C12.2233 3.44167 12.25 3.5875 12.25 3.73333C12.25 3.88889 12.2233 4.03715 12.1698 4.17812C12.1163 4.3191 12.0312 4.44792 11.9146 4.56458L4.22917 12.25H1.75ZM9.02708 4.97292L8.61875 4.55L9.45 5.38125L9.02708 4.97292Z" fill="white"/>
             </svg>
           </div>
         </div>
         <div>
-          {extractData(props.createdStructure)}
+          {extractData(props.createdStructure, props.tokenStore)}
         </div>
       </div>
-      {extractData(props.createdStructure, props.tokenStore)}
     </>
   );
 });
