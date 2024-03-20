@@ -14,25 +14,53 @@ export const NavbarContent = component$(() => {
   return (
     <>
       <div class="flex items-center gap-10">
-        <NavLink href="/app/dashboard" class="hover:text-white" activeClass="text-white">
+        <NavLink
+          href="/app/dashboard"
+          class="hover:text-white"
+          activeClass="text-white"
+        >
           Dashboard
         </NavLink>
-        <NavLink href="/app/portfolio" class="hover:text-white" activeClass="text-white">
+        <NavLink
+          href="/app/portfolio"
+          class="hover:text-white"
+          activeClass="text-white"
+        >
           Portfolio
         </NavLink>
-        <NavLink href="/app/wallets" class="hover:text-white" activeClass="text-white">
+        <NavLink
+          href="/app/wallets"
+          class="hover:text-white"
+          activeClass="text-white"
+        >
           Wallets
         </NavLink>
-        <NavLink href="/app/action" class="hover:text-white" activeClass="text-white">
+        <NavLink
+          href="/app/action"
+          class="hover:text-white"
+          activeClass="text-white"
+        >
           Action
         </NavLink>
-        <NavLink href="/app/automation" class="hover:text-white" activeClass="text-white">
+        <NavLink
+          href="/app/automation"
+          class="hover:text-white"
+          activeClass="text-white"
+        >
           Automation
         </NavLink>
-        <NavLink href="/app/alerts" class="hover:text-white" activeClass="text-white">
+        <NavLink
+          href="/app/alerts"
+          class="hover:text-white"
+          activeClass="text-white"
+        >
           Alerts
         </NavLink>
-        <NavLink href="/app/reports" class="hover:text-white" activeClass="text-white">
+        <NavLink
+          href="/app/reports"
+          class="hover:text-white"
+          activeClass="text-white"
+        >
           Reports
         </NavLink>
       </div>

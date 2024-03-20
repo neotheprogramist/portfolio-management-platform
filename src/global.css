@@ -2,120 +2,128 @@
  * Tailwind CSS imports
  * View the full documentation at https://tailwindcss.com
  */
- @tailwind base;
- @tailwind components;
- @tailwind utilities;
- 
- /**
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
   * WHAT IS THIS FILE?
   *
   * Globally applied styles. No matter which components are in the page or matching route,
   * the styles in here will be applied to the Document, without any sort of CSS scoping.
   *
   */
- 
- *,
- *::before,
- *::after {
-   box-sizing: border-box;
- }
- 
- html {
-   line-height: 1;
-   -webkit-text-size-adjust: 100%;
- }
- 
- body {
-   padding: 0;
-   margin: 0;
-   line-height: inherit;
- }
- 
- @layer base {
-   @font-face {
-     font-family: "Sora";
-     font-style: normal;
-     font-weight: 700;
-     src: url("/fonts/Sora-Bold.woff") format("woff");
-   }
-   @font-face {
-     font-family: "Sora";
-     font-style: normal;
-     font-weight: 600;
-     src: url("/fonts/Sora-SemiBold.woff") format("woff");
-   }
-   @font-face {
-     font-family: "Sora";
-     font-style: normal;
-     font-weight: 500;
-     src: url("/fonts/Sora-Medium.woff") format("woff");
-   }
-   @font-face {
-     font-family: "Sora";
-     font-style: normal;
-     font-weight: 400;
-     src: url("/fonts/Sora-Regular.woff") format("woff");
-   }
-   @font-face {
-     font-family: "Sora";
-     font-style: normal;
-     font-weight: 300;
-     src: url("/fonts/Sora-Thin.woff") format("woff");
-   }
- }
- .bg-modal-glass {
-   background: linear-gradient(98deg, rgb(27, 27, 27) 0%, rgb(0, 0, 0) 100%);
- }
- 
- .bg-modal-button {
-   background: linear-gradient(98deg, rgb(34, 34, 34) 0%, rgb(22, 22, 22) 100%);
- }
- 
- .custom-shadow {
-   box-shadow: 0px 5px 15px 0px #000;
- }
- 
- .custom-border-1 {
-   border: 1px solid rgba(255, 255, 255, 0.15);
- }
- .custom-border-2 {
-   border: 2px solid rgba(255, 255, 255, 0.15);
- }
- .custom-bg-white {
-   background: linear-gradient(
-     98deg,
-     rgba(255, 255, 255, 0.1) 0%,
-     rgba(255, 255, 255, 0) 100%
-   );
-   backdrop-filter: blur(100px);
- }
- .custom-bg-button {
-   background: linear-gradient(
-     130deg,
-     #da301f 0.24%,
-     #f48946 18.43%,
-     #ee3560 35.57%,
-     #fa4784 51.68%,
-     #ff48c0 66.75%,
-     #8e38b5 81.82%,
-     #5542bb 89.09%,
-     #0051c3 100%
-   );
- }
- 
- .gradient {
-   background: linear-gradient(
-     130deg,
-     #da301f 0.24%,
-     #f48946 18.43%,
-     #ee3560 35.57%,
-     #fa4784 51.68%,
-     #ff48c0 66.75%,
-     #8e38b5 81.82%,
-     #5542bb 89.09%,
-     #0051c3 100%
-   );
-   opacity: 0.5;
-   filter: blur(170px);
-   z-index: -1;
- }
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  line-height: 1;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  line-height: inherit;
+}
+
+@layer base {
+  @font-face {
+    font-family: "Sora";
+    font-style: normal;
+    font-weight: 700;
+    src: url("/fonts/Sora-Bold.woff") format("woff");
+  }
+  @font-face {
+    font-family: "Sora";
+    font-style: normal;
+    font-weight: 600;
+    src: url("/fonts/Sora-SemiBold.woff") format("woff");
+  }
+  @font-face {
+    font-family: "Sora";
+    font-style: normal;
+    font-weight: 500;
+    src: url("/fonts/Sora-Medium.woff") format("woff");
+  }
+  @font-face {
+    font-family: "Sora";
+    font-style: normal;
+    font-weight: 400;
+    src: url("/fonts/Sora-Regular.woff") format("woff");
+  }
+  @font-face {
+    font-family: "Sora";
+    font-style: normal;
+    font-weight: 300;
+    src: url("/fonts/Sora-Thin.woff") format("woff");
+  }
+}
+
+.custom-text-50 {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.custom-shadow {
+  box-shadow: 0px 5px 15px 0px #000;
+}
+
+.custom-border-1 {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.custom-border-2 {
+  border: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+.custom-border-b-1 {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+.custom-bg-white {
+  background: linear-gradient(
+    98deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+.custom-bg-button {
+  background: linear-gradient(
+    130deg,
+    #da301f 0.24%,
+    #f48946 18.43%,
+    #ee3560 35.57%,
+    #fa4784 51.68%,
+    #ff48c0 66.75%,
+    #8e38b5 81.82%,
+    #5542bb 89.09%,
+    #0051c3 100%
+  );
+}
+
+.gradient {
+  background: linear-gradient(
+    130deg,
+    #da301f 0.24%,
+    #f48946 18.43%,
+    #ee3560 35.57%,
+    #fa4784 51.68%,
+    #ff48c0 66.75%,
+    #8e38b5 81.82%,
+    #5542bb 89.09%,
+    #0051c3 100%
+  );
+  opacity: 0.5;
+  filter: blur(170px);
+  z-index: -1;
+}
+
+.bg-modal-glass {
+  background: linear-gradient(98deg, rgb(27, 27, 27) 0%, rgb(0, 0, 0) 100%);
+}
+
+.bg-modal-button {
+  background: linear-gradient(98deg, rgb(34, 34, 34) 0%, rgb(22, 22, 22) 100%);
+}
