@@ -1,4 +1,5 @@
 import { component$, Slot, useContext } from "@builder.io/qwik";
+import { NavLink } from "./LinkProps";
 import ImgAvatar from "/public/images/avatar.png?jsx";
 import ArrowDown from "/public/images/arrowDown.svg?jsx";
 import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
