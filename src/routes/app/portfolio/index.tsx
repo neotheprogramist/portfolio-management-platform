@@ -346,18 +346,18 @@ export default component$(() => {
                 <div class="">NETWORK</div>
                 <div class=""></div>
               </div>
-                {availableStructures.value.map((createdStructures) => (
-                  <Group
-                    key={createdStructures.structure.name}
-                    createdStructure={createdStructures}
-                    tokenStore={clickedToken}
+              {availableStructures.value.map((createdStructures) => (
+                <Group
+                  key={createdStructures.structure.name}
+                  createdStructure={createdStructures}
+                  tokenStore={clickedToken}
                   onClick$={async () => {
                     await deleteStructureAction.submit({
                       id: createdStructures.structure.id,
                     });
                   }}
                 />
-                ))}
+              ))}
             </div>
             {isCreateNewStructureModalOpen.value && (
               <Modal
