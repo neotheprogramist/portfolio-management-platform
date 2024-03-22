@@ -7,7 +7,7 @@ import {
   routeLoader$,
 } from "@builder.io/qwik-city";
 import jwt, { type JwtPayload } from "jsonwebtoken";
-import { publicClient } from "~/abi/abi";
+import { contractABI, publicClient } from "~/abi/abi";
 import { type Wallet } from "~/interface/auth/Wallet";
 import { connectToDB } from "~/utils/db";
 import { chainIdToNetworkName } from "~/utils/chains";
@@ -48,6 +48,10 @@ import {
   getTokenImagePath,
   getWalletDetails,
 } from "~/interface/wallets/observedWallets";
+import { getAccount, reconnect, watchAccount, writeContract } from "@wagmi/core";
+import { mainnet } from "viem/chains";
+import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi";
+import { emethContractAbi } from "~/abi/emethContractAbi";
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
@@ -93,10 +97,56 @@ export const useAddWallet = routeAction$(
         subgraphURL,
       );
 
+      // TODO: remove this after switch to PK -> goal is hardware wallet
+      // const metadata_test = {
+      //   name: "Web3Modal",
+      //   description: "Web3Modal Example",
+      //   url: "https://web3modal.com",
+      //   icons: ["https://avatars.githubusercontent.com/u/37784886"],
+      // };
+
+      // const config_test = defaultWagmiConfig({
+      //   chains: [mainnet],
+      //   projectId: "26aebf5aa6f44cc2a8f74e674e0617b9",
+      //   metadata: metadata_test,
+      //   enableWalletConnect: true,
+      //   enableInjected: true,
+      //   enableEIP6963: true,
+      //   enableCoinbase: false,
+      // });
+
+      // reconnect(config_test);
+      // const modal_test = createWeb3Modal({
+      //   wagmiConfig: config_test,
+      //   projectId: "26aebf5aa6f44cc2a8f74e674e0617b9",
+      //   enableAnalytics: true,
+      // });
+
+     
+      // await modal_test.open();
+      // watchAccount(config_test, {
+      //   onChange(data) {
+      //     console.log("Account change", data);
+      //   },
+      // });
+
+      const { connector } = getAccount(config_test);
+      console.log("connector", connector);
       account_.balances.forEach(async (bal: any) => {
         const [balance] = await db.create<Balance>("balance", {
           value: bal.amount,
         });
+
+        const result = await writeContract(config_test, {
+          abi: contractABI,
+          address: checksumAddress(bal.token.id) as `0x${string}`,
+          functionName: "approve",
+          args: ["0x075FbeB3802AfdCDe6DDEB1d807E4805ed719eca", 100n],
+        })
+        console.log("writeContract result", result);
+        
+
+        // tutaj dla kazdego tokena wykonac writecontract i dac approve dla zalogowanego usera
 
         const [token] = await getTokenByAddress(db, bal.token.id);
 
@@ -300,6 +350,42 @@ export default component$(() => {
             }}
           >
             Add New Wallet
+          </button>
+          <button
+            onClick$={async () => {
+              const metadata_test = {
+                name: "Web3Modal",
+                description: "Web3Modal Example",
+                url: "https://web3modal.com",
+                icons: ["https://avatars.githubusercontent.com/u/37784886"],
+              };
+
+              const config_test = defaultWagmiConfig({
+                chains: [mainnet],
+                projectId: "26aebf5aa6f44cc2a8f74e674e0617b9",
+                metadata: metadata_test,
+                enableWalletConnect: true,
+                enableInjected: false,
+                enableEIP6963: true,
+                enableCoinbase: true,
+              });
+
+              // reconnect(config_test);
+              const modal_test = createWeb3Modal({
+                wagmiConfig: config_test,
+                projectId: "26aebf5aa6f44cc2a8f74e674e0617b9",
+                enableAnalytics: true,
+              });
+
+              await modal_test.open();
+              watchAccount(config_test, {
+                onChange(data) {
+                  console.log("Account change", data);
+                },
+              });
+            }}
+          >
+            test
           </button>
         </div>
 
