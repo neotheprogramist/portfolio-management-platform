@@ -13,22 +13,13 @@ export const NavbarContent = component$(() => {
   return (
     <>
       <div class="flex items-center gap-10">
-        <a
-          href="/app/dashboard"
-          class="m-2.5 no-underline"
-        >
+        <a href="/app/dashboard" class="m-2.5 no-underline">
           Dashboard
         </a>
-        <a
-          href="/app/portfolio"
-          class="text-grey m-2.5 no-underline"
-        >
+        <a href="/app/portfolio" class="text-grey m-2.5 no-underline">
           Portfolio
         </a>
-        <a
-          href="/app/wallets"
-          class="text-grey m-2.5 no-underline"
-        >
+        <a href="/app/wallets" class="text-grey m-2.5 no-underline">
           Wallets
         </a>
         <a href="/app/action" class="text-grey m-2.5 no-underline">
