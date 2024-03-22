@@ -1,5 +1,4 @@
 import { component$, useContext } from "@builder.io/qwik";
-import { NavLink } from "./LinkProps";
 import ImgAvatar from "/public/images/avatar.png?jsx";
 import ArrowDown from "/public/images/arrowDown.svg?jsx";
 import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
@@ -14,27 +13,24 @@ export const NavbarContent = component$(() => {
   return (
     <>
       <div class="flex items-center gap-10">
-        <NavLink
+        <a
           href="/app/dashboard"
           class="m-2.5 no-underline"
-          activeClass="text-white"
         >
           Dashboard
-        </NavLink>
-        <NavLink
+        </a>
+        <a
           href="/app/portfolio"
           class="text-grey m-2.5 no-underline"
-          activeClass="text-white"
         >
           Portfolio
-        </NavLink>
-        <NavLink
+        </a>
+        <a
           href="/app/wallets"
           class="text-grey m-2.5 no-underline"
-          activeClass="text-white"
         >
           Wallets
-        </NavLink>
+        </a>
         <a href="/app/action" class="text-grey m-2.5 no-underline">
           Action
         </a>
