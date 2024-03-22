@@ -288,12 +288,12 @@ export default component$(() => {
   const addWalletFormStore = useStore({ name: "", address: "" });
 
   return (
-    <div class="grid grid-cols-[24%_73%] grid-rows-[14%_1fr] gap-[24px] overflow-auto border-t border-white border-opacity-15 p-[24px]">
-      <div class="bg-glass border-white-opacity-20 col-span-1 col-start-1 row-span-2 row-start-1 row-end-3 grid grid-rows-[56px_48px_64px_1fr] overflow-auto rounded-[16px] p-[24px]">
+    <div class="grid grid-cols-[24%_73%] grid-rows-[14%_1fr] gap-[24px] overflow-auto p-[24px]">
+      <div class="custom-bg-white custom-border-1 col-span-1 col-start-1 row-span-2 row-start-1 row-end-3 grid grid-rows-[56px_48px_64px_1fr] overflow-auto rounded-[16px] p-[24px]">
         <div class="row-span-1 row-start-1 mb-[24px] flex items-center justify-between gap-[10px] text-white">
           <h1 class="text-xl">Wallets</h1>
           <button
-            class="border-buttons h-[32px] cursor-pointer rounded-[40px] px-4 text-xs font-semibold leading-none text-white duration-300 ease-in-out hover:scale-110 lg:text-[10px]"
+            class="custom-border-2 h-[32px] cursor-pointer rounded-[40px] px-4 text-xs font-semibold leading-none text-white duration-300 ease-in-out hover:scale-110 lg:text-[10px]"
             onClick$={() => {
               isAddWalletModalOpen.value = !isAddWalletModalOpen.value;
             }}
@@ -302,12 +302,12 @@ export default component$(() => {
           </button>
         </div>
 
-        <button class="border-white-opacity-20 bg-glass row-span-1 row-start-2 mb-[8px] flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-xs text-white text-opacity-50">
+        <button class="custom-border-1 custom-bg-white custom-text-50 row-span-1 row-start-2 mb-[8px] flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-xs">
           <ImgSearch />
           Search for wallet
         </button>
 
-        <button class="border-white-opacity-20 bg-glass row-span-1 row-start-3 mb-[24px] flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-xs text-white">
+        <button class="custom-border-1 custom-bg-white row-span-1 row-start-3 mb-[24px] flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-xs text-white">
           Choose Network
           <ImgArrowDown />
         </button>
@@ -337,7 +337,7 @@ export default component$(() => {
           </p>
         </div>
         <div class="lg:flex lg:gap-[8px]">
-          <button class="border-buttons mr-[12px] h-[32px] cursor-pointer rounded-3xl px-[16px] text-xs font-semibold text-white duration-300 ease-in-out hover:scale-110">
+          <button class="custom-border-2 mr-[12px] h-[32px] cursor-pointer rounded-3xl px-[16px] text-xs font-semibold text-white duration-300 ease-in-out hover:scale-110">
             Dismiss
           </button>
           <button class="h-[32px] rounded-3xl border-none bg-blue-500 px-[16px] text-xs font-semibold text-white duration-300 ease-in-out hover:scale-110">
@@ -346,7 +346,7 @@ export default component$(() => {
         </div>
       </div>
 
-      <div class="bg-glass border-white-opacity-20 row-span-1 flex flex-col gap-[24px] overflow-auto rounded-[16px] p-[24px]">
+      <div class="custom-bg-white custom-border-1 row-span-1 flex flex-col gap-[24px] overflow-auto rounded-[16px] p-[24px]">
         {selectedWallet.value && (
           <SelectedWalletDetails
             key={selectedWallet.value.wallet.address}
@@ -376,13 +376,13 @@ export default component$(() => {
           >
             <div class="mb-5">
               <p class="pb-1 text-xs text-white">Type</p>
-              <div class="bg-glass border-white-opacity-20 grid grid-cols-[50%_50%] rounded p-1">
+              <div class="custom-bg-white custom-border-1 grid grid-cols-[50%_50%] rounded p-1">
                 <button type="button" class="col-span-1 text-white">
                   Executable
                 </button>
                 <button
                   type="button"
-                  class="color-gradient col-span-1 rounded p-2.5  text-white"
+                  class="custom-bg-button col-span-1 rounded p-2.5  text-white"
                 >
                   Read-only
                 </button>
@@ -397,7 +397,7 @@ export default component$(() => {
             <input
               type="text"
               name="name"
-              class={`border-white-opacity-20 mb-5 block w-[80%] rounded bg-transparent p-3 text-white 
+              class={`custom-border-1 mb-5 block w-[80%] rounded bg-transparent p-3 text-white 
               ${!isValidName(addWalletFormStore.name) ? "border-red-700" : ""}`}
               value={addWalletFormStore.name}
               onInput$={(e) => {
@@ -414,7 +414,7 @@ export default component$(() => {
             <input
               type="text"
               name="address"
-              class={`border-white-opacity-20 mb-5 block w-[80%] rounded bg-transparent p-3 text-white 
+              class={`custom-border-1 mb-5 block w-[80%] rounded bg-transparent p-3 text-white 
               ${!isValidAddress(addWalletFormStore.address) ? "border-red-700" : ""}`}
               value={addWalletFormStore.address}
               onInput$={(e) => {
@@ -429,14 +429,14 @@ export default component$(() => {
             <input
               type="text"
               name="network"
-              class={`border-white-opacity-20 mb-5 block w-full rounded bg-transparent p-3 text-sm placeholder-white placeholder-opacity-50`}
+              class={`custom-border-1 mb-5 block w-full rounded bg-transparent p-3 text-sm placeholder-white placeholder-opacity-50`}
               placeholder="Select network"
               disabled={true}
             />
 
             <button
               type="reset"
-              class="border-buttons absolute bottom-[20px] right-[120px] h-[32px] rounded-3xl px-[8px] text-xs font-normal text-white duration-300 ease-in-out hover:scale-110"
+              class="custom-border-2 absolute bottom-[20px] right-[120px] h-[32px] rounded-3xl px-[8px] text-xs font-normal text-white duration-300 ease-in-out hover:scale-110"
               onClick$={() => {
                 isAddWalletModalOpen.value = false;
                 addWalletFormStore.address = "";
@@ -447,7 +447,7 @@ export default component$(() => {
             </button>
             <button
               type="submit"
-              class="color-gradient absolute bottom-[20px] right-[24px] h-[32px] rounded-3xl p-[1px] font-normal text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
+              class="custom-bg-button absolute bottom-[20px] right-[24px] h-[32px] rounded-3xl p-[1px] font-normal text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
               disabled={
                 addWalletFormStore.name === "" ||
                 addWalletFormStore.address === "" ||
@@ -461,7 +461,7 @@ export default component$(() => {
                   addWalletFormStore.address === "" ||
                   !isValidName(addWalletFormStore.name) ||
                   !isValidAddress(addWalletFormStore.address)
-                    ? "bg-modal-button text-gray-400"
+                    ? "bg-modal-button custom-text-50"
                     : "bg-black"
                 }`}
               >

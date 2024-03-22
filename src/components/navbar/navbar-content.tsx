@@ -7,13 +7,25 @@ export const NavbarContent = component$(() => {
   return (
     <>
       <div class="flex items-center gap-10">
-        <NavLink href="/app/dashboard" class="m-2.5 no-underline" activeClass="text-white">
+        <NavLink
+          href="/app/dashboard"
+          class="m-2.5 no-underline"
+          activeClass="text-white"
+        >
           Dashboard
         </NavLink>
-        <NavLink href="/app/portfolio" class="text-grey m-2.5 no-underline" activeClass="text-white">
+        <NavLink
+          href="/app/portfolio"
+          class="text-grey m-2.5 no-underline"
+          activeClass="text-white"
+        >
           Portfolio
         </NavLink>
-        <NavLink href="/app/wallets" class="text-grey m-2.5 no-underline" activeClass="text-white">
+        <NavLink
+          href="/app/wallets"
+          class="text-grey m-2.5 no-underline"
+          activeClass="text-white"
+        >
           Wallets
         </NavLink>
         <a href="/app/action" class="text-grey m-2.5 no-underline">

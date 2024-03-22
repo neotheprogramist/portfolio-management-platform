@@ -29,9 +29,9 @@ export const TokenRowWallets = component$<TokenRowWalletsProps>(
     });
     return (
       <>
-        <div class="grid grid-cols-[30%_14%_14%_28%_9%] items-center gap-[8px] border-b border-white border-opacity-10 py-[16px] text-left text-[14px] text-white text-opacity-50">
+        <div class="custom-border-b-1 custom-text-50 grid grid-cols-[30%_14%_14%_28%_9%] items-center gap-[8px] py-[16px] text-left text-[14px]">
           <div class="flex items-center gap-4 py-2">
-            <div class="rounded-lg border border-white border-opacity-20 bg-white bg-opacity-10 p-2">
+            <div class="custom-border-1 rounded-lg bg-white bg-opacity-10 p-2">
               <Image
                 layout="constrained"
                 objectFit="fill"
@@ -42,27 +42,27 @@ export const TokenRowWallets = component$<TokenRowWalletsProps>(
               />
             </div>
             <p class="text-white">
-              {name} <span class="text-white text-opacity-50">{symbol}</span>
+              {name} <span class="custom-text-50">{symbol}</span>
             </p>
           </div>
           <div class="">
-            <span class="bg-glass rounded-lg border border-white border-opacity-20 px-2 py-1 text-white ">
+            <span class="custom-bg-white custom-border-1 rounded-lg px-2 py-1 text-white ">
               {balance}
             </span>
           </div>
           <div class="">
-            <span class="bg-glass rounded-lg border border-white border-opacity-20 px-2 py-1 text-white">
+            <span class="custom-bg-white custom-border-1 rounded-lg px-2 py-1 text-white">
               ${balanceValueUSD}
             </span>
           </div>
           <div class="flex justify-center gap-[16px]">
-            <span class="bg-glass rounded-lg border border-green-500 bg-green-500 px-2 py-1 text-green-500">
+            <span class="custom-bg-white rounded-lg border border-green-500 bg-green-500 px-2 py-1 text-green-500">
               0%
             </span>
             <ImgGraf />
           </div>
           <div class="text-right">
-            <button class="border-white-opacity-20 bg-glassp rounded-lg p-1.5">
+            <button class="custom-border-1 custom-bg-white rounded-lg p-1.5">
               <ImgMore />
             </button>
           </div>

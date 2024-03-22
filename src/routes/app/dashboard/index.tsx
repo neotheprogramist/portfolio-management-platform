@@ -102,7 +102,7 @@ export default component$(() => {
     <div class="grid grid-cols-4 grid-rows-[48%_48%] gap-[24px] overflow-auto p-[40px]">
       <PortfolioValue totalPortfolioValue={totalPortfolioValue.value} />
 
-      <div class="custom-border-1 custom-bg-white col-start-3 row-span-1 row-start-1 grid grid-rows-[32px_1fr] gap-[16px] overflow-auto rounded-[16px] p-[24px] custom-shadow">
+      <div class="custom-border-1 custom-bg-white custom-shadow col-start-3 row-span-1 row-start-1 grid grid-rows-[32px_1fr] gap-[16px] overflow-auto rounded-[16px] p-[24px]">
         <div class="flex items-center justify-between">
           <h1 class="text-[20px] font-semibold">Alerts</h1>
           <button class="custom-border-2 rounded-[40px] px-[14px] py-[6px] text-[12px] font-semibold duration-300 ease-in-out hover:scale-110">
@@ -122,7 +122,7 @@ export default component$(() => {
         </div>
       </div>
 
-      <div class="custom-border-1 custom-bg-white col-start-4 row-span-1 row-start-1 grid grid-rows-[32px_1fr] gap-[16px] overflow-auto rounded-[16px] p-[24px] custom-shadow">
+      <div class="custom-border-1 custom-bg-white custom-shadow col-start-4 row-span-1 row-start-1 grid grid-rows-[32px_1fr] gap-[16px] overflow-auto rounded-[16px] p-[24px]">
         <div class="flex items-center justify-between">
           <h1 class="text-[20px] font-semibold">Actions</h1>
           <button class="custom-border-2 rounded-[40px] px-[14px] py-[6px] text-[12px] font-semibold duration-300 ease-in-out hover:scale-110">
@@ -135,7 +135,7 @@ export default component$(() => {
           <div class="flex items-center justify-between border-b border-white border-opacity-20 py-[20px]">
             <div class="">
               <h3 class="text-sm">DCA</h3>
-              <p class="text-xs custom-text-50">1 day ago</p>
+              <p class="custom-text-50 text-xs">1 day ago</p>
             </div>
             <div class="custom-bg-white flex h-[28px] items-center gap-[4px] rounded-[8px] border border-[#ffc107] p-[8px]">
               <ImgWarning />
@@ -157,14 +157,16 @@ export default component$(() => {
         </div>
 
         <div class="row-span-1 row-start-2">
-          <div class="grid grid-cols-[17%_8%_13%_17%_14%_11%_12%_2%] items-center gap-[8px] text-left text-xs uppercase custom-text-50">
+          <div class="custom-text-50 grid grid-cols-[17%_8%_13%_17%_14%_11%_12%_2%] items-center gap-[8px] text-left text-xs uppercase">
             <div class="">Token name</div>
             <div class="">Quantity</div>
             <div class="">Value</div>
-            <div class="custom-bg-white custom-border-1 flex h-[32px] gap-[8px] rounded-[8px] p-[3.5px] text-white w-fit">
-              <button class="custom-bg-button rounded-[8px] px-[8px]">24h</button>
-              <button class="px-[8px] rounded-[8px]">3d</button>
-              <button class="px-[8px] rounded-[8px]">30d</button>
+            <div class="custom-bg-white custom-border-1 flex h-[32px] w-fit gap-[8px] rounded-[8px] p-[3.5px] text-white">
+              <button class="custom-bg-button rounded-[8px] px-[8px]">
+                24h
+              </button>
+              <button class="rounded-[8px] px-[8px]">3d</button>
+              <button class="rounded-[8px] px-[8px]">30d</button>
             </div>
             <div class="">Wallet</div>
             <div class="">Network</div>

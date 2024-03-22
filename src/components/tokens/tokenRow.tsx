@@ -5,9 +5,9 @@ import ImgGraf from "/public/images/svg/graf.svg?jsx";
 
 export const TokenRow = component$(() => {
   return (
-    <div class="grid grid-cols-[17%_8%_13%_17%_14%_11%_12%_2%] items-center gap-[8px] custom-border-b-1 py-[16px] text-left text-[14px]">
+    <div class="custom-border-b-1 grid grid-cols-[17%_8%_13%_17%_14%_11%_12%_2%] items-center gap-[8px] py-[16px] text-left text-[14px]">
       <div class="flex items-center gap-[16px] py-[8px]">
-        <div class="rounded-[8px] custom-border-1 bg-white bg-opacity-10 p-2">
+        <div class="custom-border-1 rounded-[8px] bg-white bg-opacity-10 p-2">
           <ImgBtc />
         </div>
         <p class="">
@@ -15,12 +15,12 @@ export const TokenRow = component$(() => {
         </p>
       </div>
       <div class="">
-        <span class="custom-bg-white rounded-lg custom-border-1 px-2 py-1  ">
+        <span class="custom-bg-white custom-border-1 rounded-lg px-2 py-1  ">
           481
         </span>
       </div>
       <div class="">
-        <span class="custom-bg-white rounded-lg custom-border-1 px-2 py-1 ">
+        <span class="custom-bg-white custom-border-1 rounded-lg px-2 py-1 ">
           $67,083.63
         </span>
       </div>
@@ -31,17 +31,17 @@ export const TokenRow = component$(() => {
         <ImgGraf />
       </div>
       <div class="">
-        <span class="custom-bg-white rounded-lg custom-border-1 px-2 py-1 ">
+        <span class="custom-bg-white custom-border-1 rounded-lg px-2 py-1 ">
           TreasuryBTC
         </span>
       </div>
       <div class="">
-        <span class="custom-bg-white rounded-lg custom-border-1 px-2 py-1 ">
+        <span class="custom-bg-white custom-border-1 rounded-lg px-2 py-1 ">
           Ethereum
         </span>
       </div>
       <div class="">
-        <span class="custom-bg-white rounded-lg custom-border-1 px-2 py-1 ">
+        <span class="custom-bg-white custom-border-1 rounded-lg px-2 py-1 ">
           Investment
         </span>
       </div>
