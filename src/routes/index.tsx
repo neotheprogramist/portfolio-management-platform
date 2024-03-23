@@ -11,7 +11,7 @@ import { mainnet, arbitrum } from "viem/chains";
 export default component$(() => {
   return (
     <>
-      <Navbar class="fixed" />
+      <Navbar class="fixed !border-0" />
       <div class="grid h-full grid-cols-[1fr_2fr_auto] items-center">
         <div class="h-[766px] w-[655px]">
           <ImgGradientMain

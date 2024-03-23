@@ -1,4 +1,7 @@
-import { Button } from "~/components/portfolio/button-master/button";
+import {
+  Button,
+  ButtonTokenList,
+} from "~/components/portfolio/button-master/button";
 import EditIcon from "/public/images/svg/portfolio/edit.svg?jsx";
 import Graph from "/public/images/chart.png?jsx";
 import Bitcoin from "/public/images/svg/portfolio/btc.svg?jsx";
@@ -271,30 +274,27 @@ export default component$(() => {
 
   return (
     <>
-      <div class="grid grid-rows-[64px_auto] overflow-auto bg-[#F4F4F4] px-[20px] text-black">
-        <div class="flex h-[64px] items-center justify-between">
-          <div class="flex items-center gap-[8px] text-[20px]">
-            <h2>Portfolio name</h2>
+      <div class="grid grid-rows-[auto_auto] overflow-auto px-[40px] ">
+        <div class="flex items-center justify-between py-[32px]">
+          <div class="flex items-center gap-[8px] text-[24px] font-semibold">
+            <h2>Portfolio Name</h2>
             <EditIcon />
           </div>
           <div class="flex items-center gap-[8px]">
             <Button
-              image="/images/svg/portfolio/report-data.svg"
-              text="Generate report"
+              image="/images/svg/portfolio/dca.svg"
+              text="DCA"
+              class="custom-border-2"
             />
-            <Button
-              image="/images/svg/portfolio/rebalance.svg"
-              text="Rebalance"
-            />
-            <Button image="/images/svg/portfolio/dca.svg" text="DCA" />
             <Button
               image="/images/svg/portfolio/structures.svg"
-              text="See all structures"
+              text="See All Structures"
+              class="custom-border-2"
             />
             <Button
               image="/images/svg/portfolio/add.svg"
-              text="Create new structure"
-              newClass="bg-[#0C63E9] text-white"
+              text="Create New Structure"
+              class="bg-[#2196F3]"
               onClick$={() => {
                 isCreateNewStructureModalOpen.value =
                   !isCreateNewStructureModalOpen.value;
@@ -302,61 +302,49 @@ export default component$(() => {
             />
           </div>
         </div>
-        <div class="grid grid-cols-[2fr_1fr] gap-[10px] pb-[20px]">
-          <div class="flex min-h-[260px] min-w-[580px] flex-col gap-[20px] overflow-auto rounded-[8px] bg-white p-[20px]">
-            <p class="text-[16px] font-medium">Token list</p>
-            <div class="flex gap-[8px]">
-              <Button
+        <div class="grid grid-cols-[auto_auto] gap-[24px] overflow-auto pb-[145px]">
+          <div class="custom-bg-white custom-border-1 flex min-h-[260px] min-w-[580px] flex-col gap-[24px] overflow-auto rounded-[16px] p-[24px]">
+            <p class="text-[20px] font-semibold">Token list</p>
+            <div class="grid grid-cols-4 gap-[8px]">
+              <ButtonTokenList
                 image="/images/svg/portfolio/search.svg"
                 text="Search for name"
-                newClass="min-w-[240px] justify-start pl-[6px] text-[#A8A8A8]"
+                class="flex-row-reverse justify-end text-opacity-50"
               />
-              <Button
+              <ButtonTokenList
                 image="/images/svg/portfolio/arrowDown.svg"
-                text="Subportfolio"
-                newClass="flex-row-reverse"
+                text="Choose Subportfolio"
+                class=""
               />
-              <Button
+              <ButtonTokenList
                 image="/images/svg/portfolio/arrowDown.svg"
-                text="Wallet"
-                newClass="flex-row-reverse "
+                text="Choose Wallet"
+                class=""
               />
-              <Button
+              <ButtonTokenList
                 image="/images/svg/portfolio/arrowDown.svg"
-                text="Network"
-                newClass="flex-row-reverse"
+                text="Choose Network"
+                class=""
               />
             </div>
-            <div class="grid grid-rows-[40px_auto] items-center overflow-auto text-[14px] text-[#222222]">
+            <div class="grid grid-rows-[40px_auto] items-center gap-[24px] overflow-auto text-[14px]">
               <div
-                style="grid-template-columns: minmax(200px, 400px) minmax(100px, 200px) repeat(4, minmax(145px, 300px)) 16px;"
-                class="grid h-full items-center gap-[8px] border-b px-[20px] text-[10px] text-[#222222] text-opacity-[50%]"
+                style="grid-template-columns: minmax(200px, 400px) repeat(2, minmax(100px, 200px)) minmax(180px, 300px) repeat(2, minmax(145px, 300px)) 40px;"
+                class="grid items-center text-[12px] font-normal text-white text-opacity-[50%]"
               >
                 <div class="">TOKEN NAME</div>
                 <div class="">QUANTITY</div>
                 <div class="">VALUE</div>
-                <div class="flex items-center gap-[8px]">
-                  CHANGE
-                  <div
-                    class="flex items-center justify-center rounded-sm bg-[#F0F0F0]"
-                    style="height: 20px; width: 80px;"
-                  >
-                    <button class="h-[16px] w-[25px] rounded-sm bg-white">
-                      24h
-                    </button>
-                    <button class="h-[16px] w-[25px] text-[#A7A7A7]">3d</button>
-                    <button class="h-[16px] w-[25px] text-[#A7A7A7]">
-                      30d
-                    </button>
-                  </div>
+                <div class="custom-bg-white custom-border-1 flex h-[32px] w-fit gap-[8px] rounded-lg p-[2px] ">
+                  <button class="custom-bg-button rounded-[8px] px-[8px]">
+                    24h
+                  </button>
+                  <button class="px-[8px]">3d</button>
+                  <button class="px-[8px]">30d</button>
                 </div>
-                <div class="text-[10px] font-normal text-[#222222] text-opacity-[50%]">
-                  WALLET
-                </div>
-                <div class="text-[10px] font-normal text-[#222222] text-opacity-[50%]">
-                  NETWORK
-                </div>
-                <div class="pr-[20px]"></div>
+                <div class="">WALLET</div>
+                <div class="">NETWORK</div>
+                <div class=""></div>
               </div>
               {availableStructures.value.map((createdStructures) => (
                 <Group
@@ -445,64 +433,46 @@ export default component$(() => {
               </Modal>
             )}
           </div>
-          <div class="flex min-w-[440px] flex-col gap-[25px] overflow-auto rounded-[8px] bg-white p-[20px]">
-            <div class="flex h-[32px] items-center justify-between gap-[5px]">
-              <p class="text-base">Details</p>
-              <div class="flex gap-[5px]">
-                <Button
-                  image="/images/svg/portfolio/rebalance.svg"
-                  text="Rebalance"
-                  newClass="min-w-[116px]"
-                />
-                <Button
-                  image="/images/svg/portfolio/rebalance.svg"
-                  text="Rebalance"
-                  newClass="min-w-[116px]"
-                />
+          <div class="custom-border-1 custom-bg-white flex w-[322px] flex-col gap-[24px] overflow-auto rounded-[16px] p-[24px]">
+            <div class="flex h-[32px] items-center justify-between">
+              <p class="text-[20px] font-semibold">Details</p>
+              <Button
+                image="/images/svg/portfolio/rebalance.svg"
+                text="Rebalance"
+                class="custom-border-2"
+              />
+            </div>
+            <div class="flex h-auto items-center gap-[16px]">
+              <div class="custom-border-1 flex h-[44px] w-[44px] items-center justify-center rounded-[8px]">
+                <Bitcoin width={24} height={24} class="min-w-[24px]" />
+              </div>
+              <div class="flex flex-col gap-[8px]">
+                <h4 class="text-[14px] font-medium">Bitcoin</h4>
+                <p class="text-[12px] text-white text-opacity-50">BTC</p>
               </div>
             </div>
-            <div class="flex h-[64px] items-center gap-[16px]">
-              <div class="flex h-[64px] w-[64px] items-center justify-center rounded-full border border-[#E6E6E6]">
-                <Bitcoin width={40} height={40} class="min-w-[40px]" />
-              </div>
-              <div class="flex flex-col gap-[4px]">
-                <h4 class="text-[18px]">Wrapped Bitcoin</h4>
-                <p class="text-xs text-[#222222] text-opacity-50">WBTC</p>
-              </div>
+            <p class="text-[16px] font-medium">$82 617,96</p>
+            <div class="custom-border-1  custom-bg-white grid grid-cols-4 items-center rounded-[8px] px-[4px] py-[3.5px] text-[12px] font-normal">
+              <button class="custom-bg-button rounded-[6px] p-[8px]">
+                Hour
+              </button>
+              <button class="rounded-[6px] p-[8px]">Day</button>
+              <button class="rounded-[6px] p-[8px]">Month</button>
+              <button class="rounded-[6px] p-[8px]">Year</button>
             </div>
-            <div class="flex flex-col gap-[20px]">
-              <p class="mt-[11px] text-[18px]">$82 617,96</p>
-              <div class="flex gap-[12px] text-sm">
-                <p>TRANSFER</p>
-                <p>RECEIVE</p>
-              </div>
-              <div class="grid h-[32px] grid-cols-4 items-center rounded-[4px] bg-[#F0F0F0] text-[10px] text-[#A7A7A7]">
-                <button class="h-[28px]">Hour</button>
-                <button class="h-[28px] rounded-sm bg-white text-black">
-                  Day
-                </button>
-                <button class="h-[28px]">Month</button>
-                <button class="h-[28px]">Year</button>
-              </div>
-              <div class="">
-                <Graph class="max-w-auto min-w-[400px]" />
-              </div>
-            </div>
-            <div class="mt-[28px] flex min-w-[370px] flex-col gap-[20px]">
-              <h4 class="text-base font-medium">Market data</h4>
-              <p class="font-regular text-sm">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
-                magna diam, dapibus sed justo ac, pretium aliquet augue. Sed sit
-                amet vulputate felis, vel bibendum ligula. Cras sed erat libero.
-                Curabitur pretium, sem vitae scelerisque euismod, metus arcu
-                pretium tellus, ac interdum enim felis vitae diam. Vivamus quis
-                lacinia justo, in porttitor massa. Suspendisse blandit ex sed
-                gravida malesuada. Name eleifend at dui non viverra. Nullam ut
-                congue odio. Curabitur ac turpis ipsum. Nulla vel eros
-                scelerisque, vehicula diam vitae, cursus eros. Donec et turpis
-                eget sapien faucibus placerat quis vel mauris. Mauris ultricies
-                eget sem eu semper. Aenean non viverra dui. Curabitur placerat
-                risus at leo ornare mollis
+            <Graph />
+            <div class="flex flex-col gap-[16px]">
+              <h4 class="text-[14px] font-medium">Market data</h4>
+              <p class="text-[12px] font-thin leading-[180%]">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Pellentesque quis rutrum mi. Fusce elit est, condimentum eget
+                various et, tempor in erat. Fusce vulputate faucibus arcu id
+                molestie. Sed auctor tortor eu arcu feugiat, ut placerat nisl
+                convallis. Pellentesque sodales congue vulputate. Aliquam erat
+                volutpat. Fusce convallis sit amet dui at gravida. Aliquam a
+                elit nec justo gravida tristique. Praesent non semper felis.
+                Mauris ornare, purus vel luctus aliquam, erat lorem placerat
+                sem, posuere condimentum dolor justo convallis leo.
               </p>
             </div>
           </div>

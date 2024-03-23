@@ -167,17 +167,17 @@ export default component$(() => {
   const totalPortfolioValue = useTotalPortfolioValue();
   const favoriteTokens = useGetFavoriteTokens();
   return (
-    <div class="grid grid-cols-4 grid-rows-[48%_48%] gap-6 overflow-auto border-t border-white border-opacity-15 p-6">
+    <div class="grid grid-cols-4 grid-rows-[48%_48%] gap-[24px] overflow-auto p-[40px]">
       <PortfolioValue totalPortfolioValue={totalPortfolioValue.value} />
 
-      <div class="border-white-opacity-20 bg-glass col-start-3 row-span-1 row-start-1 grid grid-rows-[32px_1fr] gap-[16px] overflow-auto rounded-[16px] p-[24px] shadow">
-        <div class="flex items-center justify-between text-white">
-          <h1 class="text-xl font-semibold">Alerts</h1>
-          <button class="border-buttons rounded-[40px] px-[14px] py-[6px] text-xs font-semibold duration-300 ease-in-out hover:scale-110">
+      <div class="custom-border-1 custom-bg-white custom-shadow col-start-3 row-span-1 row-start-1 grid grid-rows-[32px_1fr] gap-[16px] overflow-auto rounded-[16px] p-[24px]">
+        <div class="flex items-center justify-between">
+          <h1 class="text-[20px] font-semibold">Alerts</h1>
+          <button class="custom-border-2 rounded-[40px] px-[14px] py-[6px] text-[12px] font-semibold duration-300 ease-in-out hover:scale-110">
             See All
           </button>
         </div>
-        <div class="h-full overflow-auto text-white">
+        <div class="h-full overflow-auto">
           <Alert />
           <Alert />
           <Alert />
@@ -190,24 +190,24 @@ export default component$(() => {
         </div>
       </div>
 
-      <div class="border-white-opacity-20 bg-glass col-start-4 row-span-1 row-start-1 grid grid-rows-[32px_1fr] gap-[16px] overflow-auto rounded-[16px] p-[24px] shadow">
-        <div class="flex items-center justify-between text-white">
-          <h1 class="text-xl font-semibold">Actions</h1>
-          <button class="border-buttons rounded-[40px] px-[14px] py-[6px] text-xs font-semibold duration-300 ease-in-out hover:scale-110">
+      <div class="custom-border-1 custom-bg-white custom-shadow col-start-4 row-span-1 row-start-1 grid grid-rows-[32px_1fr] gap-[16px] overflow-auto rounded-[16px] p-[24px]">
+        <div class="flex items-center justify-between">
+          <h1 class="text-[20px] font-semibold">Actions</h1>
+          <button class="custom-border-2 rounded-[40px] px-[14px] py-[6px] text-[12px] font-semibold duration-300 ease-in-out hover:scale-110">
             See All
           </button>
         </div>
-        <div class="h-full overflow-auto text-white">
+        <div class="h-full overflow-auto">
           <Action />
           <Action />
           <div class="flex items-center justify-between border-b border-white border-opacity-20 py-[20px]">
             <div class="">
               <h3 class="text-sm">DCA</h3>
-              <p class="text-xs text-white text-opacity-50">1 day ago</p>
+              <p class="custom-text-50 text-xs">1 day ago</p>
             </div>
-            <div class="bg-glass flex h-[28px] items-center gap-1 rounded-lg border border-yellow-400 p-[8px]">
+            <div class="custom-bg-white flex h-[28px] items-center gap-[4px] rounded-[8px] border border-[#ffc107] p-[8px]">
               <ImgWarning />
-              <p class="text-xs text-yellow-400 lg:hidden">Warning</p>
+              <p class="text-xs text-[#ffc107] lg:hidden">Warning</p>
             </div>
           </div>
           <Action />
@@ -216,26 +216,25 @@ export default component$(() => {
         </div>
       </div>
 
-      <div class="border-white-opacity-20 bg-glass col-start-1 col-end-5 row-span-1 row-start-2 grid grid-rows-[32px_32px_1fr] gap-[24px] overflow-auto rounded-[16px] p-[24px]">
+      <div class="custom-border-1 custom-bg-white col-start-1 col-end-5 row-span-1 row-start-2 grid grid-rows-[32px_32px_1fr] gap-[24px] overflow-auto rounded-[16px] p-[24px]">
         <div class="row-span-1 row-start-1 flex items-center justify-between">
-          <h1 class="text-xl font-semibold text-white">Favourite Tokens</h1>
-          <button class="border-buttons rounded-[40px] px-[14px] py-[6px] text-xs font-semibold duration-300 ease-in-out hover:scale-110">
+          <h1 class="text-xl font-semibold">Favourite Tokens</h1>
+          <button class="custom-border-2 rounded-[40px] px-[14px] py-[6px] text-[12px] font-semibold duration-300 ease-in-out hover:scale-110">
             Go To Portfolio
           </button>
         </div>
 
         <div class="row-span-1 row-start-2">
-          <div class="grid grid-cols-[17%_8%_11%_20%_14%_11%_12%_3%] items-center gap-[8px] text-left text-xs uppercase text-white text-opacity-50">
+          <div class="custom-text-50 grid grid-cols-[17%_8%_13%_17%_14%_11%_12%_2%] items-center gap-[8px] text-left text-xs uppercase">
             <div class="">Token name</div>
             <div class="">Quantity</div>
             <div class="">Value</div>
-            <div class="flex items-center justify-center gap-[16px]">
-              <h2 class="uppercase text-gray-500">Change</h2>
-              <div class="bg-glass border-white-opacity-20 flex h-[32px] gap-[8px] rounded-lg p-[2px] text-white">
-                <button class="color-gradient rounded-lg px-[8px]">24h</button>
-                <button class="px-[8px]">3d</button>
-                <button class="px-[8px]">30d</button>
-              </div>
+            <div class="custom-bg-white custom-border-1 flex h-[32px] w-fit gap-[8px] rounded-[8px] p-[3.5px] text-white">
+              <button class="custom-bg-button rounded-[8px] px-[8px]">
+                24h
+              </button>
+              <button class="rounded-[8px] px-[8px]">3d</button>
+              <button class="rounded-[8px] px-[8px]">30d</button>
             </div>
             <div class="">Wallet</div>
             <div class="">Network</div>

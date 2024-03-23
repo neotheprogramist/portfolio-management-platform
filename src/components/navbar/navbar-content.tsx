@@ -1,4 +1,4 @@
-import { component$, Slot, useContext } from "@builder.io/qwik";
+import { component$, useContext } from "@builder.io/qwik";
 import ImgAvatar from "/public/images/avatar.png?jsx";
 import ArrowDown from "/public/images/arrowDown.svg?jsx";
 import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
@@ -13,7 +13,7 @@ export const NavbarContent = component$(() => {
   return (
     <>
       <div class="flex items-center gap-10">
-        <a href="/app/dashboard" class="m-2.5 text-white no-underline">
+        <a href="/app/dashboard" class="m-2.5 no-underline">
           Dashboard
         </a>
         <a href="/app/portfolio" class="text-grey m-2.5 no-underline">
@@ -25,29 +25,26 @@ export const NavbarContent = component$(() => {
         <a href="/app/action" class="text-grey m-2.5 no-underline">
           Action
         </a>
-        <a href="/app/automation" class="text-grey m-2.5 no-underline">
+        <a href="/app/automation" class="">
           Automation
         </a>
-        <a href="/app/alerts" class="text-grey m-2.5 no-underline">
+        <a href="/app/alerts" class="">
           Alerts
         </a>
-        <a href="/app/reports" class="text-grey m-2.5 no-underline">
+        <a href="/app/reports" class="">
           Reports
         </a>
       </div>
-      <div class="grid justify-items-end">
-        <div class="flex items-center gap-1">
-          <Slot />
-          <ImgAvatar />
-          <div class="">
-            <p>{address}</p>
+      <div class="flex items-center gap-[8px]">
+        <ImgAvatar />
+        <div class="flex flex-col gap-[4px]">
+          <p>{address}</p>
 
-            <p class="text-green-500">Account verified</p>
-          </div>
-          <button>
-            <ArrowDown />
-          </button>
+          <p class="text-[10px] text-[#12A58C]">Account verified</p>
         </div>
+        <button>
+          <ArrowDown />
+        </button>
       </div>
     </>
   );
