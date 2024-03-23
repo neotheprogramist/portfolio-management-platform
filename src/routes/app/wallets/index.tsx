@@ -297,7 +297,7 @@ export default component$(() => {
           </button>
         </div>
 
-        <button class="custom-border-1 custom-bg-white row-span-1 row-start-2 mb-[8px] flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-xs custom-text-50">
+        <button class="custom-border-1 custom-bg-white custom-text-50 row-span-1 row-start-2 mb-[8px] flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-xs">
           <ImgSearch />
           Search for wallet
         </button>
