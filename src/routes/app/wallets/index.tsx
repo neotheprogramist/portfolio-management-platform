@@ -38,6 +38,7 @@ import {
   getExistingRelation,
   getExistingWallet,
   getTokenByAddress,
+  getWalletBalanceIds,
 } from "~/interface/wallets/addWallet";
 import {
   fetchTokenDayData,
@@ -144,6 +145,8 @@ export const useRemoveWallet = routeAction$(
     const [usersObservingWallet] = await getUsersObservingWallet(db, wallet.id);
 
     if (!usersObservingWallet["<-observes_wallet"].in.length) {
+      const walletBalances = await getWalletBalanceIds(db, wallet.id);
+      walletBalances.map(async (balance: string) => await db.delete(balance));
       await db.delete(`${wallet.id}`);
     }
 
@@ -201,7 +204,7 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
     priceUSD,
   } of tokenDayData) {
     await db.query(`
-      UPDATE token 
+      UPDATE token
       SET priceUSD = '${priceUSD}'
       WHERE address = '${checksumAddress(id as `0x${string}`)}';
     `);
@@ -270,6 +273,7 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
     }
     observedWallets.push(walletTokensBalances);
   }
+
   return observedWallets;
 });
 
@@ -392,7 +396,7 @@ export default component$(() => {
             <input
               type="text"
               name="name"
-              class={`custom-border-1 mb-5 block w-[80%] rounded bg-transparent p-3 text-white 
+              class={`custom-border-1 mb-5 block w-[80%] rounded bg-transparent p-3 text-white
               ${!isValidName(addWalletFormStore.name) ? "border-red-700" : ""}`}
               value={addWalletFormStore.name}
               onInput$={(e) => {
@@ -414,7 +418,7 @@ export default component$(() => {
               <input
                 type="text"
                 name="address"
-                class={`custom-border-1  block w-[80%] rounded bg-transparent p-3 text-white 
+                class={`custom-border-1  block w-[80%] rounded bg-transparent p-3 text-white
                 ${!isValidAddress(addWalletFormStore.address) ? "border-red-700" : ""}`}
                 value={addWalletFormStore.address}
                 onInput$={(e) => {
