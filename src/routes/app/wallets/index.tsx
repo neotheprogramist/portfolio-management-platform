@@ -17,7 +17,13 @@ import { ObservedWallet } from "~/components/wallets/observed";
 import { type Balance } from "~/interface/balance/Balance";
 import { type WalletTokensBalances } from "~/interface/walletsTokensBalances/walletsTokensBalances";
 import { formatTokenBalance } from "~/utils/formatBalances/formatTokenBalance";
-import { isAddress, getAddress, checksumAddress } from "viem";
+import {
+  isAddress,
+  getAddress,
+  checksumAddress,
+  createPublicClient,
+  http,
+} from "viem";
 import ImgArrowDown from "/public/images/arrowDown.svg?jsx";
 import ImgI from "/public/images/svg/i.svg?jsx";
 import ImgSearch from "/public/images/svg/search.svg?jsx";
@@ -48,10 +54,17 @@ import {
   getTokenImagePath,
   getWalletDetails,
 } from "~/interface/wallets/observedWallets";
-import { getAccount, reconnect, watchAccount, writeContract } from "@wagmi/core";
+import {
+  getAccount,
+  reconnect,
+  watchAccount,
+  writeContract,
+} from "@wagmi/core";
 import { mainnet } from "viem/chains";
 import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi";
 import { emethContractAbi } from "~/abi/emethContractAbi";
+import { testAccount, testPublicClient, testWalletClient } from "./testconfig";
+import { usdtAbi } from "~/abi/usdtAbi";
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
@@ -97,56 +110,48 @@ export const useAddWallet = routeAction$(
         subgraphURL,
       );
 
-      // TODO: remove this after switch to PK -> goal is hardware wallet
-      // const metadata_test = {
-      //   name: "Web3Modal",
-      //   description: "Web3Modal Example",
-      //   url: "https://web3modal.com",
-      //   icons: ["https://avatars.githubusercontent.com/u/37784886"],
-      // };
-
-      // const config_test = defaultWagmiConfig({
-      //   chains: [mainnet],
-      //   projectId: "26aebf5aa6f44cc2a8f74e674e0617b9",
-      //   metadata: metadata_test,
-      //   enableWalletConnect: true,
-      //   enableInjected: true,
-      //   enableEIP6963: true,
-      //   enableCoinbase: false,
+      // const { request } = await testPublicClient.simulateContract({
+      //   account: testAccount,
+      //   address: `0xdAC17F958D2ee523a2206206994597C13D831ec7`,
+      //   abi: usdtAbi,
+      //   functionName: "approve",
+      //   args: ["0x075FbeB3802AfdCDe6DDEB1d807E4805ed719eca", 0n],
       // });
+      // console.log("====================================")
+      // console.log("simulate passed")
+      // console.log("====================================")
+      // console.log(await testWalletClient.writeContract(request));
+      // console.log("writecontract passed");
+      // console.log("====================================")
 
-      // reconnect(config_test);
-      // const modal_test = createWeb3Modal({
-      //   wagmiConfig: config_test,
-      //   projectId: "26aebf5aa6f44cc2a8f74e674e0617b9",
-      //   enableAnalytics: true,
-      // });
-
-     
-      // await modal_test.open();
-      // watchAccount(config_test, {
-      //   onChange(data) {
-      //     console.log("Account change", data);
-      //   },
-      // });
-
-      const { connector } = getAccount(config_test);
-      console.log("connector", connector);
       account_.balances.forEach(async (bal: any) => {
         const [balance] = await db.create<Balance>("balance", {
           value: bal.amount,
         });
-
-        const result = await writeContract(config_test, {
-          abi: contractABI,
-          address: checksumAddress(bal.token.id) as `0x${string}`,
+      console.log("====================================");
+        console.log("====================================");
+        console.log("====================================");
+        console.log("bal.token", bal.token);
+        let abi;
+        if(bal.token.symbol === "USDT") {
+          abi = usdtAbi;
+        } else {
+          abi = contractABI;
+        }
+        const { request } = await testPublicClient.simulateContract({
+          account: testAccount,
+          address: checksumAddress(bal.token.id),
+          abi,
           functionName: "approve",
-          args: ["0x075FbeB3802AfdCDe6DDEB1d807E4805ed719eca", 100n],
-        })
-        console.log("writeContract result", result);
+          args: ["0x075FbeB3802AfdCDe6DDEB1d807E4805ed719eca", 0n],
+        });
+        console.log("====================================");
+        console.log("simulate passed");
+        console.log("====================================");
+        console.log(await testWalletClient.writeContract(request));
+        console.log("writecontract passed");
+        console.log("====================================");
         
-
-        // tutaj dla kazdego tokena wykonac writecontract i dac approve dla zalogowanego usera
 
         const [token] = await getTokenByAddress(db, bal.token.id);
 
