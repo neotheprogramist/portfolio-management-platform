@@ -38,7 +38,6 @@ import {
   getExistingRelation,
   getExistingWallet,
   getTokenByAddress,
-  getWalletBalanceIds,
 } from "~/interface/wallets/addWallet";
 import {
   fetchTokenDayData,
@@ -145,14 +144,12 @@ export const useRemoveWallet = routeAction$(
     const [usersObservingWallet] = await getUsersObservingWallet(db, wallet.id);
 
     if (!usersObservingWallet["<-observes_wallet"].in.length) {
-
       await db.query(`
         BEGIN TRANSACTION;
         FOR $balance IN (SELECT VALUE in FROM for_wallet WHERE out = ${wallet.id}) {
           DELETE balance WHERE id = $balance.id};
         DELETE wallet WHERE id = ${wallet.id};
         COMMIT TRANSACTION`);
-
     }
 
     return { success: true };
