@@ -145,9 +145,14 @@ export const useRemoveWallet = routeAction$(
     const [usersObservingWallet] = await getUsersObservingWallet(db, wallet.id);
 
     if (!usersObservingWallet["<-observes_wallet"].in.length) {
-      const walletBalances = await getWalletBalanceIds(db, wallet.id);
-      walletBalances.map(async (balance: string) => await db.delete(balance));
-      await db.delete(`${wallet.id}`);
+
+      await db.query(`
+        BEGIN TRANSACTION;
+        FOR $balance IN (SELECT VALUE in FROM for_wallet WHERE out = ${wallet.id}) {
+          DELETE balance WHERE id = $balance.id};
+        DELETE wallet WHERE id = ${wallet.id};
+        COMMIT TRANSACTION`);
+
     }
 
     return { success: true };
