@@ -28,7 +28,6 @@ import {
 import {
   isValidName,
   isValidAddress,
-  isCheckSum,
 } from "~/utils/validators/addWallet";
 import {
   getUsersObservingWallet,
@@ -48,16 +47,15 @@ import {
   getTokenImagePath,
   getWalletDetails,
 } from "~/interface/wallets/observedWallets";
-import { watchAccount } from "@wagmi/core";
-import { mainnet } from "viem/chains";
-import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi";
 import { emethContractAbi } from "~/abi/emethContractAbi";
 import { testAccount, testPublicClient, testWalletClient } from "./testconfig";
 import { usdtAbi } from "~/abi/usdtAbi";
+import NonExecutableWalletControls from "~/components/forms/addWallet/addWalletNonExecutableFormControls";
+import IsExecutableSwitch from "~/components/forms/addWallet/isExecutableSwitch";
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
-    // const modalStore = useContext(ModalStoreContext);
+    console.log("data", data);
     const db = await connectToDB(requestEvent.env);
     await db.query(
       `DEFINE INDEX walletAddressChainIndex ON TABLE wallet COLUMNS address, chainId UNIQUE;`,
@@ -106,11 +104,6 @@ export const useAddWallet = routeAction$(
           value: bal.amount,
         });
 
-        // TODO: just checking nonce, could be removed
-        console.log("====================================");
-        const nonce = await testPublicClient.getTransactionCount(testAccount);
-        console.log("nonce", nonce);
-
         const { request } = await testPublicClient.simulateContract({
           account: testAccount,
           address: checksumAddress(bal.token.id as `0x${string}`),
@@ -118,17 +111,19 @@ export const useAddWallet = routeAction$(
           functionName: "approve",
           args: ["0x075FbeB3802AfdCDe6DDEB1d807E4805ed719eca", 0n],
         });
+        console.log("simulate passed");
         console.log(await testWalletClient.writeContract(request));
 
         const [token] = await getTokenByAddress(db, bal.token.id);
 
         await db.query(`RELATE ONLY ${balance.id}->for_token->${token.id}`);
-
         await db.query(
           `RELATE ONLY ${balance.id}->for_wallet->${createWalletQueryResult.id}`,
         );
       }
+
       // approving logged in user by observed wallet
+
       const eCAbi: any = emethContractAbi;
       const { address } = jwt.decode(cookie.value) as JwtPayload;
       console.log("logged in user address", address);
@@ -140,8 +135,6 @@ export const useAddWallet = routeAction$(
           functionName: "approve",
           args: [address],
         });
-      console.log("simulate approve our contract passed");
-      console.log("====================================");
       console.log(await testWalletClient.writeContract(secondRequest));
       console.log("approved logged in user by observed wallet");
     }
@@ -160,6 +153,7 @@ export const useAddWallet = routeAction$(
       message: "Invalid address",
     }),
     name: z.string(),
+    isExecutable: z.string(),
   }),
 );
 
@@ -317,6 +311,12 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
   return observedWallets;
 });
 
+export interface addWalletFormStore {
+  name: string;
+  address: string;
+  isExecutable: number;
+}
+
 export default component$(() => {
   const addWalletAction = useAddWallet();
   const removeWalletAction = useRemoveWallet();
@@ -324,7 +324,11 @@ export default component$(() => {
   const isAddWalletModalOpen = useSignal(false);
   const isDeleteModalOpen = useSignal(false);
   const selectedWallet = useSignal<WalletTokensBalances | null>(null);
-  const addWalletFormStore = useStore({ name: "", address: "" });
+  const addWalletFormStore = useStore<addWalletFormStore>({
+    name: "",
+    address: "",
+    isExecutable: 0,
+  });
 
   return (
     <div class="grid grid-cols-[24%_73%] grid-rows-[14%_1fr] gap-[24px] overflow-auto border-t border-white border-opacity-15 p-[24px]">
@@ -413,84 +417,13 @@ export default component$(() => {
             }}
             class="p-[24px]"
           >
-            <div class="mb-5">
-              <p class="pb-1 text-xs text-white">Type</p>
-              <div class="custom-bg-white custom-border-1 grid grid-cols-[50%_50%] rounded p-1">
-                <button type="button" class="col-span-1 text-white">
-                  Executable
-                </button>
-                <button
-                  type="button"
-                  class="custom-bg-button col-span-1 rounded p-2.5  text-white"
-                >
-                  Read-only
-                </button>
-              </div>
-            </div>
-            <label for="name" class="flex gap-2 pb-1 text-xs text-white">
-              Name
-              {!isValidName(addWalletFormStore.name) && (
-                <span class="text-xs text-red-500">Invalid name</span>
-              )}
-            </label>
-            <input
-              type="text"
-              name="name"
-              class={`custom-border-1 mb-5 block w-[80%] rounded bg-transparent p-3 text-white
-              ${!isValidName(addWalletFormStore.name) ? "border-red-700" : ""}`}
-              value={addWalletFormStore.name}
-              onInput$={(e) => {
-                const target = e.target as HTMLInputElement;
-                addWalletFormStore.name = target.value;
-              }}
-            />
-            <label for="address" class="flex gap-2 pb-1 text-xs text-white">
-              Address
-              {!isValidAddress(addWalletFormStore.address) ? (
-                <span class=" text-xs text-red-500">Invalid address</span>
-              ) : !isCheckSum(addWalletFormStore.address) ? (
-                <span class=" text-xs text-red-500">
-                  Convert your address to the check sum before submitting.
-                </span>
-              ) : null}
-            </label>
-            <div class="mb-5 flex items-center gap-2">
-              <input
-                type="text"
-                name="address"
-                class={`custom-border-1  block w-[80%] rounded bg-transparent p-3 text-white
-                ${!isValidAddress(addWalletFormStore.address) ? "border-red-700" : ""}`}
-                value={addWalletFormStore.address}
-                onInput$={(e) => {
-                  const target = e.target as HTMLInputElement;
-                  addWalletFormStore.address = target.value;
-                }}
+            <IsExecutableSwitch addWalletFormStore={addWalletFormStore} />
+
+            {!addWalletFormStore.isExecutable ? (
+              <NonExecutableWalletControls
+                addWalletFormStore={addWalletFormStore}
               />
-              {isValidAddress(addWalletFormStore.address) &&
-              !isCheckSum(addWalletFormStore.address) ? (
-                <button
-                  class="custom-border-2 h-[32px] rounded-3xl px-[8px] text-xs font-normal text-white duration-300 ease-in-out hover:scale-110"
-                  type="button"
-                  onClick$={() => {
-                    addWalletFormStore.address = getAddress(
-                      addWalletFormStore.address,
-                    );
-                  }}
-                >
-                  Convert
-                </button>
-              ) : null}
-            </div>
-            <label for="network" class="block pb-1 text-xs text-white">
-              Network
-            </label>
-            <input
-              type="text"
-              name="network"
-              class={`custom-border-1 mb-5 block w-full rounded bg-transparent p-3 text-sm placeholder-white placeholder-opacity-50`}
-              placeholder="Select network"
-              disabled={true}
-            />
+            ) : null}
             <button
               type="reset"
               class="custom-border-2 absolute bottom-[20px] right-[120px] h-[32px] rounded-3xl px-[8px] text-xs font-normal text-white duration-300 ease-in-out hover:scale-110"
