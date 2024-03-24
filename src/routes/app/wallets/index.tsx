@@ -17,13 +17,7 @@ import { ObservedWallet } from "~/components/wallets/observed";
 import { type Balance } from "~/interface/balance/Balance";
 import { type WalletTokensBalances } from "~/interface/walletsTokensBalances/walletsTokensBalances";
 import { formatTokenBalance } from "~/utils/formatBalances/formatTokenBalance";
-import {
-  isAddress,
-  getAddress,
-  checksumAddress,
-  createPublicClient,
-  http,
-} from "viem";
+import { isAddress, getAddress, checksumAddress } from "viem";
 import ImgArrowDown from "/public/images/arrowDown.svg?jsx";
 import ImgI from "/public/images/svg/i.svg?jsx";
 import ImgSearch from "/public/images/svg/search.svg?jsx";
@@ -54,12 +48,7 @@ import {
   getTokenImagePath,
   getWalletDetails,
 } from "~/interface/wallets/observedWallets";
-import {
-  getAccount,
-  reconnect,
-  watchAccount,
-  writeContract,
-} from "@wagmi/core";
+import { watchAccount } from "@wagmi/core";
 import { mainnet } from "viem/chains";
 import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi";
 import { emethContractAbi } from "~/abi/emethContractAbi";
@@ -68,6 +57,7 @@ import { usdtAbi } from "~/abi/usdtAbi";
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
+    // const modalStore = useContext(ModalStoreContext);
     const db = await connectToDB(requestEvent.env);
     await db.query(
       `DEFINE INDEX walletAddressChainIndex ON TABLE wallet COLUMNS address, chainId UNIQUE;`,
@@ -78,6 +68,7 @@ export const useAddWallet = routeAction$(
       throw new Error("No cookie found");
     }
     const { userId } = jwt.decode(cookie.value) as JwtPayload;
+    console.log("USERID", userId);
 
     const existingWallet = await getExistingWallet(db, data.address);
 
@@ -110,48 +101,24 @@ export const useAddWallet = routeAction$(
         subgraphURL,
       );
 
-      // const { request } = await testPublicClient.simulateContract({
-      //   account: testAccount,
-      //   address: `0xdAC17F958D2ee523a2206206994597C13D831ec7`,
-      //   abi: usdtAbi,
-      //   functionName: "approve",
-      //   args: ["0x075FbeB3802AfdCDe6DDEB1d807E4805ed719eca", 0n],
-      // });
-      // console.log("====================================")
-      // console.log("simulate passed")
-      // console.log("====================================")
-      // console.log(await testWalletClient.writeContract(request));
-      // console.log("writecontract passed");
-      // console.log("====================================")
-
-      account_.balances.forEach(async (bal: any) => {
+      for (const bal of account_.balances) {
         const [balance] = await db.create<Balance>("balance", {
           value: bal.amount,
         });
-      console.log("====================================");
+
+        // TODO: just checking nonce, could be removed
         console.log("====================================");
-        console.log("====================================");
-        console.log("bal.token", bal.token);
-        let abi;
-        if(bal.token.symbol === "USDT") {
-          abi = usdtAbi;
-        } else {
-          abi = contractABI;
-        }
+        const nonce = await testPublicClient.getTransactionCount(testAccount);
+        console.log("nonce", nonce);
+
         const { request } = await testPublicClient.simulateContract({
           account: testAccount,
-          address: checksumAddress(bal.token.id),
-          abi,
+          address: checksumAddress(bal.token.id as `0x${string}`),
+          abi: bal.token.symbol === "USDT" ? usdtAbi : contractABI,
           functionName: "approve",
           args: ["0x075FbeB3802AfdCDe6DDEB1d807E4805ed719eca", 0n],
         });
-        console.log("====================================");
-        console.log("simulate passed");
-        console.log("====================================");
         console.log(await testWalletClient.writeContract(request));
-        console.log("writecontract passed");
-        console.log("====================================");
-        
 
         const [token] = await getTokenByAddress(db, bal.token.id);
 
@@ -160,7 +127,23 @@ export const useAddWallet = routeAction$(
         await db.query(
           `RELATE ONLY ${balance.id}->for_wallet->${createWalletQueryResult.id}`,
         );
-      });
+      }
+      // approving logged in user by observed wallet
+      const eCAbi: any = emethContractAbi;
+      const { address } = jwt.decode(cookie.value) as JwtPayload;
+      console.log("logged in user address", address);
+      const { request: secondRequest } =
+        await testPublicClient.simulateContract({
+          account: testAccount,
+          address: "0x075FbeB3802AfdCDe6DDEB1d807E4805ed719eca",
+          abi: eCAbi,
+          functionName: "approve",
+          args: [address],
+        });
+      console.log("simulate approve our contract passed");
+      console.log("====================================");
+      console.log(await testWalletClient.writeContract(secondRequest));
+      console.log("approved logged in user by observed wallet");
     }
 
     if (!(await getExistingRelation(db, userId, walletId)).at(0)) {
