@@ -339,42 +339,6 @@ export default component$(() => {
           >
             Add New Wallet
           </button>
-          <button
-            onClick$={async () => {
-              const metadata_test = {
-                name: "Web3Modal",
-                description: "Web3Modal Example",
-                url: "https://web3modal.com",
-                icons: ["https://avatars.githubusercontent.com/u/37784886"],
-              };
-
-              const config_test = defaultWagmiConfig({
-                chains: [mainnet],
-                projectId: "26aebf5aa6f44cc2a8f74e674e0617b9",
-                metadata: metadata_test,
-                enableWalletConnect: true,
-                enableInjected: false,
-                enableEIP6963: true,
-                enableCoinbase: true,
-              });
-
-              // reconnect(config_test);
-              const modal_test = createWeb3Modal({
-                wagmiConfig: config_test,
-                projectId: "26aebf5aa6f44cc2a8f74e674e0617b9",
-                enableAnalytics: true,
-              });
-
-              await modal_test.open();
-              watchAccount(config_test, {
-                onChange(data) {
-                  console.log("Account change", data);
-                },
-              });
-            }}
-          >
-            test
-          </button>
         </div>
 
         <button class="custom-border-1 custom-bg-white custom-text-50 row-span-1 row-start-2 mb-[8px] flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-xs">
