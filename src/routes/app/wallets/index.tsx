@@ -50,6 +50,9 @@ import { usdtAbi } from "~/abi/usdtAbi";
 import NonExecutableWalletControls from "~/components/forms/addWallet/addWalletNonExecutableFormControls";
 import IsExecutableSwitch from "~/components/forms/addWallet/isExecutableSwitch";
 import ExecutableWalletControls from "~/components/forms/addWallet/addWalletExecutableFormControls";
+import { privateKeyToAccount } from "viem/accounts";
+import { getCookie } from "~/utils/refresh";
+import * as jwtDecode from 'jwt-decode';
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
@@ -66,7 +69,7 @@ export const useAddWallet = routeAction$(
     const { userId } = jwt.decode(cookie.value) as JwtPayload;
     console.log("USERID", userId);
 
-    const existingWallet = await getExistingWallet(db, data.address);
+    const existingWallet = await getExistingWallet(db, data.address.toString());
 
     let walletId;
     if (existingWallet.at(0)) {
@@ -74,8 +77,8 @@ export const useAddWallet = routeAction$(
     } else {
       const [createWalletQueryResult] = await db.create<Wallet>("wallet", {
         chainId: 1,
-        address: data.address,
-        name: data.name,
+        address: data.address.toString(),
+        name: data.name.toString(),
       });
       walletId = createWalletQueryResult.id;
       // native balance for created wallet
@@ -93,7 +96,7 @@ export const useAddWallet = routeAction$(
       }
 
       const account_ = await fetchSubgraphOneAccount(
-        data.address.toLowerCase(),
+        data.address.toString().toLowerCase(),
         subgraphURL,
       );
 
@@ -102,15 +105,16 @@ export const useAddWallet = routeAction$(
           value: bal.amount,
         });
 
-        const { request } = await testPublicClient.simulateContract({
-          account: testAccount,
-          address: checksumAddress(bal.token.id as `0x${string}`),
-          abi: bal.token.symbol === "USDT" ? usdtAbi : contractABI,
-          functionName: "approve",
-          args: ["0x075FbeB3802AfdCDe6DDEB1d807E4805ed719eca", 0n],
-        });
-        console.log("simulate passed");
-        console.log(await testWalletClient.writeContract(request));
+        // TODO: Remove, move to frontend
+        // const { request } = await testPublicClient.simulateContract({
+        //   account: testAccount,
+        //   address: checksumAddress(bal.token.id as `0x${string}`),
+        //   abi: bal.token.symbol === "USDT" ? usdtAbi : contractABI,
+        //   functionName: "approve",
+        //   args: ["0x075FbeB3802AfdCDe6DDEB1d807E4805ed719eca", 0n],
+        // });
+        // console.log("simulate passed");
+        // console.log(await testWalletClient.writeContract(request));
 
         const [token] = await getTokenByAddress(db, bal.token.id);
 
@@ -121,20 +125,20 @@ export const useAddWallet = routeAction$(
       }
 
       // approving logged in user by observed wallet
-
-      const eCAbi: any = emethContractAbi;
-      const { address } = jwt.decode(cookie.value) as JwtPayload;
-      console.log("logged in user address", address);
-      const { request: secondRequest } =
-        await testPublicClient.simulateContract({
-          account: testAccount,
-          address: "0x075FbeB3802AfdCDe6DDEB1d807E4805ed719eca",
-          abi: eCAbi,
-          functionName: "approve",
-          args: [address],
-        });
-      console.log(await testWalletClient.writeContract(secondRequest));
-      console.log("approved logged in user by observed wallet");
+      // TODO: Remove - moved to frontend
+      //   const eCAbi: any = emethContractAbi;
+      //   const { address } = jwt.decode(cookie.value) as JwtPayload;
+      //   console.log("logged in user address", address);
+      //   const { request: secondRequest } =
+      //     await testPublicClient.simulateContract({
+      //       account: testAccount,
+      //       address: "0x075FbeB3802AfdCDe6DDEB1d807E4805ed719eca",
+      //       abi: eCAbi,
+      //       functionName: "approve",
+      //       args: [address],
+      //     });
+      //   console.log(await testWalletClient.writeContract(secondRequest));
+      //   console.log("approved logged in user by observed wallet");
     }
 
     if (!(await getExistingRelation(db, userId, walletId)).at(0)) {
@@ -406,17 +410,7 @@ export default component$(() => {
           formStore={addWalletFormStore}
           title="Add Wallet"
         >
-          <Form
-            action={addWalletAction}
-            onSubmitCompleted$={() => {
-              if (addWalletAction.value?.success) {
-                isAddWalletModalOpen.value = false;
-                addWalletFormStore.address = "";
-                addWalletFormStore.name = "";
-              }
-            }}
-            class="p-[24px]"
-          >
+          <Form class="p-[24px]">
             <IsExecutableSwitch addWalletFormStore={addWalletFormStore} />
 
             {!addWalletFormStore.isExecutable ? (
@@ -440,14 +434,90 @@ export default component$(() => {
               Cancel
             </button>
             <button
+              onClick$={async () => {
+                console.log("ADDING WALLET...");
+                isAddWalletModalOpen.value = false;
+
+                if (addWalletFormStore.isExecutable) {
+                  console.log("here logic for executable wallets: approvals");
+                  // create account from PK
+                  const accountFromPrivateKey = privateKeyToAccount(
+                    addWalletFormStore.privateKey as `0x${string}`,
+                  );
+                  addWalletFormStore.address = accountFromPrivateKey.address;
+                  console.log(
+                    "addWalletFormStore.address",
+                    addWalletFormStore.address,
+                  );
+
+                  // fetching data
+                  const subgraphURL = import.meta.env.PUBLIC_SUBGRAPH_URL;
+                  if (!subgraphURL) {
+                    throw new Error("Missing PUBLIC_SUBGRAPH_URL");
+                  }
+
+                  const account_ = await fetchSubgraphOneAccount(
+                    addWalletFormStore.address.toLowerCase(),
+                    subgraphURL,
+                  );
+
+                  const emethContractAddress = import.meta.env.PUBLIC_EMETH_CONTRACT_ADDRESS;
+                  if (!emethContractAddress) {
+                    throw new Error("Missing PUBLIC_EMETH_CONTRACT_ADDRESS");
+                  }
+
+                  // erc20 tokens approve
+                  for (const bal of account_.balances) {
+                    const { request } = await testPublicClient.simulateContract(
+                      {
+                        account: accountFromPrivateKey,
+                        address: checksumAddress(bal.token.id as `0x${string}`),
+                        abi:
+                          bal.token.symbol === "USDT" ? usdtAbi : contractABI,
+                        functionName: "approve",
+                        args: [emethContractAddress, 0n],
+                      },
+                    );
+                    const receipt =
+                      await testWalletClient.writeContract(request);
+                    console.log(receipt);
+                  }
+
+                  // approving logged in user by observed wallet by emeth contract
+                  const cookie = getCookie("accessToken");
+                  if(!cookie) throw new Error("No accessToken cookie found");
+                  const {address} = jwtDecode.jwtDecode(cookie) as JwtPayload;
+                  const { request } = await testPublicClient.simulateContract({
+                    account: accountFromPrivateKey,
+                    address: emethContractAddress,
+                    abi: emethContractAbi,
+                    functionName: "approve",
+                    args: [address],
+                  });
+                  const receipt = await testWalletClient.writeContract(request);
+                  console.log(receipt);
+                }
+
+                const { value } = await addWalletAction.submit({
+                  address: addWalletFormStore.address as `0x${string}`,
+                  name: addWalletFormStore.name,
+                  isExecutable: addWalletFormStore.isExecutable.toString(),
+                });
+                if (value.success) {
+                  addWalletFormStore.address = "";
+                  addWalletFormStore.name = "";
+                  addWalletFormStore.privateKey = "";
+                  addWalletFormStore.isExecutable = 0;
+                }
+              }}
               type="submit"
-              class="custom-bg-button absolute bottom-[20px] right-[24px] h-[32px] rounded-3xl p-[1px] font-normal text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
-              disabled={
-                addWalletFormStore.name === "" ||
-                addWalletFormStore.address === "" ||
-                !isValidName(addWalletFormStore.name) ||
-                !isValidAddress(addWalletFormStore.address)
-              }
+              class="color-gradient absolute bottom-[20px] right-[24px] h-[32px] rounded-3xl p-[1px] font-normal text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
+              // disabled={
+              //   addWalletFormStore.name === "" ||
+              //   addWalletFormStore.address === "" ||
+              //   !isValidName(addWalletFormStore.name) ||
+              //   !isValidAddress(addWalletFormStore.address)
+              // }
             >
               <p
                 class={`rounded-3xl px-[8px] py-[7px] text-xs ${

@@ -17,9 +17,9 @@ export function isCheckSum(address: string): boolean {
 }
 
 export function isPrivateKey32Bytes(key: string): boolean {
-  return key.length > 0 ? key.trim().length === 64 : true;
+  return key.length > 0 ? key.trim().length === 66 : true;
 }
 
 export function isPrivateKeyHex(key: string): boolean {
-  return key.length > 0 ? /^[0-9a-fA-F]+$/i.test(key.trim()) : true;
+  return key.length > 0 ? /^[0-9a-fA-F]+$/i.test(key.replace(/^0x/, '').trim()) : true;
 }

@@ -1,11 +1,8 @@
-import { component$ } from "@builder.io/qwik";
-import { getAddress } from "viem";
+import { component$, useSignal } from "@builder.io/qwik";
 import { type addWalletFormStore } from "~/routes/app/wallets";
 import {
-  isCheckSum,
   isPrivateKey32Bytes,
   isPrivateKeyHex,
-  isValidAddress,
   isValidName,
 } from "~/utils/validators/addWallet";
 
@@ -14,6 +11,7 @@ export interface AddWalletFormProps {
 }
 
 export default component$<AddWalletFormProps>(({ addWalletFormStore }) => {
+  const isPrivateKeyInputVisible = useSignal(false);
   return (
     <>
       <label for="name" class="flex gap-2 pb-1 text-xs text-white">
@@ -48,7 +46,7 @@ export default component$<AddWalletFormProps>(({ addWalletFormStore }) => {
       </label>
       <div class="mb-5 flex items-center gap-2">
         <input
-          type="text"
+          type={isPrivateKeyInputVisible.value ? "text" : "password"}
           name="privateKey"
           class={`border-white-opacity-20  block w-[80%] rounded bg-transparent p-3 text-white 
           ${!isPrivateKey32Bytes(addWalletFormStore.privateKey) || !isPrivateKeyHex(addWalletFormStore.privateKey) ? "border-red-700" : ""}`}
@@ -58,45 +56,17 @@ export default component$<AddWalletFormProps>(({ addWalletFormStore }) => {
             addWalletFormStore.privateKey = target.value;
           }}
         />
+        <button
+          onClick$={() => {
+            isPrivateKeyInputVisible.value = !isPrivateKeyInputVisible.value;
+          }}
+        >
+          {isPrivateKeyInputVisible.value ? "Hide" : "Show"}
+        </button>
       </div>
 
-      <label for="address" class="flex gap-2 pb-1 text-xs text-white">
-        Address
-        {!isValidAddress(addWalletFormStore.address) ? (
-          <span class=" text-xs text-red-500">Invalid address</span>
-        ) : !isCheckSum(addWalletFormStore.address) ? (
-          <span class=" text-xs text-red-500">
-            Convert your address to the check sum before submitting.
-          </span>
-        ) : null}
-      </label>
-      <div class="mb-5 flex items-center gap-2">
-        <input
-          type="text"
-          name="address"
-          class={`border-white-opacity-20  block w-[80%] rounded bg-transparent p-3 text-white 
-                ${!isValidAddress(addWalletFormStore.address) ? "border-red-700" : ""}`}
-          value={addWalletFormStore.address}
-          onInput$={(e) => {
-            const target = e.target as HTMLInputElement;
-            addWalletFormStore.address = target.value;
-          }}
-        />
-        {isValidAddress(addWalletFormStore.address) &&
-        !isCheckSum(addWalletFormStore.address) ? (
-          <button
-            class="border-buttons h-[32px] rounded-3xl px-[8px] text-xs font-normal text-white duration-300 ease-in-out hover:scale-110"
-            type="button"
-            onClick$={() => {
-              addWalletFormStore.address = getAddress(
-                addWalletFormStore.address,
-              );
-            }}
-          >
-            Convert
-          </button>
-        ) : null}
-      </div>
+      <input type="hidden" name="address" value={addWalletFormStore.address} />
+
       <label for="network" class="block pb-1 text-xs text-white">
         Network
       </label>
