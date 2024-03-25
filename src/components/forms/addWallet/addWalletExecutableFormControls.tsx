@@ -3,6 +3,8 @@ import { getAddress } from "viem";
 import { type addWalletFormStore } from "~/routes/app/wallets";
 import {
   isCheckSum,
+  isPrivateKey32Bytes,
+  isPrivateKeyHex,
   isValidAddress,
   isValidName,
 } from "~/utils/validators/addWallet";
@@ -31,6 +33,33 @@ export default component$<AddWalletFormProps>(({ addWalletFormStore }) => {
           addWalletFormStore.name = target.value;
         }}
       />
+
+      <label for="privateKey" class="flex gap-2 pb-1 text-xs text-white">
+        Private Key
+        {!isPrivateKey32Bytes(addWalletFormStore.privateKey) ? (
+          <span class=" text-xs text-red-500">
+            Invalid length. Private key must be 64 characters long.
+          </span>
+        ) : !isPrivateKeyHex(addWalletFormStore.privateKey) ? (
+          <span class=" text-xs text-red-500">
+            Invalid format. Private key must be a hexadecimal string.
+          </span>
+        ) : null}
+      </label>
+      <div class="mb-5 flex items-center gap-2">
+        <input
+          type="text"
+          name="privateKey"
+          class={`border-white-opacity-20  block w-[80%] rounded bg-transparent p-3 text-white 
+          ${!isPrivateKey32Bytes(addWalletFormStore.privateKey) || !isPrivateKeyHex(addWalletFormStore.privateKey) ? "border-red-700" : ""}`}
+          value={addWalletFormStore.privateKey}
+          onInput$={(e) => {
+            const target = e.target as HTMLInputElement;
+            addWalletFormStore.privateKey = target.value;
+          }}
+        />
+      </div>
+
       <label for="address" class="flex gap-2 pb-1 text-xs text-white">
         Address
         {!isValidAddress(addWalletFormStore.address) ? (

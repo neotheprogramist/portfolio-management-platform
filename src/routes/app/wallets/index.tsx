@@ -25,10 +25,7 @@ import {
   fetchSubgraphAccountsData,
   fetchSubgraphOneAccount,
 } from "~/utils/subgraph/fetch";
-import {
-  isValidName,
-  isValidAddress,
-} from "~/utils/validators/addWallet";
+import { isValidName, isValidAddress } from "~/utils/validators/addWallet";
 import {
   getUsersObservingWallet,
   walletExists,
@@ -52,6 +49,7 @@ import { testAccount, testPublicClient, testWalletClient } from "./testconfig";
 import { usdtAbi } from "~/abi/usdtAbi";
 import NonExecutableWalletControls from "~/components/forms/addWallet/addWalletNonExecutableFormControls";
 import IsExecutableSwitch from "~/components/forms/addWallet/isExecutableSwitch";
+import ExecutableWalletControls from "~/components/forms/addWallet/addWalletExecutableFormControls";
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
@@ -315,6 +313,7 @@ export interface addWalletFormStore {
   name: string;
   address: string;
   isExecutable: number;
+  privateKey: string;
 }
 
 export default component$(() => {
@@ -328,6 +327,7 @@ export default component$(() => {
     name: "",
     address: "",
     isExecutable: 0,
+    privateKey: "",
   });
 
   return (
@@ -423,7 +423,11 @@ export default component$(() => {
               <NonExecutableWalletControls
                 addWalletFormStore={addWalletFormStore}
               />
-            ) : null}
+            ) : (
+              <ExecutableWalletControls
+                addWalletFormStore={addWalletFormStore}
+              />
+            )}
             <button
               type="reset"
               class="custom-border-2 absolute bottom-[20px] right-[120px] h-[32px] rounded-3xl px-[8px] text-xs font-normal text-white duration-300 ease-in-out hover:scale-110"
