@@ -485,7 +485,7 @@ export default component$(() => {
             <button
               onClick$={handleAddWallet}
               type="submit"
-              class="color-gradient absolute bottom-[20px] right-[24px] h-[32px] rounded-3xl p-[1px] font-normal text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
+              class="custom-bg-button absolute bottom-[20px] right-[24px] h-[32px] rounded-3xl p-[1px] font-normal text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
               disabled={
                 addWalletFormStore.isExecutable
                   ? isExecutableDisabled(addWalletFormStore)
