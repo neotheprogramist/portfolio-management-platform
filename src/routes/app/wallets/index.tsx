@@ -144,7 +144,12 @@ export const useRemoveWallet = routeAction$(
     const [usersObservingWallet] = await getUsersObservingWallet(db, wallet.id);
 
     if (!usersObservingWallet["<-observes_wallet"].in.length) {
-      await db.delete(`${wallet.id}`);
+      await db.query(`
+        BEGIN TRANSACTION;
+        FOR $balance IN (SELECT VALUE in FROM for_wallet WHERE out = ${wallet.id}) {
+          DELETE balance WHERE id = $balance.id};
+        DELETE wallet WHERE id = ${wallet.id};
+        COMMIT TRANSACTION`);
     }
 
     return { success: true };
@@ -201,7 +206,7 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
     priceUSD,
   } of tokenDayData) {
     await db.query(`
-      UPDATE token 
+      UPDATE token
       SET priceUSD = '${priceUSD}'
       WHERE address = '${checksumAddress(id as `0x${string}`)}';
     `);
@@ -270,6 +275,7 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
     }
     observedWallets.push(walletTokensBalances);
   }
+
   return observedWallets;
 });
 
@@ -392,7 +398,7 @@ export default component$(() => {
             <input
               type="text"
               name="name"
-              class={`custom-border-1 mb-5 block w-[80%] rounded bg-transparent p-3 text-white 
+              class={`custom-border-1 mb-5 block w-[80%] rounded bg-transparent p-3 text-white
               ${!isValidName(addWalletFormStore.name) ? "border-red-700" : ""}`}
               value={addWalletFormStore.name}
               onInput$={(e) => {
@@ -414,7 +420,7 @@ export default component$(() => {
               <input
                 type="text"
                 name="address"
-                class={`custom-border-1  block w-[80%] rounded bg-transparent p-3 text-white 
+                class={`custom-border-1  block w-[80%] rounded bg-transparent p-3 text-white
                 ${!isValidAddress(addWalletFormStore.address) ? "border-red-700" : ""}`}
                 value={addWalletFormStore.address}
                 onInput$={(e) => {

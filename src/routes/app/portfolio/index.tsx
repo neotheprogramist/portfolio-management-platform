@@ -111,10 +111,10 @@ export const useObservedWalletBalances = routeLoader$(async (requestEvent) => {
 
     for (const balance of balances) {
       const [tokenId]: any = await db.query(`
-      SELECT ->for_token.out FROM ${balance.id}`);
+      SELECT VALUE ->for_token.out FROM ${balance.id}`);
 
       const [tokenDetails]: any = await db.query(`
-      SELECT * FROM ${tokenId[0]["->for_token"].out[0]}`);
+      SELECT * FROM ${tokenId[0]}`);
 
       const walletBalance = {
         balanceId: balance.id,
@@ -144,41 +144,51 @@ export const useAvailableStructures = routeLoader$(async (requestEvent) => {
   const { userId } = jwt.decode(cookie.value) as JwtPayload;
 
   const [result]: any = await db.query(`
-    SELECT ->has_structure.out FROM ${userId}`);
+    SELECT VALUE ->has_structure.out FROM ${userId}`);
 
   if (!result) throw new Error("No structures available");
-  const createdStructureQueryResult = result[0]["->has_structure"].out;
+  const createdStructureQueryResult = result[0];
   const availableStructures: any[] = [];
 
   for (const createdStructure of createdStructureQueryResult) {
     const [structure] = await db.select(`${createdStructure}`);
     const structureTokens: any = [];
     const [structureBalances]: any = await db.query(`
-    SELECT ->structure_balance.out FROM ${structure.id}`);
+      SELECT VALUE ->structure_balance.out
+      FROM ${structure.id}`);
 
-    for (const balance of structureBalances[0]["->structure_balance"].out) {
-      const [walletId]: any = await db.query(`
-        SELECT out  FROM for_wallet WHERE in = ${balance}`);
+    if (!structureBalances[0].length) {
+      await db.delete(structure.id);
+    } else {
+      for (const balance of structureBalances[0]) {
+        const [walletId]: any = await db.query(`
+        SELECT out
+        FROM for_wallet
+        WHERE in = ${balance}`);
 
-      if (walletId[0]) {
         const [wallet] = await db.select<Wallet>(`${walletId[0].out}`);
 
-        const [tokenBalance]: any = await db.query(`
-    SELECT * FROM balance WHERE id=${balance}`);
+        const [tokenBalance]: string[] = await db.query(`
+        SELECT VALUE value
+        FROM balance
+        WHERE id = ${balance}`);
 
         const [tokenId]: any = await db.query(`
-    SELECT ->for_token.out FROM ${balance}`);
+        SELECT VALUE ->for_token.out
+        FROM ${balance}`);
 
         const [token]: any = await db.query(
-          `SELECT * FROM ${tokenId[0]["->for_token"].out[0]}`,
+          `SELECT *
+         FROM ${tokenId[0]}`,
         );
+
         const [tokenValue] = await getDBTokenPriceUSD(db, token[0].address);
         const tokenWithBalance = {
           id: token[0].id,
           name: token[0].name,
           symbol: token[0].symbol,
           decimals: token[0].decimals,
-          balance: tokenBalance[0].value,
+          balance: tokenBalance[0],
           balanceValueUSD: tokenValue.priceUSD,
           balanceId: balance,
         };
@@ -192,15 +202,15 @@ export const useAvailableStructures = routeLoader$(async (requestEvent) => {
           balance: tokenWithBalance,
         });
       }
-    }
 
-    availableStructures.push({
-      structure: {
-        id: structure.id,
-        name: structure.name,
-      },
-      structureBalance: structureTokens,
-    });
+      availableStructures.push({
+        structure: {
+          id: structure.id,
+          name: structure.name,
+        },
+        structureBalance: structureTokens,
+      });
+    }
   }
 
   return availableStructures;
