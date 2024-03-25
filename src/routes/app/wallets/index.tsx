@@ -45,14 +45,14 @@ import {
   getWalletDetails,
 } from "~/interface/wallets/observedWallets";
 import { emethContractAbi } from "~/abi/emethContractAbi";
-import { testAccount, testPublicClient, testWalletClient } from "./testconfig";
+import { testPublicClient, testWalletClient } from "./testconfig";
 import { usdtAbi } from "~/abi/usdtAbi";
 import NonExecutableWalletControls from "~/components/forms/addWallet/addWalletNonExecutableFormControls";
 import IsExecutableSwitch from "~/components/forms/addWallet/isExecutableSwitch";
 import ExecutableWalletControls from "~/components/forms/addWallet/addWalletExecutableFormControls";
 import { privateKeyToAccount } from "viem/accounts";
 import { getCookie } from "~/utils/refresh";
-import * as jwtDecode from 'jwt-decode';
+import * as jwtDecode from "jwt-decode";
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
@@ -461,7 +461,8 @@ export default component$(() => {
                     subgraphURL,
                   );
 
-                  const emethContractAddress = import.meta.env.PUBLIC_EMETH_CONTRACT_ADDRESS;
+                  const emethContractAddress = import.meta.env
+                    .PUBLIC_EMETH_CONTRACT_ADDRESS;
                   if (!emethContractAddress) {
                     throw new Error("Missing PUBLIC_EMETH_CONTRACT_ADDRESS");
                   }
@@ -485,8 +486,8 @@ export default component$(() => {
 
                   // approving logged in user by observed wallet by emeth contract
                   const cookie = getCookie("accessToken");
-                  if(!cookie) throw new Error("No accessToken cookie found");
-                  const {address} = jwtDecode.jwtDecode(cookie) as JwtPayload;
+                  if (!cookie) throw new Error("No accessToken cookie found");
+                  const { address } = jwtDecode.jwtDecode(cookie) as JwtPayload;
                   const { request } = await testPublicClient.simulateContract({
                     account: accountFromPrivateKey,
                     address: emethContractAddress,

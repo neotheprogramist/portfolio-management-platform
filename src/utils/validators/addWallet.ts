@@ -21,5 +21,7 @@ export function isPrivateKey32Bytes(key: string): boolean {
 }
 
 export function isPrivateKeyHex(key: string): boolean {
-  return key.length > 0 ? /^[0-9a-fA-F]+$/i.test(key.replace(/^0x/, '').trim()) : true;
+  return key.length > 0
+    ? /^[0-9a-fA-F]+$/i.test(key.replace(/^0x/, "").trim())
+    : true;
 }
