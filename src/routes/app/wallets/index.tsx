@@ -314,7 +314,6 @@ export default component$(() => {
   const handleAddWallet = $(async () => {
     console.log("ADDING WALLET...");
     isAddWalletModalOpen.value = false;
-    console.log("addwalletFormStore", addWalletFormStore);
 
     if (addWalletFormStore.isExecutable) {
       console.log("here logic for executable wallets: approvals");
@@ -376,7 +375,6 @@ export default component$(() => {
       name: addWalletFormStore.name,
       isExecutable: addWalletFormStore.isExecutable.toString(),
     });
-    console.log("VALUE", value);
     if (value.success) {
       console.log("SUCCESS");
       addWalletFormStore.address = "";
