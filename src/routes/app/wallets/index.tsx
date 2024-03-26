@@ -57,7 +57,6 @@ import IsExecutableSwitch from "~/components/forms/addWallet/isExecutableSwitch"
 import ExecutableWalletControls from "~/components/forms/addWallet/addWalletExecutableFormControls";
 import { privateKeyToAccount } from "viem/accounts";
 import { getCookie } from "~/utils/refresh";
-import * as jwtDecode from "jwt-decode";
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
@@ -358,7 +357,7 @@ export default component$(() => {
       // approving logged in user by observed wallet by emeth contract
       const cookie = getCookie("accessToken");
       if (!cookie) throw new Error("No accessToken cookie found");
-      const { address } = jwtDecode.jwtDecode(cookie) as JwtPayload;
+      const { address } = jwt.decode(cookie) as JwtPayload;
       const { request } = await testPublicClient.simulateContract({
         account: accountFromPrivateKey,
         address: emethContractAddress,
