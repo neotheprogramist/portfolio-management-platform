@@ -1,5 +1,5 @@
 import { component$, Slot } from "@builder.io/qwik";
-import Logo from "/public/images/logo.png?jsx";
+import Logo from "/public/images/svg/logo.svg?jsx";
 import { twMerge } from "tailwind-merge";
 
 export interface NavbarProps {

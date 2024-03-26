@@ -317,22 +317,22 @@ export default component$(() => {
             <p class="text-[20px] font-semibold">Token list</p>
             <div class="grid grid-cols-4 gap-[8px]">
               <ButtonTokenList
-                image="/images/svg/portfolio/search.svg"
+                image="/images/svg/search.svg"
                 text="Search for name"
                 class="flex-row-reverse justify-end text-opacity-50"
               />
               <ButtonTokenList
-                image="/images/svg/portfolio/arrowDown.svg"
+                image="/images/svg/arrowDown.svg"
                 text="Choose Subportfolio"
                 class=""
               />
               <ButtonTokenList
-                image="/images/svg/portfolio/arrowDown.svg"
+                image="/images/svg/arrowDown.svg"
                 text="Choose Wallet"
                 class=""
               />
               <ButtonTokenList
-                image="/images/svg/portfolio/arrowDown.svg"
+                image="/images/svg/arrowDown.svg"
                 text="Choose Network"
                 class=""
               />

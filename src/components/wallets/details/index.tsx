@@ -1,7 +1,7 @@
 import { type Signal, component$ } from "@builder.io/qwik";
 import { type WalletTokensBalances } from "~/interface/walletsTokensBalances/walletsTokensBalances";
 import ImgDelete from "/public/images/svg/delete.svg?jsx";
-import ImgIcon from "/public/images/svg/ethereum.svg?jsx";
+import ImgIconEthereum from "/public/images/svg/ethereum.svg?jsx";
 import ImgWallet from "/public/images/svg/walletIcon.svg?jsx";
 import { TokenRowWallets } from "~/components/tokens/tokenRow-wallets";
 
@@ -24,7 +24,7 @@ export const SelectedWalletDetails = component$<SelectedWalletProps>(
             <div class="mt-2 flex gap-4">
               <span class="flex items-center gap-2 text-sm text-gray-500 ">
                 <div class="border-white-opacity-20 flex h-[24px] w-[24px] items-center rounded-[4px] bg-white bg-opacity-5 px-[6px]">
-                  <ImgIcon />
+                  <ImgIconEthereum />
                 </div>
                 {chainIdToNetworkName[selectedWallet.value.wallet.chainId]}
               </span>

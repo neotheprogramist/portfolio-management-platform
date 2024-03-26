@@ -1,6 +1,6 @@
 import { component$, type JSXOutput } from "@builder.io/qwik";
 import type { QRL } from "@builder.io/qwik";
-import ArrowDown from "/public/images/svg/portfolio/arrowDown.svg?jsx";
+import ArrowDown from "/public/images/svg/arrowDown.svg?jsx";
 import {
   type Structure,
   type StructureBalance,

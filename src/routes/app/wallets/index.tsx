@@ -18,8 +18,8 @@ import { type Balance } from "~/interface/balance/Balance";
 import { type WalletTokensBalances } from "~/interface/walletsTokensBalances/walletsTokensBalances";
 import { formatTokenBalance } from "~/utils/formatBalances/formatTokenBalance";
 import { isAddress, getAddress, checksumAddress } from "viem";
-import ImgArrowDown from "/public/images/arrowDown.svg?jsx";
-import ImgI from "/public/images/svg/i.svg?jsx";
+import ArrowDown from "/public/images/svg/arrowDown.svg?jsx";
+import ImgInfo from "/public/images/svg/info.svg?jsx";
 import ImgSearch from "/public/images/svg/search.svg?jsx";
 import {
   fetchSubgraphAccountsData,
@@ -400,7 +400,7 @@ export default component$(() => {
 
         <button class="custom-border-1 custom-bg-white row-span-1 row-start-3 mb-[24px] flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-xs text-white">
           Choose Network
-          <ImgArrowDown />
+          <ArrowDown />
         </button>
 
         <div class="row-span-1 row-start-4 h-full overflow-auto">
@@ -420,7 +420,7 @@ export default component$(() => {
       <div class="row-span-1 flex items-center justify-between gap-[24px] rounded-[16px] border border-blue-500 bg-blue-500 bg-opacity-20 p-[24px]">
         <div class="">
           <h2 class="mb-[16px] flex items-center gap-2 text-sm">
-            <ImgI /> Pending authorization
+            <ImgInfo /> Pending authorization
           </h2>
           <p class="text-xs">
             This wallet requires authorization. Click Authorize to log in using

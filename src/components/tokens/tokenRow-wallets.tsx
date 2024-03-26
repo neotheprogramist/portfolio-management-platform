@@ -1,5 +1,5 @@
 import { $, component$ } from "@builder.io/qwik";
-import ImgMore from "/public/images/svg/more.svg?jsx";
+import ImgMenu3Dots from "/public/images/svg/menu3Dots.svg?jsx";
 import ImgGraf from "/public/images/svg/graf.svg?jsx";
 import {
   Image,
@@ -63,7 +63,7 @@ export const TokenRowWallets = component$<TokenRowWalletsProps>(
           </div>
           <div class="text-right">
             <button class="border-white-opacity-20 bg-glassp rounded-lg p-1.5">
-              <ImgMore />
+              <ImgMenu3Dots />
             </button>
           </div>
         </div>

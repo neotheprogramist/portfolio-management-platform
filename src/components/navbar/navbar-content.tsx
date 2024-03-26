@@ -1,6 +1,6 @@
 import { component$, useContext } from "@builder.io/qwik";
 import ImgAvatar from "/public/images/avatar.png?jsx";
-import ArrowDown from "/public/images/arrowDown.svg?jsx";
+import ArrowDown from "/public/images/svg/arrowDown.svg?jsx";
 import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
 import { getAccount } from "@wagmi/core";
 import { NavLink } from "./navlink";

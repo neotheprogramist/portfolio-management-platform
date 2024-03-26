@@ -13,7 +13,7 @@ export const WalletConnect: Story = {
   render: (props) => (
     <Button
       {...props}
-      image="/images/svg/walletconnect-icon.svg"
+      image="/images/svg/login/walletconnectIcon.svg"
       text="Use WalletConnect"
     ></Button>
   ),
@@ -21,7 +21,7 @@ export const WalletConnect: Story = {
 
 export const Metamask: Story = {
   render: () => (
-    <Button image="/images/svg/metamask-icon.svg" text="Use Metamask"></Button>
+    <Button image="/images/svg/login/metamaskIcon.svg" text="Use Metamask"></Button>
   ),
 };
 

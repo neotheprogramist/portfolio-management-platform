@@ -1,6 +1,6 @@
 import { component$ } from "@builder.io/qwik";
-import ImgMaximalize from "/public/images/maximize.svg?jsx";
-import ImgArrowDown from "/public/images/arrowDown.svg?jsx";
+import ImgMaximalize from "/public/images/svg/dashboard/maximize.svg?jsx";
+import ArrowDown from "/public/images/svg/arrowDown.svg?jsx";
 
 export interface PortfolioValueProps {
   totalPortfolioValue: string;
@@ -39,7 +39,7 @@ export const PortfolioValue = component$<PortfolioValueProps>(
             <h2 class="custom-text-50 uppercase lg:hidden">Portfolio</h2>
             <button class="custom-bg-white custom-border-1 flex h-[32px] items-center gap-[8px] rounded-[8px] px-[8px]">
               <p>All</p>
-              <ImgArrowDown />
+              <ArrowDown />
             </button>
             <button class="custom-bg-white custom-border-1 h-[32px] items-center rounded-[8px] px-[8px]">
               <ImgMaximalize />

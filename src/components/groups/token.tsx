@@ -1,6 +1,6 @@
 import { component$ } from "@builder.io/qwik";
 import type { QRL } from "@builder.io/qwik";
-import MenuDots from "/public/images/svg/portfolio/menuDots.svg?jsx";
+import ImgMenu3Dots from "/public/images/svg/menu3Dots.svg?jsx";
 
 export interface TokenProps {
   icon?: string;
@@ -56,7 +56,7 @@ export const Token = component$<TokenProps>((props) => {
           class="custom-border-1 custom-bg-white flex h-[28px] w-[28px] items-center justify-center rounded-[8px]"
           onClick$={props.onClick$}
         >
-          <MenuDots />
+          <ImgMenu3Dots />
         </button>
       </div>
     </>

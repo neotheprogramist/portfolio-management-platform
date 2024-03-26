@@ -25,7 +25,7 @@ export default component$(() => {
             <LoginText />
             <div>
               <WalletConnect
-                image="/images/svg/metamask-icon.svg"
+                image="/images/svg/login/metamaskIcon.svg"
                 text="Use Metamask"
                 enableWalletConnect={false}
                 enableInjected={false}
@@ -33,7 +33,7 @@ export default component$(() => {
                 chains={[mainnet]}
               />
               <WalletConnect
-                image="/images/svg/walletconnect-icon.svg"
+                image="/images/svg/login/walletconnectIcon.svg"
                 text="Use WalletConnect"
                 class="mt-3"
                 enableWalletConnect={true}

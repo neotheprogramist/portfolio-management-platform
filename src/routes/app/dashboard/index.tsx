@@ -3,7 +3,7 @@ import { PortfolioValue } from "~/components/portfolioValue/portfolioValue";
 import { Alert } from "~/components/alerts/alert";
 import { Action } from "~/components/actions/action";
 import { TokenRow } from "~/components/tokens/tokenRow";
-import ImgWarning from "/public/images/warning.svg?jsx";
+import ImgWarning from "/public/images/svg/dashboard/warning.svg?jsx";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 import { connectToDB } from "~/utils/db";
 import { routeLoader$, useNavigate } from "@builder.io/qwik-city";

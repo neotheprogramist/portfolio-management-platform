@@ -1,5 +1,5 @@
 import { $, component$ } from "@builder.io/qwik";
-import ImgStar from "/public/images/star.svg?jsx";
+import ImgStar from "/public/images/svg//dashboard/star.svg?jsx";
 import ImgGraf from "/public/images/svg/graf.svg?jsx";
 import {
   useImageProvider,

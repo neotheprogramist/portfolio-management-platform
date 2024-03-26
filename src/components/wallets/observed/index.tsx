@@ -1,6 +1,6 @@
 import { type Signal, component$ } from "@builder.io/qwik";
 import { type WalletTokensBalances } from "~/interface/walletsTokensBalances/walletsTokensBalances";
-import ImgIcon from "/public/images/svg/ethereum.svg?jsx";
+import ImgIconEthereum from "/public/images/svg/ethereum.svg?jsx";
 import ImgClock from "/public/images/svg/clock.svg?jsx";
 
 interface ObservedWalletProps {
@@ -20,7 +20,7 @@ export const ObservedWallet = component$<ObservedWalletProps>(
       >
         <div class="flex items-center gap-[12px]">
           <div class="border-white-opacity-20 flex h-[24px] w-[24px] items-center rounded-[4px] bg-white bg-opacity-5 px-[6px]">
-            <ImgIcon />
+            <ImgIconEthereum />
           </div>
           <div class="">
             <div class="text-sm">{observedWallet.wallet.name}</div>
