@@ -296,13 +296,18 @@ export interface addWalletFormStore {
   isExecutable: number;
   privateKey: string;
 }
-
+export interface transferedCoinInterface {
+ symbol: string;
+ address: string;
+}
 export default component$(() => {
   const addWalletAction = useAddWallet();
   const removeWalletAction = useRemoveWallet();
   const observedWallets = useObservedWallets();
   const isAddWalletModalOpen = useSignal(false);
   const isDeleteModalOpen = useSignal(false);
+  const transferedCoin = useStore({symbol: '', address: ''});
+  const isTransferModalOpen = useSignal(false);
   const selectedWallet = useSignal<WalletTokensBalances | null>(null);
   const addWalletFormStore = useStore<addWalletFormStore>({
     name: "",
@@ -310,6 +315,8 @@ export default component$(() => {
     isExecutable: 0,
     privateKey: "",
   });
+  const receivingWalletAddress = useSignal('');
+  const transferedTokenAmount = useSignal(0);
 
   const handleAddWallet = $(async () => {
     console.log("ADDING WALLET...");
@@ -348,7 +355,7 @@ export default component$(() => {
           address: checksumAddress(bal.token.id as `0x${string}`),
           abi: bal.token.symbol === "USDT" ? usdtAbi : contractABI,
           functionName: "approve",
-          args: [emethContractAddress, 0n],
+          args: [emethContractAddress, 2000000n],
         });
         // keep receipts for now, to use waitForTransactionReceipt
         const receipt = await testWalletClient.writeContract(request);
@@ -381,6 +388,45 @@ export default component$(() => {
       addWalletFormStore.isExecutable = 0;
     }
   });
+
+  const handleTransfer = $( async () => {
+      console.log('Transfering tokens...');
+      
+
+      const from = selectedWallet.value?.wallet.address;
+      const to = receivingWalletAddress.value;
+      const token = transferedCoin.address;
+      const amount = transferedTokenAmount.value; 
+
+      if(from === '' || to === '' || token === ''|| amount === 0) {
+        console.log('empty values')
+        return {
+          error: 'Values cant be empty',
+        }
+      } else {
+        isTransferModalOpen.value = false;
+        const cookie = getCookie("accessToken");
+        if (!cookie) throw new Error("No accessToken cookie found");
+  
+        const emethContractAddress = import.meta.env
+        .PUBLIC_EMETH_CONTRACT_ADDRESS;
+          try{
+            const { request } = await testPublicClient.simulateContract({
+              account: from as `0x${string}`,
+              address: emethContractAddress,
+              abi: emethContractAbi,
+              functionName: "transferToken",
+              args: [token as `0x${string}` , from as `0x${string}`, to as `0x${string}`, BigInt(amount)],
+            });
+  
+            const receipt = await testWalletClient.writeContract(request);
+            console.log('[receipt]: ', receipt);
+  
+          } catch(err){
+            console.log(err)
+          }
+      }
+    });
 
   return (
     <div class="grid grid-cols-[24%_73%] grid-rows-[14%_1fr] gap-[24px] overflow-auto border-t border-white border-opacity-15 p-[24px]">
@@ -448,6 +494,8 @@ export default component$(() => {
             selectedWallet={selectedWallet}
             chainIdToNetworkName={chainIdToNetworkName}
             isDeleteModalopen={isDeleteModalOpen}
+            isTransferModalOpen={isTransferModalOpen}
+            transferedCoin={transferedCoin}
           />
         )}
       </div>
@@ -524,6 +572,45 @@ export default component$(() => {
           </button>
         </Modal>
       )}
+
+      {isTransferModalOpen.value ?  <Modal isOpen={isTransferModalOpen} title="Transfer">
+        <div class="p-4">
+          <p class="mb-[16px] mt-4 flex items-center gap-2 text-sm">{transferedCoin.symbol ? transferedCoin.symbol : null}</p>
+
+          <label for="receivingWallet" class="block pb-1 text-xs text-white">
+            Receiving Wallet Address
+          </label>
+          <input
+            type="text"
+            name="receivingWallet"
+            class={`border-white-opacity-20 mb-5 block w-full rounded bg-transparent p-3 text-sm placeholder-white placeholder-opacity-50`}
+            placeholder="Place wallet address"
+            value={receivingWalletAddress.value}
+            onInput$={(e) => {
+              const target = e.target as HTMLInputElement;
+              receivingWalletAddress.value = target.value;
+            }}
+          />
+          <label for="receivingWallet" class="block pb-1 text-xs text-white">
+            Receiving Wallet Address
+          </label>
+          <input
+            type="number"
+            name="transferredTokenAmount"
+            class={`border-white-opacity-20 mb-5 block w-full rounded bg-transparent p-3 text-sm placeholder-white placeholder-opacity-50`}
+            placeholder="0"
+            value={transferedTokenAmount.value}
+            onInput$={(e) => {
+              const target = e.target as HTMLInputElement;
+              transferedTokenAmount.value = Number(target.value);
+            }}
+          />
+          <button 
+          class="custom-border-1 custom-bg-white row-span-1 row-start-3 mb-[24px] flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-xs text-white"
+          onClick$={() => handleTransfer()}>transfer</button>
+        </div>
+         
+        </Modal> : null }
     </div>
   );
 });

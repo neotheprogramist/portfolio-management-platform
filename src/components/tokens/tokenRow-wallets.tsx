@@ -1,4 +1,4 @@
-import { $, component$ } from "@builder.io/qwik";
+import { $, Signal, component$ } from "@builder.io/qwik";
 import ImgMore from "/public/images/svg/more.svg?jsx";
 import ImgGraf from "/public/images/svg/graf.svg?jsx";
 import {
@@ -6,16 +6,20 @@ import {
   type ImageTransformerProps,
   useImageProvider,
 } from "qwik-image";
+import { type transferedCoinInterface } from '~/routes/app/wallets';
 type TokenRowWalletsProps = {
   name: string;
   symbol: string;
   balance: string;
   imagePath: string;
   balanceValueUSD: string;
+  isTransferModalOpen: Signal<boolean>;
+  address: string;
+  transferedCoin: transferedCoinInterface;
 };
 
 export const TokenRowWallets = component$<TokenRowWalletsProps>(
-  ({ name, symbol, balance, imagePath, balanceValueUSD }) => {
+  ({ name, symbol, address, balance, imagePath, balanceValueUSD, isTransferModalOpen, transferedCoin }) => {
     console.log("imagePath", imagePath);
     const imageTransformer$ = $(
       ({ src, width, height }: ImageTransformerProps): string => {
@@ -29,7 +33,7 @@ export const TokenRowWallets = component$<TokenRowWalletsProps>(
     });
     return (
       <>
-        <div class="grid grid-cols-[30%_14%_14%_28%_9%] items-center gap-[8px] border-b border-white border-opacity-10 py-[16px] text-left text-[14px] text-white text-opacity-50">
+        <div class="grid grid-cols-[28%_12%_12%_26%_8%_9%] items-center gap-[8px] border-b border-white border-opacity-10 py-[16px] text-left text-[14px] text-white text-opacity-50">
           <div class="flex items-center gap-4 py-2">
             <div class="rounded-lg border border-white border-opacity-20 bg-white bg-opacity-10 p-2">
               <Image
@@ -60,6 +64,18 @@ export const TokenRowWallets = component$<TokenRowWalletsProps>(
               0%
             </span>
             <ImgGraf />
+          </div>
+          <div class="text-right">
+            <button 
+            class="border-white-opacity-20 bg-glassp rounded-lg p-1.5"
+            onClick$={() => {
+              isTransferModalOpen.value = !isTransferModalOpen.value;
+              transferedCoin.symbol = symbol;
+              transferedCoin.address = address;
+            }}
+            >
+              TRANSFER
+            </button>
           </div>
           <div class="text-right">
             <button class="border-white-opacity-20 bg-glassp rounded-lg p-1.5">
