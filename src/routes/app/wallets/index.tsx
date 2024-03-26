@@ -1,4 +1,4 @@
-import { component$, useSignal, useStore } from "@builder.io/qwik";
+import { $, component$, useSignal, useStore } from "@builder.io/qwik";
 import {
   Form,
   routeAction$,
@@ -7,7 +7,7 @@ import {
   routeLoader$,
 } from "@builder.io/qwik-city";
 import jwt, { type JwtPayload } from "jsonwebtoken";
-import { publicClient } from "~/abi/abi";
+import { contractABI, publicClient } from "~/abi/abi";
 import { type Wallet } from "~/interface/auth/Wallet";
 import { connectToDB } from "~/utils/db";
 import { chainIdToNetworkName } from "~/utils/chains";
@@ -28,7 +28,8 @@ import {
 import {
   isValidName,
   isValidAddress,
-  isCheckSum,
+  isPrivateKeyHex,
+  isPrivateKey32Bytes,
 } from "~/utils/validators/addWallet";
 import {
   getUsersObservingWallet,
@@ -48,9 +49,19 @@ import {
   getTokenImagePath,
   getWalletDetails,
 } from "~/interface/wallets/observedWallets";
+import { emethContractAbi } from "~/abi/emethContractAbi";
+import { testPublicClient, testWalletClient } from "./testconfig";
+import { usdtAbi } from "~/abi/usdtAbi";
+import NonExecutableWalletControls from "~/components/forms/addWallet/addWalletNonExecutableFormControls";
+import IsExecutableSwitch from "~/components/forms/addWallet/isExecutableSwitch";
+import ExecutableWalletControls from "~/components/forms/addWallet/addWalletExecutableFormControls";
+import { privateKeyToAccount } from "viem/accounts";
+import { getCookie } from "~/utils/refresh";
+import * as jwtDecode from "jwt-decode";
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
+    console.log("data", data);
     const db = await connectToDB(requestEvent.env);
     await db.query(
       `DEFINE INDEX walletAddressChainIndex ON TABLE wallet COLUMNS address, chainId UNIQUE;`,
@@ -61,8 +72,9 @@ export const useAddWallet = routeAction$(
       throw new Error("No cookie found");
     }
     const { userId } = jwt.decode(cookie.value) as JwtPayload;
+    console.log("USERID", userId);
 
-    const existingWallet = await getExistingWallet(db, data.address);
+    const existingWallet = await getExistingWallet(db, data.address.toString());
 
     let walletId;
     if (existingWallet.at(0)) {
@@ -70,11 +82,10 @@ export const useAddWallet = routeAction$(
     } else {
       const [createWalletQueryResult] = await db.create<Wallet>("wallet", {
         chainId: 1,
-        address: data.address,
-        name: data.name,
+        address: data.address.toString(),
+        name: data.name.toString(),
       });
       walletId = createWalletQueryResult.id;
-      // native balance for created wallet
       const nativeBalance = await publicClient.getBalance({
         address: createWalletQueryResult.address as `0x${string}`,
         blockTag: "safe",
@@ -89,11 +100,11 @@ export const useAddWallet = routeAction$(
       }
 
       const account_ = await fetchSubgraphOneAccount(
-        data.address.toLowerCase(),
+        data.address.toString().toLowerCase(),
         subgraphURL,
       );
 
-      account_.balances.forEach(async (bal: any) => {
+      for (const bal of account_.balances) {
         const [balance] = await db.create<Balance>("balance", {
           value: bal.amount,
         });
@@ -101,11 +112,10 @@ export const useAddWallet = routeAction$(
         const [token] = await getTokenByAddress(db, bal.token.id);
 
         await db.query(`RELATE ONLY ${balance.id}->for_token->${token.id}`);
-
         await db.query(
           `RELATE ONLY ${balance.id}->for_wallet->${createWalletQueryResult.id}`,
         );
-      });
+      }
     }
 
     if (!(await getExistingRelation(db, userId, walletId)).at(0)) {
@@ -122,6 +132,7 @@ export const useAddWallet = routeAction$(
       message: "Invalid address",
     }),
     name: z.string(),
+    isExecutable: z.string(),
   }),
 );
 
@@ -279,6 +290,13 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
   return observedWallets;
 });
 
+export interface addWalletFormStore {
+  name: string;
+  address: string;
+  isExecutable: number;
+  privateKey: string;
+}
+
 export default component$(() => {
   const addWalletAction = useAddWallet();
   const removeWalletAction = useRemoveWallet();
@@ -286,7 +304,83 @@ export default component$(() => {
   const isAddWalletModalOpen = useSignal(false);
   const isDeleteModalOpen = useSignal(false);
   const selectedWallet = useSignal<WalletTokensBalances | null>(null);
-  const addWalletFormStore = useStore({ name: "", address: "" });
+  const addWalletFormStore = useStore<addWalletFormStore>({
+    name: "",
+    address: "",
+    isExecutable: 0,
+    privateKey: "",
+  });
+
+  const handleAddWallet = $(async () => {
+    console.log("ADDING WALLET...");
+    isAddWalletModalOpen.value = false;
+
+    if (addWalletFormStore.isExecutable) {
+      console.log("here logic for executable wallets: approvals");
+      // create account from PK
+      const accountFromPrivateKey = privateKeyToAccount(
+        addWalletFormStore.privateKey as `0x${string}`,
+      );
+      addWalletFormStore.address = accountFromPrivateKey.address;
+      console.log("addWalletFormStore.address", addWalletFormStore.address);
+
+      // fetching data
+      const subgraphURL = import.meta.env.PUBLIC_SUBGRAPH_URL;
+      if (!subgraphURL) {
+        throw new Error("Missing PUBLIC_SUBGRAPH_URL");
+      }
+
+      const account_ = await fetchSubgraphOneAccount(
+        addWalletFormStore.address.toLowerCase(),
+        subgraphURL,
+      );
+
+      const emethContractAddress = import.meta.env
+        .PUBLIC_EMETH_CONTRACT_ADDRESS;
+      if (!emethContractAddress) {
+        throw new Error("Missing PUBLIC_EMETH_CONTRACT_ADDRESS");
+      }
+
+      // erc20 tokens approve
+      for (const bal of account_.balances) {
+        const { request } = await testPublicClient.simulateContract({
+          account: accountFromPrivateKey,
+          address: checksumAddress(bal.token.id as `0x${string}`),
+          abi: bal.token.symbol === "USDT" ? usdtAbi : contractABI,
+          functionName: "approve",
+          args: [emethContractAddress, 0n],
+        });
+        // keep receipts for now, to use waitForTransactionReceipt
+        const receipt = await testWalletClient.writeContract(request);
+        console.log(receipt);
+      }
+
+      // approving logged in user by observed wallet by emeth contract
+      const cookie = getCookie("accessToken");
+      if (!cookie) throw new Error("No accessToken cookie found");
+      const { address } = jwtDecode.jwtDecode(cookie) as JwtPayload;
+      const { request } = await testPublicClient.simulateContract({
+        account: accountFromPrivateKey,
+        address: emethContractAddress,
+        abi: emethContractAbi,
+        functionName: "approve",
+        args: [address],
+      });
+      const receipt = await testWalletClient.writeContract(request);
+      console.log(receipt);
+    }
+    const { value } = await addWalletAction.submit({
+      address: addWalletFormStore.address as `0x${string}`,
+      name: addWalletFormStore.name,
+      isExecutable: addWalletFormStore.isExecutable.toString(),
+    });
+    if (value.success) {
+      addWalletFormStore.address = "";
+      addWalletFormStore.name = "";
+      addWalletFormStore.privateKey = "";
+      addWalletFormStore.isExecutable = 0;
+    }
+  });
 
   return (
     <div class="grid grid-cols-[24%_73%] grid-rows-[14%_1fr] gap-[24px] overflow-auto border-t border-white border-opacity-15 p-[24px]">
@@ -364,95 +458,18 @@ export default component$(() => {
           formStore={addWalletFormStore}
           title="Add Wallet"
         >
-          <Form
-            action={addWalletAction}
-            onSubmitCompleted$={() => {
-              if (addWalletAction.value?.success) {
-                isAddWalletModalOpen.value = false;
-                addWalletFormStore.address = "";
-                addWalletFormStore.name = "";
-              }
-            }}
-            class="p-[24px]"
-          >
-            <div class="mb-5">
-              <p class="pb-1 text-xs text-white">Type</p>
-              <div class="custom-bg-white custom-border-1 grid grid-cols-[50%_50%] rounded p-1">
-                <button type="button" class="col-span-1 text-white">
-                  Executable
-                </button>
-                <button
-                  type="button"
-                  class="custom-bg-button col-span-1 rounded p-2.5  text-white"
-                >
-                  Read-only
-                </button>
-              </div>
-            </div>
-            <label for="name" class="flex gap-2 pb-1 text-xs text-white">
-              Name
-              {!isValidName(addWalletFormStore.name) && (
-                <span class="text-xs text-red-500">Invalid name</span>
-              )}
-            </label>
-            <input
-              type="text"
-              name="name"
-              class={`custom-border-1 mb-5 block w-[80%] rounded bg-transparent p-3 text-white
-              ${!isValidName(addWalletFormStore.name) ? "border-red-700" : ""}`}
-              value={addWalletFormStore.name}
-              onInput$={(e) => {
-                const target = e.target as HTMLInputElement;
-                addWalletFormStore.name = target.value;
-              }}
-            />
-            <label for="address" class="flex gap-2 pb-1 text-xs text-white">
-              Address
-              {!isValidAddress(addWalletFormStore.address) ? (
-                <span class=" text-xs text-red-500">Invalid address</span>
-              ) : !isCheckSum(addWalletFormStore.address) ? (
-                <span class=" text-xs text-red-500">
-                  Convert your address to the check sum before submitting.
-                </span>
-              ) : null}
-            </label>
-            <div class="mb-5 flex items-center gap-2">
-              <input
-                type="text"
-                name="address"
-                class={`custom-border-1  block w-[80%] rounded bg-transparent p-3 text-white
-                ${!isValidAddress(addWalletFormStore.address) ? "border-red-700" : ""}`}
-                value={addWalletFormStore.address}
-                onInput$={(e) => {
-                  const target = e.target as HTMLInputElement;
-                  addWalletFormStore.address = target.value;
-                }}
+          <Form class="p-[24px]">
+            <IsExecutableSwitch addWalletFormStore={addWalletFormStore} />
+
+            {!addWalletFormStore.isExecutable ? (
+              <NonExecutableWalletControls
+                addWalletFormStore={addWalletFormStore}
               />
-              {isValidAddress(addWalletFormStore.address) &&
-              !isCheckSum(addWalletFormStore.address) ? (
-                <button
-                  class="custom-border-2 h-[32px] rounded-3xl px-[8px] text-xs font-normal text-white duration-300 ease-in-out hover:scale-110"
-                  type="button"
-                  onClick$={() => {
-                    addWalletFormStore.address = getAddress(
-                      addWalletFormStore.address,
-                    );
-                  }}
-                >
-                  Convert
-                </button>
-              ) : null}
-            </div>
-            <label for="network" class="block pb-1 text-xs text-white">
-              Network
-            </label>
-            <input
-              type="text"
-              name="network"
-              class={`custom-border-1 mb-5 block w-full rounded bg-transparent p-3 text-sm placeholder-white placeholder-opacity-50`}
-              placeholder="Select network"
-              disabled={true}
-            />
+            ) : (
+              <ExecutableWalletControls
+                addWalletFormStore={addWalletFormStore}
+              />
+            )}
             <button
               type="reset"
               class="custom-border-2 absolute bottom-[20px] right-[120px] h-[32px] rounded-3xl px-[8px] text-xs font-normal text-white duration-300 ease-in-out hover:scale-110"
@@ -460,28 +477,26 @@ export default component$(() => {
                 isAddWalletModalOpen.value = false;
                 addWalletFormStore.address = "";
                 addWalletFormStore.name = "";
+                addWalletFormStore.privateKey = "";
               }}
             >
               Cancel
             </button>
             <button
+              onClick$={handleAddWallet}
               type="submit"
               class="custom-bg-button absolute bottom-[20px] right-[24px] h-[32px] rounded-3xl p-[1px] font-normal text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
               disabled={
-                addWalletFormStore.name === "" ||
-                addWalletFormStore.address === "" ||
-                !isValidName(addWalletFormStore.name) ||
-                !isValidAddress(addWalletFormStore.address)
+                addWalletFormStore.isExecutable
+                  ? isExecutableDisabled(addWalletFormStore)
+                  : isNotExecutableDisabled(addWalletFormStore)
               }
             >
               <p
                 class={`rounded-3xl px-[8px] py-[7px] text-xs ${
-                  addWalletFormStore.name === "" ||
-                  addWalletFormStore.address === "" ||
-                  !isValidName(addWalletFormStore.name) ||
-                  !isValidAddress(addWalletFormStore.address)
-                    ? "bg-modal-button text-gray-400"
-                    : "bg-black"
+                  addWalletFormStore.isExecutable
+                    ? isExecutableClass(addWalletFormStore)
+                    : isNotExecutableClass(addWalletFormStore)
                 }`}
               >
                 Add wallet
@@ -512,3 +527,26 @@ export default component$(() => {
     </div>
   );
 });
+
+const isExecutableDisabled = (addWalletFormStore: addWalletFormStore) =>
+  addWalletFormStore.name === "" ||
+  addWalletFormStore.privateKey === "" ||
+  !isValidName(addWalletFormStore.name) ||
+  !isPrivateKey32Bytes(addWalletFormStore.privateKey) ||
+  !isPrivateKeyHex(addWalletFormStore.privateKey);
+
+const isNotExecutableDisabled = (addWalletFormStore: addWalletFormStore) =>
+  addWalletFormStore.name === "" ||
+  addWalletFormStore.address === "" ||
+  !isValidName(addWalletFormStore.name) ||
+  !isValidAddress(addWalletFormStore.address);
+
+const isExecutableClass = (addWalletFormStore: addWalletFormStore) =>
+  isExecutableDisabled(addWalletFormStore)
+    ? "bg-modal-button text-gray-400"
+    : "bg-black";
+
+const isNotExecutableClass = (addWalletFormStore: addWalletFormStore) =>
+  isNotExecutableDisabled(addWalletFormStore)
+    ? "bg-modal-button text-gray-400"
+    : "bg-black";

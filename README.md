@@ -16,6 +16,8 @@ Create `.env` (public values, used by client) and `.env.local` (secret values, u
 PUBLIC_PROJECT_ID=
 PUBLIC_METADATA_NAME=emeth
 PUBLIC_METADATA_DESCRIPTION=emeth
+PUBLIC_EMETH_CONTRACT_ADDRESS=0x075FbeB3802AfdCDe6DDEB1d807E4805ed719eca
+PUBLIC_SUBGRAPH_URL=https://api.studio.thegraph.com/query/67341/erc-20-v2/v0.0.3
 
 PW_BASE_URL=
 ```

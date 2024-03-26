@@ -54,9 +54,12 @@ export async function fetchSubgraphOneAccount(
     }),
   });
 
-  const {
-    data: { account },
-  } = await response.json();
+  const jsonResponse = await response.json();
+  if (!jsonResponse.data) {
+    throw new Error("No data in response");
+  }
+
+  const { account } = jsonResponse.data;
   console.log("account", account);
 
   return AccountSchemaWithoutID.parse(account);
