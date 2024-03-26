@@ -35,35 +35,53 @@ body {
   @font-face {
     font-family: "Sora";
     font-style: normal;
+    font-weight: 800;
+    src: url("/fonts/Sora-ExtraBold.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "Sora";
+    font-style: normal;
     font-weight: 700;
-    src: url("/fonts/Sora-Bold.woff") format("woff");
+    src: url("/fonts/Sora-Bold.woff2") format("woff2");
   }
   @font-face {
     font-family: "Sora";
     font-style: normal;
     font-weight: 600;
-    src: url("/fonts/Sora-SemiBold.woff") format("woff");
+    src: url("/fonts/Sora-SemiBold.woff2") format("woff2");
   }
   @font-face {
     font-family: "Sora";
     font-style: normal;
     font-weight: 500;
-    src: url("/fonts/Sora-Medium.woff") format("woff");
+    src: url("/fonts/Sora-Medium.woff2") format("woff2");
   }
   @font-face {
     font-family: "Sora";
     font-style: normal;
     font-weight: 400;
-    src: url("/fonts/Sora-Regular.woff") format("woff");
+    src: url("/fonts/Sora-Regular.woff2") format("woff2");
   }
   @font-face {
     font-family: "Sora";
     font-style: normal;
     font-weight: 300;
-    src: url("/fonts/Sora-Thin.woff") format("woff");
+    src: url("/fonts/Sora-Thin.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "Sora";
+    font-style: normal;
+    font-weight: 200;
+    src: url("/fonts/Sora-Light.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "Sora";
+    font-style: normal;
+    font-weight: 100;
+    src: url("/fonts/Sora-ExtraLight.woff2") format("woff2");
   }
 }
-
+/* Our customs classes for re-using */
 .custom-text-50 {
   color: rgba(255, 255, 255, 0.5);
 }
