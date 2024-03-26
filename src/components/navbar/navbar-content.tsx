@@ -3,6 +3,7 @@ import ImgAvatar from "/public/images/avatar.png?jsx";
 import ArrowDown from "/public/images/arrowDown.svg?jsx";
 import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
 import { getAccount } from "@wagmi/core";
+import { NavLink } from "./navlink";
 
 export const NavbarContent = component$(() => {
   const modalStore = useContext(ModalStoreContext);
@@ -12,28 +13,14 @@ export const NavbarContent = component$(() => {
     address && (address = address.slice(0, 4) + "..." + address.slice(-4)));
   return (
     <>
-      <div class="flex items-center gap-10">
-        <a href="/app/dashboard" class="m-2.5 no-underline">
-          Dashboard
-        </a>
-        <a href="/app/portfolio" class="text-grey m-2.5 no-underline">
-          Portfolio
-        </a>
-        <a href="/app/wallets" class="text-grey m-2.5 no-underline">
-          Wallets
-        </a>
-        <a href="/app/action" class="text-grey m-2.5 no-underline">
-          Action
-        </a>
-        <a href="/app/automation" class="">
-          Automation
-        </a>
-        <a href="/app/alerts" class="">
-          Alerts
-        </a>
-        <a href="/app/reports" class="">
-          Reports
-        </a>
+      <div class="flex items-center gap-10 ">
+        <NavLink href="/app/dashboard/">Dashboard</NavLink>
+        <NavLink href="/app/portfolio/">Portfolio</NavLink>
+        <NavLink href="/app/wallets/">Wallets</NavLink>
+        <NavLink href="/app/action/">Action</NavLink>
+        <NavLink href="/app/automation/">Automation</NavLink>
+        <NavLink href="/app/alerts/">Alerts</NavLink>
+        <NavLink href="/app/reports/">Reports</NavLink>
       </div>
       <div class="flex items-center gap-[8px]">
         <ImgAvatar />
