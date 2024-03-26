@@ -314,6 +314,7 @@ export default component$(() => {
   const handleAddWallet = $(async () => {
     console.log("ADDING WALLET...");
     isAddWalletModalOpen.value = false;
+    console.log("addwalletFormStore", addWalletFormStore);
 
     if (addWalletFormStore.isExecutable) {
       console.log("here logic for executable wallets: approvals");
@@ -368,18 +369,21 @@ export default component$(() => {
       });
       const receipt = await testWalletClient.writeContract(request);
       console.log(receipt);
-    }
+    } 
+
     const { value } = await addWalletAction.submit({
       address: addWalletFormStore.address as `0x${string}`,
       name: addWalletFormStore.name,
       isExecutable: addWalletFormStore.isExecutable.toString(),
     });
+    console.log("VALUE", value);
     if (value.success) {
+      console.log("SUCCESS");
       addWalletFormStore.address = "";
       addWalletFormStore.name = "";
       addWalletFormStore.privateKey = "";
       addWalletFormStore.isExecutable = 0;
-    }
+    } 
   });
 
   return (
@@ -484,7 +488,7 @@ export default component$(() => {
             </button>
             <button
               onClick$={handleAddWallet}
-              type="submit"
+              type="button"
               class="custom-bg-button absolute bottom-[20px] right-[24px] h-[32px] rounded-3xl p-[1px] font-normal text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
               disabled={
                 addWalletFormStore.isExecutable
