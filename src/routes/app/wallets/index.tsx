@@ -369,7 +369,7 @@ export default component$(() => {
       });
       const receipt = await testWalletClient.writeContract(request);
       console.log(receipt);
-    } 
+    }
 
     const { value } = await addWalletAction.submit({
       address: addWalletFormStore.address as `0x${string}`,
@@ -383,7 +383,7 @@ export default component$(() => {
       addWalletFormStore.name = "";
       addWalletFormStore.privateKey = "";
       addWalletFormStore.isExecutable = 0;
-    } 
+    }
   });
 
   return (
