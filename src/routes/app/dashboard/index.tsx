@@ -6,7 +6,7 @@ import { TokenRow } from "~/components/tokens/tokenRow";
 import ImgWarning from "/public/images/warning.svg?jsx";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 import { connectToDB } from "~/utils/db";
-import { routeLoader$ } from "@builder.io/qwik-city";
+import { routeLoader$, useNavigate } from "@builder.io/qwik-city";
 import {
   fetchTokenDayData,
   getDBTokenPriceUSD,
@@ -164,6 +164,8 @@ export const useGetFavoriteTokens = routeLoader$(async (requestEvent) => {
 });
 
 export default component$(() => {
+  const nav = useNavigate();
+
   const totalPortfolioValue = useTotalPortfolioValue();
   const favoriteTokens = useGetFavoriteTokens();
   return (
@@ -219,7 +221,12 @@ export default component$(() => {
       <div class="custom-border-1 custom-bg-white col-start-1 col-end-5 row-span-1 row-start-2 grid grid-rows-[32px_32px_1fr] gap-[24px] overflow-auto rounded-[16px] p-[24px]">
         <div class="row-span-1 row-start-1 flex items-center justify-between">
           <h1 class="text-xl font-semibold">Favourite Tokens</h1>
-          <button class="custom-border-2 rounded-[40px] px-[14px] py-[6px] text-[12px] font-semibold duration-300 ease-in-out hover:scale-110">
+          <button
+            class="custom-border-2 rounded-[40px] px-[14px] py-[6px] text-[12px] font-semibold duration-300 ease-in-out hover:scale-110"
+            onClick$={() => {
+              nav("/app/portfolio");
+            }}
+          >
             Go To Portfolio
           </button>
         </div>
