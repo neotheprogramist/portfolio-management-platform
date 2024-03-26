@@ -55,8 +55,8 @@ export async function fetchSubgraphOneAccount(
   });
 
   const jsonResponse = await response.json();
-  if (!jsonResponse.data) {
-    throw new Error("No data in response");
+  if (!jsonResponse.data.account) {
+    throw new Error("No account in response");
   }
 
   const { account } = jsonResponse.data;

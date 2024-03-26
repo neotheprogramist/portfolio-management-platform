@@ -61,7 +61,6 @@ import * as jwtDecode from "jwt-decode";
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
-    console.log("data", data);
     const db = await connectToDB(requestEvent.env);
     await db.query(
       `DEFINE INDEX walletAddressChainIndex ON TABLE wallet COLUMNS address, chainId UNIQUE;`,
@@ -72,7 +71,6 @@ export const useAddWallet = routeAction$(
       throw new Error("No cookie found");
     }
     const { userId } = jwt.decode(cookie.value) as JwtPayload;
-    console.log("USERID", userId);
 
     const existingWallet = await getExistingWallet(db, data.address.toString());
 
@@ -312,17 +310,14 @@ export default component$(() => {
   });
 
   const handleAddWallet = $(async () => {
-    console.log("ADDING WALLET...");
     isAddWalletModalOpen.value = false;
 
     if (addWalletFormStore.isExecutable) {
-      console.log("here logic for executable wallets: approvals");
       // create account from PK
       const accountFromPrivateKey = privateKeyToAccount(
         addWalletFormStore.privateKey as `0x${string}`,
       );
       addWalletFormStore.address = accountFromPrivateKey.address;
-      console.log("addWalletFormStore.address", addWalletFormStore.address);
 
       // fetching data
       const subgraphURL = import.meta.env.PUBLIC_SUBGRAPH_URL;
@@ -369,6 +364,7 @@ export default component$(() => {
       const receipt = await testWalletClient.writeContract(request);
       console.log(receipt);
     }
+
     const { value } = await addWalletAction.submit({
       address: addWalletFormStore.address as `0x${string}`,
       name: addWalletFormStore.name,
@@ -484,7 +480,7 @@ export default component$(() => {
             </button>
             <button
               onClick$={handleAddWallet}
-              type="submit"
+              type="button"
               class="custom-bg-button absolute bottom-[20px] right-[24px] h-[32px] rounded-3xl p-[1px] font-normal text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
               disabled={
                 addWalletFormStore.isExecutable
