@@ -145,3 +145,13 @@ body {
 .bg-modal-button {
   background: linear-gradient(98deg, rgb(34, 34, 34) 0%, rgb(22, 22, 22) 100%);
 }
+
+.pr-timeline {
+  border-radius: 0px 0px 8px 8px;
+  border-top: 1px solid var(--stoke-outline, rgba(255, 255, 255, 0.3));
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
