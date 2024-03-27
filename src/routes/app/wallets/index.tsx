@@ -296,7 +296,7 @@ export interface addWalletFormStore {
   isExecutable: number;
   privateKey: string;
 }
-export interface transferedCoinInterface {
+export interface transferredCoinInterface {
   symbol: string;
   address: string;
 }
@@ -306,7 +306,7 @@ export default component$(() => {
   const observedWallets = useObservedWallets();
   const isAddWalletModalOpen = useSignal(false);
   const isDeleteModalOpen = useSignal(false);
-  const transferedCoin = useStore({ symbol: "", address: "" });
+  const transferredCoin = useStore({ symbol: "", address: "" });
   const isTransferModalOpen = useSignal(false);
   const selectedWallet = useSignal<WalletTokensBalances | null>(null);
   const addWalletFormStore = useStore<addWalletFormStore>({
@@ -316,7 +316,7 @@ export default component$(() => {
     privateKey: "",
   });
   const receivingWalletAddress = useSignal("");
-  const transferedTokenAmount = useSignal(0);
+  const transferredTokenAmount = useSignal(0);
 
   const handleAddWallet = $(async () => {
     console.log("ADDING WALLET...");
@@ -355,7 +355,7 @@ export default component$(() => {
           address: checksumAddress(bal.token.id as `0x${string}`),
           abi: bal.token.symbol === "USDT" ? usdtAbi : contractABI,
           functionName: "approve",
-          args: [emethContractAddress, 0n],
+          args: [emethContractAddress, 2000n],
         });
         // keep receipts for now, to use waitForTransactionReceipt
         const receipt = await testWalletClient.writeContract(request);
@@ -365,7 +365,7 @@ export default component$(() => {
       const cookie = getCookie("accessToken");
       if (!cookie) throw new Error("No accessToken cookie found");
       const { address } = jwtDecode.jwtDecode(cookie) as JwtPayload;
-      console.log('[address]: ', address);
+      console.log("[address]: ", address);
       const { request } = await testPublicClient.simulateContract({
         account: accountFromPrivateKey,
         address: emethContractAddress,
@@ -392,8 +392,8 @@ export default component$(() => {
   const handleTransfer = $(async () => {
     const from = selectedWallet.value?.wallet.address;
     const to = receivingWalletAddress.value;
-    const token = transferedCoin.address;
-    const amount = transferedTokenAmount.value;
+    const token = transferredCoin.address;
+    const amount = transferredTokenAmount.value;
 
     if (from === "" || to === "" || token === "" || amount === 0) {
       console.log("empty values");
@@ -423,9 +423,11 @@ export default component$(() => {
         });
 
         const transactionHash = await testWalletClient.writeContract(request);
-        
-        const receipt  = await testPublicClient.waitForTransactionReceipt({ hash: transactionHash});
-        console.log('[receipt]: ', receipt);
+
+        const receipt = await testPublicClient.waitForTransactionReceipt({
+          hash: transactionHash,
+        });
+        console.log("[receipt]: ", receipt);
       } catch (err) {
         console.log(err);
       }
@@ -499,7 +501,7 @@ export default component$(() => {
             chainIdToNetworkName={chainIdToNetworkName}
             isDeleteModalopen={isDeleteModalOpen}
             isTransferModalOpen={isTransferModalOpen}
-            transferedCoin={transferedCoin}
+            transferredCoin={transferredCoin}
           />
         )}
       </div>
@@ -581,7 +583,7 @@ export default component$(() => {
         <Modal isOpen={isTransferModalOpen} title="Transfer">
           <div class="p-4">
             <p class="mb-[16px] mt-4 flex items-center gap-2 text-sm">
-              {transferedCoin.symbol ? transferedCoin.symbol : null}
+              {transferredCoin.symbol ? transferredCoin.symbol : null}
             </p>
 
             <label for="receivingWallet" class="block pb-1 text-xs text-white">
@@ -606,10 +608,10 @@ export default component$(() => {
               name="transferredTokenAmount"
               class={`border-white-opacity-20 mb-5 block w-full rounded bg-transparent p-3 text-sm placeholder-white placeholder-opacity-50`}
               placeholder="0"
-              value={transferedTokenAmount.value}
+              value={transferredTokenAmount.value}
               onInput$={(e) => {
                 const target = e.target as HTMLInputElement;
-                transferedTokenAmount.value = Number(target.value);
+                transferredTokenAmount.value = Number(target.value);
               }}
             />
             <button

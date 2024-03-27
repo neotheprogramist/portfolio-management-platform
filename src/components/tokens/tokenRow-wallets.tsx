@@ -6,7 +6,7 @@ import {
   type ImageTransformerProps,
   useImageProvider,
 } from "qwik-image";
-import { type transferedCoinInterface } from "~/routes/app/wallets";
+import { type transferredCoinInterface } from "~/routes/app/wallets";
 type TokenRowWalletsProps = {
   name: string;
   symbol: string;
@@ -15,7 +15,7 @@ type TokenRowWalletsProps = {
   balanceValueUSD: string;
   isTransferModalOpen: Signal<boolean>;
   address: string;
-  transferedCoin: transferedCoinInterface;
+  transferredCoin: transferredCoinInterface;
 };
 
 export const TokenRowWallets = component$<TokenRowWalletsProps>(
@@ -27,7 +27,7 @@ export const TokenRowWallets = component$<TokenRowWalletsProps>(
     imagePath,
     balanceValueUSD,
     isTransferModalOpen,
-    transferedCoin,
+    transferredCoin,
   }) => {
     console.log("imagePath", imagePath);
     const imageTransformer$ = $(
@@ -79,8 +79,8 @@ export const TokenRowWallets = component$<TokenRowWalletsProps>(
               class="border-white-opacity-20 bg-glassp rounded-lg p-1.5  "
               onClick$={() => {
                 isTransferModalOpen.value = !isTransferModalOpen.value;
-                transferedCoin.symbol = symbol;
-                transferedCoin.address = address;
+                transferredCoin.symbol = symbol;
+                transferredCoin.address = address;
               }}
             >
               <span class="text-xs hover:text-blue-500">TRANSFER</span>

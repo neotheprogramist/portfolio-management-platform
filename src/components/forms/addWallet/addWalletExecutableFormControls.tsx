@@ -57,7 +57,7 @@ export default component$<AddWalletFormProps>(({ addWalletFormStore }) => {
           }}
         />
         <button
-        type="button"
+          type="button"
           onClick$={() => {
             isPrivateKeyInputVisible.value = !isPrivateKeyInputVisible.value;
           }}

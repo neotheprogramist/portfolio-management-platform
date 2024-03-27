@@ -4,14 +4,14 @@ import ImgDelete from "/public/images/svg/delete.svg?jsx";
 import ImgIcon from "/public/images/svg/ethereum.svg?jsx";
 import ImgWallet from "/public/images/svg/walletIcon.svg?jsx";
 import { TokenRowWallets } from "~/components/tokens/tokenRow-wallets";
-import { type transferedCoinInterface } from "~/routes/app/wallets";
+import { type transferredCoinInterface } from "~/routes/app/wallets";
 
 interface SelectedWalletProps {
   selectedWallet: Signal<WalletTokensBalances | null>;
   chainIdToNetworkName: { [key: string]: string };
   isDeleteModalopen: Signal<boolean>;
   isTransferModalOpen: Signal<boolean>;
-  transferedCoin: transferedCoinInterface;
+  transferredCoin: transferredCoinInterface;
 }
 
 export const SelectedWalletDetails = component$<SelectedWalletProps>(
@@ -20,7 +20,7 @@ export const SelectedWalletDetails = component$<SelectedWalletProps>(
     chainIdToNetworkName,
     isDeleteModalopen,
     isTransferModalOpen,
-    transferedCoin,
+    transferredCoin,
   }) => {
     if (!selectedWallet.value) return <></>;
     return (
@@ -87,7 +87,7 @@ export const SelectedWalletDetails = component$<SelectedWalletProps>(
                     imagePath={token.imagePath}
                     balanceValueUSD={token.balanceValueUSD}
                     isTransferModalOpen={isTransferModalOpen}
-                    transferedCoin={transferedCoin}
+                    transferredCoin={transferredCoin}
                   />
                 );
               })}
