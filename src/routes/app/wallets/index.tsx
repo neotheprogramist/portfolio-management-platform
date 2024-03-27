@@ -314,7 +314,7 @@ export default component$(() => {
     privateKey: "",
   });
   const receivingWalletAddress = useSignal("");
-  const transferredTokenAmount = useSignal(0);
+  const transferredTokenAmount = useSignal("");
 
   const handleAddWallet = $(async () => {
     isAddWalletModalOpen.value = false;
@@ -407,6 +407,8 @@ export default component$(() => {
       isTransferModalOpen.value = false;
       const cookie = getCookie("accessToken");
       if (!cookie) throw new Error("No accessToken cookie found");
+
+      // BigInt(licznik * 10^decimals) / BigInt(mianownik) -- wzor 
 
       const emethContractAddress = import.meta.env
         .PUBLIC_EMETH_CONTRACT_ADDRESS;
@@ -606,15 +608,20 @@ export default component$(() => {
             <label for="receivingWallet" class="block pb-1 text-xs text-white">
               Receiving Wallet Address
             </label>
-            <input
-              type="number"
-              name="transferredTokenAmount"
-              class={`border-white-opacity-20 mb-5 block w-full rounded bg-transparent p-3 text-sm placeholder-white placeholder-opacity-50`}
-              placeholder="0"
-              value={transferredTokenAmount.value}
+            <input 
+            type="text" 
+            name="transferredTokenAmount"
+            class={`border-white-opacity-20 mb-5 block w-full rounded bg-transparent p-3 text-sm placeholder-white placeholder-opacity-50`}
+            placeholder="Please enter digits and at most one dot"
+            value={transferredTokenAmount.value}
               onInput$={(e) => {
                 const target = e.target as HTMLInputElement;
-                transferredTokenAmount.value = Number(target.value);
+                const inputValue = target.value;
+                const regex = /^\d+(\.\d*)?$/;
+                if (!regex.test(inputValue)) {
+                  
+                  transferredTokenAmount.value = target.value.slice(0,-1);
+                }
               }}
             />
             <button
@@ -652,3 +659,6 @@ const isNotExecutableClass = (addWalletFormStore: addWalletFormStore) =>
   isNotExecutableDisabled(addWalletFormStore)
     ? "bg-modal-button text-gray-400"
     : "bg-black";
+
+
+  
