@@ -341,7 +341,7 @@ export default component$(() => {
         addWalletFormStore.address.toLowerCase(),
         subgraphURL,
       );
-      
+
       const emethContractAddress = import.meta.env
         .PUBLIC_EMETH_CONTRACT_ADDRESS;
       if (!emethContractAddress) {
@@ -390,16 +390,17 @@ export default component$(() => {
   });
 
   const handleTransfer = $(async () => {
-    if(selectedWallet.value == null){
-      return { error: 'no chosen wallet'}
+    if (selectedWallet.value == null) {
+      return { error: "no chosen wallet" };
     }
-    const from = selectedWallet.value?.wallet.address;
+    const from = selectedWallet.value.wallet.address;
     const to = receivingWalletAddress.value;
     const token = transferredCoin.address;
-    const decimals = selectedWallet.value?.tokens.filter(token => token.symbol === transferredCoin.symbol)[0].decimals;
+    const decimals = selectedWallet.value.tokens.filter(
+      (token) => token.symbol === transferredCoin.symbol,
+    )[0].decimals;
     const amount = transferredTokenAmount.value;
 
-    
     if (from === "" || to === "" || token === "" || amount === 0) {
       console.log("empty values");
       return {
@@ -414,7 +415,7 @@ export default component$(() => {
       const emethContractAddress = import.meta.env
         .PUBLIC_EMETH_CONTRACT_ADDRESS;
       try {
-        const calculatedAmount = amount*Math.pow(10, decimals);
+        const calculatedAmount = amount * Math.pow(10, decimals);
         const { request } = await testPublicClient.simulateContract({
           account: from as `0x${string}`,
           address: emethContractAddress,
@@ -424,7 +425,7 @@ export default component$(() => {
             token as `0x${string}`,
             from as `0x${string}`,
             to as `0x${string}`,
-            BigInt(calculatedAmount), 
+            BigInt(calculatedAmount),
           ],
         });
 
