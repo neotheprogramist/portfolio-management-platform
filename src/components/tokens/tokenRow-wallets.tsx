@@ -76,14 +76,14 @@ export const TokenRowWallets = component$<TokenRowWalletsProps>(
           </div>
           <div class="text-right">
             <button
-              class="border-white-opacity-20 bg-glassp rounded-lg p-1.5"
+              class="border-white-opacity-20 bg-glassp rounded-lg p-1.5  "
               onClick$={() => {
                 isTransferModalOpen.value = !isTransferModalOpen.value;
                 transferedCoin.symbol = symbol;
                 transferedCoin.address = address;
               }}
             >
-              TRANSFER
+              <span class="text-xs hover:text-blue-500">TRANSFER</span>
             </button>
           </div>
           <div class="text-right">

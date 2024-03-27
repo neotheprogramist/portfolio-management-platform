@@ -355,17 +355,17 @@ export default component$(() => {
           address: checksumAddress(bal.token.id as `0x${string}`),
           abi: bal.token.symbol === "USDT" ? usdtAbi : contractABI,
           functionName: "approve",
-          args: [emethContractAddress, 2000000n],
+          args: [emethContractAddress, 0n],
         });
         // keep receipts for now, to use waitForTransactionReceipt
         const receipt = await testWalletClient.writeContract(request);
         console.log(receipt);
       }
-
       // approving logged in user by observed wallet by emeth contract
       const cookie = getCookie("accessToken");
       if (!cookie) throw new Error("No accessToken cookie found");
       const { address } = jwtDecode.jwtDecode(cookie) as JwtPayload;
+      console.log('[address]: ', address);
       const { request } = await testPublicClient.simulateContract({
         account: accountFromPrivateKey,
         address: emethContractAddress,
@@ -390,8 +390,6 @@ export default component$(() => {
   });
 
   const handleTransfer = $(async () => {
-    console.log("Transfering tokens...");
-
     const from = selectedWallet.value?.wallet.address;
     const to = receivingWalletAddress.value;
     const token = transferedCoin.address;
@@ -403,6 +401,7 @@ export default component$(() => {
         error: "Values cant be empty",
       };
     } else {
+      console.log("Transfering tokens...");
       isTransferModalOpen.value = false;
       const cookie = getCookie("accessToken");
       if (!cookie) throw new Error("No accessToken cookie found");
@@ -419,12 +418,14 @@ export default component$(() => {
             token as `0x${string}`,
             from as `0x${string}`,
             to as `0x${string}`,
-            BigInt(amount),
+            BigInt(amount), //przemnozyc przez decimals, popatrz na wyswietlanie balance
           ],
         });
 
-        const receipt = await testWalletClient.writeContract(request);
-        console.log("[receipt]: ", receipt);
+        const transactionHash = await testWalletClient.writeContract(request);
+        
+        const receipt  = await testPublicClient.waitForTransactionReceipt({ hash: transactionHash});
+        console.log('[receipt]: ', receipt);
       } catch (err) {
         console.log(err);
       }
@@ -535,7 +536,7 @@ export default component$(() => {
             </button>
             <button
               onClick$={handleAddWallet}
-              type="submit"
+              type="button"
               class="custom-bg-button absolute bottom-[20px] right-[24px] h-[32px] rounded-3xl p-[1px] font-normal text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
               disabled={
                 addWalletFormStore.isExecutable
