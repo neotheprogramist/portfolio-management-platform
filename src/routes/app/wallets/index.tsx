@@ -288,6 +288,36 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
   return observedWallets;
 });
 
+const convertToFraction = (numericString: string) => {
+  let fractionObject;
+  if (!numericString.includes(".")) {
+    fractionObject = {
+      numerator: BigInt(numericString),
+      denominator: BigInt(1),
+    };
+  } else {
+    const fractionArray = numericString.split(".");
+    fractionObject = {
+      numerator: BigInt(`${fractionArray[0]}${fractionArray[1]}`),
+      denominator: BigInt(Math.pow(10, fractionArray[1].length)),
+    };
+  }
+
+  console.log(fractionObject);
+  return fractionObject;
+};
+
+function replaceNonMatching(
+  inputString: string,
+  regex: RegExp,
+  replacement: string,
+): string {
+  return inputString.replace(
+    new RegExp(`[^${regex.source}]`, "g"),
+    replacement,
+  );
+}
+
 export interface addWalletFormStore {
   name: string;
   address: string;
@@ -395,9 +425,15 @@ export default component$(() => {
     const decimals = selectedWallet.value.tokens.filter(
       (token) => token.symbol === transferredCoin.symbol,
     )[0].decimals;
-    const amount = BigInt(transferredTokenAmount.value);
+    const amount = transferredTokenAmount.value;
 
-    if (from === "" || to === "" || token === "" || amount === BigInt(0)) {
+    const { numerator, denominator } = convertToFraction(amount);
+    //   // BigInt(numerator * 10^decimals) / BigInt(denominator) -- wzor
+    const calculation =
+      BigInt(numerator * BigInt(Math.pow(10, decimals))) / BigInt(denominator);
+    console.log("calculation: ", calculation);
+
+    if (from === "" || to === "" || token === "" || amount === "") {
       console.log("empty values");
       return {
         error: "Values cant be empty",
@@ -408,12 +444,9 @@ export default component$(() => {
       const cookie = getCookie("accessToken");
       if (!cookie) throw new Error("No accessToken cookie found");
 
-      // BigInt(licznik * 10^decimals) / BigInt(mianownik) -- wzor 
-
       const emethContractAddress = import.meta.env
         .PUBLIC_EMETH_CONTRACT_ADDRESS;
       try {
-        const calculatedAmount = amount * BigInt(Math.pow(10, decimals));
         const { request } = await testPublicClient.simulateContract({
           account: from as `0x${string}`,
           address: emethContractAddress,
@@ -423,7 +456,7 @@ export default component$(() => {
             token as `0x${string}`,
             from as `0x${string}`,
             to as `0x${string}`,
-            BigInt(calculatedAmount),
+            BigInt(calculation),
           ],
         });
 
@@ -606,24 +639,25 @@ export default component$(() => {
               }}
             />
             <label for="receivingWallet" class="block pb-1 text-xs text-white">
-              Receiving Wallet Address
+              Amount
             </label>
-            <input 
-            type="text" 
-            name="transferredTokenAmount"
-            class={`border-white-opacity-20 mb-5 block w-full rounded bg-transparent p-3 text-sm placeholder-white placeholder-opacity-50`}
-            placeholder="Please enter digits and at most one dot"
-            value={transferredTokenAmount.value}
+            <input
+              type="text"
+              name="transferredTokenAmount"
+              class={`border-white-opacity-20 mb-5 block w-full rounded bg-transparent p-3 text-sm placeholder-white placeholder-opacity-50`}
+              placeholder="Please enter digits and at most one dot"
+              value={transferredTokenAmount.value}
               onInput$={(e) => {
                 const target = e.target as HTMLInputElement;
-                const inputValue = target.value;
-                const regex = /^\d+(\.\d*)?$/;
-                if (!regex.test(inputValue)) {
-                  
-                  transferredTokenAmount.value = target.value.slice(0,-1);
-                }
+                const regex = /^\d*\.?\d*$/;
+                target.value = replaceNonMatching(target.value, regex, "");
+                transferredTokenAmount.value = target.value;
               }}
             />
+            <span class="block pb-1 text-xs text-white">
+              {" "}
+              HERE: {transferredTokenAmount.value}
+            </span>
             <button
               class="custom-border-1 custom-bg-white row-span-1 row-start-3 mb-[24px] flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-xs text-white"
               onClick$={() => handleTransfer()}
@@ -659,6 +693,3 @@ const isNotExecutableClass = (addWalletFormStore: addWalletFormStore) =>
   isNotExecutableDisabled(addWalletFormStore)
     ? "bg-modal-button text-gray-400"
     : "bg-black";
-
-
-  
