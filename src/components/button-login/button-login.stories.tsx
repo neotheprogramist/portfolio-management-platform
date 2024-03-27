@@ -21,7 +21,10 @@ export const WalletConnect: Story = {
 
 export const Metamask: Story = {
   render: () => (
-    <Button image="/images/svg/login/metamaskIcon.svg" text="Use Metamask"></Button>
+    <Button
+      image="/images/svg/login/metamaskIcon.svg"
+      text="Use Metamask"
+    ></Button>
   ),
 };
 

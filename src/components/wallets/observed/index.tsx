@@ -1,7 +1,7 @@
 import { type Signal, component$ } from "@builder.io/qwik";
 import { type WalletTokensBalances } from "~/interface/walletsTokensBalances/walletsTokensBalances";
 import ImgIconEthereum from "/public/images/svg/ethereum.svg?jsx";
-import ImgClock from "/public/images/svg/clock.svg?jsx";
+import ImgClock from "/public/images/svg/wallets/clock.svg?jsx";
 
 interface ObservedWalletProps {
   observedWallet: WalletTokensBalances;

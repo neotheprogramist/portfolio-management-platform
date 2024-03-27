@@ -1,8 +1,8 @@
 import { type Signal, component$ } from "@builder.io/qwik";
 import { type WalletTokensBalances } from "~/interface/walletsTokensBalances/walletsTokensBalances";
-import ImgDelete from "/public/images/svg/delete.svg?jsx";
+import ImgDelete from "/public/images/svg/wallets/delete.svg?jsx";
 import ImgIconEthereum from "/public/images/svg/ethereum.svg?jsx";
-import ImgWallet from "/public/images/svg/walletIcon.svg?jsx";
+import ImgWallet from "/public/images/svg/wallets/walletIcon.svg?jsx";
 import { TokenRowWallets } from "~/components/tokens/tokenRow-wallets";
 
 interface SelectedWalletProps {
