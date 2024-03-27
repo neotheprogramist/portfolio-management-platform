@@ -399,9 +399,9 @@ export default component$(() => {
     const decimals = selectedWallet.value.tokens.filter(
       (token) => token.symbol === transferredCoin.symbol,
     )[0].decimals;
-    const amount = transferredTokenAmount.value;
+    const amount = BigInt(transferredTokenAmount.value);
 
-    if (from === "" || to === "" || token === "" || amount === 0) {
+    if (from === "" || to === "" || token === "" || amount === BigInt(0)) {
       console.log("empty values");
       return {
         error: "Values cant be empty",
@@ -415,7 +415,7 @@ export default component$(() => {
       const emethContractAddress = import.meta.env
         .PUBLIC_EMETH_CONTRACT_ADDRESS;
       try {
-        const calculatedAmount = amount * Math.pow(10, decimals);
+        const calculatedAmount = amount * BigInt(Math.pow(10, decimals));
         const { request } = await testPublicClient.simulateContract({
           account: from as `0x${string}`,
           address: emethContractAddress,
