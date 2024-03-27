@@ -355,7 +355,7 @@ export default component$(() => {
           address: checksumAddress(bal.token.id as `0x${string}`),
           abi: bal.token.symbol === "USDT" ? usdtAbi : contractABI,
           functionName: "approve",
-          args: [emethContractAddress, 2000n],
+          args: [emethContractAddress, 10000000000000n],
         });
         // keep receipts for now, to use waitForTransactionReceipt
         const receipt = await testWalletClient.writeContract(request);
@@ -393,6 +393,10 @@ export default component$(() => {
     const from = selectedWallet.value?.wallet.address;
     const to = receivingWalletAddress.value;
     const token = transferredCoin.address;
+    const decimals =
+      selectedWallet.value?.tokens.find(
+        (token) => token.symbol === transferredCoin.symbol,
+      ).decimals || 0;
     const amount = transferredTokenAmount.value;
 
     if (from === "" || to === "" || token === "" || amount === 0) {
@@ -401,7 +405,7 @@ export default component$(() => {
         error: "Values cant be empty",
       };
     } else {
-      console.log("Transfering tokens...");
+      console.log("transferring tokens...");
       isTransferModalOpen.value = false;
       const cookie = getCookie("accessToken");
       if (!cookie) throw new Error("No accessToken cookie found");
@@ -409,6 +413,7 @@ export default component$(() => {
       const emethContractAddress = import.meta.env
         .PUBLIC_EMETH_CONTRACT_ADDRESS;
       try {
+        const calculatedAmount = amount * Math.pow(10, decimals);
         const { request } = await testPublicClient.simulateContract({
           account: from as `0x${string}`,
           address: emethContractAddress,
@@ -418,7 +423,7 @@ export default component$(() => {
             token as `0x${string}`,
             from as `0x${string}`,
             to as `0x${string}`,
-            BigInt(amount), //przemnozyc przez decimals, popatrz na wyswietlanie balance
+            BigInt(calculatedAmount),
           ],
         });
 
