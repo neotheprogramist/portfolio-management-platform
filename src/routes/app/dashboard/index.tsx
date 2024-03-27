@@ -3,7 +3,7 @@ import { PortfolioValue } from "~/components/portfolioValue/portfolioValue";
 import { Alert } from "~/components/alerts/alert";
 import { Action } from "~/components/actions/action";
 import { TokenRow } from "~/components/tokens/tokenRow";
-import ImgWarning from "/public/images/svg/dashboard/warning.svg?jsx";
+import IconWarning from "/public/assets/icons/dashboard/warning.svg?jsx";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 import { connectToDB } from "~/utils/db";
 import { routeLoader$, useNavigate } from "@builder.io/qwik-city";
@@ -208,7 +208,7 @@ export default component$(() => {
               <p class="custom-text-50 text-xs">1 day ago</p>
             </div>
             <div class="custom-bg-white flex h-[28px] items-center gap-[4px] rounded-[8px] border border-[#ffc107] p-[8px]">
-              <ImgWarning />
+              <IconWarning />
               <p class="text-xs text-[#ffc107] lg:hidden">Warning</p>
             </div>
           </div>

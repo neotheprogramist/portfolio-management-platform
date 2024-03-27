@@ -13,7 +13,7 @@ export const WalletConnect: Story = {
   render: (props) => (
     <Button
       {...props}
-      image="/images/svg/login/walletconnectIcon.svg"
+      image="/assets/icons/login/walletconnect.svg"
       text="Use WalletConnect"
     ></Button>
   ),
@@ -22,7 +22,7 @@ export const WalletConnect: Story = {
 export const Metamask: Story = {
   render: () => (
     <Button
-      image="/images/svg/login/metamaskIcon.svg"
+      image="/assets/icons/login/metamask.svg"
       text="Use Metamask"
     ></Button>
   ),
@@ -31,7 +31,7 @@ export const Metamask: Story = {
 export const Info: Story = {
   render: () => (
     <Button
-      image="/images/svg/info.svg"
+      image="/assets/icons/info.svg"
       text="How to use Wallet?"
       padding="8px 12px 8px 8px"
       buttonWidth="200px"

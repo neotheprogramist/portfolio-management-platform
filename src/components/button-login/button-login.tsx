@@ -39,7 +39,7 @@ export const Button = component$<ButtonProps>((props) => {
         <p class="font-normal">{props.text}</p>
       </div>
       <img
-        src="../../../images/svg/arrowForward.svg"
+        src="../../../assets/icons/arrow-forward.svg"
         alt="Arrow Forward"
         width="16"
         height="16"

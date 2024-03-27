@@ -1,5 +1,5 @@
 import { type Signal, Slot, component$ } from "@builder.io/qwik";
-import ImgClose from "/public/images/svg/close.svg?jsx";
+import IconClose from "/public/assets/icons/close.svg?jsx";
 
 interface ModalProps {
   title: string;
@@ -44,7 +44,7 @@ export const Modal = component$<ModalProps>(
                 }
               }}
             >
-              <ImgClose />
+              <IconClose />
             </button>
           </div>
           <hr class="opacity-20" />

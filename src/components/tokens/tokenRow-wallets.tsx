@@ -1,6 +1,6 @@
 import { $, component$ } from "@builder.io/qwik";
-import ImgMenu3Dots from "/public/images/svg/menu3Dots.svg?jsx";
-import ImgGraf from "/public/images/svg/graf.svg?jsx";
+import IconMenuDots from "/public/assets/icons/menu-dots.svg?jsx";
+import IconGraph from "/public/assets/icons/graph.svg?jsx";
 import {
   Image,
   type ImageTransformerProps,
@@ -59,11 +59,11 @@ export const TokenRowWallets = component$<TokenRowWalletsProps>(
             <span class="bg-glass rounded-lg border border-green-500 bg-green-500 px-2 py-1 text-green-500">
               0%
             </span>
-            <ImgGraf />
+            <IconGraph />
           </div>
           <div class="text-right">
             <button class="border-white-opacity-20 bg-glassp rounded-lg p-1.5">
-              <ImgMenu3Dots />
+              <IconMenuDots />
             </button>
           </div>
         </div>

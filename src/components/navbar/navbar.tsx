@@ -1,5 +1,5 @@
 import { component$, Slot } from "@builder.io/qwik";
-import Logo from "/public/images/svg/logo.svg?jsx";
+import IconLogo from "/public/assets/icons/logo.svg?jsx";
 import { twMerge } from "tailwind-merge";
 
 export interface NavbarProps {
@@ -16,7 +16,7 @@ export const Navbar = component$<NavbarProps>((props) => {
         )}
       >
         <div class="h-[20px] w-[94px]">
-          <Logo />
+          <IconLogo />
         </div>
         <Slot />
       </div>

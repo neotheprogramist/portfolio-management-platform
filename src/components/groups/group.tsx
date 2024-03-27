@@ -1,6 +1,6 @@
 import { component$, type JSXOutput } from "@builder.io/qwik";
 import type { QRL } from "@builder.io/qwik";
-import ArrowDown from "/public/images/svg/arrowDown.svg?jsx";
+import IconArrowDown from "/public/assets/icons/arrow-down.svg?jsx";
 import {
   type Structure,
   type StructureBalance,
@@ -50,7 +50,7 @@ function extractData(
   return extractedArray.map((entry: any, index: number) => (
     <Token
       key={`${entry.balanceId} - ${index}`}
-      icon={`/images/svg/tokens/${entry.symbol.toLowerCase()}.svg`}
+      icon={`/assets/icons/tokens/${entry.symbol.toLowerCase()}.svg`}
       name={entry.name}
       symbol={entry.symbol}
       quantity={entry.quantity}
@@ -71,7 +71,7 @@ export const Group = component$<GroupProps>((props) => {
       <div>
         <div class="flex h-[50px] pb-[8px] pt-[24px] text-[14px]">
           <div class="flex items-center gap-[8px] ">
-            <ArrowDown />
+            <IconArrowDown />
             <h3>{props.createdStructure.structure.name}</h3>
             <svg
               xmlns="http://www.w3.org/2000/svg"

@@ -1,11 +1,11 @@
 import { component$ } from "@builder.io/qwik";
-import ImgHandshake from "/public/images/svg/signin/handshake.svg?jsx";
+import IconHandshake from "/public/assets/icons/signin/handshake.svg?jsx";
 
 export const WelcomeText = component$(() => {
   return (
     <div class="w-[426px] text-center">
       <div class="flex justify-center">
-        <ImgHandshake />
+        <IconHandshake />
       </div>
       <h1 class="py-6 text-4xl font-medium">Welcome to Emeth</h1>
       <p class="text-base font-normal">

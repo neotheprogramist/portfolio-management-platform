@@ -1,6 +1,6 @@
 import { component$, useContext } from "@builder.io/qwik";
-import ImgAvatar from "/public/images/avatar.png?jsx";
-import ArrowDown from "/public/images/svg/arrowDown.svg?jsx";
+import ImgAvatar from "/public/assets/images/avatar.png?jsx";
+import IconArrowDown from "/public/assets/icons/arrow-down.svg?jsx";
 import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
 import { getAccount } from "@wagmi/core";
 import { NavLink } from "./navlink";
@@ -30,7 +30,7 @@ export const NavbarContent = component$(() => {
           <p class="text-[10px] text-[#12A58C]">Account verified</p>
         </div>
         <button>
-          <ArrowDown />
+          <IconArrowDown />
         </button>
       </div>
     </>
