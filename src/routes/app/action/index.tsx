@@ -130,28 +130,6 @@ export default component$<PortfolioValueProps>(({ totalPortfolioValue }) => {
       </div>
 
       <div id="container"></div>
-
-      <div class="ml-[28px]">
-        <div class="custom-border-1 grid h-[84px] grid-rows-[50%_50%] rounded-lg">
-          <div class="pr-timeline row-start-2"></div>
-        </div>
-        <div class="custom-text-50 mt-[12px] flex justify-between text-xs">
-          <span>2011</span>
-          <span>2012</span>
-          <span>2013</span>
-          <span>2014</span>
-          <span>2015</span>
-          <span>2016</span>
-          <span>2017</span>
-          <span>2018</span>
-          <span>2019</span>
-          <span>2020</span>
-          <span>2021</span>
-          <span>2022</span>
-          <span>2023</span>
-          <span>2024</span>
-        </div>
-      </div>
     </div>
   );
 });

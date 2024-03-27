@@ -1,4 +1,4 @@
-import { component$ } from "@builder.io/qwik";
+import { component$, useSignal } from "@builder.io/qwik";
 import { PortfolioValue } from "~/components/portfolioValue/portfolioValue";
 import { Alert } from "~/components/alerts/alert";
 import { Action } from "~/components/actions/action";
@@ -165,12 +165,21 @@ export const useGetFavoriteTokens = routeLoader$(async (requestEvent) => {
 
 export default component$(() => {
   const nav = useNavigate();
-
+  const isPortfolioFullScreen = useSignal(true);
   const totalPortfolioValue = useTotalPortfolioValue();
   const favoriteTokens = useGetFavoriteTokens();
-  return (
+
+  return isPortfolioFullScreen.value ? (
+    <PortfolioValue
+      totalPortfolioValue={totalPortfolioValue.value}
+      isPortfolioFullScreen={isPortfolioFullScreen}
+    />
+  ) : (
     <div class="grid grid-cols-4 grid-rows-[48%_48%] gap-[24px] overflow-auto p-[40px]">
-      <PortfolioValue totalPortfolioValue={totalPortfolioValue.value} />
+      <PortfolioValue
+        totalPortfolioValue={totalPortfolioValue.value}
+        isPortfolioFullScreen={isPortfolioFullScreen}
+      />
 
       <div class="custom-border-1 custom-bg-white custom-shadow col-start-3 row-span-1 row-start-1 grid grid-rows-[32px_1fr] gap-[16px] overflow-auto rounded-[16px] p-[24px]">
         <div class="flex items-center justify-between">
