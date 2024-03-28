@@ -12,3 +12,6 @@
 
 - name: Install SurrealDB
   ansible.builtin.import_playbook: playbooks/surrealdb.yaml
+
+- name: Install Foundry
+  ansible.builtin.import_playbook: playbooks/foundry.yaml
