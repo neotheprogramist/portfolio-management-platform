@@ -268,6 +268,7 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
 
         walletTokensBalances.tokens.push({
           id: token.id,
+          address: token.address,
           name: token.name,
           symbol: token.symbol,
           decimals: token.decimals,
@@ -333,11 +334,6 @@ const fetchTokens = server$(async function() {
   return await db.select<Token>("token");
 })
 
-const fetchTokenAddress = server$(async function(tokenId: string) {
-  const db = await connectToDB(this.env);
-  return await db.select<Token>(`${tokenId}`);
-})
-
 export default component$(() => {
   const addWalletAction = useAddWallet();
   const removeWalletAction = useRemoveWallet();
@@ -382,6 +378,8 @@ export default component$(() => {
           address: checksumAddress(token.address as `0x${string}`),
           abi: token.symbol === "USDT" ? usdtAbi : contractABI,
           functionName: "approve",
+          // TODO: USDT can not reaprove to other amount right after initial arpprove, 
+          // it needs to be set to 0 first and then reapprove
           args: [emethContractAddress, 100000000000000n],
         });
         // keep receipts for now, to use waitForTransactionReceipt
@@ -424,11 +422,7 @@ export default component$(() => {
     const from = selectedWallet.value.wallet.address;
     const to = receivingWalletAddress.value;
     const token = transferredCoin.address;
-    const [token_] = await fetchTokenAddress(transferredCoin.address);
-    console.log("===============================")
-    console.log("tokenAddress", token_.address);
-    console.log("===============================")
-
+    
     const decimals = selectedWallet.value.tokens.filter(
       (token) => token.symbol === transferredCoin.symbol,
     )[0].decimals;
@@ -465,7 +459,7 @@ export default component$(() => {
           abi: emethContractAbi,
           functionName: "transferToken",
           args: [
-            token_.address as `0x${string}`,
+            token as `0x${string}`,
             from as `0x${string}`,
             to as `0x${string}`,
             BigInt(calculation),
