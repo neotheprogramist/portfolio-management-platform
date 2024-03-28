@@ -17,7 +17,7 @@ import { SelectedWalletDetails } from "~/components/wallets/details";
 import { ObservedWallet } from "~/components/wallets/observed";
 import { type Balance } from "~/interface/balance/Balance";
 import { type WalletTokensBalances } from "~/interface/walletsTokensBalances/walletsTokensBalances";
-import { formatTokenBalance } from "~/utils/formatBalances/formatTokenBalance";
+import { convertWeiToQuantity } from "~/utils/formatBalances/formatTokenBalance";
 import { isAddress, checksumAddress } from "viem";
 import IconArrowDown from "/public/assets/icons/arrow-down.svg?jsx";
 import IconInfo from "/public/assets/icons/info.svg?jsx";
@@ -236,6 +236,28 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
         args: [wallet.address as `0x${string}`],
       });
 
+      const emethContractAddress = requestEvent.env.get(
+        "PUBLIC_EMETH_CONTRACT_ADDRESS",
+      );
+      if (!emethContractAddress) {
+        throw new Error("Missing PUBLIC_EMETH_CONTRACT_ADDRESS");
+      }
+
+      const allowance = await testPublicClient.readContract({
+        account: wallet.address as `0x${string}`,
+        address: checksumAddress(token.address as `0x${string}`),
+        abi: token.symbol === "USDT" ? usdtAbi : contractABI,
+        functionName: "allowance",
+        args: [
+          wallet.address as `0x${string}`,
+          emethContractAddress as `0x${string}`,
+        ],
+      });
+
+      const formattedAllowance = convertWeiToQuantity(
+        allowance.toString(),
+        token.decimals,
+      );
       // Certain balance which shall be updated
       const [[balanceToUpdate]]: any = await db.query(
         `SELECT * FROM balance WHERE ->(for_wallet WHERE out = '${wallet.id}') AND ->(for_token WHERE out = '${token.id}');`,
@@ -245,7 +267,7 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
         value: readBalance.toString(),
       });
 
-      const formattedBalance = formatTokenBalance(
+      const formattedBalance = convertWeiToQuantity(
         readBalance.toString(),
         token.decimals,
       );
@@ -264,6 +286,7 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
           decimals: token.decimals,
           balance: formattedBalance,
           imagePath: imagePath.imagePath,
+          allowance: formattedAllowance,
           balanceValueUSD: (
             Number(formattedBalance) * Number(priceUSD)
           ).toFixed(2),
@@ -374,6 +397,14 @@ export default component$(() => {
         // keep receipts for now, to use waitForTransactionReceipt
         const receipt = await testWalletClient.writeContract(request);
         console.log(receipt);
+        const allowance = await testPublicClient.readContract({
+          account: accountFromPrivateKey,
+          address: checksumAddress(token.address as `0x${string}`),
+          abi: token.symbol === "USDT" ? usdtAbi : contractABI,
+          functionName: "allowance",
+          args: [accountFromPrivateKey.address, emethContractAddress],
+        });
+        console.log(`checking allowance for ${token.symbol}: ${allowance}`);
       }
 
       // approving logged in user by observed wallet by emeth contract
