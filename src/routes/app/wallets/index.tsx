@@ -318,6 +318,9 @@ function replaceNonMatching(
   );
 }
 
+const chekckIfProperAmount = (input: string, regex: RegExp) => {
+  return regex.test(input);
+};
 export interface addWalletFormStore {
   name: string;
   address: string;
@@ -428,12 +431,17 @@ export default component$(() => {
     const amount = transferredTokenAmount.value;
 
     const { numerator, denominator } = convertToFraction(amount);
-    //   // BigInt(numerator * 10^decimals) / BigInt(denominator) -- wzor
     const calculation =
       BigInt(numerator * BigInt(Math.pow(10, decimals))) / BigInt(denominator);
     console.log("calculation: ", calculation);
 
-    if (from === "" || to === "" || token === "" || amount === "") {
+    if (
+      from === "" ||
+      to === "" ||
+      token === "" ||
+      amount === "" ||
+      !chekckIfProperAmount(transferredTokenAmount.value, /^\d*\.?\d*$/)
+    ) {
       console.log("empty values");
       return {
         error: "Values cant be empty",
@@ -655,8 +663,14 @@ export default component$(() => {
               }}
             />
             <span class="block pb-1 text-xs text-white">
-              {" "}
-              HERE: {transferredTokenAmount.value}
+              {!chekckIfProperAmount(
+                transferredTokenAmount.value,
+                /^\d*\.?\d*$/,
+              ) ? (
+                <span class="text-xs text-red-500">
+                  Invalid amount. There should be only one dot.
+                </span>
+              ) : null}
             </span>
             <button
               class="custom-border-1 custom-bg-white row-span-1 row-start-3 mb-[24px] flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-xs text-white"
