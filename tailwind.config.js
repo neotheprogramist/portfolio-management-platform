@@ -6,7 +6,21 @@ export default {
       md: {max: '767px'},
       lg: {max: '1439px'},
     },
-    extend: {},
+    extend: {
+      keyframes: {
+        arrival:{
+          '0%, 100%': {
+            transform: 'translateX(200px)'
+          },
+          '20%, 80%': {
+            transform: 'translateX(-256px)'
+          }
+        }
+      }, 
+      animation: {
+        messageArrival: 'arrival 5s',
+      }
+    },
   },
   plugins: [],
 };
