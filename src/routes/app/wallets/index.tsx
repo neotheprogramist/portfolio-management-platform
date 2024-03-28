@@ -43,7 +43,6 @@ import {
   getTokenImagePath,
 } from "~/interface/wallets/observedWallets";
 import { emethContractAbi } from "~/abi/emethContractAbi";
-import { testPublicClient, testWalletClient } from "./testconfig";
 import { usdtAbi } from "~/abi/usdtAbi";
 import NonExecutableWalletControls from "~/components/forms/addWallet/addWalletNonExecutableFormControls";
 import IsExecutableSwitch from "~/components/forms/addWallet/isExecutableSwitch";
@@ -52,6 +51,8 @@ import { privateKeyToAccount } from "viem/accounts";
 import { getCookie } from "~/utils/refresh";
 import * as jwtDecode from "jwt-decode";
 import { type Token } from "~/interface/token/Token";
+import { testPublicClient, testWalletClient } from "./testconfig";
+
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
@@ -82,7 +83,6 @@ export const useAddWallet = routeAction$(
       walletId = createWalletQueryResult.id;
       const nativeBalance = await testPublicClient.getBalance({
         address: createWalletQueryResult.address as `0x${string}`,
-        blockTag: "safe",
       });
       await db.query(
         `UPDATE ${walletId} SET nativeBalance = '${nativeBalance}';`,
@@ -99,6 +99,9 @@ export const useAddWallet = routeAction$(
           args: [createWalletQueryResult.address as `0x${string}`],
         });
         console.log("readBalance", readBalance.toString());
+        if(readBalance < 0) {
+          continue;
+        }
         const [balance] = await db.create<Balance>(`balance`, {
           value: readBalance.toString(),
         });
@@ -208,7 +211,6 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
     const [wallet] = await db.select<Wallet>(`${observedWallet}`);
     const nativeBalance = await testPublicClient.getBalance({
       address: wallet.address as `0x${string}`,
-      blockTag: "safe",
     });
     await db.query(
       `UPDATE ${observedWallet} SET nativeBalance = '${nativeBalance}';`,
