@@ -121,7 +121,7 @@ export default component$<PortfolioValueProps>(({ totalPortfolioValue }) => {
           <h2 class="custom-text-50 uppercase lg:hidden">Portfolio</h2>
           <button class="custom-bg-white custom-border-1 flex h-[32px] items-center gap-[8px] rounded-[8px] px-[8px]">
             <p>All</p>
-            <IconArrowDown/>
+            <IconArrowDown />
           </button>
           <button class="custom-bg-white custom-border-1 h-[32px] items-center rounded-[8px] px-[8px]">
             <ImgMinimalize />
