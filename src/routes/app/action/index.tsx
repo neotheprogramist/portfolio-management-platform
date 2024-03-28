@@ -1,6 +1,6 @@
 import { component$, useVisibleTask$ } from "@builder.io/qwik";
-import ImgMinimalize from "/public/images/svg/minimalize.svg?jsx";
-import ImgArrowDown from "/public/images/arrowDown.svg?jsx";
+import ImgMinimalize from "/public/assets/icons/minimalize.svg?jsx";
+import IconArrowDown from "/public/assets/icons/arrow-down.svg?jsx";
 import * as d3 from "d3";
 
 const chart = () => {
@@ -121,7 +121,7 @@ export default component$<PortfolioValueProps>(({ totalPortfolioValue }) => {
           <h2 class="custom-text-50 uppercase lg:hidden">Portfolio</h2>
           <button class="custom-bg-white custom-border-1 flex h-[32px] items-center gap-[8px] rounded-[8px] px-[8px]">
             <p>All</p>
-            <ImgArrowDown />
+            <IconArrowDown/>
           </button>
           <button class="custom-bg-white custom-border-1 h-[32px] items-center rounded-[8px] px-[8px]">
             <ImgMinimalize />

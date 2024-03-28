@@ -1,7 +1,7 @@
-import { $, component$, Signal, useVisibleTask$ } from "@builder.io/qwik";
+import { $, component$, type Signal, useVisibleTask$ } from "@builder.io/qwik";
 import IconMaximize from "/public/assets/icons/dashboard/maximize.svg?jsx";
-import ImgPfButton from "/public/images/svg/pfButton.svg?jsx";
-import ImgMinimalize from "/public/images/svg/minimalize.svg?jsx";
+import ImgPfButton from "/public/assets/icons/pfButton.svg?jsx";
+import ImgMinimalize from "/public/assets/icons/minimalize.svg?jsx";
 import IconArrowDown from "/public/assets/icons/arrow-down.svg?jsx";
 import * as d3 from "d3";
 
@@ -139,7 +139,7 @@ export const PortfolioValue = component$<PortfolioValueProps>(
               }}
             >
               {!isPortfolioFullScreen.value ? (
-                <ImgMaximalize />
+                <IconMaximize />
               ) : (
                 <ImgMinimalize />
               )}

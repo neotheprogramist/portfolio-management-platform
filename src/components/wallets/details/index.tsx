@@ -68,6 +68,7 @@ export const SelectedWalletDetails = component$<SelectedWalletProps>(
           <table class="w-full text-left">
             <tbody class="overflow-auto">
               {selectedWallet.value.tokens.map((token: any) => {
+                console.log("token.imagePath", token.imagePath);
                 return (
                   <TokenRowWallets
                     key={token.id}
