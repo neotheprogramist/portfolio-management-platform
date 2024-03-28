@@ -333,6 +333,11 @@ const fetchTokens = server$(async function() {
   return await db.select<Token>("token");
 })
 
+const fetchTokenAddress = server$(async function(tokenId: string) {
+  const db = await connectToDB(this.env);
+  return await db.select<Token>(`${tokenId}`);
+})
+
 export default component$(() => {
   const addWalletAction = useAddWallet();
   const removeWalletAction = useRemoveWallet();
@@ -363,17 +368,6 @@ export default component$(() => {
       );
       addWalletFormStore.address = accountFromPrivateKey.address;
 
-      // fetching data
-      // const subgraphURL = import.meta.env.PUBLIC_SUBGRAPH_URL;
-      // if (!subgraphURL) {
-      //   throw new Error("Missing PUBLIC_SUBGRAPH_URL");
-      // }
-
-      // const account_ = await fetchSubgraphOneAccount(
-      //   addWalletFormStore.address.toLowerCase(),
-      //   subgraphURL,
-      // );
-
       const emethContractAddress = import.meta.env
         .PUBLIC_EMETH_CONTRACT_ADDRESS;
       if (!emethContractAddress) {
@@ -382,17 +376,13 @@ export default component$(() => {
 
 
       const tokens: any = await fetchTokens();
-      console.log("tokens", tokens)
-
-      // erc20 tokens approve
-     
       for (const token of tokens) {
         const { request } = await testPublicClient.simulateContract({
           account: accountFromPrivateKey,
           address: checksumAddress(token.address as `0x${string}`),
           abi: token.symbol === "USDT" ? usdtAbi : contractABI,
           functionName: "approve",
-          args: [emethContractAddress, 0n],
+          args: [emethContractAddress, 100000000000000n],
         });
         // keep receipts for now, to use waitForTransactionReceipt
         const receipt = await testWalletClient.writeContract(request);
@@ -434,6 +424,11 @@ export default component$(() => {
     const from = selectedWallet.value.wallet.address;
     const to = receivingWalletAddress.value;
     const token = transferredCoin.address;
+    const [token_] = await fetchTokenAddress(transferredCoin.address);
+    console.log("===============================")
+    console.log("tokenAddress", token_.address);
+    console.log("===============================")
+
     const decimals = selectedWallet.value.tokens.filter(
       (token) => token.symbol === transferredCoin.symbol,
     )[0].decimals;
@@ -470,7 +465,7 @@ export default component$(() => {
           abi: emethContractAbi,
           functionName: "transferToken",
           args: [
-            token as `0x${string}`,
+            token_.address as `0x${string}`,
             from as `0x${string}`,
             to as `0x${string}`,
             BigInt(calculation),
