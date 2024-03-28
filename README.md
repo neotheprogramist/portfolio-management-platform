@@ -53,7 +53,9 @@ brew install surrealdb/tap/surreal
 
 ## Run
 
-Firstly, you need to run database:
+Firstly, please setup [`automation-protocol`](https://github.com/neotheprogramist/automation-protocol) repository by following [`README.md`](https://github.com/neotheprogramist/automation-protocol/blob/master/README.md) there.
+
+Next, you need to run database:
 
 ```bash
 ./scripts/database-setup.sh
