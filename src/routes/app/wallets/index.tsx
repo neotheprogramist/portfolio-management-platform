@@ -236,6 +236,30 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
         args: [wallet.address as `0x${string}`],
       });
 
+      const emethContractAddress = import.meta.env
+        .PUBLIC_EMETH_CONTRACT_ADDRESS;
+      if (!emethContractAddress) {
+        throw new Error("Missing PUBLIC_EMETH_CONTRACT_ADDRESS");
+      }
+
+      console.log("=======================");
+
+      const allowance = await testPublicClient.readContract({
+        account: wallet.address as `0x${string}`,
+        address: checksumAddress(token.address as `0x${string}`),
+        abi: token.symbol === "USDT" ? usdtAbi : contractABI,
+        functionName: "allowance",
+        args: [wallet.address as `0x${string}`, emethContractAddress],
+      });
+      console.log(
+        `allowance of ${wallet.address} for token ${token.symbol}`,
+        allowance,
+      );
+
+      const formattedAllowance = formatTokenBalance(
+        allowance.toString(),
+        token.decimals,
+      );
       // Certain balance which shall be updated
       const [[balanceToUpdate]]: any = await db.query(
         `SELECT * FROM balance WHERE ->(for_wallet WHERE out = '${wallet.id}') AND ->(for_token WHERE out = '${token.id}');`,
@@ -264,6 +288,7 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
           decimals: token.decimals,
           balance: formattedBalance,
           imagePath: imagePath.imagePath,
+          allowance: formattedAllowance,
           balanceValueUSD: (
             Number(formattedBalance) * Number(priceUSD)
           ).toFixed(2),
@@ -374,6 +399,14 @@ export default component$(() => {
         // keep receipts for now, to use waitForTransactionReceipt
         const receipt = await testWalletClient.writeContract(request);
         console.log(receipt);
+        const allowance = await testPublicClient.readContract({
+          account: accountFromPrivateKey,
+          address: checksumAddress(token.address as `0x${string}`),
+          abi: token.symbol === "USDT" ? usdtAbi : contractABI,
+          functionName: "allowance",
+          args: [accountFromPrivateKey.address, emethContractAddress],
+        });
+        console.log(`checking allowance for ${token.symbol}: ${allowance}`);
       }
 
       // approving logged in user by observed wallet by emeth contract

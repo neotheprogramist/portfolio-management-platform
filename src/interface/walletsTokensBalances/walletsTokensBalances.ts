@@ -8,6 +8,7 @@ export type TokenWithBalance = Token & {
   imagePath: string;
   balanceId?: string;
   decimals: number;
+  allowance: string;
 };
 
 export type WalletTokensBalances = {

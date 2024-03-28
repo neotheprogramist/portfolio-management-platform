@@ -16,6 +16,7 @@ type TokenRowWalletsProps = {
   isTransferModalOpen: Signal<boolean>;
   address: string;
   transferredCoin: transferredCoinInterface;
+  allowance: string
 };
 
 export const TokenRowWallets = component$<TokenRowWalletsProps>(
@@ -28,6 +29,7 @@ export const TokenRowWallets = component$<TokenRowWalletsProps>(
     balanceValueUSD,
     isTransferModalOpen,
     transferredCoin,
+    allowance
   }) => {
     console.log("imagePath", imagePath);
     const imageTransformer$ = $(
@@ -42,7 +44,7 @@ export const TokenRowWallets = component$<TokenRowWalletsProps>(
     });
     return (
       <>
-        <div class="grid grid-cols-[28%_12%_12%_26%_8%_9%] items-center gap-[8px] border-b border-white border-opacity-10 py-[16px] text-left text-[14px] text-white text-opacity-50">
+        <div class="grid grid-cols-[28%_12%_12%_12%_14%_8%_9%] items-center gap-[8px] border-b border-white border-opacity-10 py-[16px] text-left text-[14px] text-white text-opacity-50">
           <div class="flex items-center gap-4 py-2">
             <div class="rounded-lg border border-white border-opacity-20 bg-white bg-opacity-10 p-2">
               <Image
@@ -68,6 +70,11 @@ export const TokenRowWallets = component$<TokenRowWalletsProps>(
               ${balanceValueUSD}
             </span>
           </div>
+          <div class="">
+            <span class="bg-glass rounded-lg border border-white border-opacity-20 px-2 py-1 text-white">
+              {allowance}
+            </span>
+          </div>
           <div class="flex justify-center gap-[16px]">
             <span class="bg-glass rounded-lg border border-green-500 bg-green-500 px-2 py-1 text-green-500">
               0%
@@ -86,6 +93,7 @@ export const TokenRowWallets = component$<TokenRowWalletsProps>(
               <span class="text-xs hover:text-blue-500">TRANSFER</span>
             </button>
           </div>
+          
           <div class="text-right">
             <button class="border-white-opacity-20 bg-glassp rounded-lg p-1.5">
               <IconMenuDots />
