@@ -3,7 +3,7 @@ import { LoginText } from "~/components/login-text/login-text";
 import { component$ } from "@builder.io/qwik";
 import { Button } from "~/components/button-login/button-login";
 import { Navbar } from "~/components/navbar/navbar";
-import ImgGradientMain from "/public/images/Gradient.png?jsx";
+import ImgGradient from "/public/assets/images/gradient.png?jsx";
 import WalletConnect from "~/components/wallet-connect";
 import { Paragraph } from "~/components/paragraph/paragraph";
 import { mainnet, arbitrum } from "viem/chains";
@@ -14,7 +14,7 @@ export default component$(() => {
       <Navbar class="fixed !border-0" />
       <div class="grid h-full grid-cols-[1fr_2fr_auto] items-center">
         <div class="h-[766px] w-[655px]">
-          <ImgGradientMain
+          <ImgGradient
             class="h-full"
             alt="gradient"
             style="object-position: -129px 0;"
@@ -25,7 +25,7 @@ export default component$(() => {
             <LoginText />
             <div>
               <WalletConnect
-                image="/images/svg/metamask-icon.svg"
+                image="/assets/icons/login/metamask.svg"
                 text="Use Metamask"
                 enableWalletConnect={false}
                 enableInjected={false}
@@ -33,7 +33,7 @@ export default component$(() => {
                 chains={[mainnet]}
               />
               <WalletConnect
-                image="/images/svg/walletconnect-icon.svg"
+                image="/assets/icons/login/walletconnect.svg"
                 text="Use WalletConnect"
                 class="mt-3"
                 enableWalletConnect={true}
@@ -45,7 +45,7 @@ export default component$(() => {
           </div>
           <div class="grid content-end justify-items-center gap-6 text-xs">
             <Button
-              image="/images/svg/info.svg"
+              image="/assets/icons/info.svg"
               text="How to use Wallet?"
               padding="8px 12px 8px 8px"
               buttonWidth="200px"

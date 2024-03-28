@@ -2,9 +2,9 @@ import {
   Button,
   ButtonTokenList,
 } from "~/components/portfolio/button-master/button";
-import EditIcon from "/public/images/svg/portfolio/edit.svg?jsx";
-import Graph from "/public/images/chart.png?jsx";
-import Bitcoin from "/public/images/svg/portfolio/btc.svg?jsx";
+import IconEdit from "/public/assets/icons/portfolio/edit.svg?jsx";
+import ImgChart from "/public/assets/images/chart.png?jsx";
+import IconBtc from "/public/assets/icons/portfolio/btc.svg?jsx";
 import { Group } from "~/components/groups/group";
 import {
   component$,
@@ -288,21 +288,21 @@ export default component$(() => {
         <div class="flex items-center justify-between py-[32px]">
           <div class="flex items-center gap-[8px] text-[24px] font-semibold">
             <h2>Portfolio Name</h2>
-            <EditIcon />
+            <IconEdit />
           </div>
           <div class="flex items-center gap-[8px]">
             <Button
-              image="/images/svg/portfolio/dca.svg"
+              image="/assets/icons/portfolio/dca.svg"
               text="DCA"
               class="custom-border-2"
             />
             <Button
-              image="/images/svg/portfolio/structures.svg"
+              image="/assets/icons/portfolio/structures.svg"
               text="See All Structures"
               class="custom-border-2"
             />
             <Button
-              image="/images/svg/portfolio/add.svg"
+              image="/assets/icons/portfolio/add.svg"
               text="Create New Structure"
               class="bg-[#2196F3]"
               onClick$={() => {
@@ -317,22 +317,22 @@ export default component$(() => {
             <p class="text-[20px] font-semibold">Token list</p>
             <div class="grid grid-cols-4 gap-[8px]">
               <ButtonTokenList
-                image="/images/svg/portfolio/search.svg"
+                image="/assets/icons/search.svg"
                 text="Search for name"
                 class="flex-row-reverse justify-end text-opacity-50"
               />
               <ButtonTokenList
-                image="/images/svg/portfolio/arrowDown.svg"
+                image="/assets/icons/arrow-down.svg"
                 text="Choose Subportfolio"
                 class=""
               />
               <ButtonTokenList
-                image="/images/svg/portfolio/arrowDown.svg"
+                image="/assets/icons/arrow-down.svg"
                 text="Choose Wallet"
                 class=""
               />
               <ButtonTokenList
-                image="/images/svg/portfolio/arrowDown.svg"
+                image="/assets/icons/arrow-down.svg"
                 text="Choose Network"
                 class=""
               />
@@ -447,14 +447,14 @@ export default component$(() => {
             <div class="flex h-[32px] items-center justify-between">
               <p class="text-[20px] font-semibold">Details</p>
               <Button
-                image="/images/svg/portfolio/rebalance.svg"
+                image="/assets/icons/portfolio/rebalance.svg"
                 text="Rebalance"
                 class="custom-border-2"
               />
             </div>
             <div class="flex h-auto items-center gap-[16px]">
               <div class="custom-border-1 flex h-[44px] w-[44px] items-center justify-center rounded-[8px]">
-                <Bitcoin width={24} height={24} class="min-w-[24px]" />
+                <IconBtc width={24} height={24} class="min-w-[24px]" />
               </div>
               <div class="flex flex-col gap-[8px]">
                 <h4 class="text-[14px] font-medium">Bitcoin</h4>
@@ -470,7 +470,7 @@ export default component$(() => {
               <button class="rounded-[6px] p-[8px]">Month</button>
               <button class="rounded-[6px] p-[8px]">Year</button>
             </div>
-            <Graph />
+            <ImgChart />
             <div class="flex flex-col gap-[16px]">
               <h4 class="text-[14px] font-medium">Market data</h4>
               <p class="text-[12px] font-thin leading-[180%]">

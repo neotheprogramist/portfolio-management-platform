@@ -1,6 +1,6 @@
 import { $, component$ } from "@builder.io/qwik";
-import ImgStar from "/public/images/star.svg?jsx";
-import ImgGraf from "/public/images/svg/graf.svg?jsx";
+import IconStar from "/public/assets/icons/dashboard/star.svg?jsx";
+import IconGraph from "/public/assets/icons/graph.svg?jsx";
 import {
   useImageProvider,
   type ImageTransformerProps,
@@ -72,7 +72,7 @@ export const TokenRow = component$<TokenRowProps>(
           <span class="bg-glass rounded-lg border border-green-500 bg-green-500 px-2 py-1 text-green-500">
             +3,36%
           </span>
-          <ImgGraf />
+          <IconGraph />
         </div>
         <div class="">
           <span class="bg-glass rounded-lg border border-white border-opacity-20 px-2 py-1 text-white">
@@ -90,7 +90,7 @@ export const TokenRow = component$<TokenRowProps>(
           </span>
         </div>
         <div class="flex justify-end">
-          <ImgStar />
+          <IconStar />
         </div>
       </div>
     );
