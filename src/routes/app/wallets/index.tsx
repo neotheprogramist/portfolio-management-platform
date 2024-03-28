@@ -242,8 +242,6 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
         throw new Error("Missing PUBLIC_EMETH_CONTRACT_ADDRESS");
       }
 
-      console.log("=======================");
-
       const allowance = await testPublicClient.readContract({
         account: wallet.address as `0x${string}`,
         address: checksumAddress(token.address as `0x${string}`),
@@ -251,10 +249,6 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
         functionName: "allowance",
         args: [wallet.address as `0x${string}`, emethContractAddress],
       });
-      console.log(
-        `allowance of ${wallet.address} for token ${token.symbol}`,
-        allowance,
-      );
 
       const formattedAllowance = formatTokenBalance(
         allowance.toString(),

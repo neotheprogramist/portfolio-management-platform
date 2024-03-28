@@ -16,7 +16,7 @@ type TokenRowWalletsProps = {
   isTransferModalOpen: Signal<boolean>;
   address: string;
   transferredCoin: transferredCoinInterface;
-  allowance: string
+  allowance: string;
 };
 
 export const TokenRowWallets = component$<TokenRowWalletsProps>(
@@ -29,7 +29,7 @@ export const TokenRowWallets = component$<TokenRowWalletsProps>(
     balanceValueUSD,
     isTransferModalOpen,
     transferredCoin,
-    allowance
+    allowance,
   }) => {
     console.log("imagePath", imagePath);
     const imageTransformer$ = $(
@@ -93,7 +93,7 @@ export const TokenRowWallets = component$<TokenRowWalletsProps>(
               <span class="text-xs hover:text-blue-500">TRANSFER</span>
             </button>
           </div>
-          
+
           <div class="text-right">
             <button class="border-white-opacity-20 bg-glassp rounded-lg p-1.5">
               <IconMenuDots />
