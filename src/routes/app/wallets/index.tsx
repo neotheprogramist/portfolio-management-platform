@@ -8,7 +8,7 @@ import {
   server$,
 } from "@builder.io/qwik-city";
 import jwt, { type JwtPayload } from "jsonwebtoken";
-import { contractABI, publicClient } from "~/abi/abi";
+import { contractABI } from "~/abi/abi";
 import { type Wallet } from "~/interface/auth/Wallet";
 import { connectToDB } from "~/utils/db";
 import { chainIdToNetworkName } from "~/utils/chains";
@@ -18,14 +18,10 @@ import { ObservedWallet } from "~/components/wallets/observed";
 import { type Balance } from "~/interface/balance/Balance";
 import { type WalletTokensBalances } from "~/interface/walletsTokensBalances/walletsTokensBalances";
 import { formatTokenBalance } from "~/utils/formatBalances/formatTokenBalance";
-import { isAddress, getAddress, checksumAddress } from "viem";
+import { isAddress, checksumAddress } from "viem";
 import IconArrowDown from "/public/assets/icons/arrow-down.svg?jsx";
 import IconInfo from "/public/assets/icons/info.svg?jsx";
 import IconSearch from "/public/assets/icons/search.svg?jsx";
-import {
-  fetchSubgraphAccountsData,
-  fetchSubgraphOneAccount,
-} from "~/utils/subgraph/fetch";
 import {
   isValidName,
   isValidAddress,
@@ -39,16 +35,12 @@ import {
 import {
   getExistingRelation,
   getExistingWallet,
-  getTokenByAddress,
 } from "~/interface/wallets/addWallet";
 import {
   fetchTokenDayData,
-  getBalanceToUpdate,
   getDBTokenPriceUSD,
   getDBTokensAddresses,
-  getResultAddresses,
   getTokenImagePath,
-  getWalletDetails,
 } from "~/interface/wallets/observedWallets";
 import { emethContractAbi } from "~/abi/emethContractAbi";
 import { testPublicClient, testWalletClient } from "./testconfig";
@@ -60,7 +52,6 @@ import { privateKeyToAccount } from "viem/accounts";
 import { getCookie } from "~/utils/refresh";
 import * as jwtDecode from "jwt-decode";
 import { type Token } from "~/interface/token/Token";
-
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
@@ -100,15 +91,14 @@ export const useAddWallet = routeAction$(
       // create balances for tokens
       console.log("FETCH TOKENS");
       const tokens = await db.select<Token>("token");
-      for(const token of tokens) {
-        
+      for (const token of tokens) {
         const readBalance = await testPublicClient.readContract({
           address: token.address as `0x${string}`,
           abi: contractABI,
           functionName: "balanceOf",
-          args: [createWalletQueryResult.address as `0x${string}`]
-        })
-        console.log("readBalance", readBalance.toString())
+          args: [createWalletQueryResult.address as `0x${string}`],
+        });
+        console.log("readBalance", readBalance.toString());
         const [balance] = await db.create<Balance>(`balance`, {
           value: readBalance.toString(),
         });
@@ -171,7 +161,6 @@ export const useRemoveWallet = routeAction$(
     id: z.string(),
   }),
 );
-
 
 export const useObservedWallets = routeLoader$(async (requestEvent) => {
   const db = await connectToDB(requestEvent.env);
@@ -263,7 +252,7 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
       if (readBalance !== BigInt(0) && formattedBalance !== "0.000") {
         // Add the token to the wallet object
         const [{ priceUSD }] = await getDBTokenPriceUSD(db, token.address);
-        console.log(priceUSD)
+        console.log(priceUSD);
         const [imagePath] = await getTokenImagePath(db, token.symbol);
 
         walletTokensBalances.tokens.push({
@@ -329,10 +318,10 @@ export interface transferredCoinInterface {
   address: string;
 }
 
-const fetchTokens = server$(async function() {
+const fetchTokens = server$(async function () {
   const db = await connectToDB(this.env);
   return await db.select<Token>("token");
-})
+});
 
 export default component$(() => {
   const addWalletAction = useAddWallet();
@@ -353,11 +342,11 @@ export default component$(() => {
   const transferredTokenAmount = useSignal("");
 
   const handleAddWallet = $(async () => {
-    console.log("IN HANDLE ADD WALLET")
+    console.log("IN HANDLE ADD WALLET");
     isAddWalletModalOpen.value = false;
 
     if (addWalletFormStore.isExecutable) {
-      console.log("IN EXECUTABLE BLOCK")
+      console.log("IN EXECUTABLE BLOCK");
       // create account from PK
       const accountFromPrivateKey = privateKeyToAccount(
         addWalletFormStore.privateKey as `0x${string}`,
@@ -370,7 +359,6 @@ export default component$(() => {
         throw new Error("Missing PUBLIC_EMETH_CONTRACT_ADDRESS");
       }
 
-
       const tokens: any = await fetchTokens();
       for (const token of tokens) {
         const { request } = await testPublicClient.simulateContract({
@@ -378,7 +366,7 @@ export default component$(() => {
           address: checksumAddress(token.address as `0x${string}`),
           abi: token.symbol === "USDT" ? usdtAbi : contractABI,
           functionName: "approve",
-          // TODO: USDT can not reaprove to other amount right after initial arpprove, 
+          // TODO: USDT can not reaprove to other amount right after initial arpprove,
           // it needs to be set to 0 first and then reapprove
           args: [emethContractAddress, 100000000000000n],
         });
@@ -422,7 +410,7 @@ export default component$(() => {
     const from = selectedWallet.value.wallet.address;
     const to = receivingWalletAddress.value;
     const token = transferredCoin.address;
-    
+
     const decimals = selectedWallet.value.tokens.filter(
       (token) => token.symbol === transferredCoin.symbol,
     )[0].decimals;

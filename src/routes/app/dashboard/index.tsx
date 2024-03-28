@@ -11,89 +11,16 @@ import {
   fetchTokenDayData,
   getDBTokenPriceUSD,
   getDBTokensAddresses,
-  getResultAddresses,
   getTokenImagePath,
 } from "~/interface/wallets/observedWallets";
-import { fetchSubgraphAccountsData } from "~/utils/subgraph/fetch";
 import { checksumAddress } from "viem";
 import { type Wallet } from "~/interface/auth/Wallet";
 import { formatTokenBalance } from "~/utils/formatBalances/formatTokenBalance";
 import { chainIdToNetworkName } from "~/utils/chains";
-import { Balance } from "~/interface/balance/Balance";
-import { Token } from "~/interface/token/Token";
+import { type Balance } from "~/interface/balance/Balance";
+import { type Token } from "~/interface/token/Token";
 import { testPublicClient } from "../wallets/testconfig";
 import { contractABI } from "~/abi/abi";
-
-// export const useTotalPortfolioValue = routeLoader$(async (requestEvent) => {
-//   const db = await connectToDB(requestEvent.env);
-
-//   const cookie = requestEvent.cookie.get("accessToken");
-//   if (!cookie) {
-//     throw new Error("No cookie found");
-//   }
-//   const { userId } = jwt.decode(cookie.value) as JwtPayload;
-//   const resultAddresses = await getResultAddresses(db, userId);
-//   if (!resultAddresses[0]["->observes_wallet"].out.address.length) {
-//     return "0";
-//   }
-
-//   const observedWalletsAddressesQueryResult =
-//     resultAddresses[0]["->observes_wallet"].out.address;
-
-//   const subgraphURL = requestEvent.env.get("SUBGRAPH_URL");
-//   if (!subgraphURL) {
-//     throw new Error("Missing SUBGRAPH_URL");
-//   }
-
-//   const subgraphAccountsData = await fetchSubgraphAccountsData(
-//     observedWalletsAddressesQueryResult,
-//     subgraphURL,
-//   );
-
-//   const uniswapSubgraphURL = requestEvent.env.get(
-//     "UNIV3_OPTIMIST_SUBGRAPH_URL",
-//   );
-//   if (!uniswapSubgraphURL) {
-//     throw new Error("Missing UNIV3_OPTIMIST_SUBGRAPH_URL");
-//   }
-
-//   const dbTokensAddresses = await getDBTokensAddresses(db);
-//   const tokenAddresses = dbTokensAddresses.map((token) =>
-//     token.address.toLowerCase(),
-//   );
-
-//   const tokenDayData = await fetchTokenDayData(
-//     uniswapSubgraphURL,
-//     tokenAddresses,
-//   );
-
-//   for (const {
-//     token: { id },
-//     priceUSD,
-//   } of tokenDayData) {
-//     await db.query(`
-//       UPDATE token 
-//       SET priceUSD = '${priceUSD}'
-//       WHERE address = '${checksumAddress(id as `0x${string}`)}';
-//     `);
-//   }
-
-//   let totalValue = 0;
-
-//   for (const account of subgraphAccountsData) {
-//     for (const balance of account.balances) {
-//       const [{ priceUSD }] = await getDBTokenPriceUSD(db, balance.token.id);
-//       const formattedBalance = formatTokenBalance(
-//         balance.amount.toString(),
-//         parseInt(balance.token.decimals),
-//       );
-//       const balanceValueUSD = Number(formattedBalance) * Number(priceUSD);
-//       totalValue += balanceValueUSD;
-//     }
-//   }
-
-//   return totalValue.toFixed(2);
-// });
 
 export const useTotalPortfolioValue = routeLoader$(async (requestEvent) => {
   const db = await connectToDB(requestEvent.env);
