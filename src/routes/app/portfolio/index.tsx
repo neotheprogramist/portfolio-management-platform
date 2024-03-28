@@ -106,10 +106,13 @@ export const useObservedWalletBalances = routeLoader$(async (requestEvent) => {
     .out.address) {
     const walletDetails = await getWalletDetails(db, observedWalletAddress);
     const [balances]: any = await db.query(
-      `SELECT id FROM balance WHERE ->(for_wallet WHERE out = '${walletDetails[0].id}')`,
+      `SELECT id, value FROM balance WHERE ->(for_wallet WHERE out = '${walletDetails[0].id}')`,
     );
 
     for (const balance of balances) {
+      if (balance.value === "0") {
+        continue;
+      }
       const [tokenId]: any = await db.query(`
       SELECT VALUE ->for_token.out FROM ${balance.id}`);
 
@@ -389,7 +392,7 @@ export default component$(() => {
                   <input
                     type="text"
                     name="name"
-                    class={`mb-1 block w-full ${!isValidName(structureStore.name) ? "bg-red-300" : ""}`}
+                    class={`mb-1 block w-full text-black ${!isValidName(structureStore.name) ? "bg-red-300" : ""}`}
                     value={structureStore.name}
                     onInput$={(e) => {
                       const target = e.target as HTMLInputElement;
@@ -420,7 +423,11 @@ export default component$(() => {
                   >
                     <option disabled={true}>Select Wallets</option>
                     {observedWalletsWithBalance.value.map((option) => (
-                      <option key={option.wallet.id} value={option.wallet.id}>
+                      <option
+                        class="text-black"
+                        key={option.wallet.id}
+                        value={option.wallet.id}
+                      >
                         {option.wallet.name}
                       </option>
                     ))}
@@ -428,8 +435,10 @@ export default component$(() => {
                   <label for="balance" class="block">
                     Tokens
                   </label>
-                  <select name="balancesId[]" multiple>
-                    <option disabled={true}>Select Tokens</option>
+                  <select class="text-black" name="balancesId[]" multiple>
+                    <option class="text-black" disabled={true}>
+                      Select Tokens
+                    </option>
                     {parseWalletsToOptions(selectedWallets.wallets)}
                   </select>
                   <button

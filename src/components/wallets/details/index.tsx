@@ -80,7 +80,7 @@ export const SelectedWalletDetails = component$<SelectedWalletProps>(
                 return (
                   <TokenRowWallets
                     key={token.id}
-                    address={token.id}
+                    address={token.address}
                     name={token.name}
                     symbol={token.symbol}
                     balance={token.balance}

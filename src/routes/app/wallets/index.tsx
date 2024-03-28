@@ -5,9 +5,10 @@ import {
   zod$,
   z,
   routeLoader$,
+  server$,
 } from "@builder.io/qwik-city";
 import jwt, { type JwtPayload } from "jsonwebtoken";
-import { contractABI, publicClient } from "~/abi/abi";
+import { contractABI } from "~/abi/abi";
 import { type Wallet } from "~/interface/auth/Wallet";
 import { connectToDB } from "~/utils/db";
 import { chainIdToNetworkName } from "~/utils/chains";
@@ -17,14 +18,10 @@ import { ObservedWallet } from "~/components/wallets/observed";
 import { type Balance } from "~/interface/balance/Balance";
 import { type WalletTokensBalances } from "~/interface/walletsTokensBalances/walletsTokensBalances";
 import { formatTokenBalance } from "~/utils/formatBalances/formatTokenBalance";
-import { isAddress, getAddress, checksumAddress } from "viem";
+import { isAddress, checksumAddress } from "viem";
 import IconArrowDown from "/public/assets/icons/arrow-down.svg?jsx";
 import IconInfo from "/public/assets/icons/info.svg?jsx";
 import IconSearch from "/public/assets/icons/search.svg?jsx";
-import {
-  fetchSubgraphAccountsData,
-  fetchSubgraphOneAccount,
-} from "~/utils/subgraph/fetch";
 import {
   isValidName,
   isValidAddress,
@@ -38,19 +35,14 @@ import {
 import {
   getExistingRelation,
   getExistingWallet,
-  getTokenByAddress,
 } from "~/interface/wallets/addWallet";
 import {
   fetchTokenDayData,
-  getBalanceToUpdate,
   getDBTokenPriceUSD,
   getDBTokensAddresses,
-  getResultAddresses,
   getTokenImagePath,
-  getWalletDetails,
 } from "~/interface/wallets/observedWallets";
 import { emethContractAbi } from "~/abi/emethContractAbi";
-import { testPublicClient, testWalletClient } from "./testconfig";
 import { usdtAbi } from "~/abi/usdtAbi";
 import NonExecutableWalletControls from "~/components/forms/addWallet/addWalletNonExecutableFormControls";
 import IsExecutableSwitch from "~/components/forms/addWallet/isExecutableSwitch";
@@ -58,9 +50,12 @@ import ExecutableWalletControls from "~/components/forms/addWallet/addWalletExec
 import { privateKeyToAccount } from "viem/accounts";
 import { getCookie } from "~/utils/refresh";
 import * as jwtDecode from "jwt-decode";
+import { type Token } from "~/interface/token/Token";
+import { testPublicClient, testWalletClient } from "./testconfig";
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
+    console.log("data", data);
     const db = await connectToDB(requestEvent.env);
     await db.query(
       `DEFINE INDEX walletAddressChainIndex ON TABLE wallet COLUMNS address, chainId UNIQUE;`,
@@ -71,6 +66,7 @@ export const useAddWallet = routeAction$(
       throw new Error("No cookie found");
     }
     const { userId } = jwt.decode(cookie.value) as JwtPayload;
+    console.log("USERID", userId);
 
     const existingWallet = await getExistingWallet(db, data.address.toString());
 
@@ -84,31 +80,31 @@ export const useAddWallet = routeAction$(
         name: data.name.toString(),
       });
       walletId = createWalletQueryResult.id;
-      const nativeBalance = await publicClient.getBalance({
+      const nativeBalance = await testPublicClient.getBalance({
         address: createWalletQueryResult.address as `0x${string}`,
-        blockTag: "safe",
       });
       await db.query(
         `UPDATE ${walletId} SET nativeBalance = '${nativeBalance}';`,
       );
 
-      const subgraphURL = requestEvent.env.get("SUBGRAPH_URL");
-      if (!subgraphURL) {
-        throw new Error("Missing SUBGRAPH_URL");
-      }
-
-      const account_ = await fetchSubgraphOneAccount(
-        data.address.toString().toLowerCase(),
-        subgraphURL,
-      );
-
-      for (const bal of account_.balances) {
-        const [balance] = await db.create<Balance>("balance", {
-          value: bal.amount,
+      // create balances for tokens
+      console.log("FETCH TOKENS");
+      const tokens = await db.select<Token>("token");
+      for (const token of tokens) {
+        const readBalance = await testPublicClient.readContract({
+          address: token.address as `0x${string}`,
+          abi: contractABI,
+          functionName: "balanceOf",
+          args: [createWalletQueryResult.address as `0x${string}`],
         });
-
-        const [token] = await getTokenByAddress(db, bal.token.id);
-
+        console.log("readBalance", readBalance.toString());
+        if (readBalance < 0) {
+          continue;
+        }
+        const [balance] = await db.create<Balance>(`balance`, {
+          value: readBalance.toString(),
+        });
+        // balance -> token && balance -> wallet
         await db.query(`RELATE ONLY ${balance.id}->for_token->${token.id}`);
         await db.query(
           `RELATE ONLY ${balance.id}->for_wallet->${createWalletQueryResult.id}`,
@@ -177,30 +173,12 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
   }
   const { userId } = jwt.decode(cookie.value) as JwtPayload;
 
-  const resultAddresses = await getResultAddresses(db, userId);
-  if (!resultAddresses[0]["->observes_wallet"].out.address.length) {
-    return [];
-  }
-  const observedWalletsAddressesQueryResult =
-    resultAddresses[0]["->observes_wallet"].out.address;
-
-  const subgraphURL = requestEvent.env.get("SUBGRAPH_URL");
-  if (!subgraphURL) {
-    throw new Error("Missing SUBGRAPH_URL");
-  }
-
-  const accounts_ = await fetchSubgraphAccountsData(
-    observedWalletsAddressesQueryResult,
-    subgraphURL,
-  );
-
   const uniswapSubgraphURL = requestEvent.env.get(
     "UNIV3_OPTIMIST_SUBGRAPH_URL",
   );
   if (!uniswapSubgraphURL) {
     throw new Error("Missing UNISWAP_SUBGRAPH_URL");
   }
-
   const dbTokensAddresses = await getDBTokensAddresses(db);
   const tokenAddresses = dbTokensAddresses.map((token) =>
     token.address.toLowerCase(),
@@ -220,60 +198,70 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
       WHERE address = '${checksumAddress(id as `0x${string}`)}';
     `);
   }
+
+  const [result]: any = await db.query(
+    `SELECT ->observes_wallet.out FROM ${userId};`,
+  );
+  if (!result) throw new Error("No observed wallets");
+  const observedWalletsQueryResult = result[0]["->observes_wallet"].out;
+
   const observedWallets: WalletTokensBalances[] = [];
-  for (const acc of accounts_) {
-    const nativeBalance = await publicClient.getBalance({
-      address: getAddress(acc.id) as `0x${string}`,
-      blockTag: "safe",
+  for (const observedWallet of observedWalletsQueryResult) {
+    const [wallet] = await db.select<Wallet>(`${observedWallet}`);
+    const nativeBalance = await testPublicClient.getBalance({
+      address: wallet.address as `0x${string}`,
     });
-
     await db.query(
-      `UPDATE wallet SET nativeBalance = '${nativeBalance}' WHERE address = ${getAddress(acc.id)};`,
+      `UPDATE ${observedWallet} SET nativeBalance = '${nativeBalance}';`,
     );
-
-    const walletDetails = await getWalletDetails(db, acc.id);
-    if (!walletDetails.at(0)) return [];
 
     const walletTokensBalances: WalletTokensBalances = {
       wallet: {
-        id: walletDetails[0].id,
-        name: walletDetails[0].name,
-        chainId: walletDetails[0].chainId,
-        address: getAddress(acc.id),
+        id: wallet.id,
+        name: wallet.name,
+        chainId: wallet.chainId,
+        address: wallet.address,
         nativeBalance: nativeBalance,
       },
       tokens: [],
     };
 
-    for (const balance of acc.balances) {
-      const [balanceToUpdate] = await getBalanceToUpdate(
-        db,
-        acc.id,
-        balance.token.id,
+    // For each token update balance
+    const tokens = await db.select<Token>("token");
+    for (const token of tokens) {
+      const readBalance = await testPublicClient.readContract({
+        address: token.address as `0x${string}`,
+        abi: contractABI,
+        functionName: "balanceOf",
+        args: [wallet.address as `0x${string}`],
+      });
+
+      // Certain balance which shall be updated
+      const [[balanceToUpdate]]: any = await db.query(
+        `SELECT * FROM balance WHERE ->(for_wallet WHERE out = '${wallet.id}') AND ->(for_token WHERE out = '${token.id}');`,
       );
-      const [updatedBalance] = await db.update<Balance>(
-        `${balanceToUpdate.id}`,
-        {
-          value: balance.amount.toString(),
-        },
-      );
+
+      await db.update<Balance>(`${balanceToUpdate.id}`, {
+        value: readBalance.toString(),
+      });
 
       const formattedBalance = formatTokenBalance(
-        updatedBalance.value.toString(),
-        parseInt(balance.token.decimals),
+        readBalance.toString(),
+        token.decimals,
       );
 
-      const [{ priceUSD }] = await getDBTokenPriceUSD(db, balance.token.id);
-      if (
-        BigInt(updatedBalance.value) !== BigInt(0) &&
-        formattedBalance !== "0.000"
-      ) {
-        const [imagePath] = await getTokenImagePath(db, balance.token.symbol);
+      if (readBalance !== BigInt(0) && formattedBalance !== "0.000") {
+        // Add the token to the wallet object
+        const [{ priceUSD }] = await getDBTokenPriceUSD(db, token.address);
+        console.log(priceUSD);
+        const [imagePath] = await getTokenImagePath(db, token.symbol);
+
         walletTokensBalances.tokens.push({
-          id: balance.token.id,
-          name: balance.token.name,
-          symbol: balance.token.symbol,
-          decimals: parseInt(balance.token.decimals),
+          id: token.id,
+          address: token.address,
+          name: token.name,
+          symbol: token.symbol,
+          decimals: token.decimals,
           balance: formattedBalance,
           imagePath: imagePath.imagePath,
           balanceValueUSD: (
@@ -284,7 +272,6 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
     }
     observedWallets.push(walletTokensBalances);
   }
-
   return observedWallets;
 });
 
@@ -331,6 +318,12 @@ export interface transferredCoinInterface {
   symbol: string;
   address: string;
 }
+
+const fetchTokens = server$(async function () {
+  const db = await connectToDB(this.env);
+  return await db.select<Token>("token");
+});
+
 export default component$(() => {
   const addWalletAction = useAddWallet();
   const removeWalletAction = useRemoveWallet();
@@ -350,25 +343,16 @@ export default component$(() => {
   const transferredTokenAmount = useSignal("");
 
   const handleAddWallet = $(async () => {
+    console.log("IN HANDLE ADD WALLET");
     isAddWalletModalOpen.value = false;
 
     if (addWalletFormStore.isExecutable) {
+      console.log("IN EXECUTABLE BLOCK");
       // create account from PK
       const accountFromPrivateKey = privateKeyToAccount(
         addWalletFormStore.privateKey as `0x${string}`,
       );
       addWalletFormStore.address = accountFromPrivateKey.address;
-
-      // fetching data
-      const subgraphURL = import.meta.env.PUBLIC_SUBGRAPH_URL;
-      if (!subgraphURL) {
-        throw new Error("Missing PUBLIC_SUBGRAPH_URL");
-      }
-
-      const account_ = await fetchSubgraphOneAccount(
-        addWalletFormStore.address.toLowerCase(),
-        subgraphURL,
-      );
 
       const emethContractAddress = import.meta.env
         .PUBLIC_EMETH_CONTRACT_ADDRESS;
@@ -376,24 +360,26 @@ export default component$(() => {
         throw new Error("Missing PUBLIC_EMETH_CONTRACT_ADDRESS");
       }
 
-      // erc20 tokens approve
-      for (const bal of account_.balances) {
+      const tokens: any = await fetchTokens();
+      for (const token of tokens) {
         const { request } = await testPublicClient.simulateContract({
           account: accountFromPrivateKey,
-          address: checksumAddress(bal.token.id as `0x${string}`),
-          abi: bal.token.symbol === "USDT" ? usdtAbi : contractABI,
+          address: checksumAddress(token.address as `0x${string}`),
+          abi: token.symbol === "USDT" ? usdtAbi : contractABI,
           functionName: "approve",
-          args: [emethContractAddress, 10000000000000n],
+          // TODO: USDT can not reaprove to other amount right after initial arpprove,
+          // it needs to be set to 0 first and then reapprove
+          args: [emethContractAddress, 100000000000000n],
         });
         // keep receipts for now, to use waitForTransactionReceipt
         const receipt = await testWalletClient.writeContract(request);
         console.log(receipt);
       }
+
       // approving logged in user by observed wallet by emeth contract
       const cookie = getCookie("accessToken");
       if (!cookie) throw new Error("No accessToken cookie found");
       const { address } = jwtDecode.jwtDecode(cookie) as JwtPayload;
-      console.log("[address]: ", address);
       const { request } = await testPublicClient.simulateContract({
         account: accountFromPrivateKey,
         address: emethContractAddress,
@@ -425,6 +411,7 @@ export default component$(() => {
     const from = selectedWallet.value.wallet.address;
     const to = receivingWalletAddress.value;
     const token = transferredCoin.address;
+
     const decimals = selectedWallet.value.tokens.filter(
       (token) => token.symbol === transferredCoin.symbol,
     )[0].decimals;
