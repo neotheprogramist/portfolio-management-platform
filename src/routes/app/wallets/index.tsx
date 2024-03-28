@@ -58,8 +58,9 @@ import ExecutableWalletControls from "~/components/forms/addWallet/addWalletExec
 import { privateKeyToAccount } from "viem/accounts";
 import { getCookie } from "~/utils/refresh";
 import * as jwtDecode from "jwt-decode";
+import { type Token } from "~/interface/token/Token";
 
-export const useAddWallet = routeAction$(
+export const useAddWallet2 = routeAction$(
   async (data, requestEvent) => {
     const db = await connectToDB(requestEvent.env);
     await db.query(
@@ -134,6 +135,82 @@ export const useAddWallet = routeAction$(
   }),
 );
 
+export const useAddWallet = routeAction$(
+  async (data, requestEvent) => {
+    console.log("data", data);
+    const db = await connectToDB(requestEvent.env);
+    await db.query(
+      `DEFINE INDEX walletAddressChainIndex ON TABLE wallet COLUMNS address, chainId UNIQUE;`,
+    );
+
+    const cookie = requestEvent.cookie.get("accessToken");
+    if (!cookie) {
+      throw new Error("No cookie found");
+    }
+    const { userId } = jwt.decode(cookie.value) as JwtPayload;
+    console.log("USERID", userId);
+
+    const existingWallet = await getExistingWallet(db, data.address.toString());
+
+    let walletId;
+    if (existingWallet.at(0)) {
+      walletId = existingWallet[0].id;
+    } else {
+      const [createWalletQueryResult] = await db.create<Wallet>("wallet", {
+        chainId: 1,
+        address: data.address.toString(),
+        name: data.name.toString(),
+      });
+      walletId = createWalletQueryResult.id;
+      const nativeBalance = await testPublicClient.getBalance({
+        address: createWalletQueryResult.address as `0x${string}`,
+        blockTag: "safe",
+      });
+      await db.query(
+        `UPDATE ${walletId} SET nativeBalance = '${nativeBalance}';`,
+      );
+
+      // create balances for tokens
+      console.log("FETCH TOKENS");
+      const tokens = await db.select<Token>("token");
+      for(const token of tokens) {
+        
+        const readBalance = await testPublicClient.readContract({
+          address: token.address as `0x${string}`,
+          abi: contractABI,
+          functionName: "balanceOf",
+          args: [createWalletQueryResult.address as `0x${string}`]
+        })
+        console.log("readBalance", readBalance.toString())
+        const [balance] = await db.create<Balance>(`balance`, {
+          value: readBalance.toString(),
+        });
+        // balance -> token && balance -> wallet
+        await db.query(`RELATE ONLY ${balance.id}->for_token->${token.id}`);
+        await db.query(
+          `RELATE ONLY ${balance.id}->for_wallet->${createWalletQueryResult.id}`,
+        );
+      }
+    }
+
+    if (!(await getExistingRelation(db, userId, walletId)).at(0)) {
+      await db.query(`RELATE ONLY ${userId}->observes_wallet->${walletId};`);
+    }
+
+    return {
+      success: true,
+      wallet: { id: walletId, chainId: 1, address: data.address },
+    };
+  },
+  zod$({
+    address: z.string().refine((address) => isAddress(address), {
+      message: "Invalid address",
+    }),
+    name: z.string(),
+    isExecutable: z.string(),
+  }),
+);
+
 export const useRemoveWallet = routeAction$(
   async (wallet, requestEvent) => {
     const db = await connectToDB(requestEvent.env);
@@ -168,7 +245,7 @@ export const useRemoveWallet = routeAction$(
   }),
 );
 
-export const useObservedWallets = routeLoader$(async (requestEvent) => {
+export const useObservedWallets2 = routeLoader$(async (requestEvent) => {
   const db = await connectToDB(requestEvent.env);
 
   const cookie = requestEvent.cookie.get("accessToken");
@@ -285,6 +362,117 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
     observedWallets.push(walletTokensBalances);
   }
 
+  return observedWallets;
+});
+
+export const useObservedWallets = routeLoader$(async (requestEvent) => {
+  const db = await connectToDB(requestEvent.env);
+
+  const cookie = requestEvent.cookie.get("accessToken");
+  if (!cookie) {
+    throw new Error("No cookie found");
+  }
+  const { userId } = jwt.decode(cookie.value) as JwtPayload;
+
+  const uniswapSubgraphURL = requestEvent.env.get(
+    "UNIV3_OPTIMIST_SUBGRAPH_URL",
+  );
+  if (!uniswapSubgraphURL) {
+    throw new Error("Missing UNISWAP_SUBGRAPH_URL");
+  }
+  const dbTokensAddresses = await getDBTokensAddresses(db);
+  const tokenAddresses = dbTokensAddresses.map((token) =>
+    token.address.toLowerCase(),
+  );
+
+  const tokenDayData = await fetchTokenDayData(
+    uniswapSubgraphURL,
+    tokenAddresses,
+  );
+  for (const {
+    token: { id },
+    priceUSD,
+  } of tokenDayData) {
+    await db.query(`
+      UPDATE token
+      SET priceUSD = '${priceUSD}'
+      WHERE address = '${checksumAddress(id as `0x${string}`)}';
+    `);
+  }
+
+  const [result]: any = await db.query(
+    `SELECT ->observes_wallet.out FROM ${userId};`,
+  );
+  if (!result) throw new Error("No observed wallets");
+  const observedWalletsQueryResult = result[0]["->observes_wallet"].out;
+
+  const observedWallets: WalletTokensBalances[] = [];
+  for (const observedWallet of observedWalletsQueryResult) {
+    const [wallet] = await db.select<Wallet>(`${observedWallet}`);
+    const nativeBalance = await testPublicClient.getBalance({
+      address: wallet.address as `0x${string}`,
+      blockTag: "safe",
+    });
+    await db.query(
+      `UPDATE ${observedWallet} SET nativeBalance = '${nativeBalance}';`,
+    );
+
+    const walletTokensBalances: WalletTokensBalances = {
+      wallet: {
+        id: wallet.id,
+        name: wallet.name,
+        chainId: wallet.chainId,
+        address: wallet.address,
+        nativeBalance: nativeBalance,
+      },
+      tokens: [],
+    };
+
+    // For each token update balance
+    const tokens = await db.select<Token>("token");
+    for (const token of tokens) {
+      const readBalance = await testPublicClient.readContract({
+        address: token.address as `0x${string}`,
+        abi: contractABI,
+        functionName: "balanceOf",
+        args: [wallet.address as `0x${string}`],
+      });
+
+      // Certain balance which shall be updated
+      const [[balanceToUpdate]]: any = await db.query(
+        `SELECT * FROM balance WHERE ->(for_wallet WHERE out = '${wallet.id}') AND ->(for_token WHERE out = '${token.id}');`,
+      );
+
+      await db.update<Balance>(`${balanceToUpdate.id}`, {
+        value: readBalance.toString(),
+      });
+
+      const formattedBalance = formatTokenBalance(
+        readBalance.toString(),
+        token.decimals,
+      );
+
+      if (readBalance !== BigInt(0) && formattedBalance !== "0.000") {
+        // Add the token to the wallet object
+        const [{ priceUSD }] = await getDBTokenPriceUSD(db, token.address);
+        console.log(priceUSD)
+        const [imagePath] = await getTokenImagePath(db, token.symbol);
+
+        walletTokensBalances.tokens.push({
+          id: token.id,
+          name: token.name,
+          symbol: token.symbol,
+          decimals: token.decimals,
+          balance: formattedBalance,
+          imagePath: imagePath.imagePath,
+          balanceValueUSD: (
+            Number(formattedBalance) * Number(priceUSD)
+          ).toFixed(2),
+        });
+      }
+    }
+    observedWallets.push(walletTokensBalances);
+  }
   return observedWallets;
 });
 

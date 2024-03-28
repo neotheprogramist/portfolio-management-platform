@@ -19,6 +19,81 @@ import { checksumAddress } from "viem";
 import { type Wallet } from "~/interface/auth/Wallet";
 import { formatTokenBalance } from "~/utils/formatBalances/formatTokenBalance";
 import { chainIdToNetworkName } from "~/utils/chains";
+import { Balance } from "~/interface/balance/Balance";
+import { Token } from "~/interface/token/Token";
+import { testPublicClient } from "../wallets/testconfig";
+import { contractABI } from "~/abi/abi";
+
+// export const useTotalPortfolioValue = routeLoader$(async (requestEvent) => {
+//   const db = await connectToDB(requestEvent.env);
+
+//   const cookie = requestEvent.cookie.get("accessToken");
+//   if (!cookie) {
+//     throw new Error("No cookie found");
+//   }
+//   const { userId } = jwt.decode(cookie.value) as JwtPayload;
+//   const resultAddresses = await getResultAddresses(db, userId);
+//   if (!resultAddresses[0]["->observes_wallet"].out.address.length) {
+//     return "0";
+//   }
+
+//   const observedWalletsAddressesQueryResult =
+//     resultAddresses[0]["->observes_wallet"].out.address;
+
+//   const subgraphURL = requestEvent.env.get("SUBGRAPH_URL");
+//   if (!subgraphURL) {
+//     throw new Error("Missing SUBGRAPH_URL");
+//   }
+
+//   const subgraphAccountsData = await fetchSubgraphAccountsData(
+//     observedWalletsAddressesQueryResult,
+//     subgraphURL,
+//   );
+
+//   const uniswapSubgraphURL = requestEvent.env.get(
+//     "UNIV3_OPTIMIST_SUBGRAPH_URL",
+//   );
+//   if (!uniswapSubgraphURL) {
+//     throw new Error("Missing UNIV3_OPTIMIST_SUBGRAPH_URL");
+//   }
+
+//   const dbTokensAddresses = await getDBTokensAddresses(db);
+//   const tokenAddresses = dbTokensAddresses.map((token) =>
+//     token.address.toLowerCase(),
+//   );
+
+//   const tokenDayData = await fetchTokenDayData(
+//     uniswapSubgraphURL,
+//     tokenAddresses,
+//   );
+
+//   for (const {
+//     token: { id },
+//     priceUSD,
+//   } of tokenDayData) {
+//     await db.query(`
+//       UPDATE token 
+//       SET priceUSD = '${priceUSD}'
+//       WHERE address = '${checksumAddress(id as `0x${string}`)}';
+//     `);
+//   }
+
+//   let totalValue = 0;
+
+//   for (const account of subgraphAccountsData) {
+//     for (const balance of account.balances) {
+//       const [{ priceUSD }] = await getDBTokenPriceUSD(db, balance.token.id);
+//       const formattedBalance = formatTokenBalance(
+//         balance.amount.toString(),
+//         parseInt(balance.token.decimals),
+//       );
+//       const balanceValueUSD = Number(formattedBalance) * Number(priceUSD);
+//       totalValue += balanceValueUSD;
+//     }
+//   }
+
+//   return totalValue.toFixed(2);
+// });
 
 export const useTotalPortfolioValue = routeLoader$(async (requestEvent) => {
   const db = await connectToDB(requestEvent.env);
@@ -28,31 +103,13 @@ export const useTotalPortfolioValue = routeLoader$(async (requestEvent) => {
     throw new Error("No cookie found");
   }
   const { userId } = jwt.decode(cookie.value) as JwtPayload;
-  const resultAddresses = await getResultAddresses(db, userId);
-  if (!resultAddresses[0]["->observes_wallet"].out.address.length) {
-    return "0";
-  }
-
-  const observedWalletsAddressesQueryResult =
-    resultAddresses[0]["->observes_wallet"].out.address;
-
-  const subgraphURL = requestEvent.env.get("SUBGRAPH_URL");
-  if (!subgraphURL) {
-    throw new Error("Missing SUBGRAPH_URL");
-  }
-
-  const subgraphAccountsData = await fetchSubgraphAccountsData(
-    observedWalletsAddressesQueryResult,
-    subgraphURL,
-  );
 
   const uniswapSubgraphURL = requestEvent.env.get(
     "UNIV3_OPTIMIST_SUBGRAPH_URL",
   );
   if (!uniswapSubgraphURL) {
-    throw new Error("Missing UNIV3_OPTIMIST_SUBGRAPH_URL");
+    throw new Error("Missing UNISWAP_SUBGRAPH_URL");
   }
-
   const dbTokensAddresses = await getDBTokensAddresses(db);
   const tokenAddresses = dbTokensAddresses.map((token) =>
     token.address.toLowerCase(),
@@ -62,32 +119,69 @@ export const useTotalPortfolioValue = routeLoader$(async (requestEvent) => {
     uniswapSubgraphURL,
     tokenAddresses,
   );
-
   for (const {
     token: { id },
     priceUSD,
   } of tokenDayData) {
     await db.query(`
-      UPDATE token 
+      UPDATE token
       SET priceUSD = '${priceUSD}'
       WHERE address = '${checksumAddress(id as `0x${string}`)}';
     `);
   }
 
+  const [result]: any = await db.query(
+    `SELECT ->observes_wallet.out FROM ${userId};`,
+  );
+  if (!result) throw new Error("No observed wallets");
+  const observedWalletsQueryResult = result[0]["->observes_wallet"].out;
+
   let totalValue = 0;
 
-  for (const account of subgraphAccountsData) {
-    for (const balance of account.balances) {
-      const [{ priceUSD }] = await getDBTokenPriceUSD(db, balance.token.id);
-      const formattedBalance = formatTokenBalance(
-        balance.amount.toString(),
-        parseInt(balance.token.decimals),
+  for (const observedWallet of observedWalletsQueryResult) {
+    const [wallet] = await db.select<Wallet>(`${observedWallet}`);
+    const nativeBalance = await testPublicClient.getBalance({
+      address: wallet.address as `0x${string}`,
+      blockTag: "safe",
+    });
+    await db.query(
+      `UPDATE ${observedWallet} SET nativeBalance = '${nativeBalance}';`,
+    );
+
+    // For each token update balance
+    const tokens = await db.select<Token>("token");
+    for (const token of tokens) {
+      const readBalance = await testPublicClient.readContract({
+        address: token.address as `0x${string}`,
+        abi: contractABI,
+        functionName: "balanceOf",
+        args: [wallet.address as `0x${string}`],
+      });
+
+      // Certain balance which shall be updated
+      const [[balanceToUpdate]]: any = await db.query(
+        `SELECT * FROM balance WHERE ->(for_wallet WHERE out = '${wallet.id}') AND ->(for_token WHERE out = '${token.id}');`,
       );
-      const balanceValueUSD = Number(formattedBalance) * Number(priceUSD);
-      totalValue += balanceValueUSD;
+
+      await db.update<Balance>(`${balanceToUpdate.id}`, {
+        value: readBalance.toString(),
+      });
+
+      const formattedBalance = formatTokenBalance(
+        readBalance.toString(),
+        token.decimals,
+      );
+
+      if (readBalance !== BigInt(0) && formattedBalance !== "0.000") {
+        // Add the token to the wallet object
+        const [{ priceUSD }] = await getDBTokenPriceUSD(db, token.address);
+        const balanceValueUSD = (
+          Number(formattedBalance) * Number(priceUSD)
+        ).toFixed(2);
+        totalValue += Number(balanceValueUSD);
+      }
     }
   }
-
   return totalValue.toFixed(2);
 });
 
