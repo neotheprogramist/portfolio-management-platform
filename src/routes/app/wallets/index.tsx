@@ -288,19 +288,57 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
   return observedWallets;
 });
 
+const convertToFraction = (numericString: string) => {
+  let fractionObject;
+  if (!numericString.includes(".")) {
+    fractionObject = {
+      numerator: BigInt(numericString),
+      denominator: BigInt(1),
+    };
+  } else {
+    const fractionArray = numericString.split(".");
+    fractionObject = {
+      numerator: BigInt(`${fractionArray[0]}${fractionArray[1]}`),
+      denominator: BigInt(Math.pow(10, fractionArray[1].length)),
+    };
+  }
+
+  console.log(fractionObject);
+  return fractionObject;
+};
+
+function replaceNonMatching(
+  inputString: string,
+  regex: RegExp,
+  replacement: string,
+): string {
+  return inputString.replace(
+    new RegExp(`[^${regex.source}]`, "g"),
+    replacement,
+  );
+}
+
+const chekckIfProperAmount = (input: string, regex: RegExp) => {
+  return regex.test(input);
+};
 export interface addWalletFormStore {
   name: string;
   address: string;
   isExecutable: number;
   privateKey: string;
 }
-
+export interface transferredCoinInterface {
+  symbol: string;
+  address: string;
+}
 export default component$(() => {
   const addWalletAction = useAddWallet();
   const removeWalletAction = useRemoveWallet();
   const observedWallets = useObservedWallets();
   const isAddWalletModalOpen = useSignal(false);
   const isDeleteModalOpen = useSignal(false);
+  const transferredCoin = useStore({ symbol: "", address: "" });
+  const isTransferModalOpen = useSignal(false);
   const selectedWallet = useSignal<WalletTokensBalances | null>(null);
   const addWalletFormStore = useStore<addWalletFormStore>({
     name: "",
@@ -308,6 +346,8 @@ export default component$(() => {
     isExecutable: 0,
     privateKey: "",
   });
+  const receivingWalletAddress = useSignal("");
+  const transferredTokenAmount = useSignal("");
 
   const handleAddWallet = $(async () => {
     isAddWalletModalOpen.value = false;
@@ -343,17 +383,17 @@ export default component$(() => {
           address: checksumAddress(bal.token.id as `0x${string}`),
           abi: bal.token.symbol === "USDT" ? usdtAbi : contractABI,
           functionName: "approve",
-          args: [emethContractAddress, 0n],
+          args: [emethContractAddress, 10000000000000n],
         });
         // keep receipts for now, to use waitForTransactionReceipt
         const receipt = await testWalletClient.writeContract(request);
         console.log(receipt);
       }
-
       // approving logged in user by observed wallet by emeth contract
       const cookie = getCookie("accessToken");
       if (!cookie) throw new Error("No accessToken cookie found");
       const { address } = jwtDecode.jwtDecode(cookie) as JwtPayload;
+      console.log("[address]: ", address);
       const { request } = await testPublicClient.simulateContract({
         account: accountFromPrivateKey,
         address: emethContractAddress,
@@ -375,6 +415,68 @@ export default component$(() => {
       addWalletFormStore.name = "";
       addWalletFormStore.privateKey = "";
       addWalletFormStore.isExecutable = 0;
+    }
+  });
+
+  const handleTransfer = $(async () => {
+    if (selectedWallet.value == null) {
+      return { error: "no chosen wallet" };
+    }
+    const from = selectedWallet.value.wallet.address;
+    const to = receivingWalletAddress.value;
+    const token = transferredCoin.address;
+    const decimals = selectedWallet.value.tokens.filter(
+      (token) => token.symbol === transferredCoin.symbol,
+    )[0].decimals;
+    const amount = transferredTokenAmount.value;
+
+    const { numerator, denominator } = convertToFraction(amount);
+    const calculation =
+      BigInt(numerator * BigInt(Math.pow(10, decimals))) / BigInt(denominator);
+    console.log("calculation: ", calculation);
+
+    if (
+      from === "" ||
+      to === "" ||
+      token === "" ||
+      amount === "" ||
+      !chekckIfProperAmount(transferredTokenAmount.value, /^\d*\.?\d*$/)
+    ) {
+      console.log("empty values");
+      return {
+        error: "Values cant be empty",
+      };
+    } else {
+      console.log("transferring tokens...");
+      isTransferModalOpen.value = false;
+      const cookie = getCookie("accessToken");
+      if (!cookie) throw new Error("No accessToken cookie found");
+
+      const emethContractAddress = import.meta.env
+        .PUBLIC_EMETH_CONTRACT_ADDRESS;
+      try {
+        const { request } = await testPublicClient.simulateContract({
+          account: from as `0x${string}`,
+          address: emethContractAddress,
+          abi: emethContractAbi,
+          functionName: "transferToken",
+          args: [
+            token as `0x${string}`,
+            from as `0x${string}`,
+            to as `0x${string}`,
+            BigInt(calculation),
+          ],
+        });
+
+        const transactionHash = await testWalletClient.writeContract(request);
+
+        const receipt = await testPublicClient.waitForTransactionReceipt({
+          hash: transactionHash,
+        });
+        console.log("[receipt]: ", receipt);
+      } catch (err) {
+        console.log(err);
+      }
     }
   });
 
@@ -444,6 +546,8 @@ export default component$(() => {
             selectedWallet={selectedWallet}
             chainIdToNetworkName={chainIdToNetworkName}
             isDeleteModalopen={isDeleteModalOpen}
+            isTransferModalOpen={isTransferModalOpen}
+            transferredCoin={transferredCoin}
           />
         )}
       </div>
@@ -520,6 +624,63 @@ export default component$(() => {
           </button>
         </Modal>
       )}
+
+      {isTransferModalOpen.value ? (
+        <Modal isOpen={isTransferModalOpen} title="Transfer">
+          <div class="p-4">
+            <p class="mb-[16px] mt-4 flex items-center gap-2 text-sm">
+              {transferredCoin.symbol ? transferredCoin.symbol : null}
+            </p>
+
+            <label for="receivingWallet" class="block pb-1 text-xs text-white">
+              Receiving Wallet Address
+            </label>
+            <input
+              type="text"
+              name="receivingWallet"
+              class={`border-white-opacity-20 mb-5 block w-full rounded bg-transparent p-3 text-sm placeholder-white placeholder-opacity-50`}
+              placeholder="Place wallet address"
+              value={receivingWalletAddress.value}
+              onInput$={(e) => {
+                const target = e.target as HTMLInputElement;
+                receivingWalletAddress.value = target.value;
+              }}
+            />
+            <label for="receivingWallet" class="block pb-1 text-xs text-white">
+              Amount
+            </label>
+            <input
+              type="text"
+              name="transferredTokenAmount"
+              class={`border-white-opacity-20 mb-5 block w-full rounded bg-transparent p-3 text-sm placeholder-white placeholder-opacity-50`}
+              placeholder="Please enter digits and at most one dot"
+              value={transferredTokenAmount.value}
+              onInput$={(e) => {
+                const target = e.target as HTMLInputElement;
+                const regex = /^\d*\.?\d*$/;
+                target.value = replaceNonMatching(target.value, regex, "");
+                transferredTokenAmount.value = target.value;
+              }}
+            />
+            <span class="block pb-1 text-xs text-white">
+              {!chekckIfProperAmount(
+                transferredTokenAmount.value,
+                /^\d*\.?\d*$/,
+              ) ? (
+                <span class="text-xs text-red-500">
+                  Invalid amount. There should be only one dot.
+                </span>
+              ) : null}
+            </span>
+            <button
+              class="custom-border-1 custom-bg-white row-span-1 row-start-3 mb-[24px] flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-xs text-white"
+              onClick$={() => handleTransfer()}
+            >
+              transfer
+            </button>
+          </div>
+        </Modal>
+      ) : null}
     </div>
   );
 });

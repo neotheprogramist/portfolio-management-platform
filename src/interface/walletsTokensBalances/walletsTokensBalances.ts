@@ -7,6 +7,7 @@ export type TokenWithBalance = Omit<Token, "address"> & {
   balanceValueUSD: string;
   imagePath: string;
   balanceId?: string;
+  decimals: number;
 };
 
 export type WalletTokensBalances = {
