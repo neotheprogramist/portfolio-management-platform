@@ -165,7 +165,7 @@ export const useGetFavoriteTokens = routeLoader$(async (requestEvent) => {
 
 export default component$(() => {
   const nav = useNavigate();
-  const isPortfolioFullScreen = useSignal(true);
+  const isPortfolioFullScreen = useSignal(false);
   const totalPortfolioValue = useTotalPortfolioValue();
   const favoriteTokens = useGetFavoriteTokens();
 
