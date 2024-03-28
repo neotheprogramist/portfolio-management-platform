@@ -17,7 +17,7 @@ import { SelectedWalletDetails } from "~/components/wallets/details";
 import { ObservedWallet } from "~/components/wallets/observed";
 import { type Balance } from "~/interface/balance/Balance";
 import { type WalletTokensBalances } from "~/interface/walletsTokensBalances/walletsTokensBalances";
-import { formatTokenBalance } from "~/utils/formatBalances/formatTokenBalance";
+import { convertWeiToQuantity } from "~/utils/formatBalances/formatTokenBalance";
 import { isAddress, checksumAddress } from "viem";
 import IconArrowDown from "/public/assets/icons/arrow-down.svg?jsx";
 import IconInfo from "/public/assets/icons/info.svg?jsx";
@@ -254,7 +254,7 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
         ],
       });
 
-      const formattedAllowance = formatTokenBalance(
+      const formattedAllowance = convertWeiToQuantity(
         allowance.toString(),
         token.decimals,
       );
@@ -267,7 +267,7 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
         value: readBalance.toString(),
       });
 
-      const formattedBalance = formatTokenBalance(
+      const formattedBalance = convertWeiToQuantity(
         readBalance.toString(),
         token.decimals,
       );

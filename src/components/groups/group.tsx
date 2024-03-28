@@ -6,7 +6,7 @@ import {
   type StructureBalance,
 } from "~/interface/structure/Structure";
 import { Token } from "~/components/groups/token";
-import { formatTokenBalance } from "~/utils/formatBalances/formatTokenBalance";
+import { convertWeiToQuantity } from "~/utils/formatBalances/formatTokenBalance";
 import { chainIdToNetworkName } from "~/utils/chains";
 
 export interface GroupProps {
@@ -36,7 +36,7 @@ function extractData(
         networkName:
           chainIdToNetworkName[balanceEntry.wallet.chainId.toString()],
         symbol: balanceEntry.balance.symbol,
-        quantity: formatTokenBalance(
+        quantity: convertWeiToQuantity(
           balanceEntry.balance.balance,
           balanceEntry.balance.decimals,
         ),
