@@ -5,6 +5,7 @@ import {
   zod$,
   z,
   routeLoader$,
+  server$,
 } from "@builder.io/qwik-city";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 import { contractABI, publicClient } from "~/abi/abi";
@@ -60,80 +61,6 @@ import { getCookie } from "~/utils/refresh";
 import * as jwtDecode from "jwt-decode";
 import { type Token } from "~/interface/token/Token";
 
-export const useAddWallet2 = routeAction$(
-  async (data, requestEvent) => {
-    const db = await connectToDB(requestEvent.env);
-    await db.query(
-      `DEFINE INDEX walletAddressChainIndex ON TABLE wallet COLUMNS address, chainId UNIQUE;`,
-    );
-
-    const cookie = requestEvent.cookie.get("accessToken");
-    if (!cookie) {
-      throw new Error("No cookie found");
-    }
-    const { userId } = jwt.decode(cookie.value) as JwtPayload;
-
-    const existingWallet = await getExistingWallet(db, data.address.toString());
-
-    let walletId;
-    if (existingWallet.at(0)) {
-      walletId = existingWallet[0].id;
-    } else {
-      const [createWalletQueryResult] = await db.create<Wallet>("wallet", {
-        chainId: 1,
-        address: data.address.toString(),
-        name: data.name.toString(),
-      });
-      walletId = createWalletQueryResult.id;
-      const nativeBalance = await publicClient.getBalance({
-        address: createWalletQueryResult.address as `0x${string}`,
-        blockTag: "safe",
-      });
-      await db.query(
-        `UPDATE ${walletId} SET nativeBalance = '${nativeBalance}';`,
-      );
-
-      const subgraphURL = requestEvent.env.get("SUBGRAPH_URL");
-      if (!subgraphURL) {
-        throw new Error("Missing SUBGRAPH_URL");
-      }
-
-      const account_ = await fetchSubgraphOneAccount(
-        data.address.toString().toLowerCase(),
-        subgraphURL,
-      );
-
-      for (const bal of account_.balances) {
-        const [balance] = await db.create<Balance>("balance", {
-          value: bal.amount,
-        });
-
-        const [token] = await getTokenByAddress(db, bal.token.id);
-
-        await db.query(`RELATE ONLY ${balance.id}->for_token->${token.id}`);
-        await db.query(
-          `RELATE ONLY ${balance.id}->for_wallet->${createWalletQueryResult.id}`,
-        );
-      }
-    }
-
-    if (!(await getExistingRelation(db, userId, walletId)).at(0)) {
-      await db.query(`RELATE ONLY ${userId}->observes_wallet->${walletId};`);
-    }
-
-    return {
-      success: true,
-      wallet: { id: walletId, chainId: 1, address: data.address },
-    };
-  },
-  zod$({
-    address: z.string().refine((address) => isAddress(address), {
-      message: "Invalid address",
-    }),
-    name: z.string(),
-    isExecutable: z.string(),
-  }),
-);
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
@@ -245,125 +172,6 @@ export const useRemoveWallet = routeAction$(
   }),
 );
 
-export const useObservedWallets2 = routeLoader$(async (requestEvent) => {
-  const db = await connectToDB(requestEvent.env);
-
-  const cookie = requestEvent.cookie.get("accessToken");
-  if (!cookie) {
-    throw new Error("No cookie found");
-  }
-  const { userId } = jwt.decode(cookie.value) as JwtPayload;
-
-  const resultAddresses = await getResultAddresses(db, userId);
-  if (!resultAddresses[0]["->observes_wallet"].out.address.length) {
-    return [];
-  }
-  const observedWalletsAddressesQueryResult =
-    resultAddresses[0]["->observes_wallet"].out.address;
-
-  const subgraphURL = requestEvent.env.get("SUBGRAPH_URL");
-  if (!subgraphURL) {
-    throw new Error("Missing SUBGRAPH_URL");
-  }
-
-  const accounts_ = await fetchSubgraphAccountsData(
-    observedWalletsAddressesQueryResult,
-    subgraphURL,
-  );
-
-  const uniswapSubgraphURL = requestEvent.env.get(
-    "UNIV3_OPTIMIST_SUBGRAPH_URL",
-  );
-  if (!uniswapSubgraphURL) {
-    throw new Error("Missing UNISWAP_SUBGRAPH_URL");
-  }
-
-  const dbTokensAddresses = await getDBTokensAddresses(db);
-  const tokenAddresses = dbTokensAddresses.map((token) =>
-    token.address.toLowerCase(),
-  );
-
-  const tokenDayData = await fetchTokenDayData(
-    uniswapSubgraphURL,
-    tokenAddresses,
-  );
-  for (const {
-    token: { id },
-    priceUSD,
-  } of tokenDayData) {
-    await db.query(`
-      UPDATE token
-      SET priceUSD = '${priceUSD}'
-      WHERE address = '${checksumAddress(id as `0x${string}`)}';
-    `);
-  }
-  const observedWallets: WalletTokensBalances[] = [];
-  for (const acc of accounts_) {
-    const nativeBalance = await publicClient.getBalance({
-      address: getAddress(acc.id) as `0x${string}`,
-      blockTag: "safe",
-    });
-
-    await db.query(
-      `UPDATE wallet SET nativeBalance = '${nativeBalance}' WHERE address = ${getAddress(acc.id)};`,
-    );
-
-    const walletDetails = await getWalletDetails(db, acc.id);
-    if (!walletDetails.at(0)) return [];
-
-    const walletTokensBalances: WalletTokensBalances = {
-      wallet: {
-        id: walletDetails[0].id,
-        name: walletDetails[0].name,
-        chainId: walletDetails[0].chainId,
-        address: getAddress(acc.id),
-        nativeBalance: nativeBalance,
-      },
-      tokens: [],
-    };
-
-    for (const balance of acc.balances) {
-      const [balanceToUpdate] = await getBalanceToUpdate(
-        db,
-        acc.id,
-        balance.token.id,
-      );
-      const [updatedBalance] = await db.update<Balance>(
-        `${balanceToUpdate.id}`,
-        {
-          value: balance.amount.toString(),
-        },
-      );
-
-      const formattedBalance = formatTokenBalance(
-        updatedBalance.value.toString(),
-        parseInt(balance.token.decimals),
-      );
-
-      const [{ priceUSD }] = await getDBTokenPriceUSD(db, balance.token.id);
-      if (
-        BigInt(updatedBalance.value) !== BigInt(0) &&
-        formattedBalance !== "0.000"
-      ) {
-        const [imagePath] = await getTokenImagePath(db, balance.token.symbol);
-        walletTokensBalances.tokens.push({
-          id: balance.token.id,
-          name: balance.token.name,
-          symbol: balance.token.symbol,
-          decimals: parseInt(balance.token.decimals),
-          balance: formattedBalance,
-          imagePath: imagePath.imagePath,
-          balanceValueUSD: (
-            Number(formattedBalance) * Number(priceUSD)
-          ).toFixed(2),
-        });
-      }
-    }
-    observedWallets.push(walletTokensBalances);
-  }
-
-  return observedWallets;
-});
 
 export const useObservedWallets = routeLoader$(async (requestEvent) => {
   const db = await connectToDB(requestEvent.env);
@@ -519,6 +327,12 @@ export interface transferredCoinInterface {
   symbol: string;
   address: string;
 }
+
+const fetchTokens = server$(async function() {
+  const db = await connectToDB(this.env);
+  return await db.select<Token>("token");
+})
+
 export default component$(() => {
   const addWalletAction = useAddWallet();
   const removeWalletAction = useRemoveWallet();
@@ -538,9 +352,11 @@ export default component$(() => {
   const transferredTokenAmount = useSignal("");
 
   const handleAddWallet = $(async () => {
+    console.log("IN HANDLE ADD WALLET")
     isAddWalletModalOpen.value = false;
 
     if (addWalletFormStore.isExecutable) {
+      console.log("IN EXECUTABLE BLOCK")
       // create account from PK
       const accountFromPrivateKey = privateKeyToAccount(
         addWalletFormStore.privateKey as `0x${string}`,
@@ -548,15 +364,15 @@ export default component$(() => {
       addWalletFormStore.address = accountFromPrivateKey.address;
 
       // fetching data
-      const subgraphURL = import.meta.env.PUBLIC_SUBGRAPH_URL;
-      if (!subgraphURL) {
-        throw new Error("Missing PUBLIC_SUBGRAPH_URL");
-      }
+      // const subgraphURL = import.meta.env.PUBLIC_SUBGRAPH_URL;
+      // if (!subgraphURL) {
+      //   throw new Error("Missing PUBLIC_SUBGRAPH_URL");
+      // }
 
-      const account_ = await fetchSubgraphOneAccount(
-        addWalletFormStore.address.toLowerCase(),
-        subgraphURL,
-      );
+      // const account_ = await fetchSubgraphOneAccount(
+      //   addWalletFormStore.address.toLowerCase(),
+      //   subgraphURL,
+      // );
 
       const emethContractAddress = import.meta.env
         .PUBLIC_EMETH_CONTRACT_ADDRESS;
@@ -564,24 +380,29 @@ export default component$(() => {
         throw new Error("Missing PUBLIC_EMETH_CONTRACT_ADDRESS");
       }
 
+
+      const tokens: any = await fetchTokens();
+      console.log("tokens", tokens)
+
       // erc20 tokens approve
-      for (const bal of account_.balances) {
+     
+      for (const token of tokens) {
         const { request } = await testPublicClient.simulateContract({
           account: accountFromPrivateKey,
-          address: checksumAddress(bal.token.id as `0x${string}`),
-          abi: bal.token.symbol === "USDT" ? usdtAbi : contractABI,
+          address: checksumAddress(token.address as `0x${string}`),
+          abi: token.symbol === "USDT" ? usdtAbi : contractABI,
           functionName: "approve",
-          args: [emethContractAddress, 10000000000000n],
+          args: [emethContractAddress, 0n],
         });
         // keep receipts for now, to use waitForTransactionReceipt
         const receipt = await testWalletClient.writeContract(request);
         console.log(receipt);
       }
+
       // approving logged in user by observed wallet by emeth contract
       const cookie = getCookie("accessToken");
       if (!cookie) throw new Error("No accessToken cookie found");
       const { address } = jwtDecode.jwtDecode(cookie) as JwtPayload;
-      console.log("[address]: ", address);
       const { request } = await testPublicClient.simulateContract({
         account: accountFromPrivateKey,
         address: emethContractAddress,
