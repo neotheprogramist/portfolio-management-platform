@@ -5,7 +5,7 @@ import { Gradient } from "~/components/gradient/gradient";
 import { Paragraph } from "~/components/paragraph/paragraph";
 import { WelcomeText } from "~/components/welcome-text/welcome-text";
 import { Navbar } from "~/components/navbar/navbar";
-import ImgGradientMain from "/public/images/Gradient.png?jsx";
+import ImgGradient from "/public/assets/images/gradient.png?jsx";
 import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
 import {
   getNonceServer,
@@ -64,7 +64,7 @@ export default component$(() => {
       <Navbar class="fixed !border-0" />
       <div class="grid h-full grid-cols-[1fr_2fr_auto] items-center">
         <div class="h-[766px] w-[655px]">
-          <ImgGradientMain
+          <ImgGradient
             class="h-full"
             alt="gradient"
             style="object-position: -129px 0;"

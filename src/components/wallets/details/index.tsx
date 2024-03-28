@@ -1,8 +1,8 @@
 import { type Signal, component$ } from "@builder.io/qwik";
 import { type WalletTokensBalances } from "~/interface/walletsTokensBalances/walletsTokensBalances";
-import ImgDelete from "/public/images/svg/delete.svg?jsx";
-import ImgIcon from "/public/images/svg/ethereum.svg?jsx";
-import ImgWallet from "/public/images/svg/walletIcon.svg?jsx";
+import IconDelete from "/public/assets/icons/wallets/delete.svg?jsx";
+import IconEthereum from "/public/assets/icons/ethereum.svg?jsx";
+import IconWallet from "/public/assets/icons/wallets/wallet.svg?jsx";
 import { TokenRowWallets } from "~/components/tokens/tokenRow-wallets";
 
 interface SelectedWalletProps {
@@ -24,13 +24,13 @@ export const SelectedWalletDetails = component$<SelectedWalletProps>(
             <div class="mt-2 flex gap-4">
               <span class="flex items-center gap-2 text-sm text-gray-500 ">
                 <div class="border-white-opacity-20 flex h-[24px] w-[24px] items-center rounded-[4px] bg-white bg-opacity-5 px-[6px]">
-                  <ImgIcon />
+                  <IconEthereum />
                 </div>
                 {chainIdToNetworkName[selectedWallet.value.wallet.chainId]}
               </span>
               <span class="flex items-center gap-2 text-sm text-gray-500 ">
                 <div class="border-white-opacity-20 flex h-[24px] w-[24px] items-center rounded-[4px] bg-white bg-opacity-5 px-[3px]">
-                  <ImgWallet />
+                  <IconWallet />
                 </div>
                 {selectedWallet.value.wallet.address}
               </span>
@@ -42,7 +42,7 @@ export const SelectedWalletDetails = component$<SelectedWalletProps>(
               isDeleteModalopen.value = !isDeleteModalopen.value;
             }}
           >
-            <ImgDelete />
+            <IconDelete />
             <p class="lg:hidden">Delete Wallet</p>
           </button>
         </div>
