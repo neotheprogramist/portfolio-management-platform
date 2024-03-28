@@ -236,8 +236,7 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
         args: [wallet.address as `0x${string}`],
       });
 
-      const emethContractAddress = import.meta.env
-        .PUBLIC_EMETH_CONTRACT_ADDRESS;
+      const emethContractAddress = requestEvent.env.get("PUBLIC_EMETH_CONTRACT_ADDRESS");
       if (!emethContractAddress) {
         throw new Error("Missing PUBLIC_EMETH_CONTRACT_ADDRESS");
       }
@@ -247,7 +246,7 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
         address: checksumAddress(token.address as `0x${string}`),
         abi: token.symbol === "USDT" ? usdtAbi : contractABI,
         functionName: "allowance",
-        args: [wallet.address as `0x${string}`, emethContractAddress],
+        args: [wallet.address as `0x${string}`, emethContractAddress as `0x${string}`],
       });
 
       const formattedAllowance = formatTokenBalance(
