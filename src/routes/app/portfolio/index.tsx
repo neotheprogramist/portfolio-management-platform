@@ -110,7 +110,7 @@ export const useObservedWalletBalances = routeLoader$(async (requestEvent) => {
     );
 
     for (const balance of balances) {
-      if(balance.value === '0') {
+      if (balance.value === "0") {
         continue;
       }
       const [tokenId]: any = await db.query(`
@@ -392,7 +392,7 @@ export default component$(() => {
                   <input
                     type="text"
                     name="name"
-                    class={`text-black mb-1 block w-full ${!isValidName(structureStore.name) ? "bg-red-300" : ""}`}
+                    class={`mb-1 block w-full text-black ${!isValidName(structureStore.name) ? "bg-red-300" : ""}`}
                     value={structureStore.name}
                     onInput$={(e) => {
                       const target = e.target as HTMLInputElement;
@@ -423,7 +423,11 @@ export default component$(() => {
                   >
                     <option disabled={true}>Select Wallets</option>
                     {observedWalletsWithBalance.value.map((option) => (
-                      <option class="text-black"  key={option.wallet.id} value={option.wallet.id}>
+                      <option
+                        class="text-black"
+                        key={option.wallet.id}
+                        value={option.wallet.id}
+                      >
                         {option.wallet.name}
                       </option>
                     ))}
@@ -432,7 +436,9 @@ export default component$(() => {
                     Tokens
                   </label>
                   <select class="text-black" name="balancesId[]" multiple>
-                    <option class="text-black" disabled={true}>Select Tokens</option>
+                    <option class="text-black" disabled={true}>
+                      Select Tokens
+                    </option>
                     {parseWalletsToOptions(selectedWallets.wallets)}
                   </select>
                   <button

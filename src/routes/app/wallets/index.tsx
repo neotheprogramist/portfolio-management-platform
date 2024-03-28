@@ -53,7 +53,6 @@ import * as jwtDecode from "jwt-decode";
 import { type Token } from "~/interface/token/Token";
 import { testPublicClient, testWalletClient } from "./testconfig";
 
-
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
     console.log("data", data);
@@ -99,7 +98,7 @@ export const useAddWallet = routeAction$(
           args: [createWalletQueryResult.address as `0x${string}`],
         });
         console.log("readBalance", readBalance.toString());
-        if(readBalance < 0) {
+        if (readBalance < 0) {
           continue;
         }
         const [balance] = await db.create<Balance>(`balance`, {
