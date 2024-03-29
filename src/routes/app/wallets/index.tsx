@@ -334,8 +334,8 @@ const chekckIfProperAmount = (input: string, regex: RegExp) => {
 };
 
 export interface MessageStore {
-  message: string,
-  variant: 'success' | 'error' | 'info'| '',
+  message: string;
+  variant: "success" | "error" | "info" | "";
 }
 export interface addWalletFormStore {
   name: string;
@@ -369,15 +369,14 @@ export default component$(() => {
     privateKey: "",
   });
   const messageStore = useStore<MessageStore>({
-    message: '',
-    variant: '',
+    message: "",
+    variant: "",
   });
   const receivingWalletAddress = useSignal("");
   const transferredTokenAmount = useSignal("");
   const isInfoMessageUp = useSignal(false);
   const isSuccessMessageUp = useSignal(false);
   const isErrorMessageUp = useSignal(false);
- 
 
   const handleAddWallet = $(async () => {
     console.log("IN HANDLE ADD WALLET");
@@ -500,26 +499,26 @@ export default component$(() => {
           ],
         });
         isInfoMessageUp.value = true;
-        messageStore.message = 'Sending money...';
-        messageStore.variant = 'info';
+        messageStore.message = "Sending money...";
+        messageStore.variant = "info";
         const transactionHash = await testWalletClient.writeContract(request);
 
         const receipt = await testPublicClient.waitForTransactionReceipt({
           hash: transactionHash,
         });
 
-        if(receipt) {
+        if (receipt) {
           isSuccessMessageUp.value = true;
-          messageStore.message = ' Udalo sie';
-          messageStore.variant = 'success';
+          messageStore.message = " Udalo sie";
+          messageStore.variant = "success";
         }
 
         console.log("[receipt]: ", receipt);
       } catch (err) {
         console.log(err);
         isErrorMessageUp.value = true;
-          messageStore.message = 'Something went wrong.';
-          messageStore.variant = 'error';
+        messageStore.message = "Something went wrong.";
+        messageStore.variant = "error";
       }
     }
   });
@@ -726,9 +725,21 @@ export default component$(() => {
         </Modal>
       ) : null}
 
-     <Message  isVisible={isInfoMessageUp} message={messageStore.message} variant='info' /> 
-     <Message  isVisible={isSuccessMessageUp} message={messageStore.message} variant='success' /> 
-      <Message  isVisible={isErrorMessageUp} message={messageStore.message} variant='error' /> 
+      <Message
+        isVisible={isInfoMessageUp}
+        message={messageStore.message}
+        variant="info"
+      />
+      <Message
+        isVisible={isSuccessMessageUp}
+        message={messageStore.message}
+        variant="success"
+      />
+      <Message
+        isVisible={isErrorMessageUp}
+        message={messageStore.message}
+        variant="error"
+      />
     </div>
   );
 });
