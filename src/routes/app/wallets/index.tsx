@@ -52,6 +52,7 @@ import { getCookie } from "~/utils/refresh";
 import * as jwtDecode from "jwt-decode";
 import { type Token } from "~/interface/token/Token";
 import { testPublicClient, testWalletClient } from "./testconfig";
+import { Message } from "~/components/message/Message";
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
@@ -308,6 +309,11 @@ function replaceNonMatching(
 const chekckIfProperAmount = (input: string, regex: RegExp) => {
   return regex.test(input);
 };
+
+export interface MessageStore {
+  message: string,
+  variant: 'success' | 'error' | 'info'| '',
+}
 export interface addWalletFormStore {
   name: string;
   address: string;
@@ -339,8 +345,16 @@ export default component$(() => {
     isExecutable: 0,
     privateKey: "",
   });
+  const messageStore = useStore<MessageStore>({
+    message: '',
+    variant: '',
+  });
   const receivingWalletAddress = useSignal("");
   const transferredTokenAmount = useSignal("");
+  const isInfoMessageUp = useSignal(false);
+  const isSuccessMessageUp = useSignal(false);
+  const isErrorMessageUp = useSignal(false);
+ 
 
   const handleAddWallet = $(async () => {
     console.log("IN HANDLE ADD WALLET");
@@ -454,15 +468,27 @@ export default component$(() => {
             BigInt(calculation),
           ],
         });
-
+        isInfoMessageUp.value = true;
+        messageStore.message = 'Sending money...';
+        messageStore.variant = 'info';
         const transactionHash = await testWalletClient.writeContract(request);
 
         const receipt = await testPublicClient.waitForTransactionReceipt({
           hash: transactionHash,
         });
+
+        if(receipt) {
+          isSuccessMessageUp.value = true;
+          messageStore.message = ' Udalo sie';
+          messageStore.variant = 'success';
+        }
+
         console.log("[receipt]: ", receipt);
       } catch (err) {
         console.log(err);
+        isErrorMessageUp.value = true;
+          messageStore.message = 'Something went wrong.';
+          messageStore.variant = 'error';
       }
     }
   });
@@ -668,6 +694,10 @@ export default component$(() => {
           </div>
         </Modal>
       ) : null}
+
+     <Message  isVisible={isInfoMessageUp} message={messageStore.message} variant='info' /> 
+     <Message  isVisible={isSuccessMessageUp} message={messageStore.message} variant='success' /> 
+      <Message  isVisible={isErrorMessageUp} message={messageStore.message} variant='error' /> 
     </div>
   );
 });
