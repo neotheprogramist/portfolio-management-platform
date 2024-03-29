@@ -61,6 +61,7 @@ export const SelectedWalletDetails = component$<SelectedWalletProps>(
             <div class="">Token name</div>
             <div class="">Quantity</div>
             <div class="">Value</div>
+            <div class="">Allowance</div>
             <div class="flex items-center justify-center gap-[16px]">
               <h2 class="uppercase text-gray-500">Change</h2>
               <div class="bg-glass border-white-opacity-20 flex h-[32px] gap-[8px] rounded-lg p-[2px] text-white">
@@ -80,6 +81,7 @@ export const SelectedWalletDetails = component$<SelectedWalletProps>(
                 return (
                   <TokenRowWallets
                     key={token.id}
+                    allowance={token.allowance}
                     address={token.address}
                     name={token.name}
                     symbol={token.symbol}

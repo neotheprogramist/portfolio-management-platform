@@ -15,7 +15,7 @@ import {
 } from "~/interface/wallets/observedWallets";
 import { checksumAddress } from "viem";
 import { type Wallet } from "~/interface/auth/Wallet";
-import { formatTokenBalance } from "~/utils/formatBalances/formatTokenBalance";
+import { convertWeiToQuantity } from "~/utils/formatBalances/formatTokenBalance";
 import { chainIdToNetworkName } from "~/utils/chains";
 import { type Balance } from "~/interface/balance/Balance";
 import { type Token } from "~/interface/token/Token";
@@ -94,7 +94,7 @@ export const useTotalPortfolioValue = routeLoader$(async (requestEvent) => {
         value: readBalance.toString(),
       });
 
-      const formattedBalance = formatTokenBalance(
+      const formattedBalance = convertWeiToQuantity(
         readBalance.toString(),
         token.decimals,
       );
@@ -285,7 +285,7 @@ export default component$(() => {
             {favoriteTokens.value[0] &&
               favoriteTokens.value[0].structureBalance.map(
                 async (token: any, index: number) => {
-                  const formattedBalance = formatTokenBalance(
+                  const formattedBalance = convertWeiToQuantity(
                     token.balance.balance.toString(),
                     parseInt(token.balance.decimals),
                   );
