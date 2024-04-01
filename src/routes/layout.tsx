@@ -5,6 +5,7 @@ import {
   useStore,
   noSerialize,
   useVisibleTask$,
+  useTask$,
 } from "@builder.io/qwik";
 import type { RequestHandler } from "@builder.io/qwik-city";
 import { reconnect, watchAccount } from "@wagmi/core";
@@ -14,6 +15,7 @@ import {
   type ModalStore,
   ModalStoreContext,
 } from "~/interface/web3modal/ModalStore";
+import { setupStream } from "~/root";
 
 const metadata = {
   name: "Web3Modal",
@@ -63,6 +65,12 @@ export default component$(() => {
     isConnected: undefined,
     config: undefined,
   });
+  
+  useTask$(async function () {
+    console.log("Setting up stream...")
+    await setupStream();
+  });
+
   // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(() => {
     const chains: [Chain, ...Chain[]] = [arbitrum, mainnet];

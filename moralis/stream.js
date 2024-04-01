@@ -8,8 +8,7 @@ Moralis.start({
   apiKey: process.env.MORALIS_API_KEY,
 });
 
-
-const balanceOfABI = {
+export const balanceOfABI = {
   inputs: [{ internalType: "address", name: "", type: "address" }],
   name: "balanceOf",
   outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
@@ -31,9 +30,9 @@ const triggerTo = {
   type: "erc20transfer",
 };
 
-const triggers = [triggerFrom, triggerTo];
+export const triggers = [triggerFrom, triggerTo];
 
-const ERC20TransferABI = [
+export const ERC20TransferABI = [
   {
     anonymous: false,
     inputs: [
@@ -61,16 +60,16 @@ const ERC20TransferABI = [
   },
 ];
 
-async function streams() {
+export async function streams() {
   const newStream = await Moralis.Streams.add({
     chains: [EvmChain.SEPOLIA],
-    description: "Listen for USDC Transfers",
+    description: "Listen for Transfers",
     tag: "transfers",
     abi: ERC20TransferABI,
     includeContractLogs: true,
     topic0: ["Transfer(address,address,uint256)"],
     includeNativeTxs: false,
-    webhookUrl: "https://b5b1-83-6-164-215.ngrok-free.app/",
+    webhookUrl: "https://5103-83-6-164-215.ngrok-free.app/",
   });
 
   const { id } = newStream.toJSON();
@@ -86,4 +85,3 @@ async function streams() {
   console.log("Stream created...");
 }
 
-streams();
