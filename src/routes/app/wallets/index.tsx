@@ -505,7 +505,7 @@ export default component$(() => {
         });
         if (receipt) {
           isSuccessMessageUp.value = true;
-          messageStore.message = " Udalo sie";
+          messageStore.message = "Successfully sent.";
           messageStore.variant = "success";
         }
         console.log("[receipt]: ", receipt);
