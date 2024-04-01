@@ -8,8 +8,6 @@ Moralis.start({
   apiKey: process.env.MORALIS_API_KEY,
 });
 
-console.log("xd");
-console.log(process.env.MORALIS_API_KEY);
 
 const balanceOfABI = {
   inputs: [{ internalType: "address", name: "", type: "address" }],
