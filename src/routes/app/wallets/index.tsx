@@ -336,19 +336,19 @@ const chekckIfProperAmount = (input: string, regex: RegExp) => {
 export interface MessageStore {
   message: string;
   variant: "success" | "error" | "info" | "";
-};
+}
 
 export interface addWalletFormStore {
   name: string;
   address: string;
   isExecutable: number;
   privateKey: string;
-};
+}
 
 export interface transferredCoinInterface {
   symbol: string;
   address: string;
-};
+}
 
 const fetchTokens = server$(async function () {
   const db = await connectToDB(this.env);
@@ -379,7 +379,6 @@ export default component$(() => {
   const isInfoMessageUp = useSignal(false);
   const isSuccessMessageUp = useSignal(false);
   const isErrorMessageUp = useSignal(false);
-
 
   const handleAddWallet = $(async () => {
     console.log("IN HANDLE ADD WALLET");
@@ -720,8 +719,8 @@ export default component$(() => {
           </div>
         </Modal>
       ) : null}
-      
-       <Message
+
+      <Message
         isVisible={isInfoMessageUp}
         message={messageStore.message}
         variant="info"
