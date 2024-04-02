@@ -2,19 +2,23 @@ import { server$ } from "@builder.io/qwik-city";
 import { EvmChain } from "@moralisweb3/common-evm-utils";
 import Moralis from "moralis";
 
-export let _stream: any;
+let _stream: any;
 
 export async function getStream() {
-    console.log("Stream from getStream (after set)", _stream);
+  console.log("--> Stream from getStream", _stream);
   if (!_stream) {
-    throw new Error('Stream not set');
+    throw new Error("Stream not set");
   }
   return _stream;
 }
 
 export async function initializeStreamIfNeeded(factory: () => Promise<any>) {
   if (!_stream) {
-    _stream = await factory();
+    _stream = factory();
+    console.log(
+      "--> Stream in initializeStreamIfNeeded after initialization",
+      _stream,
+    );
   }
 }
 
@@ -106,7 +110,7 @@ export const setupStream = server$(async function () {
     triggers: triggers,
   });
 
-  console.log("Stream created...");
   _stream = newStream;
-  console.log("Stream in setupStream", _stream);
+  console.log("-->Stream in setupStream", _stream);
+  return newStream;
 });
