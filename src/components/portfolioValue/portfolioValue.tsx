@@ -8,10 +8,11 @@ import * as d3 from "d3";
 export interface PortfolioValueProps {
   totalPortfolioValue: string;
   isPortfolioFullScreen: Signal<boolean>;
+  portfolioValueChange: { valueChange: string; percentageChange: string };
 }
 
 export const PortfolioValue = component$<PortfolioValueProps>(
-  ({ totalPortfolioValue, isPortfolioFullScreen }) => {
+  ({ totalPortfolioValue, isPortfolioFullScreen, portfolioValueChange }) => {
     const chart = $(() => {
       const data = [
         [0, 70],
@@ -20,6 +21,7 @@ export const PortfolioValue = component$<PortfolioValueProps>(
         [3, 70],
         [4, 70],
       ] as [number, number][];
+      console.log(portfolioValueChange)
 
       // Declare the chart dimensions and margins.
       const width = isPortfolioFullScreen.value ? 1310 : 618;
@@ -107,7 +109,10 @@ export const PortfolioValue = component$<PortfolioValueProps>(
               ${totalPortfolioValue}
             </h1>
             <p class="text-[12px]">
-              24h change: +23,4 <span class="text-[#24A148]">+0,84%</span>
+              24h change: {portfolioValueChange.valueChange}{" "}
+              <span class="text-[#24A148]">
+                {portfolioValueChange.percentageChange}
+              </span>
             </p>
           </div>
         </div>
