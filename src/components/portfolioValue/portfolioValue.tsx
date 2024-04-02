@@ -16,6 +16,7 @@ import { PeriodState } from "~/interface/balance/Balance";
 export interface PortfolioValueProps {
   totalPortfolioValue: string;
   isPortfolioFullScreen: Signal<boolean>;
+  portfolioValueChange: { valueChange: string; percentageChange: string };
   portfolioValueChange: {
     valueChange: string;
     percentageChange: string;
@@ -26,6 +27,7 @@ export interface PortfolioValueProps {
 }
 
 export const PortfolioValue = component$<PortfolioValueProps>(
+  ({ totalPortfolioValue, isPortfolioFullScreen, portfolioValueChange }) => {
   ({
     totalPortfolioValue,
     isPortfolioFullScreen,
@@ -35,6 +37,14 @@ export const PortfolioValue = component$<PortfolioValueProps>(
     chartData,
   }) => {
     const chart = $(() => {
+      const data = [
+        [0, 70],
+        [1, 70],
+        [2, 70],
+        [3, 70],
+        [4, 70],
+      ] as [number, number][];
+      console.log(portfolioValueChange)
       const data = chartData;
 
       const max =
