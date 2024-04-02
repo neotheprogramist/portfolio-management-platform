@@ -15,7 +15,7 @@ import {
   type ModalStore,
   ModalStoreContext,
 } from "~/interface/web3modal/ModalStore";
-import { setupStream } from "~/utils/stream";
+import { getStream, initializeStreamIfNeeded, setupStream } from "~/utils/stream";
 
 
 const metadata = {
@@ -69,7 +69,10 @@ export default component$(() => {
 
   useTask$(async function () {
     console.log("Setting up stream...");
-    await setupStream();
+    await initializeStreamIfNeeded(setupStream);
+    console.log("initialized stream");
+    const stream = await getStream();
+    console.log("Stream", stream);
   });
 
   // eslint-disable-next-line qwik/no-use-visible-task

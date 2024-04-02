@@ -33,8 +33,7 @@
     "update": "npx npm-check-updates -u",
     "update.check": "npx npm-check-updates",
     "qwik": "qwik",
-    "ngrok": "ngrok http http://localhost:5173",
-    "stream": "node moralis/stream.js"
+    "ngrok": "ngrok http http://localhost:5173"
   },
   "devDependencies": {
     "@builder.io/qwik": "1.5.1",
