@@ -1,4 +1,4 @@
-import { $, component$, useSignal, useStore } from "@builder.io/qwik";
+import { $, component$, useContext, useSignal, useStore } from "@builder.io/qwik";
 import {
   Form,
   routeAction$,
@@ -53,6 +53,7 @@ import * as jwtDecode from "jwt-decode";
 import { type Token } from "~/interface/token/Token";
 import { testPublicClient, testWalletClient } from "./testconfig";
 import { Message } from "~/components/message/Message";
+import { messagesContext } from "../layout";
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
@@ -379,6 +380,7 @@ export default component$(() => {
   const isInfoMessageUp = useSignal(false);
   const isSuccessMessageUp = useSignal(false);
   const isErrorMessageUp = useSignal(false);
+  const messageProvider = useContext(messagesContext);
 
   const handleAddWallet = $(async () => {
     console.log("IN HANDLE ADD WALLET");
@@ -496,24 +498,30 @@ export default component$(() => {
             BigInt(calculation),
           ],
         });
-        isInfoMessageUp.value = true;
-        messageStore.message = "Sending money...";
-        messageStore.variant = "info";
+        messageProvider.messages.push({
+          variant: 'info',
+          message: "Transfering tokens...",
+          isVisible: true
+        })
         const transactionHash = await testWalletClient.writeContract(request);
         const receipt = await testPublicClient.waitForTransactionReceipt({
           hash: transactionHash,
         });
         if (receipt) {
-          isSuccessMessageUp.value = true;
-          messageStore.message = "Successfully sent.";
-          messageStore.variant = "success";
+          messageProvider.messages.push({
+            variant: 'success',
+            message: "Success!",
+            isVisible: true
+          })
         }
         console.log("[receipt]: ", receipt);
       } catch (err) {
         console.log(err);
-        isErrorMessageUp.value = true;
-        messageStore.message = "Something went wrong.";
-        messageStore.variant = "error";
+        messageProvider.messages.push({
+          variant: 'error',
+          message: "Something went wrong.",
+          isVisible: true
+        })
       }
     }
   });
@@ -719,22 +727,6 @@ export default component$(() => {
           </div>
         </Modal>
       ) : null}
-
-      <Message
-        isVisible={isInfoMessageUp}
-        message={messageStore.message}
-        variant="info"
-      />
-      <Message
-        isVisible={isSuccessMessageUp}
-        message={messageStore.message}
-        variant="success"
-      />
-      <Message
-        isVisible={isErrorMessageUp}
-        message={messageStore.message}
-        variant="error"
-      />
     </div>
   );
 });

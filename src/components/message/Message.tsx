@@ -2,22 +2,22 @@ import { component$, type Signal, useTask$ } from "@builder.io/qwik";
 export interface MessageProps {
   variant?: "success" | "error" | "info" | "";
   message: string;
-  isVisible: Signal<boolean>;
+  isVisible: boolean;
 }
 export const Message = component$(
   ({ variant = "info", message = "", isVisible }: MessageProps) => {
     useTask$(({ track, cleanup }) => {
-      track(() => isVisible.value);
-      if (isVisible.value) {
+      track(() => isVisible);
+      if (isVisible) {
         const timeId = setTimeout(() => {
-          isVisible.value = false;
+          isVisible = false;
         }, 5000);
         cleanup(() => {
           clearTimeout(timeId);
         });
       }
     });
-    if (!isVisible.value) return null;
+    if (!isVisible) return null;
     return (
       <>
         <div
@@ -34,7 +34,7 @@ export const Message = component$(
           <button
             class="flex h-8 w-8 items-center justify-center"
             onClick$={() => {
-              isVisible.value = false;
+              isVisible = false;
             }}
           >
             x
