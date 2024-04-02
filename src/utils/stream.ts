@@ -14,7 +14,7 @@ export async function getStream() {
 
 export async function initializeStreamIfNeeded(factory: () => Promise<any>) {
   if (!_stream) {
-    _stream = factory();
+    _stream = await factory();
     console.log(
       "--> Stream in initializeStreamIfNeeded after initialization",
       _stream,
@@ -99,17 +99,14 @@ export const setupStream = server$(async function () {
     topic0: ["Transfer(address,address,uint256)"],
     includeNativeTxs: false,
     webhookUrl: ngrokWebhookUrl,
+    triggers: triggers,
   });
   const { id } = newStream.toJSON();
 
   const address = "0xa3EA94756a6d1f6Bc4727a38fe5F7aa4d568D52E";
   await Moralis.Streams.addAddress({ address, id });
-  await Moralis.Streams.update({
-    id: id,
-    chains: [EvmChain.SEPOLIA],
-    triggers: triggers,
-  });
 
+  
   _stream = newStream;
   console.log("-->Stream in setupStream", _stream);
   return newStream;
