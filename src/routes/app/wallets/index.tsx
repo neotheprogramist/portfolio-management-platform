@@ -1,4 +1,10 @@
-import { $, component$, useContext, useSignal, useStore } from "@builder.io/qwik";
+import {
+  $,
+  component$,
+  useContext,
+  useSignal,
+  useStore,
+} from "@builder.io/qwik";
 import {
   Form,
   routeAction$,
@@ -52,7 +58,6 @@ import { getCookie } from "~/utils/refresh";
 import * as jwtDecode from "jwt-decode";
 import { type Token } from "~/interface/token/Token";
 import { testPublicClient, testWalletClient } from "./testconfig";
-import { Message } from "~/components/message/Message";
 import { messagesContext } from "../layout";
 
 export const useAddWallet = routeAction$(
@@ -374,93 +379,94 @@ export default component$(() => {
     console.log("IN HANDLE ADD WALLET");
     isAddWalletModalOpen.value = false;
     messageProvider.messages.push({
-      variant: 'info',
+      id: messageProvider.messages.length,
+      variant: "info",
       message: "Processing wallet...",
-      isVisible: true
-    })
-try {
-  if (addWalletFormStore.isExecutable) {
-      console.log("IN EXECUTABLE BLOCK");
-      // create account from PK
-      const accountFromPrivateKey = privateKeyToAccount(
-        addWalletFormStore.privateKey as `0x${string}`,
-      );
+      isVisible: true,
+    });
+    try {
+      if (addWalletFormStore.isExecutable) {
+        console.log("IN EXECUTABLE BLOCK");
+        // create account from PK
+        const accountFromPrivateKey = privateKeyToAccount(
+          addWalletFormStore.privateKey as `0x${string}`,
+        );
 
-      addWalletFormStore.address = accountFromPrivateKey.address;
+        addWalletFormStore.address = accountFromPrivateKey.address;
 
-      const emethContractAddress = import.meta.env
-        .PUBLIC_EMETH_CONTRACT_ADDRESS;
+        const emethContractAddress = import.meta.env
+          .PUBLIC_EMETH_CONTRACT_ADDRESS;
 
-      if (!emethContractAddress) {
-        throw new Error("Missing PUBLIC_EMETH_CONTRACT_ADDRESS");
-      }
-  
-      const tokens: any = await fetchTokens();
+        if (!emethContractAddress) {
+          throw new Error("Missing PUBLIC_EMETH_CONTRACT_ADDRESS");
+        }
 
-      for (const token of tokens) {
+        const tokens: any = await fetchTokens();
+
+        for (const token of tokens) {
+          const { request } = await testPublicClient.simulateContract({
+            account: accountFromPrivateKey,
+            address: checksumAddress(token.address as `0x${string}`),
+            abi: token.symbol === "USDT" ? usdtAbi : contractABI,
+            functionName: "approve",
+            // TODO: USDT can not reaprove to other amount right after initial arpprove,
+            // it needs to be set to 0 first and then reapprove
+            args: [emethContractAddress, 100000000000000n],
+          });
+          // keep receipts for now, to use waitForTransactionReceipt
+          const receipt = await testWalletClient.writeContract(request);
+          console.log(receipt);
+          const allowance = await testPublicClient.readContract({
+            account: accountFromPrivateKey,
+            address: checksumAddress(token.address as `0x${string}`),
+            abi: token.symbol === "USDT" ? usdtAbi : contractABI,
+            functionName: "allowance",
+            args: [accountFromPrivateKey.address, emethContractAddress],
+          });
+          console.log(`checking allowance for ${token.symbol}: ${allowance}`);
+        }
+
+        // approving logged in user by observed wallet by emeth contract
+        const cookie = getCookie("accessToken");
+        if (!cookie) throw new Error("No accessToken cookie found");
+        const { address } = jwtDecode.jwtDecode(cookie) as JwtPayload;
         const { request } = await testPublicClient.simulateContract({
           account: accountFromPrivateKey,
-          address: checksumAddress(token.address as `0x${string}`),
-          abi: token.symbol === "USDT" ? usdtAbi : contractABI,
+          address: emethContractAddress,
+          abi: emethContractAbi,
           functionName: "approve",
-          // TODO: USDT can not reaprove to other amount right after initial arpprove,
-          // it needs to be set to 0 first and then reapprove
-          args: [emethContractAddress, 100000000000000n],
+          args: [address],
         });
-        // keep receipts for now, to use waitForTransactionReceipt
         const receipt = await testWalletClient.writeContract(request);
         console.log(receipt);
-        const allowance = await testPublicClient.readContract({
-          account: accountFromPrivateKey,
-          address: checksumAddress(token.address as `0x${string}`),
-          abi: token.symbol === "USDT" ? usdtAbi : contractABI,
-          functionName: "allowance",
-          args: [accountFromPrivateKey.address, emethContractAddress],
-        });
-        console.log(`checking allowance for ${token.symbol}: ${allowance}`);
       }
 
-      // approving logged in user by observed wallet by emeth contract
-      const cookie = getCookie("accessToken");
-      if (!cookie) throw new Error("No accessToken cookie found");
-      const { address } = jwtDecode.jwtDecode(cookie) as JwtPayload;
-      const { request } = await testPublicClient.simulateContract({
-        account: accountFromPrivateKey,
-        address: emethContractAddress,
-        abi: emethContractAbi,
-        functionName: "approve",
-        args: [address],
+      const { value } = await addWalletAction.submit({
+        address: addWalletFormStore.address as `0x${string}`,
+        name: addWalletFormStore.name,
+        isExecutable: addWalletFormStore.isExecutable.toString(),
       });
-      const receipt = await testWalletClient.writeContract(request);
-      console.log(receipt);
-    }
 
-
-    const { value } = await addWalletAction.submit({
-      address: addWalletFormStore.address as `0x${string}`,
-      name: addWalletFormStore.name,
-      isExecutable: addWalletFormStore.isExecutable.toString(),
-    });
-
-    if (value.success) {
+      if (value.success) {
+        messageProvider.messages.push({
+          id: messageProvider.messages.length,
+          variant: "success",
+          message: "Wallet successfully added.",
+          isVisible: true,
+        });
+        addWalletFormStore.address = "";
+        addWalletFormStore.name = "";
+        addWalletFormStore.privateKey = "";
+        addWalletFormStore.isExecutable = 0;
+      }
+    } catch (err) {
       messageProvider.messages.push({
         id: messageProvider.messages.length,
-        variant: 'success',
-        message: "Wallet successfully added.",
-        isVisible: true
-      })
-      addWalletFormStore.address = "";
-      addWalletFormStore.name = "";
-      addWalletFormStore.privateKey = "";
-      addWalletFormStore.isExecutable = 0;
-    }
-    }catch(err){
-      messageProvider.messages.push({
-        variant: 'error',
+        variant: "error",
         message: "Something went wrong.",
-        isVisible: true
-      })
-  }
+        isVisible: true,
+      });
+    }
   });
 
   const handleTransfer = $(async () => {
@@ -510,29 +516,32 @@ try {
           ],
         });
         messageProvider.messages.push({
-          variant: 'info',
+          id: messageProvider.messages.length,
+          variant: "info",
           message: "Transfering tokens...",
-          isVisible: true
-        })
+          isVisible: true,
+        });
         const transactionHash = await testWalletClient.writeContract(request);
         const receipt = await testPublicClient.waitForTransactionReceipt({
           hash: transactionHash,
         });
         if (receipt) {
           messageProvider.messages.push({
-            variant: 'success',
+            id: messageProvider.messages.length,
+            variant: "success",
             message: "Success!",
-            isVisible: true
-          })
+            isVisible: true,
+          });
         }
         console.log("[receipt]: ", receipt);
       } catch (err) {
         console.log(err);
         messageProvider.messages.push({
-          variant: 'error',
+          id: messageProvider.messages.length,
+          variant: "error",
           message: "Something went wrong.",
-          isVisible: true
-        })
+          isVisible: true,
+        });
       }
     }
   });
@@ -684,58 +693,66 @@ try {
 
       {isTransferModalOpen.value ? (
         <Modal isOpen={isTransferModalOpen} title="Transfer">
-          <div class="p-4">
-            <p class="mb-[16px] mt-4 flex items-center gap-2 text-sm">
-              {transferredCoin.symbol ? transferredCoin.symbol : null}
-            </p>
+          <Form>
+            <div class="p-4">
+              <p class="mb-[16px] mt-4 flex items-center gap-2 text-sm">
+                {transferredCoin.symbol ? transferredCoin.symbol : null}
+              </p>
 
-            <label for="receivingWallet" class="block pb-1 text-xs text-white">
-              Receiving Wallet Address
-            </label>
-            <input
-              type="text"
-              name="receivingWallet"
-              class={`border-white-opacity-20 mb-5 block w-full rounded bg-transparent p-3 text-sm placeholder-white placeholder-opacity-50`}
-              placeholder="Place wallet address"
-              value={receivingWalletAddress.value}
-              onInput$={(e) => {
-                const target = e.target as HTMLInputElement;
-                receivingWalletAddress.value = target.value;
-              }}
-            />
-            <label for="receivingWallet" class="block pb-1 text-xs text-white">
-              Amount
-            </label>
-            <input
-              type="text"
-              name="transferredTokenAmount"
-              class={`border-white-opacity-20 mb-5 block w-full rounded bg-transparent p-3 text-sm placeholder-white placeholder-opacity-50`}
-              placeholder="Please enter digits and at most one dot"
-              value={transferredTokenAmount.value}
-              onInput$={(e) => {
-                const target = e.target as HTMLInputElement;
-                const regex = /^\d*\.?\d*$/;
-                target.value = replaceNonMatching(target.value, regex, "");
-                transferredTokenAmount.value = target.value;
-              }}
-            />
-            <span class="block pb-1 text-xs text-white">
-              {!chekckIfProperAmount(
-                transferredTokenAmount.value,
-                /^\d*\.?\d*$/,
-              ) ? (
-                <span class="text-xs text-red-500">
-                  Invalid amount. There should be only one dot.
-                </span>
-              ) : null}
-            </span>
-            <button
-              class="custom-border-1 custom-bg-white row-span-1 row-start-3 mb-[24px] flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-xs text-white"
-              onClick$={() => handleTransfer()}
-            >
-              transfer
-            </button>
-          </div>
+              <label
+                for="receivingWallet"
+                class="block pb-1 text-xs text-white"
+              >
+                Receiving Wallet Address
+              </label>
+              <input
+                type="text"
+                name="receivingWallet"
+                class={`border-white-opacity-20 mb-5 block w-full rounded bg-transparent p-3 text-sm placeholder-white placeholder-opacity-50`}
+                placeholder="Place wallet address"
+                value={receivingWalletAddress.value}
+                onInput$={(e) => {
+                  const target = e.target as HTMLInputElement;
+                  receivingWalletAddress.value = target.value;
+                }}
+              />
+              <label
+                for="receivingWallet"
+                class="block pb-1 text-xs text-white"
+              >
+                Amount
+              </label>
+              <input
+                type="text"
+                name="transferredTokenAmount"
+                class={`border-white-opacity-20 mb-5 block w-full rounded bg-transparent p-3 text-sm placeholder-white placeholder-opacity-50`}
+                placeholder="Please enter digits and at most one dot"
+                value={transferredTokenAmount.value}
+                onInput$={(e) => {
+                  const target = e.target as HTMLInputElement;
+                  const regex = /^\d*\.?\d*$/;
+                  target.value = replaceNonMatching(target.value, regex, "");
+                  transferredTokenAmount.value = target.value;
+                }}
+              />
+              <span class="block pb-1 text-xs text-white">
+                {!chekckIfProperAmount(
+                  transferredTokenAmount.value,
+                  /^\d*\.?\d*$/,
+                ) ? (
+                  <span class="text-xs text-red-500">
+                    Invalid amount. There should be only one dot.
+                  </span>
+                ) : null}
+              </span>
+              <button
+                class="custom-border-1 custom-bg-white row-span-1 row-start-3 mb-[24px] flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-xs text-white"
+                onClick$={() => handleTransfer()}
+              >
+                transfer
+              </button>
+            </div>
+          </Form>
         </Modal>
       ) : null}
     </div>

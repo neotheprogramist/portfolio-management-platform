@@ -1,4 +1,9 @@
-import { component$, type Signal, useTask$, useContext } from "@builder.io/qwik";
+import {
+  component$,
+  type Signal,
+  useTask$,
+  useContext,
+} from "@builder.io/qwik";
 import { M } from "vite/dist/node/types.d-AKzkD8vd";
 import { messagesContext } from "~/routes/app/layout";
 
@@ -10,7 +15,6 @@ export interface MessageProps {
 }
 
 export const Message = component$(
-
   ({ variant = "info", message = "", isVisible, id }: MessageProps) => {
     const messagesProvider = useContext(messagesContext);
 
@@ -19,7 +23,7 @@ export const Message = component$(
       if (isVisible) {
         const timeId = setTimeout(() => {
           isVisible = false;
-          const index = messagesProvider.messages.findIndex(m => m.id === id);
+          const index = messagesProvider.messages.findIndex((m) => m.id === id);
           messagesProvider.messages.splice(index, 1);
         }, 5000);
         cleanup(() => {
