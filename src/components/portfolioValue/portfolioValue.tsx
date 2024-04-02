@@ -21,7 +21,7 @@ export const PortfolioValue = component$<PortfolioValueProps>(
         [3, 70],
         [4, 70],
       ] as [number, number][];
-      console.log(portfolioValueChange)
+      console.log(portfolioValueChange);
 
       // Declare the chart dimensions and margins.
       const width = isPortfolioFullScreen.value ? 1310 : 618;
