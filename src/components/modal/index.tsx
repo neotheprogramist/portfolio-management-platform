@@ -4,6 +4,7 @@ import IconClose from "/public/assets/icons/close.svg?jsx";
 interface ModalProps {
   title: string;
   isOpen: Signal<boolean>;
+  myClass?: string;
   formStore?: {
     name: string;
     address: string;
@@ -23,16 +24,16 @@ export const Modal = component$<ModalProps>(
             formStore.privateKey = "";
           }
         }}
-        class="fixed left-0 top-0 flex h-full w-full items-center justify-center bg-black bg-opacity-40"
+        class="fixed left-0 top-0 flex h-full w-full items-center justify-center bg-black bg-opacity-60"
       >
         <div
           onClick$={(event) => {
             event.stopPropagation();
           }}
-          class="bg-modal-glass custom-border-1 relative h-5/6 w-1/3 rounded-xl"
+          class="bg-modal-glass custom-border-1 relative h-fit w-1/3 rounded-xl p-6"
         >
-          <div class="flex items-center justify-between p-5">
-            <div class="text-lg text-white">{title}</div>
+          <div class="flex items-center justify-between">
+            <div class="text-xl text-white">{title}</div>
             <button
               class="cursor-pointer"
               onClick$={() => {
@@ -47,7 +48,6 @@ export const Modal = component$<ModalProps>(
               <IconClose />
             </button>
           </div>
-          {/* <hr class={`${!isCreateNewStructureModalOpen ? "opacity-20" : "hidden"}`} /> */}
           <Slot />
         </div>
       </div>

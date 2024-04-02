@@ -32,6 +32,7 @@ import { Modal } from "~/components/modal";
 import { isValidName } from "~/utils/validators/addWallet";
 import { structureExists } from "~/interface/structure/removeStructure";
 
+
 type WalletWithBalance = {
   wallet: { id: string; chainID: number; name: string };
   balance: [{ balanceId: string; tokenId: string; tokenSymbol: string }];
@@ -265,7 +266,7 @@ export default component$(() => {
   const clickedToken = useStore({ balanceId: "", structureId: "" });
   const structureStore = useStore({ name: "" });
   const selectedWallets = useStore({ wallets: [] as any[] });
-  const isCreateNewStructureModalOpen = useSignal(true);
+  const isCreateNewStructureModalOpen = useSignal(false);
   const deleteToken = useDeleteToken();
   const availableStructures = useAvailableStructures();
   const createStructureAction = useCreateStructure();
@@ -316,7 +317,7 @@ export default component$(() => {
           </div>
         </div>
         <div class="grid grid-cols-[auto_auto] gap-[24px] overflow-auto pb-[145px]">
-          <div class="custom-bg-white custom-border-1 flex min-h-[260px] min-w-[580px] flex-col gap-[24px] overflow-auto rounded-[16px] p-[24px]">
+          <div class="custom-bg-white custom-border-1 flex min-h-[260px] min-w-[580px] flex-col gap-[24px] overflow-auto rounded-[16px] p-[24px] ">
             <p class="text-[20px] font-semibold">Token list</p>
             <div class="grid grid-cols-4 gap-[8px]">
               <ButtonTokenList
@@ -384,15 +385,16 @@ export default component$(() => {
                       isCreateNewStructureModalOpen.value = false;
                     }
                   }}
-                  class="p-5"
+                  class="mt-8"
                 >
-                  <label for="name" class="block custom-text-50 text-xs">
+                  <label for="name" class="block custom-text-50 text-xs mb-2 uppercase">
                     Name
                   </label>
                   <input
                     type="text"
                     name="name"
-                    class={`mb-1 block w-full text-black ${!isValidName(structureStore.name) ? "bg-red-300" : ""}`}
+                    placeholder="Structure name..."
+                    class={`mb-4 block w-full custom-border-1 bg-transparent h-12 rounded-lg text-white px-3  placeholder:text-white ${isValidName(structureStore.name) ? "bg-red-300" : ""}`}
                     value={structureStore.name}
                     onInput$={(e) => {
                       const target = e.target as HTMLInputElement;
@@ -402,10 +404,11 @@ export default component$(() => {
                   {!isValidName(structureStore.name) && (
                     <p class="mb-4 text-red-500">Invalid name</p>
                   )}
-                  <label for="walletsId" class="block custom-text-50 text-xs">
-                    Wallet
+                  <label for="walletsId" class="block custom-text-50 text-xs mb-2 uppercase">
+                    Select Wallets
                   </label>
                   <select
+                    class="text-white bg-transparent custom-border-1 rounded-lg w-full px-4 mb-4 h-12"
                     name="walletsId[]"
                     multiple
                     onChange$={(e) => {
@@ -421,10 +424,10 @@ export default component$(() => {
                       ).filter(Boolean);
                     }}
                   >
-                    <option disabled={true}>Select Wallets</option>
+                    <option class="text-white h-12 flex items-center justify-between bg-transparent" disabled={true}>Select Wallets</option>
                     {observedWalletsWithBalance.value.map((option) => (
                       <option
-                        class="text-black"
+                        class="text-white bg-transparent hidden"
                         key={option.wallet.id}
                         value={option.wallet.id}
                       >
@@ -432,22 +435,31 @@ export default component$(() => {
                       </option>
                     ))}
                   </select>
-                  <label for="balance" class="block custom-text-50 text-xs">
-                    Tokens
+                  <label for="balance" class="block custom-text-50 text-xs mb-2 uppercase">
+                    Select Tokens
                   </label>
-                  <select class="text-black" name="balancesId[]" multiple>
-                    <option class="text-black" disabled={true}>
+                  <select class="text-white bg-transparent custom-border-1 rounded-lg w-full px-4 mb-4 h-12" name="balancesId[]" multiple>
+                    <option class="text-white h-12 flex items-center justify-between bg-transparent" disabled={true}>
                       Select Tokens
                     </option>
                     {parseWalletsToOptions(selectedWallets.wallets)}
                   </select>
-                  <button
-                    type="submit"
-                    class="absolute bottom-4 right-4"
-                    disabled={!isValidName(structureStore.name)}
-                  >
-                    Create structure
-                  </button>
+                  <div class="flex gap-4">
+                    <button
+                      type="submit"
+                      class="custom-border-1 h-12 w-[50%] rounded-[48px] hover:scale-105 duration-300 ease-in-out"
+                      disabled={!isValidName(structureStore.name)}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      class=" bg-blue-500 h-12 w-[50%] rounded-[48px] hover:scale-105 duration-300 ease-in-out"
+                      disabled={!isValidName(structureStore.name)}
+                    >
+                      Add token
+                    </button>
+                  </div>
                 </Form>
               </Modal>
             )}
