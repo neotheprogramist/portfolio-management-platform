@@ -1,14 +1,9 @@
-import {
-  component$,
-  type Signal,
-  useTask$,
-  useContext,
-} from "@builder.io/qwik";
-import { M } from "vite/dist/node/types.d-AKzkD8vd";
+import { component$, useTask$, useContext } from "@builder.io/qwik";
+
 import { messagesContext } from "~/routes/app/layout";
 
 export interface MessageProps {
-  variant?: "success" | "error" | "info" | "";
+  variant?: "success" | "error" | "info";
   message: string;
   isVisible: boolean;
   id: number;

@@ -26,7 +26,7 @@ export const onRequest: RequestHandler = ({ json, cookie, env }) => {
   }
 };
 interface Message {
-  variant: "info" | "success" | "error" | "";
+  variant: "info" | "success" | "error";
   message: string;
   isVisible: boolean;
   id: number;
