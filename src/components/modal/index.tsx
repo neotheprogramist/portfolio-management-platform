@@ -29,7 +29,7 @@ export const Modal = component$<ModalProps>(
           onClick$={(event) => {
             event.stopPropagation();
           }}
-          class="bg-modal-glass border-white-opacity-20 relative h-5/6 w-1/3 rounded-xl"
+          class="bg-modal-glass custom-border-1 relative h-5/6 w-1/3 rounded-xl"
         >
           <div class="flex items-center justify-between p-5">
             <div class="text-lg text-white">{title}</div>
@@ -47,7 +47,7 @@ export const Modal = component$<ModalProps>(
               <IconClose />
             </button>
           </div>
-          <hr class="opacity-20" />
+          {/* <hr class={`${!isCreateNewStructureModalOpen ? "opacity-20" : "hidden"}`} /> */}
           <Slot />
         </div>
       </div>

@@ -265,7 +265,7 @@ export default component$(() => {
   const clickedToken = useStore({ balanceId: "", structureId: "" });
   const structureStore = useStore({ name: "" });
   const selectedWallets = useStore({ wallets: [] as any[] });
-  const isCreateNewStructureModalOpen = useSignal(false);
+  const isCreateNewStructureModalOpen = useSignal(true);
   const deleteToken = useDeleteToken();
   const availableStructures = useAvailableStructures();
   const createStructureAction = useCreateStructure();
@@ -384,9 +384,9 @@ export default component$(() => {
                       isCreateNewStructureModalOpen.value = false;
                     }
                   }}
-                  class="mt-4"
+                  class="p-5"
                 >
-                  <label for="name" class="block">
+                  <label for="name" class="block custom-text-50 text-xs">
                     Name
                   </label>
                   <input
@@ -402,7 +402,7 @@ export default component$(() => {
                   {!isValidName(structureStore.name) && (
                     <p class="mb-4 text-red-500">Invalid name</p>
                   )}
-                  <label for="walletsId" class="block">
+                  <label for="walletsId" class="block custom-text-50 text-xs">
                     Wallet
                   </label>
                   <select
@@ -432,7 +432,7 @@ export default component$(() => {
                       </option>
                     ))}
                   </select>
-                  <label for="balance" class="block">
+                  <label for="balance" class="block custom-text-50 text-xs">
                     Tokens
                   </label>
                   <select class="text-black" name="balancesId[]" multiple>
