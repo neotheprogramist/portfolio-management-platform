@@ -441,24 +441,22 @@ export default component$(() => {
         console.log(receipt);
       }
 
-      const { value } = await addWalletAction.submit({
+      await addWalletAction.submit({
         address: addWalletFormStore.address as `0x${string}`,
         name: addWalletFormStore.name,
         isExecutable: addWalletFormStore.isExecutable.toString(),
       });
 
-      if (value.success) {
-        messageProvider.messages.push({
-          id: messageProvider.messages.length,
-          variant: "success",
-          message: "Wallet successfully added.",
-          isVisible: true,
-        });
-        addWalletFormStore.address = "";
-        addWalletFormStore.name = "";
-        addWalletFormStore.privateKey = "";
-        addWalletFormStore.isExecutable = 0;
-      }
+      messageProvider.messages.push({
+        id: messageProvider.messages.length,
+        variant: "success",
+        message: "Wallet successfully added.",
+        isVisible: true,
+      });
+      addWalletFormStore.address = "";
+      addWalletFormStore.name = "";
+      addWalletFormStore.privateKey = "";
+      addWalletFormStore.isExecutable = 0;
     } catch (err) {
       messageProvider.messages.push({
         id: messageProvider.messages.length,
@@ -521,18 +519,20 @@ export default component$(() => {
           message: "Transfering tokens...",
           isVisible: true,
         });
+
         const transactionHash = await testWalletClient.writeContract(request);
+
         const receipt = await testPublicClient.waitForTransactionReceipt({
           hash: transactionHash,
         });
-        if (receipt) {
-          messageProvider.messages.push({
-            id: messageProvider.messages.length,
-            variant: "success",
-            message: "Success!",
-            isVisible: true,
-          });
-        }
+
+        messageProvider.messages.push({
+          id: messageProvider.messages.length,
+          variant: "success",
+          message: "Success!",
+          isVisible: true,
+        });
+
         console.log("[receipt]: ", receipt);
       } catch (err) {
         console.log(err);

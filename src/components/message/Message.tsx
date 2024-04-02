@@ -1,4 +1,4 @@
-import { component$, useTask$, useContext } from "@builder.io/qwik";
+import { component$, useTask$, useContext, useSignal } from "@builder.io/qwik";
 
 import { messagesContext } from "~/routes/app/layout";
 
@@ -12,21 +12,25 @@ export interface MessageProps {
 export const Message = component$(
   ({ variant = "info", message = "", isVisible, id }: MessageProps) => {
     const messagesProvider = useContext(messagesContext);
+    const shouldBeVisible = useSignal(false);
 
     useTask$(({ track, cleanup }) => {
       track(() => isVisible);
+      shouldBeVisible.value = isVisible;
+
       if (isVisible) {
         const timeId = setTimeout(() => {
-          isVisible = false;
+          shouldBeVisible.value = false;
           const index = messagesProvider.messages.findIndex((m) => m.id === id);
           messagesProvider.messages.splice(index, 1);
         }, 5000);
+
         cleanup(() => {
           clearTimeout(timeId);
         });
       }
     });
-    if (!isVisible) return null;
+
     return (
       <>
         <div
@@ -43,7 +47,7 @@ export const Message = component$(
           <button
             class="flex h-8 w-8 items-center justify-center"
             onClick$={() => {
-              isVisible = false;
+              shouldBeVisible.value = false;
             }}
           >
             x
