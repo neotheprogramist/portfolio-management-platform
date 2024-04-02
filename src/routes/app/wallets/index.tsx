@@ -334,11 +334,6 @@ const chekckIfProperAmount = (input: string, regex: RegExp) => {
   return regex.test(input);
 };
 
-export interface MessageStore {
-  message: string;
-  variant: "success" | "error" | "info" | "";
-}
-
 export interface addWalletFormStore {
   name: string;
   address: string;
@@ -371,36 +366,37 @@ export default component$(() => {
     isExecutable: 0,
     privateKey: "",
   });
-  const messageStore = useStore<MessageStore>({
-    message: "",
-    variant: "",
-  });
   const receivingWalletAddress = useSignal("");
   const transferredTokenAmount = useSignal("");
-  const isInfoMessageUp = useSignal(false);
-  const isSuccessMessageUp = useSignal(false);
-  const isErrorMessageUp = useSignal(false);
   const messageProvider = useContext(messagesContext);
 
   const handleAddWallet = $(async () => {
     console.log("IN HANDLE ADD WALLET");
     isAddWalletModalOpen.value = false;
-
-    if (addWalletFormStore.isExecutable) {
+    messageProvider.messages.push({
+      variant: 'info',
+      message: "Processing wallet...",
+      isVisible: true
+    })
+try {
+  if (addWalletFormStore.isExecutable) {
       console.log("IN EXECUTABLE BLOCK");
       // create account from PK
       const accountFromPrivateKey = privateKeyToAccount(
         addWalletFormStore.privateKey as `0x${string}`,
       );
+
       addWalletFormStore.address = accountFromPrivateKey.address;
 
       const emethContractAddress = import.meta.env
         .PUBLIC_EMETH_CONTRACT_ADDRESS;
+
       if (!emethContractAddress) {
         throw new Error("Missing PUBLIC_EMETH_CONTRACT_ADDRESS");
       }
-
+  
       const tokens: any = await fetchTokens();
+
       for (const token of tokens) {
         const { request } = await testPublicClient.simulateContract({
           account: accountFromPrivateKey,
@@ -439,17 +435,32 @@ export default component$(() => {
       console.log(receipt);
     }
 
+
     const { value } = await addWalletAction.submit({
       address: addWalletFormStore.address as `0x${string}`,
       name: addWalletFormStore.name,
       isExecutable: addWalletFormStore.isExecutable.toString(),
     });
+
     if (value.success) {
+      messageProvider.messages.push({
+        id: messageProvider.messages.length,
+        variant: 'success',
+        message: "Wallet successfully added.",
+        isVisible: true
+      })
       addWalletFormStore.address = "";
       addWalletFormStore.name = "";
       addWalletFormStore.privateKey = "";
       addWalletFormStore.isExecutable = 0;
     }
+    }catch(err){
+      messageProvider.messages.push({
+        variant: 'error',
+        message: "Something went wrong.",
+        isVisible: true
+      })
+  }
   });
 
   const handleTransfer = $(async () => {

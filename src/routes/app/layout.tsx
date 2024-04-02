@@ -1,4 +1,4 @@
-import { type Signal, Slot, component$, createContextId, useContext, useContextProvider, useStore, } from "@builder.io/qwik";
+import {  Slot, component$, createContextId, useContext, useContextProvider, useStore, } from "@builder.io/qwik";
 import { type RequestHandler } from "@builder.io/qwik-city";
 import jwt from "jsonwebtoken";
 import { Message } from "~/components/message/Message";
@@ -22,6 +22,7 @@ interface Message {
   variant: 'info' | 'success' | "error" | '';
   message: string;
   isVisible: boolean;
+  id:number;
 }
 interface MessagesStore {
   messages: Message[];
@@ -47,7 +48,7 @@ export default component$(() => {
         <Slot />
         <div class="gradient absolute bottom-0 left-1/4 h-1/5 w-6/12 rounded-full"></div>
         <div class='flex flex-col relative bottom-8 left-full'>
-          {messagesProvider.messages.map((item, key) => (<Message key={key} variant={item.variant} message={item.message} isVisible={item.isVisible} />)
+          {messagesProvider.messages.map((item, key) => (<Message id={item.id} key={key} variant={item.variant} message={item.message} isVisible={item.isVisible} />)
 
           )}
         </div>

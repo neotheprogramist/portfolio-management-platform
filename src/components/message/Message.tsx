@@ -1,16 +1,26 @@
-import { component$, type Signal, useTask$ } from "@builder.io/qwik";
+import { component$, type Signal, useTask$, useContext } from "@builder.io/qwik";
+import { M } from "vite/dist/node/types.d-AKzkD8vd";
+import { messagesContext } from "~/routes/app/layout";
+
 export interface MessageProps {
   variant?: "success" | "error" | "info" | "";
   message: string;
   isVisible: boolean;
+  id: number;
 }
+
 export const Message = component$(
-  ({ variant = "info", message = "", isVisible }: MessageProps) => {
+
+  ({ variant = "info", message = "", isVisible, id }: MessageProps) => {
+    const messagesProvider = useContext(messagesContext);
+
     useTask$(({ track, cleanup }) => {
       track(() => isVisible);
       if (isVisible) {
         const timeId = setTimeout(() => {
           isVisible = false;
+          const index = messagesProvider.messages.findIndex(m => m.id === id);
+          messagesProvider.messages.splice(index, 1);
         }, 5000);
         cleanup(() => {
           clearTimeout(timeId);
