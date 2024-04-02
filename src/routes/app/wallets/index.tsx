@@ -76,7 +76,6 @@ export const useAddWallet = routeAction$(
     console.log("USERID", userId);
 
     const existingWallet = await getExistingWallet(db, data.address.toString());
-    console.log("existingWallet", existingWallet);
 
     let walletId;
     if (existingWallet.at(0)) {
@@ -91,13 +90,11 @@ export const useAddWallet = routeAction$(
       const nativeBalance = await testPublicClient.getBalance({
         address: createWalletQueryResult.address as `0x${string}`,
       });
-      console.log("nativebalance", nativeBalance);
       await db.query(
         `UPDATE ${walletId} SET nativeBalance = '${nativeBalance}';`,
       );
 
       // create balances for tokens
-      console.log("FETCH TOKENS");
       const tokens = await db.select<Token>("token");
       for (const token of tokens) {
         const readBalance = await testPublicClient.readContract({
@@ -106,7 +103,6 @@ export const useAddWallet = routeAction$(
           functionName: "balanceOf",
           args: [createWalletQueryResult.address as `0x${string}`],
         });
-        console.log("readBalance", readBalance.toString());
         if (readBalance < 0) {
           continue;
         }
