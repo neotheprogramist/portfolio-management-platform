@@ -13,9 +13,12 @@ import {
   getDBTokensAddresses,
   getTokenImagePath,
 } from "~/interface/wallets/observedWallets";
-import {checksumAddress} from "viem";
+import { checksumAddress } from "viem";
 import { type Wallet } from "~/interface/auth/Wallet";
-import {convertWeiToQuantity, getTotalValueChange} from "~/utils/formatBalances/formatTokenBalance";
+import {
+  convertWeiToQuantity,
+  getTotalValueChange,
+} from "~/utils/formatBalances/formatTokenBalance";
 import { chainIdToNetworkName } from "~/utils/chains";
 import { type Balance } from "~/interface/balance/Balance";
 import { type Token } from "~/interface/token/Token";
@@ -43,8 +46,9 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
     .toISOString()
     .replace(/\.(\d+)Z$/, "+00:00");
 
-  const valueChange: { valueChangeUSD: string; percentageChange: string }[] = [];
-  let totalBalance = 0
+  const valueChange: { valueChangeUSD: string; percentageChange: string }[] =
+    [];
+  let totalBalance = 0;
 
   for (const observedWallet of observedWalletsQueryResult) {
     const [wallet] = await db.select<Wallet>(`${observedWallet}`);
@@ -78,7 +82,6 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
       // })
 
       for (const balanceEntry of dashboardBalance) {
-
         const blockDetails = await Moralis.EvmApi.block.getDateToBlock({
           chain: "0x1",
           date: currentUnixDate,
@@ -91,7 +94,10 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
           address: balanceEntry.tokenAddress,
         });
 
-        if (tokenPriceChange.raw["24hrPercentChange"] && tokenPriceChange.raw.usdPrice) {
+        if (
+          tokenPriceChange.raw["24hrPercentChange"] &&
+          tokenPriceChange.raw.usdPrice
+        ) {
           valueChange.push({
             valueChangeUSD: (
               parseFloat(tokenPriceChange.raw["24hrPercentChange"]) *
@@ -103,18 +109,20 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
                 2,
               ) as string) + "%",
           });
-          totalBalance += parseFloat(balanceEntry.balance) * tokenPriceChange.raw.usdPrice
+          totalBalance +=
+            parseFloat(balanceEntry.balance) * tokenPriceChange.raw.usdPrice;
         }
       }
     } catch (error) {
       console.error(error);
     }
   }
-  const totalValueChange = getTotalValueChange(valueChange)
+  const totalValueChange = getTotalValueChange(valueChange);
 
   return {
     valueChange: totalValueChange.toFixed(2),
-    percentageChange: (100 * totalValueChange / totalBalance).toFixed(2) + "%"
+    percentageChange:
+      ((100 * totalValueChange) / totalBalance).toFixed(2) + "%",
   };
 });
 export const useTotalPortfolioValue = routeLoader$(async (requestEvent) => {

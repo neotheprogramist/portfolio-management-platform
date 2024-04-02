@@ -10,13 +10,14 @@ export const convertWeiToQuantity = (
   return `${formattedBalance}.${remainder}`;
 };
 
+export const getTotalValueChange = (
+  valueChange: { valueChangeUSD: string; percentageChange: string }[],
+) => {
+  let totalValueChange = 0;
 
-export const getTotalValueChange = (valueChange: {valueChangeUSD: string, percentageChange: string}[]) => {
-  let totalValueChange = 0
+  valueChange.forEach((obj) => {
+    totalValueChange += parseFloat(obj.valueChangeUSD);
+  });
 
-  valueChange.forEach(obj => {
-    totalValueChange += parseFloat(obj.valueChangeUSD)
-  })
-
-  return totalValueChange
-}
+  return totalValueChange;
+};
