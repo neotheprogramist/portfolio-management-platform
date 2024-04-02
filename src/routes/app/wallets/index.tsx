@@ -516,7 +516,7 @@ export default component$(() => {
         messageProvider.messages.push({
           id: messageProvider.messages.length,
           variant: "info",
-          message: "Transfering tokens...",
+          message: "Transferring tokens...",
           isVisible: true,
         });
 
