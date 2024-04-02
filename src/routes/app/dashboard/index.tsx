@@ -13,15 +13,110 @@ import {
   getDBTokensAddresses,
   getTokenImagePath,
 } from "~/interface/wallets/observedWallets";
-import { checksumAddress } from "viem";
+import {checksumAddress} from "viem";
 import { type Wallet } from "~/interface/auth/Wallet";
-import { convertWeiToQuantity } from "~/utils/formatBalances/formatTokenBalance";
+import {convertWeiToQuantity, getTotalValueChange} from "~/utils/formatBalances/formatTokenBalance";
 import { chainIdToNetworkName } from "~/utils/chains";
 import { type Balance } from "~/interface/balance/Balance";
 import { type Token } from "~/interface/token/Token";
 import { testPublicClient } from "../wallets/testconfig";
 import { contractABI } from "~/abi/abi";
+import Moralis from "moralis";
 
+export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
+  const db = await connectToDB(requestEvent.env);
+
+  const cookie = requestEvent.cookie.get("accessToken");
+  if (!cookie) {
+    throw new Error("No cookie found");
+  }
+  const { userId } = jwt.decode(cookie.value) as JwtPayload;
+
+  const [result]: any = await db.query(
+    `SELECT VALUE ->observes_wallet.out FROM ${userId};`,
+  );
+  if (!result) throw new Error("No observed wallets");
+  const observedWalletsQueryResult = result[0];
+
+  const dashboardBalance: { tokenAddress: string; balance: string }[] = [];
+  const currentUnixDate = new Date(Date.now())
+    .toISOString()
+    .replace(/\.(\d+)Z$/, "+00:00");
+
+  const valueChange: { valueChangeUSD: string; percentageChange: string }[] = [];
+  let totalBalance = 0
+
+  for (const observedWallet of observedWalletsQueryResult) {
+    const [wallet] = await db.select<Wallet>(`${observedWallet}`);
+
+    // For each token update balance
+    const tokens = await db.select<Token>("token");
+    for (const token of tokens) {
+      const readBalance = await testPublicClient.readContract({
+        address: token.address as `0x${string}`,
+        abi: contractABI,
+        functionName: "balanceOf",
+        args: [wallet.address as `0x${string}`],
+      });
+
+      const formattedBalance = convertWeiToQuantity(
+        readBalance.toString(),
+        token.decimals,
+      );
+
+      if (readBalance !== BigInt(0) && formattedBalance !== "0.000") {
+        dashboardBalance.push({
+          tokenAddress: token.address,
+          balance: formattedBalance,
+        });
+      }
+    }
+
+    try {
+      // await Moralis.start({
+      //   apiKey: requestEvent.env.get("MORALIS_API_KEY")
+      // })
+
+      for (const balanceEntry of dashboardBalance) {
+
+        const blockDetails = await Moralis.EvmApi.block.getDateToBlock({
+          chain: "0x1",
+          date: currentUnixDate,
+        });
+
+        const tokenPriceChange = await Moralis.EvmApi.token.getTokenPrice({
+          chain: "0x1",
+          include: "percent_change",
+          toBlock: blockDetails.raw.block,
+          address: balanceEntry.tokenAddress,
+        });
+
+        if (tokenPriceChange.raw["24hrPercentChange"] && tokenPriceChange.raw.usdPrice) {
+          valueChange.push({
+            valueChangeUSD: (
+              parseFloat(tokenPriceChange.raw["24hrPercentChange"]) *
+              parseInt(balanceEntry.balance) *
+              0.01
+            ).toFixed(2),
+            percentageChange:
+              (parseFloat(tokenPriceChange.raw["24hrPercentChange"]).toFixed(
+                2,
+              ) as string) + "%",
+          });
+          totalBalance += parseFloat(balanceEntry.balance) * tokenPriceChange.raw.usdPrice
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  const totalValueChange = getTotalValueChange(valueChange)
+
+  return {
+    valueChange: totalValueChange.toFixed(2),
+    percentageChange: (100 * totalValueChange / totalBalance).toFixed(2) + "%"
+  };
+});
 export const useTotalPortfolioValue = routeLoader$(async (requestEvent) => {
   const db = await connectToDB(requestEvent.env);
 
@@ -189,17 +284,20 @@ export default component$(() => {
   const isPortfolioFullScreen = useSignal(false);
   const totalPortfolioValue = useTotalPortfolioValue();
   const favoriteTokens = useGetFavoriteTokens();
+  const portfolioValueChange = usePortfolio24hChange();
 
   return isPortfolioFullScreen.value ? (
     <PortfolioValue
       totalPortfolioValue={totalPortfolioValue.value}
       isPortfolioFullScreen={isPortfolioFullScreen}
+      portfolioValueChange={portfolioValueChange.value}
     />
   ) : (
     <div class="grid grid-cols-4 grid-rows-[48%_48%] gap-[24px] overflow-auto p-[40px]">
       <PortfolioValue
         totalPortfolioValue={totalPortfolioValue.value}
         isPortfolioFullScreen={isPortfolioFullScreen}
+        portfolioValueChange={portfolioValueChange.value}
       />
 
       <div class="custom-border-1 custom-bg-white custom-shadow col-start-3 row-span-1 row-start-1 grid grid-rows-[32px_1fr] gap-[16px] overflow-auto rounded-[16px] p-[24px]">
