@@ -106,7 +106,6 @@ export const setupStream = server$(async function () {
   const address = "0xa3EA94756a6d1f6Bc4727a38fe5F7aa4d568D52E";
   await Moralis.Streams.addAddress({ address, id });
 
-  
   _stream = newStream;
   console.log("-->Stream in setupStream", _stream);
   return newStream;
