@@ -15,8 +15,11 @@ import {
   type ModalStore,
   ModalStoreContext,
 } from "~/interface/web3modal/ModalStore";
-import { getStream, initializeStreamIfNeeded, setupStream } from "~/utils/stream";
-
+import {
+  getStream,
+  initializeStreamIfNeeded,
+  setupStream,
+} from "~/utils/stream";
 
 const metadata = {
   name: "Web3Modal",
