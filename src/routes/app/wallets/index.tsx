@@ -76,6 +76,7 @@ export const useAddWallet = routeAction$(
     console.log("USERID", userId);
 
     const existingWallet = await getExistingWallet(db, data.address.toString());
+    console.log("existingWallet", existingWallet);
 
     let walletId;
     if (existingWallet.at(0)) {
@@ -90,6 +91,7 @@ export const useAddWallet = routeAction$(
       const nativeBalance = await testPublicClient.getBalance({
         address: createWalletQueryResult.address as `0x${string}`,
       });
+      console.log("nativebalance", nativeBalance);
       await db.query(
         `UPDATE ${walletId} SET nativeBalance = '${nativeBalance}';`,
       );
@@ -213,6 +215,7 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
   const observedWalletsQueryResult = result[0]["->observes_wallet"].out;
 
   const observedWallets: WalletTokensBalances[] = [];
+  console.log("looping observed wallets...")
   for (const observedWallet of observedWalletsQueryResult) {
     const [wallet] = await db.select<Wallet>(`${observedWallet}`);
     const nativeBalance = await testPublicClient.getBalance({
