@@ -6,7 +6,7 @@ export const onPost: RequestHandler = async ({ request, json }) => {
     console.log("stream body", webhook);
 
     const transfers = webhook["erc20Transfers"];
-    console.log("stram transfers", transfers);
+    console.log("steram transfers", transfers);
     if (transfers) {
       for (const transfer of transfers) {
         const { from, to, tokenSymbol, valueWithDecimals, triggers } = transfer;
