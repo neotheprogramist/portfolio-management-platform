@@ -374,6 +374,8 @@ const addAddressToStreamConfig = server$(async function (
 
 export default component$(() => {
   const modalStore = useContext(ModalStoreContext);
+  const messageProvider = useContext(messagesContext);
+  const { streamId } = useContext(StreamStoreContext);
   const addWalletAction = useAddWallet();
   const removeWalletAction = useRemoveWallet();
   const observedWallets = useObservedWallets();
@@ -390,8 +392,6 @@ export default component$(() => {
   });
   const receivingWalletAddress = useSignal("");
   const transferredTokenAmount = useSignal("");
-  const { streamId } = useContext(StreamStoreContext);
-  const messageProvider = useContext(messagesContext);
 
   const handleAddWallet = $(async () => {
     console.log("IN HANDLE ADD WALLET");
