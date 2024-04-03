@@ -60,7 +60,7 @@ import { type Token } from "~/interface/token/Token";
 import { testPublicClient, testWalletClient } from "./testconfig";
 import Moralis from "moralis";
 import { StreamStoreContext } from "~/interface/streamStore/streamStore";
-import { getAccount, simulateContract, writeContract } from "@wagmi/core";
+import { simulateContract, writeContract } from "@wagmi/core";
 import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
 import { messagesContext } from "../layout";
 
@@ -412,11 +412,11 @@ export default component$(() => {
 
         addWalletFormStore.address = accountFromPrivateKey.address;
 
-      const emethContractAddress = import.meta.env
-        .PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA;
-      if (!emethContractAddress) {
-        throw new Error("Missing PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA");
-      }
+        const emethContractAddress = import.meta.env
+          .PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA;
+        if (!emethContractAddress) {
+          throw new Error("Missing PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA");
+        }
 
         const tokens: any = await fetchTokens();
 
@@ -528,22 +528,23 @@ export default component$(() => {
         const { request } = await simulateContract(modalStore.config, {
           abi: emethContractAbi,
           address: emethContractAddress,
-          functionName: 'transferToken',
+          functionName: "transferToken",
           args: [
             token as `0x${string}`,
             from as `0x${string}`,
             to as `0x${string}`,
             BigInt(calculation),
           ],
-        })
-        console.log("--> TRANSFER REQUEST", request);        messageProvider.messages.push({
+        });
+        console.log("--> TRANSFER REQUEST", request);
+        messageProvider.messages.push({
           id: messageProvider.messages.length,
           variant: "info",
           message: "Transferring tokens...",
           isVisible: true,
         });
 
-        const transactionHash = await writeContract(modalStore.config, request)
+        const transactionHash = await writeContract(modalStore.config, request);
 
         const receipt = await testPublicClient.waitForTransactionReceipt({
           hash: transactionHash,
