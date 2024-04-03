@@ -1,21 +1,26 @@
-import { LoginText } from "~/components/login-text/login-text";
+import { TitleDescription } from "~/components/login-text/login-text";
 import { component$ } from "@builder.io/qwik";
 import { Button } from "~/components/button-login/button-login";
 import WalletConnect from "~/components/wallet-connect";
-import { Paragraph } from "~/components/paragraph/paragraph";
+import { Copyright } from "~/components/paragraph/paragraph";
 import { mainnet, sepolia } from "viem/chains";
 
 export default component$(() => {
   return (
     <>
-    <div class="background-container">
-      {/* <img src="../../public/assets/icons/vector1.svg" alt="" srcset="" class="w-full"/> */}
-    </div>
-      <div class="content-container grid h-full min-w-80 grid-rows-[2fr_0.5fr] items-center gap-10 pt-36">
-        <div class="grid justify-items-center items-center gap-10">
-          <IconLogo class="w-28 h-6"/>
-          <LoginText/>
-          <div class="grid gap-3">
+      <div class="background-container">
+        {/* <img src="../../public/assets/icons/vector1.svg" alt="" srcset="" class="w-full"/> */}
+      </div>
+      <div class="content-container grid h-full grid-rows-[85%_15%] items-center justify-items-center">
+        <div class="grid gap-10 pt-20">
+          <div class="grid max-w-md justify-items-center gap-6">
+            <IconLogo class="h-6 w-28" />
+            <TitleDescription
+              title="Login to Emeth"
+              description="Log in to the app using your Crypto Wallet"
+            />
+          </div>
+          <div class="grid justify-items-center gap-3">
             <WalletConnect
               image="/assets/icons/login/metamask.svg"
               text="Use Metamask"
@@ -34,13 +39,13 @@ export default component$(() => {
             />
           </div>
         </div>
-        <div class="grid justify-items-center gap-6">
+        <div class="grid h-full items-end justify-items-center gap-6 pb-10">
           <Button
             image="/assets/icons/info-white.svg"
             text="How to use Wallet?"
-            class="w-52 py-2 pr-3 pl-2 text-xs !border-0 bg-customBlue"
+            class="w-52 !border-0 bg-customBlue py-2 pl-2 pr-3 text-xs"
           />
-          <Paragraph />
+          <Copyright />
         </div>
       </div>
     </>

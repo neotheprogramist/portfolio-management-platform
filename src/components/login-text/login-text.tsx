@@ -1,12 +1,15 @@
 import { component$ } from "@builder.io/qwik";
+export interface TitleDescriptionProps {
+  title?: string;
+  description?: string;
+  class?: string;
+}
 
-export const LoginText = component$(() => {
+export const TitleDescription = component$<TitleDescriptionProps>((props) => {
   return (
-    <div class="text-center">
-      <h1 class="pb-6 text-4xl font-medium">Login to Emeth</h1>
-      <p class="text-base font-normal ">
-        Log in to the app using your Crypto Wallet
-      </p>
+    <div class="grid gap-6 text-center">
+      <h1 class="text-4xl font-medium">{props.title}</h1>
+      <p class="text-base font-normal">{props.description}</p>
     </div>
   );
 });

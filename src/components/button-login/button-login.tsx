@@ -18,7 +18,7 @@ export const Button = component$<ButtonProps>((props) => {
     <button
       onClick$={props.onClick$}
       class={twMerge(
-        "flex items-center justify-between rounded-3xl custom-border-2 p-3 w-72",
+        "custom-border-2 flex w-72 items-center justify-between rounded-3xl p-3 text-sm",
         props.class,
       )}
     >
