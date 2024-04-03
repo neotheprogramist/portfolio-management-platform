@@ -60,6 +60,8 @@ import { type Token } from "~/interface/token/Token";
 import { testPublicClient, testWalletClient } from "./testconfig";
 import Moralis from "moralis";
 import { StreamStoreContext } from "~/interface/streamStore/streamStore";
+import { getAccount, simulateContract, writeContract } from "@wagmi/core";
+import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
 import { messagesContext } from "../layout";
 
 export const useAddWallet = routeAction$(
@@ -371,6 +373,7 @@ const addAddressToStreamConfig = server$(async function (
 });
 
 export default component$(() => {
+  const modalStore = useContext(ModalStoreContext);
   const addWalletAction = useAddWallet();
   const removeWalletAction = useRemoveWallet();
   const observedWallets = useObservedWallets();
@@ -484,9 +487,10 @@ export default component$(() => {
   });
 
   const handleTransfer = $(async () => {
-    if (selectedWallet.value == null) {
+    if (!selectedWallet.value || !modalStore.config) {
       return { error: "no chosen wallet" };
     }
+
     const from = selectedWallet.value.wallet.address;
     const to = receivingWalletAddress.value;
     const token = transferredCoin.address;
@@ -517,26 +521,29 @@ export default component$(() => {
       const emethContractAddress = import.meta.env
         .PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA;
       try {
-        const { request } = await testPublicClient.simulateContract({
-          account: from as `0x${string}`,
-          address: emethContractAddress,
+        console.log("--> address: emethContractAddress", emethContractAddress);
+        console.log("--> token", token);
+        console.log("--> to", to);
+
+        const { request } = await simulateContract(modalStore.config, {
           abi: emethContractAbi,
-          functionName: "transferToken",
+          address: emethContractAddress,
+          functionName: 'transferToken',
           args: [
             token as `0x${string}`,
             from as `0x${string}`,
             to as `0x${string}`,
             BigInt(calculation),
           ],
-        });
-        messageProvider.messages.push({
+        })
+        console.log("--> TRANSFER REQUEST", request);        messageProvider.messages.push({
           id: messageProvider.messages.length,
           variant: "info",
           message: "Transferring tokens...",
           isVisible: true,
         });
 
-        const transactionHash = await testWalletClient.writeContract(request);
+        const transactionHash = await writeContract(modalStore.config, request)
 
         const receipt = await testPublicClient.waitForTransactionReceipt({
           hash: transactionHash,
