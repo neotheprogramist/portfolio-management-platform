@@ -11,7 +11,7 @@ import {
 import type { RequestHandler } from "@builder.io/qwik-city";
 import { reconnect, watchAccount } from "@wagmi/core";
 import { defaultWagmiConfig } from "@web3modal/wagmi";
-import { type Chain, arbitrum, mainnet } from "viem/chains";
+import { type Chain, arbitrum, mainnet, sepolia } from "viem/chains";
 import { StreamStoreContext } from "~/interface/streamStore/streamStore";
 import {
   type ModalStore,
@@ -61,7 +61,7 @@ export default component$(() => {
 
   // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(() => {
-    const chains: [Chain, ...Chain[]] = [arbitrum, mainnet];
+    const chains: [Chain, ...Chain[]] = [arbitrum, mainnet, sepolia];
     const projectId = import.meta.env.PUBLIC_PROJECT_ID;
     if (!projectId || typeof projectId !== "string") {
       throw new Error("Missing project ID");

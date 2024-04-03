@@ -250,10 +250,10 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
       });
 
       const emethContractAddress = requestEvent.env.get(
-        "PUBLIC_EMETH_CONTRACT_ADDRESS",
+        "PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA",
       );
       if (!emethContractAddress) {
-        throw new Error("Missing PUBLIC_EMETH_CONTRACT_ADDRESS");
+        throw new Error("Missing PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA");
       }
 
       const allowance = await testPublicClient.readContract({
@@ -409,12 +409,11 @@ export default component$(() => {
 
         addWalletFormStore.address = accountFromPrivateKey.address;
 
-        const emethContractAddress = import.meta.env
-          .PUBLIC_EMETH_CONTRACT_ADDRESS;
-
-        if (!emethContractAddress) {
-          throw new Error("Missing PUBLIC_EMETH_CONTRACT_ADDRESS");
-        }
+      const emethContractAddress = import.meta.env
+        .PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA;
+      if (!emethContractAddress) {
+        throw new Error("Missing PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA");
+      }
 
         const tokens: any = await fetchTokens();
 
@@ -516,7 +515,7 @@ export default component$(() => {
       const cookie = getCookie("accessToken");
       if (!cookie) throw new Error("No accessToken cookie found");
       const emethContractAddress = import.meta.env
-        .PUBLIC_EMETH_CONTRACT_ADDRESS;
+        .PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA;
       try {
         const { request } = await testPublicClient.simulateContract({
           account: from as `0x${string}`,

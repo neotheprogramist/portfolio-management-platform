@@ -156,6 +156,6 @@ export const contractABI = [
 ] as const;
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
+  chain: sepolia,
   transport: http(),
 });
