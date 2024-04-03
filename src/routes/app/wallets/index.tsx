@@ -58,6 +58,8 @@ import { getCookie } from "~/utils/refresh";
 import * as jwtDecode from "jwt-decode";
 import { type Token } from "~/interface/token/Token";
 import { testPublicClient, testWalletClient } from "./testconfig";
+import Moralis from "moralis";
+import { StreamStoreContext } from "~/interface/streamStore/streamStore";
 import { messagesContext } from "../layout";
 
 export const useAddWallet = routeAction$(
@@ -120,6 +122,11 @@ export const useAddWallet = routeAction$(
     if (!(await getExistingRelation(db, userId, walletId)).at(0)) {
       await db.query(`RELATE ONLY ${userId}->observes_wallet->${walletId};`);
     }
+
+    const streams = await Moralis.Streams.getAll({
+      limit: 100,
+    });
+    console.log("add wallet streams", streams["jsonResponse"]["result"]);
 
     return {
       success: true,
@@ -355,6 +362,14 @@ const fetchTokens = server$(async function () {
   return await db.select<Token>("token");
 });
 
+const addAddressToStreamConfig = server$(async function (
+  streamId: string,
+  address: string,
+) {
+  await Moralis.Streams.addAddress({ address, id: streamId });
+  console.log("address added to stream config");
+});
+
 export default component$(() => {
   const addWalletAction = useAddWallet();
   const removeWalletAction = useRemoveWallet();
@@ -372,6 +387,7 @@ export default component$(() => {
   });
   const receivingWalletAddress = useSignal("");
   const transferredTokenAmount = useSignal("");
+  const { streamId } = useContext(StreamStoreContext);
   const messageProvider = useContext(messagesContext);
 
   const handleAddWallet = $(async () => {
@@ -452,6 +468,8 @@ export default component$(() => {
         message: "Wallet successfully added.",
         isVisible: true,
       });
+      console.log("wallet added successfully, adding address to stream...");
+      await addAddressToStreamConfig(streamId, addWalletFormStore.address);
       addWalletFormStore.address = "";
       addWalletFormStore.name = "";
       addWalletFormStore.privateKey = "";

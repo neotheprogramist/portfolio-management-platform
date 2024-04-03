@@ -6,11 +6,13 @@ import {
   noSerialize,
   useVisibleTask$,
   useTask$,
+  useContext,
 } from "@builder.io/qwik";
 import type { RequestHandler } from "@builder.io/qwik-city";
 import { reconnect, watchAccount } from "@wagmi/core";
 import { defaultWagmiConfig } from "@web3modal/wagmi";
 import { type Chain, arbitrum, mainnet } from "viem/chains";
+import { StreamStoreContext } from "~/interface/streamStore/streamStore";
 import {
   type ModalStore,
   ModalStoreContext,
@@ -44,6 +46,8 @@ export default component$(() => {
     isConnected: undefined,
     config: undefined,
   });
+  useContextProvider(StreamStoreContext, { streamId: "" });
+  const streamStore = useContext(StreamStoreContext);
 
   useTask$(async function () {
     console.log("Setting up stream...");
@@ -51,6 +55,8 @@ export default component$(() => {
     console.log("initialized stream");
     const stream = await getStream();
     console.log("Stream", stream);
+    streamStore.streamId = stream["jsonResponse"]["id"];
+    console.log("stream id", streamStore.streamId);
   });
 
   // eslint-disable-next-line qwik/no-use-visible-task
