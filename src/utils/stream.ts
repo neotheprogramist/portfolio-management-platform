@@ -26,7 +26,9 @@ export const setupStream = server$(async function () {
   const balanceOfSenderABI = {
     inputs: [{ internalType: "address", name: "", type: "address" }],
     name: "balanceOf",
-    outputs: [{ internalType: "uint256", name: "fromBalance", type: "uint256" }],
+    outputs: [
+      { internalType: "uint256", name: "fromBalance", type: "uint256" },
+    ],
     stateMutability: "view",
     type: "function",
   };

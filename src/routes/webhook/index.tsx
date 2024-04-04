@@ -7,7 +7,7 @@ export const onPost: RequestHandler = async ({ request, json }) => {
     const webhook = await request.json();
     const transfers = webhook["erc20Transfers"];
     if (transfers) {
-      for (const  transfer of transfers) {
+      for (const transfer of transfers) {
         const { from, to, tokenSymbol, triggers } = transfer;
         console.log("========================");
         console.log("from", from);
