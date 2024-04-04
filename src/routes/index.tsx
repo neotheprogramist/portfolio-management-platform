@@ -4,6 +4,7 @@ import { Button } from "~/components/button-login/button-login";
 import WalletConnect from "~/components/wallet-connect";
 import { Copyright } from "~/components/paragraph/paragraph";
 import { mainnet, sepolia } from "viem/chains";
+import IconLogo from "/public/assets/icons/logo.svg?jsx"
 
 export default component$(() => {
   return (
