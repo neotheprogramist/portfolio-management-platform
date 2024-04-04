@@ -58,6 +58,10 @@ import { getCookie } from "~/utils/refresh";
 import * as jwtDecode from "jwt-decode";
 import { type Token } from "~/interface/token/Token";
 import { testPublicClient, testWalletClient } from "./testconfig";
+import Moralis from "moralis";
+import { StreamStoreContext } from "~/interface/streamStore/streamStore";
+import { simulateContract, writeContract } from "@wagmi/core";
+import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
 import { messagesContext } from "../layout";
 
 export const useAddWallet = routeAction$(
@@ -95,7 +99,6 @@ export const useAddWallet = routeAction$(
       );
 
       // create balances for tokens
-      console.log("FETCH TOKENS");
       const tokens = await db.select<Token>("token");
       for (const token of tokens) {
         const readBalance = await testPublicClient.readContract({
@@ -104,7 +107,6 @@ export const useAddWallet = routeAction$(
           functionName: "balanceOf",
           args: [createWalletQueryResult.address as `0x${string}`],
         });
-        console.log("readBalance", readBalance.toString());
         if (readBalance < 0) {
           continue;
         }
@@ -122,6 +124,11 @@ export const useAddWallet = routeAction$(
     if (!(await getExistingRelation(db, userId, walletId)).at(0)) {
       await db.query(`RELATE ONLY ${userId}->observes_wallet->${walletId};`);
     }
+
+    const streams = await Moralis.Streams.getAll({
+      limit: 100,
+    });
+    console.log("add wallet streams", streams["jsonResponse"]["result"]);
 
     return {
       success: true,
@@ -213,6 +220,7 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
   const observedWalletsQueryResult = result[0]["->observes_wallet"].out;
 
   const observedWallets: WalletTokensBalances[] = [];
+  console.log("looping observed wallets...");
   for (const observedWallet of observedWalletsQueryResult) {
     const [wallet] = await db.select<Wallet>(`${observedWallet}`);
     const nativeBalance = await testPublicClient.getBalance({
@@ -244,10 +252,10 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
       });
 
       const emethContractAddress = requestEvent.env.get(
-        "PUBLIC_EMETH_CONTRACT_ADDRESS",
+        "PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA",
       );
       if (!emethContractAddress) {
-        throw new Error("Missing PUBLIC_EMETH_CONTRACT_ADDRESS");
+        throw new Error("Missing PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA");
       }
 
       const allowance = await testPublicClient.readContract({
@@ -356,7 +364,18 @@ const fetchTokens = server$(async function () {
   return await db.select<Token>("token");
 });
 
+const addAddressToStreamConfig = server$(async function (
+  streamId: string,
+  address: string,
+) {
+  await Moralis.Streams.addAddress({ address, id: streamId });
+  console.log("address added to stream config");
+});
+
 export default component$(() => {
+  const modalStore = useContext(ModalStoreContext);
+  const messageProvider = useContext(messagesContext);
+  const { streamId } = useContext(StreamStoreContext);
   const addWalletAction = useAddWallet();
   const removeWalletAction = useRemoveWallet();
   const observedWallets = useObservedWallets();
@@ -373,7 +392,6 @@ export default component$(() => {
   });
   const receivingWalletAddress = useSignal("");
   const transferredTokenAmount = useSignal("");
-  const messageProvider = useContext(messagesContext);
 
   const handleAddWallet = $(async () => {
     console.log("IN HANDLE ADD WALLET");
@@ -395,10 +413,9 @@ export default component$(() => {
         addWalletFormStore.address = accountFromPrivateKey.address;
 
         const emethContractAddress = import.meta.env
-          .PUBLIC_EMETH_CONTRACT_ADDRESS;
-
+          .PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA;
         if (!emethContractAddress) {
-          throw new Error("Missing PUBLIC_EMETH_CONTRACT_ADDRESS");
+          throw new Error("Missing PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA");
         }
 
         const tokens: any = await fetchTokens();
@@ -453,6 +470,8 @@ export default component$(() => {
         message: "Wallet successfully added.",
         isVisible: true,
       });
+      console.log("wallet added successfully, adding address to stream...");
+      await addAddressToStreamConfig(streamId, addWalletFormStore.address);
       addWalletFormStore.address = "";
       addWalletFormStore.name = "";
       addWalletFormStore.privateKey = "";
@@ -468,9 +487,10 @@ export default component$(() => {
   });
 
   const handleTransfer = $(async () => {
-    if (selectedWallet.value == null) {
+    if (!selectedWallet.value || !modalStore.config) {
       return { error: "no chosen wallet" };
     }
+
     const from = selectedWallet.value.wallet.address;
     const to = receivingWalletAddress.value;
     const token = transferredCoin.address;
@@ -499,12 +519,15 @@ export default component$(() => {
       const cookie = getCookie("accessToken");
       if (!cookie) throw new Error("No accessToken cookie found");
       const emethContractAddress = import.meta.env
-        .PUBLIC_EMETH_CONTRACT_ADDRESS;
+        .PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA;
       try {
-        const { request } = await testPublicClient.simulateContract({
-          account: from as `0x${string}`,
-          address: emethContractAddress,
+        console.log("--> address: emethContractAddress", emethContractAddress);
+        console.log("--> token", token);
+        console.log("--> to", to);
+
+        const { request } = await simulateContract(modalStore.config, {
           abi: emethContractAbi,
+          address: emethContractAddress,
           functionName: "transferToken",
           args: [
             token as `0x${string}`,
@@ -513,6 +536,7 @@ export default component$(() => {
             BigInt(calculation),
           ],
         });
+        console.log("--> TRANSFER REQUEST", request);
         messageProvider.messages.push({
           id: messageProvider.messages.length,
           variant: "info",
@@ -520,7 +544,7 @@ export default component$(() => {
           isVisible: true,
         });
 
-        const transactionHash = await testWalletClient.writeContract(request);
+        const transactionHash = await writeContract(modalStore.config, request);
 
         const receipt = await testPublicClient.waitForTransactionReceipt({
           hash: transactionHash,
