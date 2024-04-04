@@ -9,7 +9,7 @@ import {
 } from "~/components/wallet-connect/server";
 import { disconnect, getAccount, getChainId, signMessage } from "@wagmi/core";
 import { SiweMessage } from "siwe";
-import { TitleDescription } from "~/components/login-text/login-text";
+import { HeroSection } from "~/components/login-text/login-text";
 import IconHandshake from "/public/assets/icons/signin/handshake.svg?jsx";
 
 export default component$(() => {
@@ -62,26 +62,25 @@ export default component$(() => {
       <div class="background-container"></div>
       <div class="content-container grid h-full grid-rows-[85%_15%] items-center justify-items-center">
         <div class="grid min-w-[448px] max-w-md gap-10 pt-20">
-          <div class="grid justify-items-center gap-6">
-            <IconHandshake class="h-auto w-auto" />
-            <TitleDescription
-              title="Welcome to Emeth"
-              description="By connecting your wallet and using Emeth, you agree to our Terms of Service and Privacy Policy."
-            />
-          </div>
-          <div class="grid w-full grid-cols-2 justify-items-center gap-4">
+          <HeroSection
+            title="Welcome to Emeth"
+            description="By connecting your wallet and using Emeth, you agree to our Terms of Service and Privacy Policy."
+          >
+            <IconHandshake />
+          </HeroSection>
+          <div class="grid w-full grid-cols-2 gap-4">
             <Button
               onClick$={cancelHandler}
               text="Cancel"
-              border="custom-border-1"
+              border="custom-border-2"
               width="w-full"
             />
             <Button
               onClick$={signInHandler}
               text="Accept and Sign"
               width="w-full"
-              class="rounded-[48px] bg-black py-[14.5px]"
-              background="border-none bg-gradient-to-r from-orange-500 via-red-500 to-blue-500 p-[1px]"
+              class="rounded-[48px] bg-black py-[14px]"
+              background="border-none custom-btn-gradient p-[2px]"
             />
           </div>
         </div>

@@ -138,6 +138,20 @@ body {
   z-index: -1;
 }
 
+.custom-btn-gradient {
+  background: linear-gradient(
+    to right,
+    #da301f,
+    #f48946,
+    #ee3560,
+    #fa4784,
+    #ff48c0,
+    #8e38b5,
+    #5542bb,
+    #0051c3
+  );
+}
+
 .bg-modal-glass {
   background: linear-gradient(98deg, rgb(27, 27, 27) 0%, rgb(0, 0, 0) 100%);
 }
