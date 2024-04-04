@@ -23,24 +23,32 @@ export async function initializeStreamIfNeeded(factory: () => Promise<any>) {
 }
 
 export const setupStream = server$(async function () {
-  const balanceOfABI = {
+  const balanceOfSenderABI = {
     inputs: [{ internalType: "address", name: "", type: "address" }],
     name: "balanceOf",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    outputs: [{ internalType: "uint256", name: "fromBalance", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  };
+
+  const balanceOfReceiverABI = {
+    inputs: [{ internalType: "address", name: "", type: "address" }],
+    name: "balanceOf",
+    outputs: [{ internalType: "uint256", name: "toBalance", type: "uint256" }],
     stateMutability: "view",
     type: "function",
   };
 
   const triggerFrom = {
     contractAddress: "$contract",
-    functionAbi: balanceOfABI,
+    functionAbi: balanceOfSenderABI,
     inputs: ["$from"],
     type: "erc20transfer" as const,
   };
 
   const triggerTo = {
     contractAddress: "$contract",
-    functionAbi: balanceOfABI,
+    functionAbi: balanceOfReceiverABI,
     inputs: ["$to"],
     type: "erc20transfer" as const,
   };
