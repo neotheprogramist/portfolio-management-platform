@@ -1,4 +1,4 @@
-import { component$, useSignal } from "@builder.io/qwik";
+import { $, component$, useSignal, useStore, useTask$ } from "@builder.io/qwik";
 import { PortfolioValue } from "~/components/portfolioValue/portfolioValue";
 import { Alert } from "~/components/alerts/alert";
 import { Action } from "~/components/actions/action";
@@ -6,7 +6,7 @@ import { TokenRow } from "~/components/tokens/tokenRow";
 import IconWarning from "/public/assets/icons/dashboard/warning.svg?jsx";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 import { connectToDB } from "~/utils/db";
-import { routeLoader$, useNavigate } from "@builder.io/qwik-city";
+import { routeAction$, routeLoader$, useNavigate } from "@builder.io/qwik-city";
 import {
   fetchTokenDayData,
   getDBTokenPriceUSD,
@@ -20,13 +20,20 @@ import {
   getTotalValueChange,
 } from "~/utils/formatBalances/formatTokenBalance";
 import { chainIdToNetworkName } from "~/utils/chains";
-import { type Balance } from "~/interface/balance/Balance";
+import { type Balance, PeriodState } from "~/interface/balance/Balance";
 import { type Token } from "~/interface/token/Token";
 import { testPublicClient } from "../wallets/testconfig";
 import { contractABI } from "~/abi/abi";
 import Moralis from "moralis";
+import {
+  generateTimestamps,
+  getSelectedPeriodInHours,
+} from "~/utils/timestamps/timestamp";
 
-export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
+export const useToggleChart = routeAction$(async (data, requestEvent) => {
+  const selectedPeriod: { period: number; interval: number } =
+    getSelectedPeriodInHours(data as PeriodState);
+
   const db = await connectToDB(requestEvent.env);
 
   const cookie = requestEvent.cookie.get("accessToken");
@@ -42,13 +49,23 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
   const observedWalletsQueryResult = result[0];
 
   const dashboardBalance: { tokenAddress: string; balance: string }[] = [];
-  const currentUnixDate = new Date(Date.now())
-    .toISOString()
-    .replace(/\.(\d+)Z$/, "+00:00");
-
-  const valueChange: { valueChangeUSD: string; percentageChange: string }[] =
-    [];
-  let totalBalance = 0;
+  const blocks = [];
+  const chartData = [];
+  const chartTimestamps = generateTimestamps(
+    selectedPeriod.period,
+    selectedPeriod.interval,
+  );
+  for (const item of chartTimestamps) {
+    try {
+      const blockDetails = await Moralis.EvmApi.block.getDateToBlock({
+        chain: "0x1",
+        date: item,
+      });
+      blocks.push(blockDetails.raw.block);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   for (const observedWallet of observedWalletsQueryResult) {
     const [wallet] = await db.select<Wallet>(`${observedWallet}`);
@@ -82,6 +99,105 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
       // })
 
       for (const balanceEntry of dashboardBalance) {
+        for (const block of blocks) {
+          try {
+            const tokenPrice = await Moralis.EvmApi.token.getTokenPrice({
+              chain: "0x1",
+              toBlock: block,
+              address: balanceEntry.tokenAddress,
+            });
+
+            chartData.push(
+              tokenPrice.raw.usdPrice * parseFloat(balanceEntry.balance),
+            );
+          } catch (error) {
+            console.error(error);
+          }
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  return {
+    chartData: chartData.map((value, index) => [
+      index,
+      parseFloat(value.toFixed(2)),
+    ]) as [number, number][],
+  };
+});
+export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
+  const db = await connectToDB(requestEvent.env);
+
+  const cookie = requestEvent.cookie.get("accessToken");
+  if (!cookie) {
+    throw new Error("No cookie found");
+  }
+  const { userId } = jwt.decode(cookie.value) as JwtPayload;
+
+  const [result]: any = await db.query(
+    `SELECT VALUE ->observes_wallet.out FROM ${userId};`,
+  );
+  if (!result) throw new Error("No observed wallets");
+  const observedWalletsQueryResult = result[0];
+
+  const dashboardBalance: { tokenAddress: string; balance: string }[] = [];
+  const currentUnixDate = new Date(Date.now())
+    .toISOString()
+    .replace(/\.(\d+)Z$/, "+00:00");
+
+  const valueChange: { valueChangeUSD: string; percentageChange: string }[] =
+    [];
+  let totalBalance = 0;
+
+  const blocks = [];
+  const chartData = [];
+  const chartTimestamps = generateTimestamps(24, 6);
+  for (const item of chartTimestamps) {
+    try {
+      await Moralis.start({
+        apiKey: requestEvent.env.get("MORALIS_API_KEY"),
+      });
+
+      const blockDetails = await Moralis.EvmApi.block.getDateToBlock({
+        chain: "0x1",
+        date: item,
+      });
+      blocks.push(blockDetails.raw.block);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  for (const observedWallet of observedWalletsQueryResult) {
+    const [wallet] = await db.select<Wallet>(`${observedWallet}`);
+
+    // For each token update balance
+    const tokens = await db.select<Token>("token");
+    for (const token of tokens) {
+      const readBalance = await testPublicClient.readContract({
+        address: token.address as `0x${string}`,
+        abi: contractABI,
+        functionName: "balanceOf",
+        args: [wallet.address as `0x${string}`],
+      });
+
+      const formattedBalance = convertWeiToQuantity(
+        readBalance.toString(),
+        token.decimals,
+      );
+
+      if (readBalance !== BigInt(0) && formattedBalance !== "0.000") {
+        dashboardBalance.push({
+          tokenAddress: token.address,
+          balance: formattedBalance,
+        });
+      }
+    }
+
+    try {
+      for (const balanceEntry of dashboardBalance) {
         const blockDetails = await Moralis.EvmApi.block.getDateToBlock({
           chain: "0x1",
           date: currentUnixDate,
@@ -93,7 +209,6 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
           toBlock: blockDetails.raw.block,
           address: balanceEntry.tokenAddress,
         });
-
         if (
           tokenPriceChange.raw["24hrPercentChange"] &&
           tokenPriceChange.raw.usdPrice
@@ -112,6 +227,24 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
           totalBalance +=
             parseFloat(balanceEntry.balance) * tokenPriceChange.raw.usdPrice;
         }
+
+        //===========================================================================================
+        for (const block of blocks) {
+          try {
+            const tokenPrice = await Moralis.EvmApi.token.getTokenPrice({
+              chain: "0x1",
+              toBlock: block,
+              address: balanceEntry.tokenAddress,
+            });
+
+            chartData.push(
+              tokenPrice.raw.usdPrice * parseFloat(balanceEntry.balance),
+            );
+          } catch (error) {
+            console.error(error);
+          }
+        }
+        //===========================================================================================
       }
     } catch (error) {
       console.error(error);
@@ -123,6 +256,10 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
     valueChange: totalValueChange.toFixed(2),
     percentageChange:
       ((100 * totalValueChange) / totalBalance).toFixed(2) + "%",
+    chartData: chartData.map((value, index) => [
+      index,
+      parseFloat(value.toFixed(2)),
+    ]) as [number, number][],
   };
 });
 export const useTotalPortfolioValue = routeLoader$(async (requestEvent) => {
@@ -292,13 +429,47 @@ export default component$(() => {
   const isPortfolioFullScreen = useSignal(false);
   const totalPortfolioValue = useTotalPortfolioValue();
   const favoriteTokens = useGetFavoriteTokens();
+  const toggleChart = useToggleChart();
   const portfolioValueChange = usePortfolio24hChange();
+  const chartDataStore = useStore({ portfolioValueChange });
+  const changePeriod = useSignal(false);
+  const selectedPeriod: PeriodState = useStore({
+    "24h": true,
+    "1W": false,
+    "1M": false,
+    "1Y": false,
+  });
+
+  const togglePeriod = $(function togglePeriod(button: string) {
+    for (const key in selectedPeriod) {
+      selectedPeriod[key] = false;
+    }
+    selectedPeriod[button] = true;
+  });
+
+  useTask$(async ({ track }) => {
+    track(() => {
+      selectedPeriod["24h"];
+      selectedPeriod["1W"];
+      selectedPeriod["1M"];
+      selectedPeriod["1Y"];
+      if (changePeriod.value !== false) {
+        toggleChart.submit(selectedPeriod);
+      }
+    });
+  });
 
   return isPortfolioFullScreen.value ? (
     <PortfolioValue
       totalPortfolioValue={totalPortfolioValue.value}
       isPortfolioFullScreen={isPortfolioFullScreen}
       portfolioValueChange={portfolioValueChange.value}
+      chartData={chartDataStore.portfolioValueChange.value.chartData}
+      selectedPeriod={selectedPeriod}
+      onClick$={(e: any) => {
+        togglePeriod(e.target.name);
+        changePeriod.value = true;
+      }}
     />
   ) : (
     <div class="grid grid-cols-4 grid-rows-[48%_48%] gap-[24px] overflow-auto p-[40px]">
@@ -306,6 +477,12 @@ export default component$(() => {
         totalPortfolioValue={totalPortfolioValue.value}
         isPortfolioFullScreen={isPortfolioFullScreen}
         portfolioValueChange={portfolioValueChange.value}
+        chartData={chartDataStore.portfolioValueChange.value.chartData}
+        selectedPeriod={selectedPeriod}
+        onClick$={(e: any) => {
+          togglePeriod(e.target.name);
+          changePeriod.value = true;
+        }}
       />
 
       <div class="custom-border-1 custom-bg-white custom-shadow col-start-3 row-span-1 row-start-1 grid grid-rows-[32px_1fr] gap-[16px] overflow-auto rounded-[16px] p-[24px]">

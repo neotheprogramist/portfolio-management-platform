@@ -1,27 +1,54 @@
-import { $, component$, type Signal, useVisibleTask$ } from "@builder.io/qwik";
+import {
+  $,
+  component$,
+  QRL,
+  type Signal,
+  useStore,
+  useVisibleTask$,
+} from "@builder.io/qwik";
 import IconMaximize from "/public/assets/icons/dashboard/maximize.svg?jsx";
 import ImgPfButton from "/public/assets/icons/pfButton.svg?jsx";
 import ImgMinimalize from "/public/assets/icons/minimalize.svg?jsx";
 import IconArrowDown from "/public/assets/icons/arrow-down.svg?jsx";
 import * as d3 from "d3";
+import { PeriodState } from "~/interface/balance/Balance";
 
 export interface PortfolioValueProps {
   totalPortfolioValue: string;
   isPortfolioFullScreen: Signal<boolean>;
-  portfolioValueChange: { valueChange: string; percentageChange: string };
+  portfolioValueChange: {
+    valueChange: string;
+    percentageChange: string;
+  };
+  chartData: [number, number][];
+  onClick$?: QRL<(e: any) => void>;
+  selectedPeriod: PeriodState;
 }
 
 export const PortfolioValue = component$<PortfolioValueProps>(
-  ({ totalPortfolioValue, isPortfolioFullScreen, portfolioValueChange }) => {
+  ({
+    totalPortfolioValue,
+    isPortfolioFullScreen,
+    portfolioValueChange,
+    onClick$,
+    selectedPeriod,
+    chartData,
+  }) => {
     const chart = $(() => {
-      const data = [
-        [0, 70],
-        [1, 70],
-        [2, 70],
-        [3, 70],
-        [4, 70],
-      ] as [number, number][];
-      console.log(portfolioValueChange);
+      const data = chartData;
+
+      const max =
+        data.reduce(
+          (acc, curr) => Math.max(acc, curr[1]),
+          Number.NEGATIVE_INFINITY,
+        ) * 1.001;
+      const min =
+        data.reduce(
+          (acc, curr) => Math.min(acc, curr[1]),
+          Number.POSITIVE_INFINITY,
+        ) * 0.999;
+      console.log(`max: ${max}`);
+      console.log(`min: ${min}`);
 
       // Declare the chart dimensions and margins.
       const width = isPortfolioFullScreen.value ? 1310 : 618;
@@ -32,10 +59,13 @@ export const PortfolioValue = component$<PortfolioValueProps>(
       const marginLeft = 30;
 
       // Declare the x (horizontal position) scale.
-      const x = d3.scaleLinear([0, 4], [marginLeft, width - marginRight]);
+      const x = d3.scaleLinear(
+        [0, data.length - 1],
+        [marginLeft, width - marginRight],
+      );
 
       // Declare the y (vertical position) scale.
-      const y = d3.scaleLinear([20, 120], [height - marginBottom, marginTop]);
+      const y = d3.scaleLinear([min, max], [height - marginBottom, marginTop]);
 
       // Declare the line generator.
       const line = d3
@@ -121,12 +151,50 @@ export const PortfolioValue = component$<PortfolioValueProps>(
           <div class="flex items-center gap-2">
             <h2 class="custom-text-50 uppercase">Value over time</h2>
             <div class="custom-bg-white custom-border-1 flex h-[32px] gap-[8px] rounded-[8px] p-[3.5px]">
-              <button class="custom-bg-button rounded-[8px] px-[8px]">
+              <button
+                name="24h"
+                class={
+                  selectedPeriod["24h"]
+                    ? "custom-bg-button rounded-[8px] px-[8px]"
+                    : "rounded-[8px] px-[8px]"
+                }
+                onClick$={onClick$}
+              >
                 24h
               </button>
-              <button class="rounded-[8px] px-[8px]">1W</button>
-              <button class="rounded-[8px] px-[8px]">1M</button>
-              <button class="rounded-[8px] px-[8px]">1Y</button>
+              <button
+                name="1W"
+                class={
+                  selectedPeriod["1W"]
+                    ? "custom-bg-button rounded-[8px] px-[8px]"
+                    : "rounded-[8px] px-[8px]"
+                }
+                onClick$={onClick$}
+              >
+                1W
+              </button>
+              <button
+                name="1M"
+                class={
+                  selectedPeriod["1M"]
+                    ? "custom-bg-button rounded-[8px] px-[8px]"
+                    : "rounded-[8px] px-[8px]"
+                }
+                onClick$={onClick$}
+              >
+                1M
+              </button>
+              <button
+                name="1Y"
+                class={
+                  selectedPeriod["1Y"]
+                    ? "custom-bg-button rounded-[8px] px-[8px]"
+                    : "rounded-[8px] px-[8px]"
+                }
+                onClick$={onClick$}
+              >
+                1Y
+              </button>
             </div>
           </div>
 
