@@ -1,4 +1,6 @@
-import { type RequestHandler } from "@builder.io/qwik-city";
+import { server$, type RequestHandler } from "@builder.io/qwik-city";
+import { checksumAddress } from "viem";
+import { connectToDB } from "~/utils/db";
 
 export const onPost: RequestHandler = async ({ request, json }) => {
   try {
@@ -17,6 +19,8 @@ export const onPost: RequestHandler = async ({ request, json }) => {
           console.log("value", valueWithDecimals),
           console.log("triggers", triggers);
         console.log("========================");
+        await updateBalanceIfExists(from, tokenSymbol, triggers[0]["value"]);
+        await updateBalanceIfExists(to, tokenSymbol, triggers[1]["value"]);
       }
     }
 
@@ -26,3 +30,33 @@ export const onPost: RequestHandler = async ({ request, json }) => {
     json(500, { message: "Internal Server Error - erc20 transfers failed" });
   }
 };
+
+const updateBalanceIfExists = server$(async function (
+  address: string,
+  tokenSymbol: string,
+  value: string,
+) {
+  console.log("====================================");
+  const db = await connectToDB(this.env);
+  const [[wallet]]: any = await db.query(
+    `SELECT * FROM wallet WHERE address = '${checksumAddress(address as `0x${string}`)}';`,
+  );
+  console.log("wallet", wallet);
+  const [[token]]: any = await db.query(
+    `SELECT * FROM token WHERE symbol = '${tokenSymbol}';`,
+  );
+  console.log("token", token);
+
+  if (!wallet || !token) {
+    return;
+  }
+  const [[balanceToUpdate]]: any = await db.query(
+    `SELECT * FROM balance WHERE ->(for_wallet WHERE out = '${wallet.id}') AND ->(for_token WHERE out = '${token.id}');`,
+  );
+  console.log("balanceToUpdate", balanceToUpdate);
+  if (!balanceToUpdate) {
+    return;
+  }
+  await db.query(`UPDATE ONLY ${balanceToUpdate} SET value = '${value}';`);
+  console.log("====================================");
+});

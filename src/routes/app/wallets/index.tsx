@@ -428,7 +428,7 @@ export default component$(() => {
             functionName: "approve",
             // TODO: USDT can not reaprove to other amount right after initial arpprove,
             // it needs to be set to 0 first and then reapprove
-            args: [emethContractAddress, 100000000000000n],
+            args: [emethContractAddress, 10000000000000000000000n],
           });
           // keep receipts for now, to use waitForTransactionReceipt
           const receipt = await testWalletClient.writeContract(request);
