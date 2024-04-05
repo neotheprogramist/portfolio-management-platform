@@ -63,11 +63,10 @@ import { type Token } from "~/interface/token/Token";
 import { testPublicClient, testWalletClient } from "./testconfig";
 import Moralis from "moralis";
 import { StreamStoreContext } from "~/interface/streamStore/streamStore";
-import { simulateContract, writeContract } from "@wagmi/core";
 import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
 import { messagesContext } from "../layout";
 import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi";
-import { type Chain, arbitrum, mainnet } from "viem/chains";
+import { type Chain, mainnet, sepolia } from "viem/chains";
 import { metadata } from '../../layout';
 import { getAccount, reconnect, simulateContract, watchAccount, writeContract, type Config, readContract  } from "@wagmi/core";
 import { returnWeb3ModalAndClient } from "~/components/wallet-connect";
@@ -388,7 +387,7 @@ interface ModalStore {
 
 export default component$(() => {
   const modalStore = useContext(ModalStoreContext);
-  const messageProvider = useContext(messagesContext);
+  const formMessageProvider = useContext(messagesContext);
   const { streamId } = useContext(StreamStoreContext);
   const addWalletAction = useAddWallet();
   const removeWalletAction = useRemoveWallet();
@@ -406,15 +405,14 @@ export default component$(() => {
   });
   const receivingWalletAddress = useSignal("");
   const transferredTokenAmount = useSignal("");
-  const messageProvider = useContext(messagesContext);
 
-  const modalStore = useStore<ModalStore>({
+  const temporaryModalStore = useStore<ModalStore>({
     isConnected: false,
     config: undefined
   });
 
   const setWeb3Modal = $(async () => {
-    const chains: [Chain, ...Chain[]] = [arbitrum, mainnet];
+    const chains: [Chain, ...Chain[]] = [sepolia];
     const projectId = import.meta.env.PUBLIC_PROJECT_ID;
     if (!projectId || typeof projectId !== "string") {
       throw new Error("Missing project ID");
@@ -429,11 +427,11 @@ export default component$(() => {
   const openWeb3Modal = $(async () => {
     const { config, modal } = await setWeb3Modal();
     await modal.open();
-    modalStore.config = noSerialize(config);
+    temporaryModalStore.config = noSerialize(config);
     watchAccount(config, {
       onChange(data) {
         console.log(data);
-        modalStore.isConnected = data.isConnected;
+        temporaryModalStore.isConnected = data.isConnected;
       },
     });
   });
@@ -441,19 +439,20 @@ export default component$(() => {
   const handleAddWallet = $(async () => {
     console.log("IN HANDLE ADD WALLET");
     isAddWalletModalOpen.value = false;
-    messageProvider.messages.push({
-      id: messageProvider.messages.length,
+    formMessageProvider.messages.push({
+      id: formMessageProvider.messages.length,
       variant: "info",
       message: "Processing wallet...",
       isVisible: true,
     });
     try {
       if (addWalletFormStore.isExecutable) {
-        if(modalStore.isConnected && modalStore.config){
-        const account = getAccount(modalStore.config);
+        if(temporaryModalStore.isConnected && temporaryModalStore.config){
+        
+        const account = getAccount(temporaryModalStore.config);
         console.log("IN EXECUTABLE BLOCK");
+        console.log('[address]: ', account.address);
        
-          // console.log('[acc] ',account)
         addWalletFormStore.address = account.address;
 
         const emethContractAddress = import.meta.env
@@ -467,17 +466,18 @@ export default component$(() => {
         for (const token of tokens) {
           console.log(`Trying ${token.symbol}...`);
 
-          const tokenBalance = await readContract(modalStore.config, {
+          const tokenBalance = await readContract(temporaryModalStore.config, {
             account: account.address as `0x${string}`,
             abi: token.symbol === "USDT" ? usdtAbi : contractABI,
             address: checksumAddress(token.address as `0x${string}`),
             functionName: "balanceOf",
-            args: [token.address],
+            args: [account.address as `0x${string}`],
           });
+
           console.log(`[Balance of ${token.symbol}]: `, tokenBalance);
 
           if(tokenBalance) {
-            const approval = await simulateContract(modalStore.config, {
+            const approval = await simulateContract(temporaryModalStore.config, {
               account: account.address as `0x${string}`,
               abi: token.symbol === "USDT" ? usdtAbi : contractABI,
               address: checksumAddress(token.address as `0x${string}`),
@@ -487,7 +487,7 @@ export default component$(() => {
             console.log('[requescior simulate]: ',approval.request);
             // keep receipts for now, to use waitForTransactionReceipt
             try{
-            const receipt = await writeContract(modalStore.config, approval.request);
+            const receipt = await writeContract(temporaryModalStore.config, approval.request);
   
             console.log(`Contract for ${token.symbol} has been written... ` , receipt);
             } catch(err){
@@ -495,7 +495,7 @@ export default component$(() => {
             }
           }
          
-          const allowance = await readContract(modalStore.config, {
+          const allowance = await readContract(temporaryModalStore.config, {
             account: account.address,
             address: checksumAddress(token.address as `0x${string}`),
             abi: token.symbol === "USDT" ? usdtAbi : contractABI,
@@ -528,22 +528,22 @@ export default component$(() => {
       //   isExecutable: addWalletFormStore.isExecutable.toString(),
       // });
 
-      // messageProvider.messages.push({
-      //   id: messageProvider.messages.length,
+      // formMessageProvider.messages.push({
+      //   id: formMessageProvider.messages.length,
       //   variant: "success",
       //   message: "Wallet successfully added.",
       //   isVisible: true,
       // });
-      console.log("wallet added successfully, adding address to stream...");
-      await addAddressToStreamConfig(streamId, addWalletFormStore.address);
+      // console.log("wallet added successfully, adding address to stream...");
+      // await addAddressToStreamConfig(streamId, addWalletFormStore.address);
       // addWalletFormStore.address = "";
       // addWalletFormStore.name = "";
       // addWalletFormStore.privateKey = "";
       // addWalletFormStore.isExecutable = 0;
     } catch (err) {
       console.log('[big error]: ', err)
-      messageProvider.messages.push({
-        id: messageProvider.messages.length,
+      formMessageProvider.messages.push({
+        id: formMessageProvider.messages.length,
         variant: "error",
         message: "Something went wrong.",
         isVisible: true,
@@ -602,8 +602,8 @@ export default component$(() => {
           ],
         });
         console.log("--> TRANSFER REQUEST", request);
-        messageProvider.messages.push({
-          id: messageProvider.messages.length,
+        formMessageProvider.messages.push({
+          id: formMessageProvider.messages.length,
           variant: "info",
           message: "Transferring tokens...",
           isVisible: true,
@@ -615,8 +615,8 @@ export default component$(() => {
           hash: transactionHash,
         });
 
-        messageProvider.messages.push({
-          id: messageProvider.messages.length,
+        formMessageProvider.messages.push({
+          id: formMessageProvider.messages.length,
           variant: "success",
           message: "Success!",
           isVisible: true,
@@ -625,8 +625,8 @@ export default component$(() => {
         console.log("[receipt]: ", receipt);
       } catch (err) {
         console.log(err);
-        messageProvider.messages.push({
-          id: messageProvider.messages.length,
+        formMessageProvider.messages.push({
+          id: formMessageProvider.messages.length,
           variant: "error",
           message: "Something went wrong.",
           isVisible: true,
