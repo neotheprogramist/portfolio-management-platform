@@ -1,5 +1,5 @@
 import { type Signal, Slot, component$ } from "@builder.io/qwik";
-import ImgClose from "/public/images/svg/close.svg?jsx";
+import IconClose from "/public/assets/icons/close.svg?jsx";
 
 interface ModalProps {
   title: string;
@@ -7,6 +7,7 @@ interface ModalProps {
   formStore?: {
     name: string;
     address: string;
+    privateKey: string;
   };
 }
 
@@ -19,6 +20,7 @@ export const Modal = component$<ModalProps>(
           if (formStore) {
             formStore.name = "";
             formStore.address = "";
+            formStore.privateKey = "";
           }
         }}
         class="fixed left-0 top-0 flex h-full w-full items-center justify-center bg-black bg-opacity-40"
@@ -38,10 +40,11 @@ export const Modal = component$<ModalProps>(
                 if (formStore) {
                   formStore.name = "";
                   formStore.address = "";
+                  formStore.privateKey = "";
                 }
               }}
             >
-              <ImgClose />
+              <IconClose />
             </button>
           </div>
           <hr class="opacity-20" />

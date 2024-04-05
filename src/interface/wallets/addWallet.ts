@@ -57,3 +57,14 @@ export const getExistingRelation = async (
   console.log("existingRelation", existingRelationQueryResult);
   return ExistingRelationResult.array().parse(existingRelationQueryResult);
 };
+
+export const WalletBalance = z.string();
+
+export const getWalletBalanceIds = async (db: Surreal, walletId: string) => {
+  const [walletBalances]: any[] = await db.query(`
+  SELECT in FROM for_wallet WHERE out=${walletId}`);
+  const balanceIds: string[] = walletBalances.map(
+    (balance: { in: string }) => balance.in,
+  );
+  return WalletBalance.array().parse(balanceIds);
+};

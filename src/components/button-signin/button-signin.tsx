@@ -15,7 +15,7 @@ export const Button = component$<ButtonProps>((props) => {
     <button
       onClick$={props.onClick$}
       class={twMerge(
-        "h-[48px] cursor-pointer rounded-[48px] border-2",
+        "h-12 cursor-pointer rounded-[48px] border-2",
         props.background,
         props.border,
         props.width,

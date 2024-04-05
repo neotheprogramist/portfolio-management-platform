@@ -1,4 +1,4 @@
-export const formatTokenBalance = (
+export const convertWeiToQuantity = (
   balance: string,
   decimals: number,
 ): string => {

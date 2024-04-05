@@ -1,62 +1,50 @@
-import { Gradient } from "~/components/gradient/gradient";
-import { LoginText } from "~/components/login-text/login-text";
+import { HeroSection } from "~/components/login-text/login-text";
 import { component$ } from "@builder.io/qwik";
 import { Button } from "~/components/button-login/button-login";
-import { Navbar } from "~/components/navbar/navbar";
-import ImgGradientMain from "/public/images/Gradient.png?jsx";
 import WalletConnect from "~/components/wallet-connect";
-import { Paragraph } from "~/components/paragraph/paragraph";
-import { mainnet, arbitrum } from "viem/chains";
+import { Copyright } from "~/components/paragraph/paragraph";
+import { mainnet, sepolia } from "viem/chains";
+import IconLogo from "/public/assets/icons/logo.svg?jsx";
 
 export default component$(() => {
   return (
     <>
-      <Navbar class="fixed" />
-      <div class="grid h-full grid-cols-[1fr_2fr_auto] items-center">
-        <div class="h-[766px] w-[655px]">
-          <ImgGradientMain
-            class="h-full"
-            alt="gradient"
-            style="object-position: -129px 0;"
-          />
-        </div>
-        <div class="grid min-w-[340px] grid-rows-[2fr_2fr] pt-52">
-          <div class="grid justify-items-center gap-10">
-            <LoginText />
-            <div>
-              <WalletConnect
-                image="/images/svg/metamask-icon.svg"
-                text="Use Metamask"
-                enableWalletConnect={false}
-                enableInjected={false}
-                enableCoinbase={false}
-                chains={[mainnet]}
-              />
-              <WalletConnect
-                image="/images/svg/walletconnect-icon.svg"
-                text="Use WalletConnect"
-                class="mt-3"
-                enableWalletConnect={true}
-                enableInjected={true}
-                enableCoinbase={true}
-                chains={[arbitrum, mainnet]}
-              />
-            </div>
-          </div>
-          <div class="grid content-end justify-items-center gap-6 text-xs">
-            <Button
-              image="/images/svg/info.svg"
-              text="How to use Wallet?"
-              padding="8px 12px 8px 8px"
-              buttonWidth="200px"
-              borderColor="#2196F3"
-              containerGap="8px"
-              fontSize="12px"
+      <div class="background-container"></div>
+      <div class="content-container grid h-full grid-rows-[85%_15%] items-center justify-items-center">
+        <div class="grid min-w-[448px] max-w-md gap-10 pt-20">
+          <HeroSection
+            title="Login to Emeth"
+            description="Log in to the app using your Crypto Wallet"
+          >
+            <IconLogo class="h-6 w-28" />
+          </HeroSection>
+          <div class="grid justify-items-center gap-3">
+            <WalletConnect
+              image="/assets/icons/login/metamask.svg"
+              text="Use Metamask"
+              enableWalletConnect={false}
+              enableInjected={false}
+              enableCoinbase={false}
+              chains={[mainnet, sepolia]}
             />
-            <Paragraph />
+            <WalletConnect
+              image="/assets/icons/login/walletconnect.svg"
+              text="Use WalletConnect"
+              enableWalletConnect={true}
+              enableInjected={true}
+              enableCoinbase={true}
+              chains={[mainnet, sepolia]}
+            />
           </div>
         </div>
-        <Gradient />
+        <div class="grid h-full items-end justify-items-center gap-6 pb-10">
+          <Button
+            image="/assets/icons/info-white.svg"
+            text="How to use Wallet?"
+            class="w-52 !border-0 bg-customBlue py-2 pl-2 pr-3 text-xs"
+          />
+          <Copyright />
+        </div>
       </div>
     </>
   );
