@@ -5,6 +5,8 @@ import {
 import IconEdit from "/public/assets/icons/portfolio/edit.svg?jsx";
 import ImgChart from "/public/assets/images/chart.png?jsx";
 import IconBtc from "/public/assets/icons/portfolio/btc.svg?jsx";
+import IconArrowDown from "/public/assets/icons/arrow-down.svg?jsx";
+import IconClose from "/public/assets/icons/close.svg?jsx";
 import { Group } from "~/components/groups/group";
 import {
   component$,
@@ -266,12 +268,13 @@ export default component$(() => {
   const clickedToken = useStore({ balanceId: "", structureId: "" });
   const structureStore = useStore({ name: "" });
   const selectedWallets = useStore({ wallets: [] as any[] });
-  const isCreateNewStructureModalOpen = useSignal(false);
+  const isCreateNewStructureModalOpen = useSignal(true);
   const deleteToken = useDeleteToken();
   const availableStructures = useAvailableStructures();
   const createStructureAction = useCreateStructure();
   const deleteStructureAction = useDeleteStructure();
   const observedWalletsWithBalance = useObservedWalletBalances();
+  
 
   useTask$(async ({ track }) => {
     track(() => {
@@ -360,6 +363,7 @@ export default component$(() => {
                 <div class="">NETWORK</div>
                 <div class=""></div>
               </div>
+
               {availableStructures.value.map((createdStructures) => (
                 <Group
                   key={createdStructures.structure.name}
@@ -373,6 +377,8 @@ export default component$(() => {
                 />
               ))}
             </div>
+
+
             {isCreateNewStructureModalOpen.value && (
               <Modal
                 isOpen={isCreateNewStructureModalOpen}
@@ -385,7 +391,7 @@ export default component$(() => {
                       isCreateNewStructureModalOpen.value = false;
                     }
                   }}
-                  class="mt-8"
+                  class="mt-8 text-sm"
                 >
                   <label for="name" class="block custom-text-50 text-xs mb-2 uppercase">
                     Name
@@ -404,46 +410,113 @@ export default component$(() => {
                   {!isValidName(structureStore.name) && (
                     <p class="mb-4 text-red-500">Invalid name</p>
                   )}
+
+
                   <label for="walletsId" class="block custom-text-50 text-xs mb-2 uppercase">
                     Select Wallets
                   </label>
-                  <select
-                    class="text-white bg-transparent custom-border-1 rounded-lg w-full px-4 mb-4 h-12"
-                    name="walletsId[]"
-                    multiple
-                    onChange$={(e) => {
-                      const target = e.target as HTMLSelectElement;
-                      selectedWallets.wallets = Array.from(
-                        target.selectedOptions,
-                        (option) => {
-                          return observedWalletsWithBalance.value.find(
-                            (observedWallet) =>
-                              observedWallet.wallet.id === option.value,
-                          );
-                        },
-                      ).filter(Boolean);
-                    }}
-                  >
-                    <option class="text-white h-12 flex items-center justify-between bg-transparent" disabled={true}>Select Wallets</option>
-                    {observedWalletsWithBalance.value.map((option) => (
-                      <option
-                        class="text-white bg-transparent hidden"
-                        key={option.wallet.id}
-                        value={option.wallet.id}
+
+                  <div class="mb-3 w-full text-sm">
+                    
+                    {/* input Select wallet */}
+                    <input id="walletCheckbox" type="checkbox" class="walletCheckbox absolute h-0 w-0 overflow-hidden"/>
+                    <label for="walletCheckbox" class="walletLabel relative block h-12 w-full rounded-lg custom-border-1 bg-transparent outline-none cursor-pointer">
+                      <div class="absolute start-2 top-[0.45rem] h-8 w-fit custom-bg-button rounded-[6px] px-3 py-1.5 flex gap-2">
+                        <p>2 selections</p>
+                        <button class="cursor-pointer">
+                          <IconClose />
+                        </button>
+                      </div>
+                      <span class="absolute end-4 cursor-pointer top-4">
+                        <IconArrowDown/>
+                      </span>
+                    </label>
+                
+                    {/* div całości z opcjami */}
+                    <div class="walletList flex flex-col w-full border-white border-solid border border-opacity-15 border-t-0 rounded-lg rounded-t-none px-4 py-6 gap-4 shadow-md">
+                      <div class="flex justify-between items-center">
+                        <p class="text-white uppercase text-xs"><span class="bg-gradient-to-r from-red-600 via-orange-400 to-pink-500 bg-clip-text font-semibold text-transparent">2 wallets</span> selected </p>
+                        <label class="flex h-6 items-center gap-3">
+                          <input type="checkbox" class="relative h-5 w-5 custom-bg-white appearance-none rounded custom-border-1 hover:cursor-pointer focus:after:absolute focus:after:z-[1] checked:after:absolute checked:after:mt-0.5 checked:after:ms-[0.35rem] checked:after:h-2.5 checked:after:w-1.5 checked:after:rotate-45 checked:after:border-[0.1rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent"/>
+                          <span class="uppercase custom-text-50 text-xs">select all</span>
+                        </label>
+                      </div>
+                      {/* div strikte z opcjami */}
+                      <div class="flex flex-col w-[98%] gap-2 max-h-[180px] overflow-auto"
+                        onChange$={(e) => {
+                          const target = e.target as HTMLSelectElement;
+                          selectedWallets.wallets = Array.from(
+                            target.selectedOptions,
+                            (option) => {
+                              return observedWalletsWithBalance.value.find(
+                                (observedWallet) =>
+                                  observedWallet.wallet.id === option.value,
+                              );
+                            },
+                          ).filter(Boolean);
+                        }}
                       >
-                        {option.wallet.name}
-                      </option>
-                    ))}
-                  </select>
+                        {observedWalletsWithBalance.value.map((option) => (
+                          <label 
+                          class="custom-border-1 p-2 rounded-lg custom-bg-white min-h-9 inline-flex space-x-2 items-center cursor-pointer"
+                          key={option.wallet.id}>
+                            <input type="checkbox"
+                            class="relative h-5 w-5 custom-bg-white appearance-none rounded custom-border-1 hover:cursor-pointer focus:after:absolute focus:after:z-[1] checked:after:absolute checked:after:mt-0.5 checked:after:ms-[0.35rem] checked:after:h-2.5 checked:after:w-1.5 checked:after:rotate-45 checked:after:border-[0.1rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent"
+                            value={option.wallet.id}
+                            />
+                            <span> 
+                              {option.wallet.name}
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
                   <label for="balance" class="block custom-text-50 text-xs mb-2 uppercase">
                     Select Tokens
                   </label>
-                  <select class="text-white bg-transparent custom-border-1 rounded-lg w-full px-4 mb-4 h-12" name="balancesId[]" multiple>
-                    <option class="text-white h-12 flex items-center justify-between bg-transparent" disabled={true}>
-                      Select Tokens
-                    </option>
-                    {parseWalletsToOptions(selectedWallets.wallets)}
-                  </select>
+
+                  <div class="mb-3 w-full text-sm">
+                    
+                    {/* input Select token */}
+                    <input id="tokenCheckbox" type="checkbox" class="tokenCheckbox absolute h-0 w-0 overflow-hidden"/>
+                    <label for="tokenCheckbox" class="tokenLabel relative block h-12 w-full rounded-lg custom-border-1 bg-transparent outline-none cursor-pointer">
+                      <span class="absolute end-4 cursor-pointer top-4">
+                        <IconArrowDown/>
+                      </span>
+                    </label>
+                
+                    {/* div całości z opcjami */}
+                    <div class="tokenList flex flex-col w-full border-white border-solid border border-opacity-15 border-t-0 rounded-lg rounded-t-none px-4 py-6 gap-4 shadow-md">
+                      <div class="flex justify-between items-center">
+                        <p class="text-white uppercase text-xs"><span class="bg-gradient-to-r from-red-600 via-orange-400 to-pink-500 bg-clip-text font-semibold text-transparent">2 tokens</span> selected </p>
+                        <label class="flex h-6 items-center gap-3">
+                          <input type="checkbox" class="relative h-5 w-5 custom-bg-white appearance-none rounded custom-border-1 hover:cursor-pointer focus:after:absolute focus:after:z-[1] checked:after:absolute checked:after:mt-0.5 checked:after:ms-[0.35rem] checked:after:h-2.5 checked:after:w-1.5 checked:after:rotate-45 checked:after:border-[0.1rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent"/>
+                          <span class="uppercase custom-text-50 text-xs">select all</span>
+                        </label>
+                      </div>
+                      {/* div strikte z opcjami */}
+                      <div class="flex flex-col w-[98%] gap-2 max-h-[180px] overflow-auto">
+                          <label 
+                          class="custom-border-1 p-2 rounded-lg custom-bg-white min-h-9 inline-flex space-x-2 items-center">
+                            <input type="checkbox"
+                            class="relative h-5 w-5 custom-bg-white appearance-none rounded custom-border-1 hover:cursor-pointer focus:after:absolute focus:after:z-[1] checked:after:absolute checked:after:mt-0.5 checked:after:ms-[0.35rem] checked:after:h-2.5 checked:after:w-1.5 checked:after:rotate-45 checked:after:border-[0.1rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent"
+                            />
+                            <span> 
+                            {parseWalletsToOptions(selectedWallets.wallets)}
+                            </span>
+                          </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* <select class="text-white bg-transparent custom-border-1 rounded-lg w-full px-4 mb-4 h-16" name="balancesId[]" multiple>
+                    <option class="text-white flex items-center justify-between bg-transparent">Select Tokens</option>
+                    
+                  </select> */}
+
+
                   <div class="flex gap-4">
                     <button
                       type="submit"

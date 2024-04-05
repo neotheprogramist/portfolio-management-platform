@@ -186,3 +186,27 @@ body {
   position: relative;
   z-index: 10;
 }
+
+.walletList{
+  display: none;
+  box-shadow: 0px 15px 50px #000;
+}
+.walletCheckbox:checked ~ .walletLabel{
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.walletCheckbox:checked ~ .walletList {
+  display: flex;
+}
+
+.tokenList{
+  display: none;
+  box-shadow: 0px 15px 50px #000;
+}
+.tokenCheckbox:checked ~ .tokenLabel{
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.tokenCheckbox:checked ~ .tokenList {
+  display: flex;
+}
