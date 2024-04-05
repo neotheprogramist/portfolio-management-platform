@@ -276,6 +276,7 @@ export default component$(() => {
   const createStructureAction = useCreateStructure();
   const deleteStructureAction = useDeleteStructure();
   const observedWalletsWithBalance = useObservedWalletBalances();
+  
 
   useTask$(async ({ track }) => {
     track(() => {
