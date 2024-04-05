@@ -6,7 +6,7 @@ import { Navbar } from "~/components/navbar/navbar";
 import ImgGradient from "/public/assets/images/gradient.png?jsx";
 import WalletConnect from "~/components/wallet-connect";
 import { Paragraph } from "~/components/paragraph/paragraph";
-import { mainnet } from "viem/chains";
+import { mainnet, sepolia } from "viem/chains";
 
 export default component$(() => {
   return (
@@ -30,7 +30,7 @@ export default component$(() => {
                 enableWalletConnect={false}
                 enableInjected={false}
                 enableCoinbase={false}
-                chains={[mainnet]}
+                chains={[mainnet, sepolia]}
               />
               <WalletConnect
                 image="/assets/icons/login/walletconnect.svg"
@@ -39,7 +39,7 @@ export default component$(() => {
                 enableWalletConnect={true}
                 enableInjected={true}
                 enableCoinbase={true}
-                chains={[mainnet]}
+                chains={[mainnet, sepolia]}
               />
             </div>
           </div>

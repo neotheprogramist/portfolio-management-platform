@@ -32,7 +32,8 @@
     "test.e2e.setup": "playwright install --with-deps",
     "update": "npx npm-check-updates -u",
     "update.check": "npx npm-check-updates",
-    "qwik": "qwik"
+    "qwik": "qwik",
+    "ngrok": "ngrok http http://localhost:5173"
   },
   "devDependencies": {
     "@builder.io/qwik": "1.5.1",
@@ -47,14 +48,13 @@
     "@storybook/builder-vite": "7.6.17",
     "@storybook/html": "7.6.17",
     "@storybook/html-vite": "7.6.17",
-    "@types/d3": "^7.4.3",
+    "@types/d3": "7.4.3",
     "@types/eslint": "8.56.5",
     "@types/jsonwebtoken": "9.0.6",
     "@types/node": "20.11.25",
     "@typescript-eslint/eslint-plugin": "7.1.1",
     "@typescript-eslint/parser": "7.1.1",
     "autoprefixer": "10.4.18",
-    "dotenv": "16.4.5",
     "eslint": "8.57.0",
     "eslint-plugin-qwik": "1.5.1",
     "fastify": "4.26.2",
@@ -71,13 +71,15 @@
     "vite-tsconfig-paths": "4.3.1"
   },
   "dependencies": {
+    "@moralisweb3/common-evm-utils": "2.25.2",
     "@wagmi/connectors": "4.1.14",
     "@wagmi/core": "2.6.5",
     "@web3modal/siwe": "4.0.13",
     "@web3modal/wagmi": "4.0.13",
-    "d3": "^7.9.0",
+    "d3": "7.9.0",
     "jsonwebtoken": "9.0.2",
-    "jwt-decode": "^4.0.0",
+    "jwt-decode": "4.0.0",
+    "moralis": "2.25.2",
     "qwik-image": "0.0.8",
     "siwe": "2.1.4",
     "surrealdb.js": "0.11.0",

@@ -1,5 +1,5 @@
 import { createPublicClient, http } from "viem";
-import { mainnet } from "viem/chains";
+import { sepolia } from "viem/chains";
 
 export const contractABI = [
   {
@@ -156,6 +156,6 @@ export const contractABI = [
 ] as const;
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
+  chain: sepolia,
   transport: http(),
 });
