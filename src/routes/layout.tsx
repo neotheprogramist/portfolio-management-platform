@@ -11,7 +11,7 @@ import {
 import type { RequestHandler } from "@builder.io/qwik-city";
 import { reconnect, watchAccount } from "@wagmi/core";
 import { defaultWagmiConfig } from "@web3modal/wagmi";
-import { type Chain, arbitrum, mainnet, sepolia } from "viem/chains";
+import { type Chain, mainnet, sepolia } from "viem/chains";
 import { StreamStoreContext } from "~/interface/streamStore/streamStore";
 import {
   type ModalStore,
@@ -51,17 +51,18 @@ export default component$(() => {
 
   useTask$(async function () {
     console.log("Setting up stream...");
+  
     await initializeStreamIfNeeded(setupStream);
-    console.log("initialized stream");
-    const stream = await getStream();
-    console.log("Stream", stream);
-    streamStore.streamId = stream["jsonResponse"]["id"];
-    console.log("stream id", streamStore.streamId);
+    // console.log("initialized stream");
+    // const stream = await getStream();
+    // console.log("Stream", stream);
+    // streamStore.streamId = stream["jsonResponse"]["id"];
+    // console.log("stream id", streamStore.streamId);
   });
 
   // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(() => {
-    const chains: [Chain, ...Chain[]] = [arbitrum, mainnet, sepolia];
+    const chains: [Chain, ...Chain[]] = [mainnet, sepolia];
     const projectId = import.meta.env.PUBLIC_PROJECT_ID;
     if (!projectId || typeof projectId !== "string") {
       throw new Error("Missing project ID");

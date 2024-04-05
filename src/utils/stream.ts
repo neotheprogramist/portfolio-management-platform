@@ -94,23 +94,40 @@ export const setupStream = server$(async function () {
     apiKey: this.env.get("MORALIS_API_KEY"),
   });
 
+
   const ngrokWebhookUrl = this.env.get("NGROK_WEBHOOK_URL");
   if (!ngrokWebhookUrl) {
     console.error("NGROK_WEBHOOK_URL is not set in the environment variables.");
     return;
   }
 
-  const newStream = await Moralis.Streams.add({
-    chains: [EvmChain.SEPOLIA],
-    description: "Listen for Transfers",
-    tag: "transfers",
-    abi: ERC20TransferABI,
-    includeContractLogs: true,
-    topic0: ["Transfer(address,address,uint256)"],
-    includeNativeTxs: false,
-    webhookUrl: ngrokWebhookUrl,
-    triggers: triggers,
+  const streams = await Moralis.Streams.getAll({
+    limit: 10
   });
+  const jsonStream = streams.toJSON().result.find((s) => s.webhookUrl === this.env.get("NGROK_WEBHOOK_URL"))
+  console.log('[streamy]: ', jsonStream);
+
+  let newStream;
+
+  if (jsonStream != undefined) {
+    newStream = await Moralis.Streams.getById({
+      id: jsonStream.id
+    });
+    console.log('[old stream]');
+  } else {
+    newStream = await Moralis.Streams.add({
+      chains: [EvmChain.SEPOLIA],
+      description: "Listen for Transfers",
+      tag: "transfers",
+      abi: ERC20TransferABI,
+      includeContractLogs: true,
+      topic0: ["Transfer(address,address,uint256)"],
+      includeNativeTxs: false,
+      webhookUrl: ngrokWebhookUrl,
+      triggers: triggers,
+    });
+    console.log('[new stream]');
+  }
 
   _stream = newStream;
   console.log("-->Stream in setupStream", _stream);
