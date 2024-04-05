@@ -29,7 +29,9 @@ export const returnWeb3ModalAndClient = async (
     enableEIP6963: true,
     enableCoinbase,
   });
+
   reconnect(config);
+  
   const modal = createWeb3Modal({
     wagmiConfig: config,
     projectId,
@@ -69,7 +71,7 @@ export default component$<
     modalStore.config = noSerialize(config);
     watchAccount(config, {
       onChange(data) {
-        console.log(data);
+        console.log('dude: ',data);
         modalStore.isConnected = data.isConnected;
         modalStore.isConnected && (modal.close(), nav("/signin"));
       },

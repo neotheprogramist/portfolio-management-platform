@@ -8,9 +8,10 @@ import {
 
 export interface AddWalletFormProps {
   addWalletFormStore: addWalletFormStore;
+  onConnectWalletClick: () => void;
 }
 
-export default component$<AddWalletFormProps>(({ addWalletFormStore }) => {
+export default component$<AddWalletFormProps>(({ addWalletFormStore, onConnectWalletClick }) => {
   const isPrivateKeyInputVisible = useSignal(false);
   return (
     <>
@@ -32,7 +33,7 @@ export default component$<AddWalletFormProps>(({ addWalletFormStore }) => {
         }}
       />
 
-      <label for="privateKey" class="flex gap-2 pb-1 text-xs text-white">
+      {/* <label for="privateKey" class="flex gap-2 pb-1 text-xs text-white">
         Private Key
         {!isPrivateKey32Bytes(addWalletFormStore.privateKey) ? (
           <span class=" text-xs text-red-500">
@@ -43,9 +44,9 @@ export default component$<AddWalletFormProps>(({ addWalletFormStore }) => {
             Invalid format. Private key must be a hexadecimal string.
           </span>
         ) : null}
-      </label>
+      </label> */}
       <div class="mb-5 flex items-center gap-2">
-        <input
+        {/* <input
           type={isPrivateKeyInputVisible.value ? "text" : "password"}
           name="privateKey"
           class={`border-white-opacity-20  block w-[80%] rounded bg-transparent p-3 text-white 
@@ -55,15 +56,16 @@ export default component$<AddWalletFormProps>(({ addWalletFormStore }) => {
             const target = e.target as HTMLInputElement;
             addWalletFormStore.privateKey = target.value;
           }}
-        />
-        <button
+        /> */}
+       
+        {/* <button
           type="button"
           onClick$={() => {
             isPrivateKeyInputVisible.value = !isPrivateKeyInputVisible.value;
           }}
         >
           {isPrivateKeyInputVisible.value ? "Hide" : "Show"}
-        </button>
+        </button> */}
       </div>
 
       <input type="hidden" name="address" value={addWalletFormStore.address} />
@@ -78,6 +80,13 @@ export default component$<AddWalletFormProps>(({ addWalletFormStore }) => {
         placeholder="Select network"
         disabled={true}
       />
+      <label for="network" class="block pb-1 text-xs text-white">
+        Wallet Address
+      </label>
+       <button 
+       onClick$={onConnectWalletClick}
+       class="mt-2 h-[32px] rounded-3xl border-none bg-blue-500 px-[16px] text-xs font-semibold text-white duration-300 ease-in-out hover:scale-110"
+       >Connect Wallet</button>
     </>
   );
 });

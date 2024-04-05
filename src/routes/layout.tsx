@@ -15,7 +15,7 @@ import {
   ModalStoreContext,
 } from "~/interface/web3modal/ModalStore";
 
-const metadata = {
+export const metadata = {
   name: "Web3Modal",
   description: "Web3Modal Example",
   url: "https://web3modal.com",
@@ -54,6 +54,7 @@ export default component$(() => {
       enableEIP6963: true, // Optional - true by default
       enableCoinbase: true, // Optional - true by default
     });
+    
     reconnect(config2);
 
     modalStore.config = noSerialize(config2);
@@ -65,6 +66,7 @@ export default component$(() => {
       });
     }
   });
+  
   useContextProvider(ModalStoreContext, modalStore);
 
   return (
