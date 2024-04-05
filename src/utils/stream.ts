@@ -125,7 +125,6 @@ export const setupStream = server$(async function () {
       webhookUrl: ngrokWebhookUrl,
       triggers: triggers,
     });
-
   }
 
   _stream = newStream;
