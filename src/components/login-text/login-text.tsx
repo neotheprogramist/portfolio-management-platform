@@ -1,12 +1,16 @@
-import { component$ } from "@builder.io/qwik";
+import { Slot, component$ } from "@builder.io/qwik";
+export interface TitleDescriptionProps {
+  title?: string;
+  description?: string;
+  image?: string;
+}
 
-export const LoginText = component$(() => {
+export const HeroSection = component$<TitleDescriptionProps>((props) => {
   return (
-    <div class="text-center">
-      <h1 class="pb-6 text-4xl font-medium">Login to Emeth</h1>
-      <p class="text-base font-normal ">
-        Log in to the app using your Crypto Wallet
-      </p>
+    <div class="grid justify-items-center gap-6 text-center">
+      <Slot />
+      <h1 class="text-4xl font-medium">{props.title}</h1>
+      <p class="text-base font-normal">{props.description}</p>
     </div>
   );
 });

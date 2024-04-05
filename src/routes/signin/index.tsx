@@ -1,11 +1,7 @@
 import { $, component$, useContext } from "@builder.io/qwik";
 import { useLocation, useNavigate } from "@builder.io/qwik-city";
 import { Button } from "~/components/button-signin/button-signin";
-import { Gradient } from "~/components/gradient/gradient";
-import { Paragraph } from "~/components/paragraph/paragraph";
-import { WelcomeText } from "~/components/welcome-text/welcome-text";
-import { Navbar } from "~/components/navbar/navbar";
-import ImgGradient from "/public/assets/images/gradient.png?jsx";
+import { Copyright } from "~/components/paragraph/paragraph";
 import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
 import {
   getNonceServer,
@@ -13,6 +9,8 @@ import {
 } from "~/components/wallet-connect/server";
 import { disconnect, getAccount, getChainId, signMessage } from "@wagmi/core";
 import { SiweMessage } from "siwe";
+import { HeroSection } from "~/components/login-text/login-text";
+import IconHandshake from "/public/assets/icons/signin/handshake.svg?jsx";
 
 export default component$(() => {
   const nav = useNavigate();
@@ -61,39 +59,34 @@ export default component$(() => {
 
   return (
     <>
-      <Navbar class="fixed !border-0" />
-      <div class="grid h-full grid-cols-[1fr_2fr_auto] items-center">
-        <div class="h-[766px] w-[655px]">
-          <ImgGradient
-            class="h-full"
-            alt="gradient"
-            style="object-position: -129px 0;"
-          />
-        </div>
-        <div class="grid grid-rows-[2fr_1fr] pt-52">
-          <div class="grid content-end justify-items-center gap-10 pb-10">
-            <WelcomeText />
-            <div class="flex gap-4 text-[14px]">
-              <Button
-                onClick$={cancelHandler}
-                text="Cancel"
-                border="border-white border-opacity-20"
-                width="w-[98px]"
-              />
-              <Button
-                onClick$={signInHandler}
-                text="Accept and Sign"
-                width="w-[180px]"
-                class="rounded-[48px] bg-black py-[15px]"
-                background="border-none bg-gradient-to-r from-orange-500 via-red-500 to-blue-500 p-[2px]"
-              />
-            </div>
-          </div>
-          <div class="grid content-end justify-items-center">
-            <Paragraph />
+      <div class="background-container"></div>
+      <div class="content-container grid h-full grid-rows-[85%_15%] items-center justify-items-center">
+        <div class="grid min-w-[448px] max-w-md gap-10 pt-20">
+          <HeroSection
+            title="Welcome to Emeth"
+            description="By connecting your wallet and using Emeth, you agree to our Terms of Service and Privacy Policy."
+          >
+            <IconHandshake />
+          </HeroSection>
+          <div class="grid w-full grid-cols-2 gap-4">
+            <Button
+              onClick$={cancelHandler}
+              text="Cancel"
+              border="custom-border-2"
+              width="w-full"
+            />
+            <Button
+              onClick$={signInHandler}
+              text="Accept and Sign"
+              width="w-full"
+              class="rounded-[48px] bg-black py-[14px]"
+              background="border-none custom-btn-gradient p-[2px]"
+            />
           </div>
         </div>
-        <Gradient />
+        <div class="grid h-full items-end justify-items-center pb-10">
+          <Copyright />
+        </div>
       </div>
     </>
   );

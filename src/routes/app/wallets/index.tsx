@@ -26,7 +26,7 @@ import { type WalletTokensBalances } from "~/interface/walletsTokensBalances/wal
 import { convertWeiToQuantity } from "~/utils/formatBalances/formatTokenBalance";
 import { isAddress, checksumAddress } from "viem";
 import IconArrowDown from "/public/assets/icons/arrow-down.svg?jsx";
-import IconInfo from "/public/assets/icons/info.svg?jsx";
+import IconInfo from "/public/assets/icons/info-blue.svg?jsx";
 import IconSearch from "/public/assets/icons/search.svg?jsx";
 import {
   isValidName,

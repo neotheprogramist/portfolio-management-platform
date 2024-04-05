@@ -138,6 +138,20 @@ body {
   z-index: -1;
 }
 
+.custom-btn-gradient {
+  background: linear-gradient(
+    to right,
+    #da301f,
+    #f48946,
+    #ee3560,
+    #fa4784,
+    #ff48c0,
+    #8e38b5,
+    #5542bb,
+    #0051c3
+  );
+}
+
 .bg-modal-glass {
   background: linear-gradient(98deg, rgb(27, 27, 27) 0%, rgb(0, 0, 0) 100%);
 }
@@ -154,4 +168,21 @@ body {
     rgba(255, 255, 255, 0.2) 0%,
     rgba(255, 255, 255, 0) 100%
   );
+}
+
+.background-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: url("../public/assets/icons/vector-top.svg"),
+    url("../public/assets/icons/vector-bottom.svg");
+  background-size: cover;
+  background-position: top, bottom;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+.content-container {
+  position: relative;
+  z-index: 10;
 }

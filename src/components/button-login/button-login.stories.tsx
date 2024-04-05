@@ -31,7 +31,7 @@ export const Metamask: Story = {
 export const Info: Story = {
   render: () => (
     <Button
-      image="/assets/icons/info.svg"
+      image="/assets/icons/info-white.svg"
       text="How to use Wallet?"
       padding="8px 12px 8px 8px"
       buttonWidth="200px"
