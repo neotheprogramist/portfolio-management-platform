@@ -1,6 +1,6 @@
 import { $, component$, useContext } from "@builder.io/qwik";
 import { useLocation, useNavigate } from "@builder.io/qwik-city";
-import { Button } from "~/components/button-signin/button-signin";
+import { Button } from "~/components/Buttons/Buttons";
 import { Copyright } from "~/components/paragraph/paragraph";
 import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
 import {
@@ -9,7 +9,7 @@ import {
 } from "~/components/wallet-connect/server";
 import { disconnect, getAccount, signMessage } from "@wagmi/core";
 import { SiweMessage } from "siwe";
-import { HeroSection } from "~/components/login-text/login-text";
+import { HeroSection } from "~/components/HeroSection/HeroSection";
 import IconHandshake from "/public/assets/icons/signin/handshake.svg?jsx";
 
 export default component$(() => {

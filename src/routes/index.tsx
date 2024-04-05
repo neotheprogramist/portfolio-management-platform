@@ -1,6 +1,6 @@
-import { HeroSection } from "~/components/login-text/login-text";
+import { HeroSection } from "~/components/HeroSection/HeroSection";
 import { component$ } from "@builder.io/qwik";
-import { Button } from "~/components/button-login/button-login";
+import { ConnectButton } from "~/components/Buttons/Buttons";
 import WalletConnect from "~/components/wallet-connect";
 import { Copyright } from "~/components/paragraph/paragraph";
 import { mainnet, sepolia } from "viem/chains";
@@ -38,7 +38,7 @@ export default component$(() => {
           </div>
         </div>
         <div class="grid h-full items-end justify-items-center gap-6 pb-10">
-          <Button
+          <ConnectButton
             image="/assets/icons/info-white.svg"
             text="How to use Wallet?"
             class="w-52 !border-0 bg-customBlue py-2 pl-2 pr-3 text-xs"

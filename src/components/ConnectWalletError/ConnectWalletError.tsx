@@ -1,7 +1,7 @@
 import { component$ } from "@builder.io/qwik";
-import { HeroSection } from "~/components/login-text/login-text";
+import { HeroSection } from "~/components/HeroSection/HeroSection";
 import IconError from "/public/assets/icons/error.svg?jsx";
-import { Button } from "~/components/button-signin/button-signin";
+import { Button } from "~/components/Buttons/Buttons";
 
 export const ConnectWalletError = component$(() => {
   return (

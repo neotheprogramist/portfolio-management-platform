@@ -1,36 +1,36 @@
 import type { Meta, StoryObj } from "storybook-framework-qwik";
-import { Button, type ButtonProps } from "./button-login";
+import { ConnectButton, type ConnectButtonProps } from "./Buttons";
 
-const meta: Meta<ButtonProps> = {
-  component: Button,
+const meta: Meta<ConnectButtonProps> = {
+  component: ConnectButton,
 };
 
-type Story = StoryObj<ButtonProps>;
+type Story = StoryObj<ConnectButtonProps>;
 
 export default meta;
 
 export const WalletConnect: Story = {
   render: (props) => (
-    <Button
+    <ConnectButton
       {...props}
       image="/assets/icons/login/walletconnect.svg"
       text="Use WalletConnect"
-    ></Button>
+    ></ConnectButton>
   ),
 };
 
 export const Metamask: Story = {
   render: () => (
-    <Button
+    <ConnectButton
       image="/assets/icons/login/metamask.svg"
       text="Use Metamask"
-    ></Button>
+    ></ConnectButton>
   ),
 };
 
 export const Info: Story = {
   render: () => (
-    <Button
+    <ConnectButton
       image="/assets/icons/info-white.svg"
       text="How to use Wallet?"
       padding="8px 12px 8px 8px"
@@ -38,6 +38,6 @@ export const Info: Story = {
       borderColor="#2196F3"
       containerGap="8px"
       fontSize="12px"
-    ></Button>
+    ></ConnectButton>
   ),
 };
