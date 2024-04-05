@@ -34,7 +34,6 @@ import { Modal } from "~/components/modal";
 import { isValidName } from "~/utils/validators/addWallet";
 import { structureExists } from "~/interface/structure/removeStructure";
 
-
 type WalletWithBalance = {
   wallet: { id: string; chainID: number; name: string };
   balance: [{ balanceId: string; tokenId: string; tokenSymbol: string }];
@@ -274,7 +273,6 @@ export default component$(() => {
   const createStructureAction = useCreateStructure();
   const deleteStructureAction = useDeleteStructure();
   const observedWalletsWithBalance = useObservedWalletBalances();
-  
 
   useTask$(async ({ track }) => {
     track(() => {
@@ -378,7 +376,6 @@ export default component$(() => {
               ))}
             </div>
 
-
             {isCreateNewStructureModalOpen.value && (
               <Modal
                 isOpen={isCreateNewStructureModalOpen}
@@ -393,14 +390,17 @@ export default component$(() => {
                   }}
                   class="mt-8 text-sm"
                 >
-                  <label for="name" class="block custom-text-50 text-xs mb-2 uppercase">
+                  <label
+                    for="name"
+                    class="custom-text-50 mb-2 block text-xs uppercase"
+                  >
                     Name
                   </label>
                   <input
                     type="text"
                     name="name"
                     placeholder="Structure name..."
-                    class={`mb-4 block w-full custom-border-1 bg-transparent h-12 rounded-lg text-white px-3  placeholder:text-white ${isValidName(structureStore.name) ? "bg-red-300" : ""}`}
+                    class={`custom-border-1 mb-4 block h-12 w-full rounded-lg bg-transparent px-3 text-white  placeholder:text-white ${isValidName(structureStore.name) ? "bg-red-300" : ""}`}
                     value={structureStore.name}
                     onInput$={(e) => {
                       const target = e.target as HTMLInputElement;
@@ -411,123 +411,158 @@ export default component$(() => {
                     <p class="mb-4 text-red-500">Invalid name</p>
                   )}
 
-
-                  <label for="walletsId" class="block custom-text-50 text-xs mb-2 uppercase">
+                  <label
+                    for="walletsId"
+                    class="custom-text-50 mb-2 block text-xs uppercase"
+                  >
                     Select Wallets
                   </label>
 
                   <div class="mb-3 w-full text-sm">
-                    
                     {/* input Select wallet */}
-                    <input id="walletCheckbox" type="checkbox" class="walletCheckbox absolute h-0 w-0 overflow-hidden"/>
-                    <label for="walletCheckbox" class="walletLabel relative block h-12 w-full rounded-lg custom-border-1 bg-transparent outline-none cursor-pointer">
-                      <div class="absolute start-2 top-[0.45rem] h-8 w-fit custom-bg-button rounded-[6px] px-3 py-1.5 flex gap-2">
+                    <input
+                      id="walletCheckbox"
+                      type="checkbox"
+                      class="walletCheckbox absolute h-0 w-0 overflow-hidden"
+                    />
+                    <label
+                      for="walletCheckbox"
+                      class="walletLabel custom-border-1 relative block h-12 w-full cursor-pointer rounded-lg bg-transparent outline-none"
+                    >
+                      <div class="custom-bg-button absolute start-2 top-[0.45rem] flex h-8 w-fit gap-2 rounded-[6px] px-3 py-1.5">
                         <p>2 selections</p>
                         <button class="cursor-pointer">
                           <IconClose />
                         </button>
                       </div>
-                      <span class="absolute end-4 cursor-pointer top-4">
-                        <IconArrowDown/>
+                      <span class="absolute end-4 top-4 cursor-pointer">
+                        <IconArrowDown />
                       </span>
                     </label>
-                
+
                     {/* div całości z opcjami */}
-                    <div class="walletList flex flex-col w-full border-white border-solid border border-opacity-15 border-t-0 rounded-lg rounded-t-none px-4 py-6 gap-4 shadow-md">
-                      <div class="flex justify-between items-center">
-                        <p class="text-white uppercase text-xs"><span class="bg-gradient-to-r from-red-600 via-orange-400 to-pink-500 bg-clip-text font-semibold text-transparent">2 wallets</span> selected </p>
+                    <div class="walletList flex w-full flex-col gap-4 rounded-lg rounded-t-none border border-t-0 border-solid border-white border-opacity-15 px-4 py-6 shadow-md">
+                      <div class="flex items-center justify-between">
+                        <p class="text-xs uppercase text-white">
+                          <span class="bg-gradient-to-r from-red-600 via-orange-400 to-pink-500 bg-clip-text font-semibold text-transparent">
+                            2 wallets
+                          </span>{" "}
+                          selected{" "}
+                        </p>
                         <label class="flex h-6 items-center gap-3">
-                          <input type="checkbox" class="relative h-5 w-5 custom-bg-white appearance-none rounded custom-border-1 hover:cursor-pointer focus:after:absolute focus:after:z-[1] checked:after:absolute checked:after:mt-0.5 checked:after:ms-[0.35rem] checked:after:h-2.5 checked:after:w-1.5 checked:after:rotate-45 checked:after:border-[0.1rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent"/>
-                          <span class="uppercase custom-text-50 text-xs">select all</span>
+                          <input
+                            type="checkbox"
+                            class="custom-bg-white custom-border-1 relative h-5 w-5 appearance-none rounded checked:after:absolute checked:after:ms-[0.35rem] checked:after:mt-0.5 checked:after:h-2.5 checked:after:w-1.5 checked:after:rotate-45 checked:after:border-[0.1rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent hover:cursor-pointer focus:after:absolute focus:after:z-[1]"
+                          />
+                          <span class="custom-text-50 text-xs uppercase">
+                            select all
+                          </span>
                         </label>
                       </div>
                       {/* div strikte z opcjami */}
-                      <div class="flex flex-col w-[98%] gap-2 max-h-[180px] overflow-auto"
+                      <div
+                        class="flex max-h-[180px] w-[98%] flex-col gap-2 overflow-auto"
                         onChange$={(e) => {
-                          const target = e.target as HTMLSelectElement;
-                          selectedWallets.wallets = Array.from(
-                            target.selectedOptions,
-                            (option) => {
-                              return observedWalletsWithBalance.value.find(
-                                (observedWallet) =>
-                                  observedWallet.wallet.id === option.value,
+                          const { defaultValue, checked } =
+                            e.target as HTMLInputElement;
+
+                          if (checked) {
+                            selectedWallets.wallets.push(
+                              observedWalletsWithBalance.value.find(
+                                (selectedWallet) =>
+                                  selectedWallet.wallet.id === defaultValue,
+                              ),
+                            );
+                          } else {
+                            selectedWallets.wallets =
+                              selectedWallets.wallets.filter(
+                                (wallet) => wallet.wallet.id !== defaultValue,
                               );
-                            },
-                          ).filter(Boolean);
+                          }
                         }}
                       >
                         {observedWalletsWithBalance.value.map((option) => (
-                          <label 
-                          class="custom-border-1 p-2 rounded-lg custom-bg-white min-h-9 inline-flex space-x-2 items-center cursor-pointer"
-                          key={option.wallet.id}>
-                            <input type="checkbox"
-                            class="relative h-5 w-5 custom-bg-white appearance-none rounded custom-border-1 hover:cursor-pointer focus:after:absolute focus:after:z-[1] checked:after:absolute checked:after:mt-0.5 checked:after:ms-[0.35rem] checked:after:h-2.5 checked:after:w-1.5 checked:after:rotate-45 checked:after:border-[0.1rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent"
-                            value={option.wallet.id}
+                          <label
+                            class="custom-border-1 custom-bg-white inline-flex min-h-9 cursor-pointer items-center space-x-2 rounded-lg p-2"
+                            key={option.wallet.id}
+                          >
+                            <input
+                              type="checkbox"
+                              class="custom-bg-white custom-border-1 relative h-5 w-5 appearance-none rounded checked:after:absolute checked:after:ms-[0.35rem] checked:after:mt-0.5 checked:after:h-2.5 checked:after:w-1.5 checked:after:rotate-45 checked:after:border-[0.1rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent hover:cursor-pointer focus:after:absolute focus:after:z-[1]"
+                              value={option.wallet.id}
                             />
-                            <span> 
-                              {option.wallet.name}
-                            </span>
+                            <span>{option.wallet.name}</span>
                           </label>
                         ))}
                       </div>
                     </div>
                   </div>
 
-                  <label for="balance" class="block custom-text-50 text-xs mb-2 uppercase">
+                  <label
+                    for="balance"
+                    class="custom-text-50 mb-2 block text-xs uppercase"
+                  >
                     Select Tokens
                   </label>
 
                   <div class="mb-3 w-full text-sm">
-                    
                     {/* input Select token */}
-                    <input id="tokenCheckbox" type="checkbox" class="tokenCheckbox absolute h-0 w-0 overflow-hidden"/>
-                    <label for="tokenCheckbox" class="tokenLabel relative block h-12 w-full rounded-lg custom-border-1 bg-transparent outline-none cursor-pointer">
-                      <span class="absolute end-4 cursor-pointer top-4">
-                        <IconArrowDown/>
+                    <input
+                      id="tokenCheckbox"
+                      type="checkbox"
+                      class="tokenCheckbox absolute h-0 w-0 overflow-hidden"
+                    />
+                    <label
+                      for="tokenCheckbox"
+                      class="tokenLabel custom-border-1 relative block h-12 w-full cursor-pointer rounded-lg bg-transparent outline-none"
+                    >
+                      <span class="absolute end-4 top-4 cursor-pointer">
+                        <IconArrowDown />
                       </span>
                     </label>
-                
+
                     {/* div całości z opcjami */}
-                    <div class="tokenList flex flex-col w-full border-white border-solid border border-opacity-15 border-t-0 rounded-lg rounded-t-none px-4 py-6 gap-4 shadow-md">
-                      <div class="flex justify-between items-center">
-                        <p class="text-white uppercase text-xs"><span class="bg-gradient-to-r from-red-600 via-orange-400 to-pink-500 bg-clip-text font-semibold text-transparent">2 tokens</span> selected </p>
+                    <div class="tokenList flex w-full flex-col gap-4 rounded-lg rounded-t-none border border-t-0 border-solid border-white border-opacity-15 px-4 py-6 shadow-md">
+                      <div class="flex items-center justify-between">
+                        <p class="text-xs uppercase text-white">
+                          <span class="bg-gradient-to-r from-red-600 via-orange-400 to-pink-500 bg-clip-text font-semibold text-transparent">
+                            2 tokens
+                          </span>{" "}
+                          selected{" "}
+                        </p>
                         <label class="flex h-6 items-center gap-3">
-                          <input type="checkbox" class="relative h-5 w-5 custom-bg-white appearance-none rounded custom-border-1 hover:cursor-pointer focus:after:absolute focus:after:z-[1] checked:after:absolute checked:after:mt-0.5 checked:after:ms-[0.35rem] checked:after:h-2.5 checked:after:w-1.5 checked:after:rotate-45 checked:after:border-[0.1rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent"/>
-                          <span class="uppercase custom-text-50 text-xs">select all</span>
+                          <input
+                            type="checkbox"
+                            class="custom-bg-white custom-border-1 relative h-5 w-5 appearance-none rounded checked:after:absolute checked:after:ms-[0.35rem] checked:after:mt-0.5 checked:after:h-2.5 checked:after:w-1.5 checked:after:rotate-45 checked:after:border-[0.1rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent hover:cursor-pointer focus:after:absolute focus:after:z-[1]"
+                          />
+                          <span class="custom-text-50 text-xs uppercase">
+                            select all
+                          </span>
                         </label>
                       </div>
                       {/* div strikte z opcjami */}
-                      <div class="flex flex-col w-[98%] gap-2 max-h-[180px] overflow-auto">
-                          <label 
-                          class="custom-border-1 p-2 rounded-lg custom-bg-white min-h-9 inline-flex space-x-2 items-center">
-                            <input type="checkbox"
-                            class="relative h-5 w-5 custom-bg-white appearance-none rounded custom-border-1 hover:cursor-pointer focus:after:absolute focus:after:z-[1] checked:after:absolute checked:after:mt-0.5 checked:after:ms-[0.35rem] checked:after:h-2.5 checked:after:w-1.5 checked:after:rotate-45 checked:after:border-[0.1rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent"
-                            />
-                            <span> 
-                            {parseWalletsToOptions(selectedWallets.wallets)}
-                            </span>
-                          </label>
+                      <div class="flex max-h-[180px] w-[98%] flex-col gap-2 overflow-auto">
+                        {parseWalletsToOptions(selectedWallets.wallets)}
                       </div>
                     </div>
                   </div>
 
                   {/* <select class="text-white bg-transparent custom-border-1 rounded-lg w-full px-4 mb-4 h-16" name="balancesId[]" multiple>
                     <option class="text-white flex items-center justify-between bg-transparent">Select Tokens</option>
-                    
-                  </select> */}
 
+                  </select> */}
 
                   <div class="flex gap-4">
                     <button
                       type="submit"
-                      class="custom-border-1 h-12 w-[50%] rounded-[48px] hover:scale-105 duration-300 ease-in-out"
+                      class="custom-border-1 h-12 w-[50%] rounded-[48px] duration-300 ease-in-out hover:scale-105"
                       disabled={!isValidName(structureStore.name)}
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      class=" bg-blue-500 h-12 w-[50%] rounded-[48px] hover:scale-105 duration-300 ease-in-out"
+                      class=" h-12 w-[50%] rounded-[48px] bg-blue-500 duration-300 ease-in-out hover:scale-105"
                       disabled={!isValidName(structureStore.name)}
                     >
                       Add token
@@ -592,9 +627,14 @@ function parseWalletsToOptions(wallets: WalletWithBalance[]): JSXOutput[] {
   wallets.forEach((item) => {
     item.balance.forEach((balance) => {
       options.push(
-        <option key={balance.balanceId} value={balance.balanceId}>
-          {`${balance.tokenSymbol} - ${item.wallet.name}`}
-        </option>,
+        <label class="custom-border-1 custom-bg-white inline-flex min-h-9 items-center space-x-2 rounded-lg p-2">
+          <input
+            type="checkbox"
+            class="custom-bg-white custom-border-1 relative h-5 w-5 appearance-none rounded checked:after:absolute checked:after:ms-[0.35rem] checked:after:mt-0.5 checked:after:h-2.5 checked:after:w-1.5 checked:after:rotate-45 checked:after:border-[0.1rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent hover:cursor-pointer focus:after:absolute focus:after:z-[1]"
+            value={balance.balanceId}
+          />
+          <span>{balance.tokenSymbol}</span>
+        </label>,
       );
     });
   });
