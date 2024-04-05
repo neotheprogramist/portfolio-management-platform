@@ -51,7 +51,7 @@ export default component$(() => {
 
   useTask$(async function () {
     console.log("Setting up stream...");
-  
+
     await initializeStreamIfNeeded(setupStream);
     // console.log("initialized stream");
     // const stream = await getStream();
