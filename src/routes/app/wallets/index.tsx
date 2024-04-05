@@ -49,7 +49,6 @@ import {
   getTokenImagePath,
 } from "~/interface/wallets/observedWallets";
 import { emethContractAbi } from "~/abi/emethContractAbi";
-import { usdtAbi } from "~/abi/usdtAbi";
 import NonExecutableWalletControls from "~/components/forms/addWallet/addWalletNonExecutableFormControls";
 import IsExecutableSwitch from "~/components/forms/addWallet/isExecutableSwitch";
 import ExecutableWalletControls from "~/components/forms/addWallet/addWalletExecutableFormControls";
@@ -261,7 +260,7 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
       const allowance = await testPublicClient.readContract({
         account: wallet.address as `0x${string}`,
         address: checksumAddress(token.address as `0x${string}`),
-        abi: token.symbol === "USDT" ? usdtAbi : contractABI,
+        abi: contractABI,
         functionName: "allowance",
         args: [
           wallet.address as `0x${string}`,
@@ -424,7 +423,7 @@ export default component$(() => {
           const { request } = await testPublicClient.simulateContract({
             account: accountFromPrivateKey,
             address: checksumAddress(token.address as `0x${string}`),
-            abi: token.symbol === "USDT" ? usdtAbi : contractABI,
+            abi: contractABI,
             functionName: "approve",
             // TODO: USDT can not reaprove to other amount right after initial arpprove,
             // it needs to be set to 0 first and then reapprove

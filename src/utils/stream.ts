@@ -113,7 +113,6 @@ export const setupStream = server$(async function () {
     newStream = await Moralis.Streams.getById({
       id: jsonStream.id,
     });
-
   } else {
     newStream = await Moralis.Streams.add({
       chains: [EvmChain.SEPOLIA],
