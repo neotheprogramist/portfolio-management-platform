@@ -113,6 +113,5 @@ export const setupStream = server$(async function () {
   });
 
   _stream = newStream;
-  console.log("-->Stream in setupStream", _stream);
   return newStream;
 });
