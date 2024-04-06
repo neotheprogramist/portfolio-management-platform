@@ -9,6 +9,7 @@ import IconArrowDown from "/public/assets/icons/arrow-down.svg?jsx";
 import IconClose from "/public/assets/icons/close.svg?jsx";
 import { Group } from "~/components/groups/group";
 import {
+  $,
   component$,
   type JSXOutput,
   useSignal,
@@ -366,7 +367,6 @@ export default component$(() => {
                 <div class="">NETWORK</div>
                 <div class=""></div>
               </div>
-
               {availableStructures.value.map((createdStructures) => (
                 <Group
                   key={createdStructures.structure.name}
