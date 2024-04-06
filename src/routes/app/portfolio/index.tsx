@@ -466,7 +466,7 @@ export default component$(() => {
                       </div>
                       {/* div strikte z opcjami */}
                       <div
-                        class="flex max-h-[180px] w-[98%] flex-col gap-2 overflow-auto"
+                        class="flex flex-col w-[98%] gap-2 max-h-[100px] overflow-auto"
                         onChange$={(e) => {
                           const { defaultValue, checked } =
                             e.target as HTMLInputElement;
@@ -487,18 +487,22 @@ export default component$(() => {
                         }}
                       >
                         {observedWalletsWithBalance.value.map((option) => (
-                          <label
-                            class="custom-border-1 custom-bg-white inline-flex min-h-9 cursor-pointer items-center space-x-2 rounded-lg p-2"
-                            key={option.wallet.id}
-                          >
+                          <div                             
+                          key={option.wallet.id}
+                          class="relative min-h-9">
                             <input
-                              type="checkbox"
-                              name="walletsId[]"
-                              class="custom-bg-white custom-border-1 relative h-5 w-5 appearance-none rounded checked:after:absolute checked:after:ms-[0.35rem] checked:after:mt-0.5 checked:after:h-2.5 checked:after:w-1.5 checked:after:rotate-45 checked:after:border-[0.1rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent hover:cursor-pointer focus:after:absolute focus:after:z-[1]"
-                              value={option.wallet.id}
+                            id={option.wallet.id}
+                            type="checkbox" 
+                            class="absolute border-gradient custom-border-1 custom-bg-white start-2 top-2 h-5 w-5 appearance-none rounded checked:after:absolute checked:after:ms-[0.35rem] checked:after:mt-0.5 checked:after:h-2.5 checked:after:w-1.5 checked:after:border-solid checked:after:border-bg checked:after:rotate-45 hover:cursor-pointer focus:after:absolute focus:after:z-[1] z-10"
+                            value={option.wallet.id}
                             />
-                            <span>{option.wallet.name}</span>
-                          </label>
+                            <label
+                            for={option.wallet.id}
+                            class="absolute custom-bg-white w-full custom-border-1 inline-flex min-h-9 cursor-pointer items-center space-x-2 rounded-lg"
+                            >
+                              <span class="absolute start-9">{option.wallet.name}</span>
+                            </label>
+                          </div>
                         ))}
                       </div>
                     </div>
@@ -522,6 +526,12 @@ export default component$(() => {
                       for="tokenCheckbox"
                       class="tokenLabel custom-border-1 relative block h-12 w-full cursor-pointer rounded-lg bg-transparent outline-none"
                     >
+                      <div class="custom-bg-button absolute start-2 top-[0.45rem] flex h-8 w-fit gap-2 rounded-[6px] px-3 py-1.5">
+                        <p>2 selections</p>
+                        <button class="cursor-pointer">
+                          <IconClose />
+                        </button>
+                      </div>
                       <span class="absolute end-4 top-4 cursor-pointer">
                         <IconArrowDown />
                       </span>
@@ -547,7 +557,7 @@ export default component$(() => {
                         </label>
                       </div>
                       {/* div strikte z opcjami */}
-                      <div  class="flex max-h-[180px] w-[98%] flex-col gap-2 overflow-auto">
+                      <div  class="flex max-h-[100px] w-[98%] flex-col gap-2 overflow-auto">
                         {parseWalletsToOptions(selectedWallets.wallets)}
                       </div>
                     </div>
@@ -628,15 +638,21 @@ function parseWalletsToOptions(wallets: WalletWithBalance[]): JSXOutput[] {
   wallets.forEach((item) => {
     item.balance.forEach((balance) => {
       options.push(
-        <label class="custom-border-1 custom-bg-white inline-flex min-h-9 items-center space-x-2 rounded-lg p-2">
+        <div                             
+        class="relative min-h-9">
           <input
-            type="checkbox"
-            name="balancesId[]"
-            class="custom-bg-white custom-border-1 relative h-5 w-5 appearance-none rounded checked:after:absolute checked:after:ms-[0.35rem] checked:after:mt-0.5 checked:after:h-2.5 checked:after:w-1.5 checked:after:rotate-45 checked:after:border-[0.1rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent hover:cursor-pointer focus:after:absolute focus:after:z-[1]"
-            value={balance.balanceId}
+          id={balance.balanceId}
+          type="checkbox" 
+          class="absolute border-gradient custom-border-1 custom-bg-white start-2 top-2 h-5 w-5 appearance-none rounded checked:after:absolute checked:after:ms-[0.35rem] checked:after:mt-0.5 checked:after:h-2.5 checked:after:w-1.5 checked:after:border-solid checked:after:border-bg checked:after:rotate-45 hover:cursor-pointer focus:after:absolute focus:after:z-[1] z-10"
+          value={balance.balanceId}
           />
-          <span>{`${balance.tokenSymbol} - ${item.wallet.name}`}</span>
-        </label>,
+          <label
+          for={balance.balanceId}
+          class="absolute custom-bg-white w-full custom-border-1 inline-flex min-h-9 cursor-pointer items-center space-x-2 rounded-lg"
+          >
+            <span class="absolute start-9">{`${balance.tokenSymbol} - ${item.wallet.name}`}</span>
+          </label>
+        </div>,
       );
     });
   });
