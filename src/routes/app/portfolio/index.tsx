@@ -553,11 +553,6 @@ export default component$(() => {
                     </div>
                   </div>
 
-                  {/* <select class="text-white bg-transparent custom-border-1 rounded-lg w-full px-4 mb-4 h-16" name="balancesId[]" multiple>
-                    <option class="text-white flex items-center justify-between bg-transparent">Select Tokens</option>
-
-                  </select> */}
-
                   <div class="flex gap-4">
                     <button
                       type="submit"
