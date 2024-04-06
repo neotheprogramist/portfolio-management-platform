@@ -83,6 +83,7 @@ export const useDeleteToken = routeAction$(
     }
   },
   zod$({
+    // name: z.string(),
     structureId: z.string(),
     balanceId: z.string(),
   }),
@@ -222,6 +223,8 @@ export const useAvailableStructures = routeLoader$(async (requestEvent) => {
 });
 export const useCreateStructure = routeAction$(
   async (data, requestEvent) => {
+    console.log('USE CREATE STRUCTURE DATA:')
+    console.log(data)
     const cookie = requestEvent.cookie.get("accessToken");
     if (!cookie) {
       throw new Error("No cookie found");
@@ -280,6 +283,7 @@ export default component$(() => {
       clickedToken.balanceId;
       if (clickedToken.structureId !== "" && clickedToken.balanceId !== "") {
         deleteToken.submit({
+          // name:
           balanceId: clickedToken.balanceId,
           structureId: clickedToken.structureId,
         });
@@ -488,6 +492,7 @@ export default component$(() => {
                           >
                             <input
                               type="checkbox"
+                              name="walletsId[]"
                               class="custom-bg-white custom-border-1 relative h-5 w-5 appearance-none rounded checked:after:absolute checked:after:ms-[0.35rem] checked:after:mt-0.5 checked:after:h-2.5 checked:after:w-1.5 checked:after:rotate-45 checked:after:border-[0.1rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent hover:cursor-pointer focus:after:absolute focus:after:z-[1]"
                               value={option.wallet.id}
                             />
@@ -541,7 +546,7 @@ export default component$(() => {
                         </label>
                       </div>
                       {/* div strikte z opcjami */}
-                      <div class="flex max-h-[180px] w-[98%] flex-col gap-2 overflow-auto">
+                      <div  class="flex max-h-[180px] w-[98%] flex-col gap-2 overflow-auto">
                         {parseWalletsToOptions(selectedWallets.wallets)}
                       </div>
                     </div>
@@ -630,10 +635,11 @@ function parseWalletsToOptions(wallets: WalletWithBalance[]): JSXOutput[] {
         <label class="custom-border-1 custom-bg-white inline-flex min-h-9 items-center space-x-2 rounded-lg p-2">
           <input
             type="checkbox"
+            name="balancesId[]"
             class="custom-bg-white custom-border-1 relative h-5 w-5 appearance-none rounded checked:after:absolute checked:after:ms-[0.35rem] checked:after:mt-0.5 checked:after:h-2.5 checked:after:w-1.5 checked:after:rotate-45 checked:after:border-[0.1rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent hover:cursor-pointer focus:after:absolute focus:after:z-[1]"
             value={balance.balanceId}
           />
-          <span>{balance.tokenSymbol}</span>
+          <span>{`${balance.tokenSymbol} - ${item.wallet.name}`}</span>
         </label>,
       );
     });
