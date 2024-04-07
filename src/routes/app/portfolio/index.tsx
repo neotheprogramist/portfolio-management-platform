@@ -430,7 +430,9 @@ export default component$(() => {
                     if (createStructureAction.value?.success) {
                       isCreateNewStructureModalOpen.value = false;
                       isWalletSelected.selection = [];
+                      isTokenSelected.selection = []
                       selectedWallets.wallets = [];
+                      selectedTokens.balances = []
                     }
                   }}
                   class="mt-8 text-sm"
