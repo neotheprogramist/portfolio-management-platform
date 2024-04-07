@@ -303,20 +303,18 @@ export default component$(() => {
       isSelectAllChecked.wallets =
         selectedWallets.wallets.length ===
         observedWalletsWithBalance.value.length;
-      isSelectAllChecked.tokens = selectedTokens.balances.length === availableBalances.value && (selectedTokens.balances.length > 0 || availableBalances.value > 0);
-
+      isSelectAllChecked.tokens =
+        selectedTokens.balances.length === availableBalances.value &&
+        (selectedTokens.balances.length > 0 || availableBalances.value > 0);
     });
   });
   useTask$(async ({ track }) => {
     track(() => {
-      if(selectedWallets.wallets.length === 0 ) {
-        isSelectAllChecked.wallets = false
-        selectedTokens.balances = []
-        isTokenSelected.selection.map(
-          (balance) => (balance.status = false),
-        );
+      if (selectedWallets.wallets.length === 0) {
+        isSelectAllChecked.wallets = false;
+        selectedTokens.balances = [];
+        isTokenSelected.selection.map((balance) => (balance.status = false));
       }
-      console.log(isSelectAllChecked.tokens)
     });
   });
 
@@ -491,7 +489,7 @@ export default component$(() => {
                             type="button"
                             onClick$={() => {
                               isSelectAllChecked.wallets = false;
-                              isSelectAllChecked.tokens = false
+                              isSelectAllChecked.tokens = false;
                               isWalletSelected.selection = [];
                               selectedWallets.wallets = [];
                             }}
@@ -848,10 +846,8 @@ function parseWalletsToOptions(
             checked={isTokenSelected.selection.some(
               (item) => balance.balanceId === item.balanceId && item.status,
             )}
-            onChange$={() =>
-              callback(isTokenSelected, balance.balanceId, "balanceId")
-            }
             onClick$={(e) => {
+              callback(isTokenSelected, balance.balanceId, "balanceId");
               const { defaultValue, checked } = e.target as HTMLInputElement;
 
               if (checked) {
