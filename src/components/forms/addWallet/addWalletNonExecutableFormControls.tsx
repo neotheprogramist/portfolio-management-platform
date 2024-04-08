@@ -33,7 +33,6 @@ export default component$<AddWalletFormProps>(({ addWalletFormStore }) => {
           addWalletFormStore.isNameUnique = await isNameUniqueServer(
             target.value,
           );
-          console.log("Is name Unique", addWalletFormStore.isNameUnique);
         }}
       />
       <label for="address" class="flex gap-2 pb-1 text-xs text-white">
