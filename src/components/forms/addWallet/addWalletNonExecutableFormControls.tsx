@@ -6,6 +6,7 @@ import {
   isValidAddress,
   isValidName,
 } from "~/utils/validators/addWallet";
+import { isNameUnique as isNameUniqueServer } from "~/utils/validators/addWallet";
 
 export interface AddWalletFormProps {
   addWalletFormStore: addWalletFormStore;
@@ -26,9 +27,13 @@ export default component$<AddWalletFormProps>(({ addWalletFormStore }) => {
         class={`border-white-opacity-20 mb-5 block w-[80%] rounded bg-transparent p-3 text-white 
               ${!isValidName(addWalletFormStore.name) ? "border-red-700" : ""}`}
         value={addWalletFormStore.name}
-        onInput$={(e) => {
+        onInput$={async (e) => {
           const target = e.target as HTMLInputElement;
           addWalletFormStore.name = target.value;
+          addWalletFormStore.isNameUnique = await isNameUniqueServer(
+            target.value,
+          );
+          console.log("Is name Unique", addWalletFormStore.isNameUnique);
         }}
       />
       <label for="address" class="flex gap-2 pb-1 text-xs text-white">
