@@ -3,6 +3,7 @@ import { getAddress } from "viem";
 import { type addWalletFormStore } from "~/routes/app/wallets";
 import {
   isCheckSum,
+  isNameUnique,
   isValidAddress,
   isValidName,
 } from "~/utils/validators/addWallet";
@@ -43,9 +44,12 @@ export default component$<AddWalletFormFieldsProps>(
                ${!isValidName(addWalletFormStore.name) ? "border-red-700" : ""}`}
             value={addWalletFormStore.name}
             placeholder="Enter wallet name..."
-            onInput$={(e) => {
+            onInput$={async (e) => {
               const target = e.target as HTMLInputElement;
               addWalletFormStore.name = target.value;
+              addWalletFormStore.isNameUnique = await isNameUnique(
+                target.value,
+              );
             }}
           />
         </div>
