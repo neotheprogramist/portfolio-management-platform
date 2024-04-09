@@ -30,6 +30,19 @@ import {
   getSelectedPeriodInHours,
 } from "~/utils/timestamps/timestamp";
 
+function mapTokenAddress(sepoliaAddress: string): any {
+
+  const tokenMap: any = {
+    '0x054E1324CF61fe915cca47C48625C07400F1B587' : '0x7DD9c5Cba05E151C895FDe1CF355C9A1D5DA6429',
+    '0xD418937d10c9CeC9d20736b2701E506867fFD85f' : '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    '0x9D16475f4d36dD8FC5fE41F74c9F44c7EcCd0709' : '0xdac17f958d2ee523a2206206994597c13d831ec7'
+  }
+  if (sepoliaAddress in tokenMap) {
+    return tokenMap[sepoliaAddress];
+  } else {
+    return null;
+  }
+}
 export const useToggleChart = routeAction$(async (data, requestEvent) => {
   const selectedPeriod: { period: number; interval: number } =
     getSelectedPeriodInHours(data as PeriodState);
@@ -58,7 +71,7 @@ export const useToggleChart = routeAction$(async (data, requestEvent) => {
   for (const item of chartTimestamps) {
     try {
       const blockDetails = await Moralis.EvmApi.block.getDateToBlock({
-        chain: "x1",
+        chain: "0x1",
         date: item,
       });
       blocks.push(blockDetails.raw.block);
@@ -94,17 +107,14 @@ export const useToggleChart = routeAction$(async (data, requestEvent) => {
     }
 
     try {
-      // await Moralis.start({
-      //   apiKey: requestEvent.env.get("MORALIS_API_KEY")
-      // })
-
       for (const balanceEntry of dashboardBalance) {
         for (const block of blocks) {
           try {
+            const ethTokenAddress = mapTokenAddress(balanceEntry.tokenAddress)
             const tokenPrice = await Moralis.EvmApi.token.getTokenPrice({
-              chain: "0xaa36a7",
+              chain: '0x1',
               toBlock: block,
-              address: balanceEntry.tokenAddress,
+              address: ethTokenAddress,
             });
 
             chartData.push(
@@ -143,10 +153,6 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
   const observedWalletsQueryResult = result[0];
 
   const dashboardBalance: { tokenAddress: string; balance: string }[] = [];
-  const currentUnixDate = new Date(Date.now())
-    .toISOString()
-    .replace(/\.(\d+)Z$/, "+00:00");
-
   const valueChange: { valueChangeUSD: string; percentageChange: string }[] =
     [];
   let totalBalance = 0;
@@ -154,17 +160,16 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
   const blocks = [];
   const chartData = [];
   const chartTimestamps = generateTimestamps(24, 6);
+
+
   for (const item of chartTimestamps) {
     try {
-      // await Moralis.start({
-      //   apiKey: requestEvent.env.get("MORALIS_API_KEY"),
-      // });
-
       const blockDetails = await Moralis.EvmApi.block.getDateToBlock({
-        chain: "0xaa36a7",
+        chain: '0x1',
         date: item,
       });
       blocks.push(blockDetails.raw.block);
+
     } catch (error) {
       console.error(error);
     }
@@ -198,20 +203,13 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
 
     try {
       for (const balanceEntry of dashboardBalance) {
-        const blockDetails = await Moralis.EvmApi.block.getDateToBlock({
-          chain: "0xaa36a7",
-          date: currentUnixDate,
-        });
+        const ethTokenAddress = mapTokenAddress(balanceEntry.tokenAddress)
 
         const tokenPriceChange = await Moralis.EvmApi.token.getTokenPrice({
-          chain: "0xaa36a7",
+          chain: '0x1',
           include: "percent_change",
-          toBlock: blockDetails.raw.block,
-          address: balanceEntry.tokenAddress,
+          address: ethTokenAddress
         });
-        console.log('================================')
-        console.log(tokenPriceChange)
-        console.log('================================')
 
         if (
           tokenPriceChange.raw["24hrPercentChange"] &&
@@ -232,13 +230,15 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
             parseFloat(balanceEntry.balance) * tokenPriceChange.raw.usdPrice;
         }
 
-        //===========================================================================================
-        for (const block of blocks) {
+
+        // ===========================================================================================
+        for (const block of blocks.slice(0, blocks.length - 1)) {
           try {
+            const ethTokenAddress = mapTokenAddress(balanceEntry.tokenAddress)
             const tokenPrice = await Moralis.EvmApi.token.getTokenPrice({
-              chain: "0xaa36a7",
+              chain: '0x1',
               toBlock: block,
-              address: balanceEntry.tokenAddress,
+              address: ethTokenAddress,
             });
 
             chartData.push(
@@ -248,7 +248,7 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
             console.error(error);
           }
         }
-        //===========================================================================================
+        // ===========================================================================================
       }
     } catch (error) {
       console.error(error);
@@ -368,10 +368,10 @@ export const useGetFavoriteTokens = routeLoader$(async (requestEvent) => {
     `SELECT * FROM ${userId}->has_structure WHERE out.name = 'Favourite Tokens';`,
   );
   if (!result.length) return [];
-  console.log("result", result);
+  // console.log("result", result);
   const createdStructure = result[0].out;
 
-  console.log("createdStructure", createdStructure);
+  // console.log("createdStructure", createdStructure);
   const availableStructures: any[] = [];
 
   const [structure] = await db.select(`${createdStructure}`);
@@ -395,7 +395,7 @@ export const useGetFavoriteTokens = routeLoader$(async (requestEvent) => {
     );
     const [tokenValue] = await getDBTokenPriceUSD(db, token[0].address);
     const [imagePath] = await getTokenImagePath(db, token[0].symbol);
-    console.log("---------IMAGE PATH---------", imagePath.imagePath);
+    // console.log("---------IMAGE PATH---------", imagePath.imagePath);
     const tokenWithBalance = {
       id: token[0].id,
       name: token[0].name,
@@ -424,7 +424,7 @@ export const useGetFavoriteTokens = routeLoader$(async (requestEvent) => {
     structureBalance: structureTokens,
   });
 
-  console.log("Available Structures from routeloader: ", availableStructures);
+  // console.log("Available Structures from routeloader: ", availableStructures);
   return availableStructures;
 });
 
@@ -435,7 +435,7 @@ export default component$(() => {
   const favoriteTokens = useGetFavoriteTokens();
   const toggleChart = useToggleChart();
   const portfolioValueChange = usePortfolio24hChange();
-  const chartDataStore = useStore({ portfolioValueChange });
+  const chartDataStore = useStore({ data: portfolioValueChange.value.chartData });
   const changePeriod = useSignal(false);
   const selectedPeriod: PeriodState = useStore({
     "24h": true,
@@ -452,13 +452,18 @@ export default component$(() => {
   });
 
   useTask$(async ({ track }) => {
-    track(() => {
+    track(async () => {
       selectedPeriod["24h"];
       selectedPeriod["1W"];
       selectedPeriod["1M"];
       selectedPeriod["1Y"];
+
       if (changePeriod.value !== false) {
-        toggleChart.submit(selectedPeriod);
+       const newChartData = await toggleChart.submit(selectedPeriod);
+        console.log('=========================')
+        console.log(newChartData)
+        console.log('=========================')
+       chartDataStore.data = newChartData.value.chartData
       }
     });
   });
@@ -468,7 +473,7 @@ export default component$(() => {
       totalPortfolioValue={totalPortfolioValue.value}
       isPortfolioFullScreen={isPortfolioFullScreen}
       portfolioValueChange={portfolioValueChange.value}
-      chartData={chartDataStore.portfolioValueChange.value.chartData}
+      chartData={chartDataStore.data}
       selectedPeriod={selectedPeriod}
       onClick$={(e: any) => {
         togglePeriod(e.target.name);
@@ -481,7 +486,7 @@ export default component$(() => {
         totalPortfolioValue={totalPortfolioValue.value}
         isPortfolioFullScreen={isPortfolioFullScreen}
         portfolioValueChange={portfolioValueChange.value}
-        chartData={chartDataStore.portfolioValueChange.value.chartData}
+        chartData={chartDataStore.data}
         selectedPeriod={selectedPeriod}
         onClick$={(e: any) => {
           togglePeriod(e.target.name);
