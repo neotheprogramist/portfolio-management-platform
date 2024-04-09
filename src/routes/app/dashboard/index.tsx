@@ -58,7 +58,7 @@ export const useToggleChart = routeAction$(async (data, requestEvent) => {
   for (const item of chartTimestamps) {
     try {
       const blockDetails = await Moralis.EvmApi.block.getDateToBlock({
-        chain: "0x1",
+        chain: "x1",
         date: item,
       });
       blocks.push(blockDetails.raw.block);
@@ -102,7 +102,7 @@ export const useToggleChart = routeAction$(async (data, requestEvent) => {
         for (const block of blocks) {
           try {
             const tokenPrice = await Moralis.EvmApi.token.getTokenPrice({
-              chain: "0x1",
+              chain: "0xaa36a7",
               toBlock: block,
               address: balanceEntry.tokenAddress,
             });
@@ -156,12 +156,12 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
   const chartTimestamps = generateTimestamps(24, 6);
   for (const item of chartTimestamps) {
     try {
-      await Moralis.start({
-        apiKey: requestEvent.env.get("MORALIS_API_KEY"),
-      });
+      // await Moralis.start({
+      //   apiKey: requestEvent.env.get("MORALIS_API_KEY"),
+      // });
 
       const blockDetails = await Moralis.EvmApi.block.getDateToBlock({
-        chain: "0x1",
+        chain: "0xaa36a7",
         date: item,
       });
       blocks.push(blockDetails.raw.block);
@@ -199,16 +199,20 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
     try {
       for (const balanceEntry of dashboardBalance) {
         const blockDetails = await Moralis.EvmApi.block.getDateToBlock({
-          chain: "0x1",
+          chain: "0xaa36a7",
           date: currentUnixDate,
         });
 
         const tokenPriceChange = await Moralis.EvmApi.token.getTokenPrice({
-          chain: "0x1",
+          chain: "0xaa36a7",
           include: "percent_change",
           toBlock: blockDetails.raw.block,
           address: balanceEntry.tokenAddress,
         });
+        console.log('================================')
+        console.log(tokenPriceChange)
+        console.log('================================')
+
         if (
           tokenPriceChange.raw["24hrPercentChange"] &&
           tokenPriceChange.raw.usdPrice
@@ -232,7 +236,7 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
         for (const block of blocks) {
           try {
             const tokenPrice = await Moralis.EvmApi.token.getTokenPrice({
-              chain: "0x1",
+              chain: "0xaa36a7",
               toBlock: block,
               address: balanceEntry.tokenAddress,
             });
