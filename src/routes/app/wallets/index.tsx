@@ -27,7 +27,7 @@ import { ObservedWallet } from "~/components/wallets/observed";
 import { type Balance } from "~/interface/balance/Balance";
 import { type WalletTokensBalances } from "~/interface/walletsTokensBalances/walletsTokensBalances";
 import { convertWeiToQuantity } from "~/utils/formatBalances/formatTokenBalance";
-import { isAddress, checksumAddress } from "viem";
+import { isAddress, checksumAddress, getAddress } from "viem";
 import IconArrowDown from "/public/assets/icons/arrow-down.svg?jsx";
 import IconInfo from "/public/assets/icons/info.svg?jsx";
 import IconSearch from "/public/assets/icons/search.svg?jsx";
@@ -36,6 +36,7 @@ import {
   isValidAddress,
   isPrivateKeyHex,
   isPrivateKey32Bytes,
+  isCheckSum,
 } from "~/utils/validators/addWallet";
 import {
   getUsersObservingWallet,
@@ -53,23 +54,19 @@ import {
 } from "~/interface/wallets/observedWallets";
 import { emethContractAbi } from "~/abi/emethContractAbi";
 import { usdtAbi } from "~/abi/usdtAbi";
-import NonExecutableWalletControls from "~/components/forms/addWallet/addWalletNonExecutableFormControls";
 import IsExecutableSwitch from "~/components/forms/addWallet/isExecutableSwitch";
-import ExecutableWalletControls from "~/components/forms/addWallet/addWalletExecutableFormControls";
-import { privateKeyToAccount } from "viem/accounts";
 import { getCookie } from "~/utils/refresh";
 import * as jwtDecode from "jwt-decode";
 import { type Token } from "~/interface/token/Token";
-import { testPublicClient, testWalletClient } from "./testconfig";
+import { testPublicClient } from "./testconfig";
 import Moralis from "moralis";
 import { StreamStoreContext } from "~/interface/streamStore/streamStore";
 import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
 import { messagesContext } from "../layout";
-import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi";
-import { type Chain, mainnet, sepolia } from "viem/chains";
-import { metadata } from '../../layout';
-import { getAccount, reconnect, simulateContract, watchAccount, writeContract, type Config, readContract  } from "@wagmi/core";
+import { type Chain, sepolia } from "viem/chains";
+import { getAccount,  simulateContract, watchAccount, writeContract, type Config, readContract, waitForTransactionReceipt  } from "@wagmi/core";
 import { returnWeb3ModalAndClient } from "~/components/wallet-connect";
+import AddWalletFormFields from "~/components/forms/addWallet/addWalletFormFields";
 
 
 export const useAddWallet = routeAction$(
@@ -84,6 +81,7 @@ export const useAddWallet = routeAction$(
     if (!cookie) {
       throw new Error("No cookie found");
     }
+    
     const { userId } = jwt.decode(cookie.value) as JwtPayload;
     console.log("USERID", userId);
 
@@ -357,9 +355,8 @@ const chekckIfProperAmount = (input: string, regex: RegExp) => {
 
 export interface addWalletFormStore {
   name: string;
-  address: string | undefined;
+  address: string;
   isExecutable: number;
-  privateKey: string;
 }
 
 export interface transferredCoinInterface {
@@ -401,7 +398,6 @@ export default component$(() => {
     name: "",
     address: "",
     isExecutable: 0,
-    privateKey: "",
   });
   const receivingWalletAddress = useSignal("");
   const transferredTokenAmount = useSignal("");
@@ -428,6 +424,8 @@ export default component$(() => {
     const { config, modal } = await setWeb3Modal();
     await modal.open();
     temporaryModalStore.config = noSerialize(config);
+    const { address } = getAccount(config);
+    addWalletFormStore.address = address as `0x${string}`;
     watchAccount(config, {
       onChange(data) {
         console.log(data);
@@ -439,12 +437,18 @@ export default component$(() => {
   const handleAddWallet = $(async () => {
     console.log("IN HANDLE ADD WALLET");
     isAddWalletModalOpen.value = false;
+
     formMessageProvider.messages.push({
       id: formMessageProvider.messages.length,
       variant: "info",
       message: "Processing wallet...",
       isVisible: true,
     });
+
+  
+    const emethContractAddress = import.meta.env
+    .PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA;
+
     try {
       if (addWalletFormStore.isExecutable) {
         if(temporaryModalStore.isConnected && temporaryModalStore.config){
@@ -453,10 +457,8 @@ export default component$(() => {
         console.log("IN EXECUTABLE BLOCK");
         console.log('[address]: ', account.address);
        
-        addWalletFormStore.address = account.address;
+        addWalletFormStore.address = account.address as `0x${string}`;
 
-        const emethContractAddress = import.meta.env
-          .PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA;
         if (!emethContractAddress) {
           throw new Error("Missing PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA");
         }
@@ -468,7 +470,7 @@ export default component$(() => {
 
           const tokenBalance = await readContract(temporaryModalStore.config, {
             account: account.address as `0x${string}`,
-            abi: token.symbol === "USDT" ? usdtAbi : contractABI,
+            abi: contractABI,
             address: checksumAddress(token.address as `0x${string}`),
             functionName: "balanceOf",
             args: [account.address as `0x${string}`],
@@ -479,7 +481,7 @@ export default component$(() => {
           if(tokenBalance) {
             const approval = await simulateContract(temporaryModalStore.config, {
               account: account.address as `0x${string}`,
-              abi: token.symbol === "USDT" ? usdtAbi : contractABI,
+              abi:  contractABI,
               address: checksumAddress(token.address as `0x${string}`),
               functionName: "approve",
               args: [emethContractAddress, 10n*10n**18n],
@@ -498,7 +500,7 @@ export default component$(() => {
           const allowance = await readContract(temporaryModalStore.config, {
             account: account.address,
             address: checksumAddress(token.address as `0x${string}`),
-            abi: token.symbol === "USDT" ? usdtAbi : contractABI,
+            abi: contractABI,
             functionName: "allowance",
             args: [account.address as `0x${string}`, emethContractAddress],
           });
@@ -507,35 +509,39 @@ export default component$(() => {
         }
       }
         // approving logged in user by observed wallet by emeth contract
-        // const cookie = getCookie("accessToken");
-        // if (!cookie) throw new Error("No accessToken cookie found");
-        // const { address } = jwtDecode.jwtDecode(cookie) as JwtPayload;
-        // const { request } = await testPublicClient.simulateContract({
-        //   account: accountFromPrivateKey,
-        //   address: emethContractAddress,
-        //   abi: emethContractAbi,
-        //   functionName: "approve",
-        //   args: [address],
-        // });
-        // const receipt = await testWalletClient.writeContract(request);
-        // console.log(receipt);
+        const cookie = getCookie("accessToken");
+        if (!cookie) throw new Error("No accessToken cookie found");
+
+        const { address } = jwtDecode.jwtDecode(cookie) as JwtPayload;
+      
+        const { request } = await simulateContract(temporaryModalStore.config as Config, {
+          account: addWalletFormStore.address as `0x${string}`,
+          address: emethContractAddress,
+          abi: emethContractAbi,
+          functionName: "approve",
+          args: [address as `0x${string}`],
+        });
+
+        const receipt = await writeContract(temporaryModalStore.config as Config, request);
+        console.log(receipt);
       
       }
 
-      // await addWalletAction.submit({
-      //   address: addWalletFormStore.address as `0x${string}`,
-      //   name: addWalletFormStore.name,
-      //   isExecutable: addWalletFormStore.isExecutable.toString(),
-      // });
+      await addWalletAction.submit({
+        address: addWalletFormStore.address as `0x${string}`,
+        name: addWalletFormStore.name,
+        isExecutable: addWalletFormStore.isExecutable.toString(),
+      });
 
-      // formMessageProvider.messages.push({
-      //   id: formMessageProvider.messages.length,
-      //   variant: "success",
-      //   message: "Wallet successfully added.",
-      //   isVisible: true,
-      // });
-      // console.log("wallet added successfully, adding address to stream...");
-      // await addAddressToStreamConfig(streamId, addWalletFormStore.address);
+      formMessageProvider.messages.push({
+        id: formMessageProvider.messages.length,
+        variant: "success",
+        message: "Wallet successfully added.",
+        isVisible: true,
+      });
+
+      console.log("wallet added successfully, adding address to stream...");
+      await addAddressToStreamConfig(streamId, addWalletFormStore.address as `0x${string}`);
       // addWalletFormStore.address = "";
       // addWalletFormStore.name = "";
       // addWalletFormStore.privateKey = "";
@@ -555,6 +561,8 @@ export default component$(() => {
     if (!selectedWallet.value || !modalStore.config) {
       return { error: "no chosen wallet" };
     }
+  console.log('logged: ',getAccount(modalStore.config));
+  
 
     const from = selectedWallet.value.wallet.address;
     const to = receivingWalletAddress.value;
@@ -611,7 +619,7 @@ export default component$(() => {
 
         const transactionHash = await writeContract(modalStore.config, request);
 
-        const receipt = await testPublicClient.waitForTransactionReceipt({
+        const receipt = await waitForTransactionReceipt(modalStore.config, {
           hash: transactionHash,
         });
 
@@ -714,22 +722,12 @@ export default component$(() => {
       {isAddWalletModalOpen.value && (
         <Modal
           isOpen={isAddWalletModalOpen}
-          formStore={addWalletFormStore}
+          // formStore={addWalletFormStore}
           title="Add Wallet"
         >
           <Form class="p-[24px]">
             <IsExecutableSwitch addWalletFormStore={addWalletFormStore} />
-
-            {!addWalletFormStore.isExecutable ? (
-              <NonExecutableWalletControls
-                addWalletFormStore={addWalletFormStore}
-              />
-            ) : (
-              <ExecutableWalletControls
-              onConnectWalletClick={connectWallet}
-                addWalletFormStore={addWalletFormStore}
-              />
-            )}
+            <AddWalletFormFields addWalletFormStore={addWalletFormStore} onConnectWalletClick={connectWallet} isWalletConnected={temporaryModalStore.isConnected}/>
             <button
               type="reset"
               class="custom-border-2 absolute bottom-[20px] right-[120px] h-[32px] rounded-3xl px-[8px] text-xs font-normal text-white duration-300 ease-in-out hover:scale-110"
@@ -737,7 +735,6 @@ export default component$(() => {
                 isAddWalletModalOpen.value = false;
                 addWalletFormStore.address = "";
                 addWalletFormStore.name = "";
-                addWalletFormStore.privateKey = "";
               }}
             >
               Cancel
@@ -856,9 +853,7 @@ export default component$(() => {
 const isExecutableDisabled = (addWalletFormStore: addWalletFormStore) => false;
   // addWalletFormStore.name === "" ||
   // addWalletFormStore.privateKey === "" ||
-  // !isValidName(addWalletFormStore.name) ||
-  // !isPrivateKey32Bytes(addWalletFormStore.privateKey) ||
-  // !isPrivateKeyHex(addWalletFormStore.privateKey);
+  // !isValidName(addWalletFormStore.name);
 
 const isNotExecutableDisabled = (addWalletFormStore: addWalletFormStore) =>
   addWalletFormStore.name === "" ||

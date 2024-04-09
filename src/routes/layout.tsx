@@ -51,7 +51,7 @@ export default component$(() => {
 
   useTask$(async function () {
     console.log("Setting up stream...");
-  
+
     await initializeStreamIfNeeded(setupStream);
     console.log("initialized stream");
     const stream = await getStream();
@@ -76,7 +76,7 @@ export default component$(() => {
       enableEIP6963: true, // Optional - true by default
       enableCoinbase: true, // Optional - true by default
     });
-    
+
     reconnect(config2);
 
     modalStore.config = noSerialize(config2);
@@ -88,7 +88,7 @@ export default component$(() => {
       });
     }
   });
-  
+
   useContextProvider(ModalStoreContext, modalStore);
 
   return (

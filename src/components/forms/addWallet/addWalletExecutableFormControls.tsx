@@ -33,7 +33,7 @@ export default component$<AddWalletFormProps>(({ addWalletFormStore, onConnectWa
         }}
       />
 
-      {/* <label for="privateKey" class="flex gap-2 pb-1 text-xs text-white">
+      <label for="" class="flex gap-2 pb-1 text-xs text-white">
         Private Key
         {!isPrivateKey32Bytes(addWalletFormStore.privateKey) ? (
           <span class=" text-xs text-red-500">
@@ -44,9 +44,9 @@ export default component$<AddWalletFormProps>(({ addWalletFormStore, onConnectWa
             Invalid format. Private key must be a hexadecimal string.
           </span>
         ) : null}
-      </label> */}
-      <div class="mb-5 flex items-center gap-2">
-        {/* <input
+      </label>
+      {/* <div class="mb-5 flex items-center gap-2">
+        <input
           type={isPrivateKeyInputVisible.value ? "text" : "password"}
           name="privateKey"
           class={`border-white-opacity-20  block w-[80%] rounded bg-transparent p-3 text-white 
@@ -56,17 +56,17 @@ export default component$<AddWalletFormProps>(({ addWalletFormStore, onConnectWa
             const target = e.target as HTMLInputElement;
             addWalletFormStore.privateKey = target.value;
           }}
-        /> */}
+        />
        
-        {/* <button
+        <button
           type="button"
           onClick$={() => {
             isPrivateKeyInputVisible.value = !isPrivateKeyInputVisible.value;
           }}
         >
           {isPrivateKeyInputVisible.value ? "Hide" : "Show"}
-        </button> */}
-      </div>
+        </button> 
+      </div> */}
 
       <input type="hidden" name="address" value={addWalletFormStore.address} />
 
