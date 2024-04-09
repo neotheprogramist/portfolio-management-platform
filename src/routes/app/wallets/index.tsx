@@ -761,7 +761,8 @@ export default component$(() => {
               disabled={
                 addWalletFormStore.isExecutable
                   ? isExecutableDisabled(addWalletFormStore)
-                  : isNotExecutableDisabled(addWalletFormStore)
+                  : isNotExecutableDisabled(addWalletFormStore) ||
+                    !addWalletFormStore.isNameUnique
               }
             >
               <p
@@ -874,7 +875,8 @@ const isNotExecutableDisabled = (addWalletFormStore: addWalletFormStore) =>
   addWalletFormStore.name === "" ||
   addWalletFormStore.address === "" ||
   !isValidName(addWalletFormStore.name) ||
-  !isValidAddress(addWalletFormStore.address);
+  !isValidAddress(addWalletFormStore.address) ||
+  !addWalletFormStore.isNameUnique;
 
 const isExecutableClass = (addWalletFormStore: addWalletFormStore) =>
   isExecutableDisabled(addWalletFormStore)
