@@ -6,6 +6,8 @@ import {
   useSignal,
   useStore,
   noSerialize,
+  useTask$,
+  useVisibleTask$,
 } from "@builder.io/qwik";
 import {
   Form,
@@ -55,6 +57,7 @@ import Moralis from "moralis";
 import { StreamStoreContext } from "~/interface/streamStore/streamStore";
 import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
 import { messagesContext } from "../layout";
+import { Readable } from "node:stream";
 import { type Chain, sepolia } from "viem/chains";
 import {
   getAccount,
@@ -382,6 +385,28 @@ interface ModalStore {
   config?: NoSerialize<Config>;
 }
 
+export const dbBalancesStream = server$(async function* () {
+  const db = await connectToDB(this.env);
+
+  const resultsStream = new Readable({
+    objectMode: true,
+    read() {}, 
+  });
+
+  await db.live("balance", ({ action, result }) => {
+    if (action === "CLOSE") {
+      resultsStream.push(null);
+      return;
+    }
+    console.log("live query result", result);
+    resultsStream.push(result); 
+  });
+
+  for await (const result of resultsStream) {
+    yield result;
+  }
+});
+
 export default component$(() => {
   const modalStore = useContext(ModalStoreContext);
   const formMessageProvider = useContext(messagesContext);
@@ -429,6 +454,15 @@ export default component$(() => {
         temporaryModalStore.isConnected = data.isConnected;
       },
     });
+  });
+  const msg = useSignal("1");
+  // eslint-disable-next-line qwik/no-use-visible-task
+  useVisibleTask$(async () => {
+    const data = await dbBalancesStream();
+    for await (const value of data) {
+      console.log("Stream value:", value);
+      msg.value = value;
+    }
   });
 
   const handleAddWallet = $(async () => {
@@ -516,6 +550,7 @@ export default component$(() => {
           }
         }
         // approving logged in user by observed wallet by emeth contract
+        console.log("approving logged in user by observed wallet by emeth contract")
         const cookie = getCookie("accessToken");
         if (!cookie) throw new Error("No accessToken cookie found");
 
@@ -609,9 +644,10 @@ export default component$(() => {
         .PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA;
       try {
         console.log("--> address: emethContractAddress", emethContractAddress);
+        console.log("--> from", from);
         console.log("--> token", token);
         console.log("--> to", to);
-
+        
         const { request } = await simulateContract(modalStore.config, {
           abi: emethContractAbi,
           address: emethContractAddress,
