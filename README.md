@@ -18,7 +18,7 @@ Create account on [Ngrok](https://ngrok.com/) and install it.
 # macOS
 brew install ngrok/ngrok/ngrok
 
-# linux
+# Linux
 curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null && echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list && sudo apt update && sudo apt install ngrok
 ```
 
@@ -79,7 +79,7 @@ Install `podman`:
 # macOS
 brew install podman
 
-# linux
+# Linux
 sudo apt-get update
 sudo apt-get -y install podman
 ```
@@ -90,7 +90,7 @@ Install `surreal`:
 # macOS
 brew install surrealdb/tap/surreal
 
-# linux
+# Linux
 curl -sSf https://install.surrealdb.com | sh
 ```
 
