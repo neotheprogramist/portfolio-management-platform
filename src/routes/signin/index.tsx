@@ -7,7 +7,7 @@ import {
   getNonceServer,
   verifyMessageServer,
 } from "~/components/wallet-connect/server";
-import { disconnect, getAccount, getChainId, signMessage } from "@wagmi/core";
+import { disconnect, getAccount, signMessage } from "@wagmi/core";
 import { SiweMessage } from "siwe";
 import { HeroSection } from "~/components/login-text/login-text";
 import IconHandshake from "/public/assets/icons/signin/handshake.svg?jsx";
@@ -21,9 +21,9 @@ export default component$(() => {
     console.log("clicked");
     if (modalStore.isConnected && modalStore.config) {
       console.log("connected");
-      const { address } = getAccount(modalStore.config);
+      const { address, chainId } = getAccount(modalStore.config);
       console.log("address", address);
-      const chainId = getChainId(modalStore.config);
+      // const chainId = getChainId(modalStore.config);
       console.log("chainId", chainId);
       const { nonce } = await getNonceServer();
       console.log("nonce", nonce);
