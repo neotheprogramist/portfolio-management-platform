@@ -106,7 +106,6 @@ export const setupStream = server$(async function () {
   const jsonStream = streams
     .toJSON()
     .result.find((s) => s.webhookUrl === this.env.get("NGROK_WEBHOOK_URL"));
-  console.log("[streamy]: ", jsonStream);
 
   let newStream;
 
@@ -114,7 +113,6 @@ export const setupStream = server$(async function () {
     newStream = await Moralis.Streams.getById({
       id: jsonStream.id,
     });
-    console.log("[old stream]");
   } else {
     newStream = await Moralis.Streams.add({
       chains: [EvmChain.SEPOLIA],
@@ -127,7 +125,6 @@ export const setupStream = server$(async function () {
       webhookUrl: ngrokWebhookUrl,
       triggers: triggers,
     });
-    console.log("[new stream]");
   }
 
   _stream = newStream;

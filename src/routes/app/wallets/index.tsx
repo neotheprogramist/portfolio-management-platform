@@ -29,7 +29,7 @@ import { type WalletTokensBalances } from "~/interface/walletsTokensBalances/wal
 import { convertWeiToQuantity } from "~/utils/formatBalances/formatTokenBalance";
 import { isAddress, checksumAddress, getAddress } from "viem";
 import IconArrowDown from "/public/assets/icons/arrow-down.svg?jsx";
-import IconInfo from "/public/assets/icons/info.svg?jsx";
+import IconInfo from "/public/assets/icons/info-blue.svg?jsx";
 import IconSearch from "/public/assets/icons/search.svg?jsx";
 import {
   isValidName,
@@ -53,7 +53,6 @@ import {
   getTokenImagePath,
 } from "~/interface/wallets/observedWallets";
 import { emethContractAbi } from "~/abi/emethContractAbi";
-import { usdtAbi } from "~/abi/usdtAbi";
 import IsExecutableSwitch from "~/components/forms/addWallet/isExecutableSwitch";
 import { getCookie } from "~/utils/refresh";
 import * as jwtDecode from "jwt-decode";
@@ -267,7 +266,7 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
       const allowance = await testPublicClient.readContract({
         account: wallet.address as `0x${string}`,
         address: checksumAddress(token.address as `0x${string}`),
-        abi: token.symbol === "USDT" ? usdtAbi : contractABI,
+        abi: contractABI,
         functionName: "allowance",
         args: [
           wallet.address as `0x${string}`,
@@ -357,6 +356,7 @@ export interface addWalletFormStore {
   name: string;
   address: string;
   isExecutable: number;
+  isNameUnique: boolean;
 }
 
 export interface transferredCoinInterface {
@@ -398,6 +398,7 @@ export default component$(() => {
     name: "",
     address: "",
     isExecutable: 0,
+    isNameUnique: true,
   });
   const receivingWalletAddress = useSignal("");
   const transferredTokenAmount = useSignal("");
@@ -500,6 +501,7 @@ export default component$(() => {
           const allowance = await readContract(temporaryModalStore.config, {
             account: account.address,
             address: checksumAddress(token.address as `0x${string}`),
+            abi: contractABI,
             abi: contractABI,
             functionName: "allowance",
             args: [account.address as `0x${string}`, emethContractAddress],
@@ -746,7 +748,8 @@ export default component$(() => {
               disabled={
                 addWalletFormStore.isExecutable
                   ? isExecutableDisabled(addWalletFormStore)
-                  : isNotExecutableDisabled(addWalletFormStore)
+                  : isNotExecutableDisabled(addWalletFormStore) ||
+                    !addWalletFormStore.isNameUnique
               }
             >
               <p
@@ -850,16 +853,19 @@ export default component$(() => {
   );
 });
 
-const isExecutableDisabled = (addWalletFormStore: addWalletFormStore) => false;
-  // addWalletFormStore.name === "" ||
-  // addWalletFormStore.privateKey === "" ||
-  // !isValidName(addWalletFormStore.name);
+
+const isExecutableDisabled = (addWalletFormStore: addWalletFormStore) =>
+  addWalletFormStore.name === "" ||
+  !isValidName(addWalletFormStore.name) ||
+
+  !addWalletFormStore.isNameUnique;
 
 const isNotExecutableDisabled = (addWalletFormStore: addWalletFormStore) =>
   addWalletFormStore.name === "" ||
   addWalletFormStore.address === "" ||
   !isValidName(addWalletFormStore.name) ||
-  !isValidAddress(addWalletFormStore.address);
+  !isValidAddress(addWalletFormStore.address) ||
+  !addWalletFormStore.isNameUnique;
 
 const isExecutableClass = (addWalletFormStore: addWalletFormStore) =>
   isExecutableDisabled(addWalletFormStore)

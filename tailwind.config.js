@@ -7,6 +7,9 @@ export default {
       lg: {max: '1439px'},
     },
     extend: {
+      colors: {
+        customBlue: "#2196F3"
+      },
       keyframes: {
         arrival:{
           '0%, 100%': {
