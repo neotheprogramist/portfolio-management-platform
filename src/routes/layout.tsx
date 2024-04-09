@@ -46,6 +46,7 @@ export default component$(() => {
     isConnected: undefined,
     config: undefined,
   });
+  
   useContextProvider(StreamStoreContext, { streamId: "" });
   const streamStore = useContext(StreamStoreContext);
 
