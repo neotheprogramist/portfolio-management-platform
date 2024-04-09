@@ -5,7 +5,6 @@ import {
   useContext,
   useSignal,
   useStore,
-  useVisibleTask$,
   noSerialize,
 } from "@builder.io/qwik";
 import {
@@ -27,17 +26,11 @@ import { ObservedWallet } from "~/components/wallets/observed";
 import { type Balance } from "~/interface/balance/Balance";
 import { type WalletTokensBalances } from "~/interface/walletsTokensBalances/walletsTokensBalances";
 import { convertWeiToQuantity } from "~/utils/formatBalances/formatTokenBalance";
-import { isAddress, checksumAddress, getAddress } from "viem";
+import { isAddress, checksumAddress } from "viem";
 import IconArrowDown from "/public/assets/icons/arrow-down.svg?jsx";
 import IconInfo from "/public/assets/icons/info-blue.svg?jsx";
 import IconSearch from "/public/assets/icons/search.svg?jsx";
-import {
-  isValidName,
-  isValidAddress,
-  isPrivateKeyHex,
-  isPrivateKey32Bytes,
-  isCheckSum,
-} from "~/utils/validators/addWallet";
+import { isValidName, isValidAddress } from "~/utils/validators/addWallet";
 import {
   getUsersObservingWallet,
   walletExists,
@@ -63,10 +56,17 @@ import { StreamStoreContext } from "~/interface/streamStore/streamStore";
 import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
 import { messagesContext } from "../layout";
 import { type Chain, sepolia } from "viem/chains";
-import { getAccount,  simulateContract, watchAccount, writeContract, type Config, readContract, waitForTransactionReceipt  } from "@wagmi/core";
+import {
+  getAccount,
+  simulateContract,
+  watchAccount,
+  writeContract,
+  type Config,
+  readContract,
+  waitForTransactionReceipt,
+} from "@wagmi/core";
 import { returnWeb3ModalAndClient } from "~/components/wallet-connect";
 import AddWalletFormFields from "~/components/forms/addWallet/addWalletFormFields";
-
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
@@ -80,7 +80,7 @@ export const useAddWallet = routeAction$(
     if (!cookie) {
       throw new Error("No cookie found");
     }
-    
+
     const { userId } = jwt.decode(cookie.value) as JwtPayload;
     console.log("USERID", userId);
 
@@ -405,7 +405,7 @@ export default component$(() => {
 
   const temporaryModalStore = useStore<ModalStore>({
     isConnected: false,
-    config: undefined
+    config: undefined,
   });
 
   const setWeb3Modal = $(async () => {
@@ -414,11 +414,7 @@ export default component$(() => {
     if (!projectId || typeof projectId !== "string") {
       throw new Error("Missing project ID");
     }
-    return returnWeb3ModalAndClient(
-      projectId,
-      true, true, true,
-      chains
-    );
+    return returnWeb3ModalAndClient(projectId, true, true, true, chains);
   });
 
   const openWeb3Modal = $(async () => {
@@ -434,7 +430,7 @@ export default component$(() => {
       },
     });
   });
-  
+
   const handleAddWallet = $(async () => {
     console.log("IN HANDLE ADD WALLET");
     isAddWalletModalOpen.value = false;
@@ -446,87 +442,101 @@ export default component$(() => {
       isVisible: true,
     });
 
-  
     const emethContractAddress = import.meta.env
-    .PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA;
+      .PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA;
 
     try {
       if (addWalletFormStore.isExecutable) {
-        if(temporaryModalStore.isConnected && temporaryModalStore.config){
-        
-        const account = getAccount(temporaryModalStore.config);
-        console.log("IN EXECUTABLE BLOCK");
-        console.log('[address]: ', account.address);
-       
-        addWalletFormStore.address = account.address as `0x${string}`;
+        if (temporaryModalStore.isConnected && temporaryModalStore.config) {
+          const account = getAccount(temporaryModalStore.config);
+          console.log("IN EXECUTABLE BLOCK");
+          console.log("[address]: ", account.address);
 
-        if (!emethContractAddress) {
-          throw new Error("Missing PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA");
-        }
+          addWalletFormStore.address = account.address as `0x${string}`;
 
-        const tokens: any = await fetchTokens();
-        
-        for (const token of tokens) {
-          console.log(`Trying ${token.symbol}...`);
-
-          const tokenBalance = await readContract(temporaryModalStore.config, {
-            account: account.address as `0x${string}`,
-            abi: contractABI,
-            address: checksumAddress(token.address as `0x${string}`),
-            functionName: "balanceOf",
-            args: [account.address as `0x${string}`],
-          });
-
-          console.log(`[Balance of ${token.symbol}]: `, tokenBalance);
-
-          if(tokenBalance) {
-            const approval = await simulateContract(temporaryModalStore.config, {
-              account: account.address as `0x${string}`,
-              abi:  contractABI,
-              address: checksumAddress(token.address as `0x${string}`),
-              functionName: "approve",
-              args: [emethContractAddress, 10n*10n**18n],
-            });
-            console.log('[requescior simulate]: ',approval.request);
-            // keep receipts for now, to use waitForTransactionReceipt
-            try{
-            const receipt = await writeContract(temporaryModalStore.config, approval.request);
-  
-            console.log(`Contract for ${token.symbol} has been written... ` , receipt);
-            } catch(err){
-              console.log('Errorek: ', err);
-            }
+          if (!emethContractAddress) {
+            throw new Error("Missing PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA");
           }
-         
-          const allowance = await readContract(temporaryModalStore.config, {
-            account: account.address,
-            address: checksumAddress(token.address as `0x${string}`),
-            abi: contractABI,
-            abi: contractABI,
-            functionName: "allowance",
-            args: [account.address as `0x${string}`, emethContractAddress],
-          });
-          
-          console.log(`checking allowance for ${token.symbol}: ${allowance}`);
+
+          const tokens: any = await fetchTokens();
+
+          for (const token of tokens) {
+            console.log(`Trying ${token.symbol}...`);
+
+            const tokenBalance = await readContract(
+              temporaryModalStore.config,
+              {
+                account: account.address as `0x${string}`,
+                abi: contractABI,
+                address: checksumAddress(token.address as `0x${string}`),
+                functionName: "balanceOf",
+                args: [account.address as `0x${string}`],
+              },
+            );
+
+            console.log(`[Balance of ${token.symbol}]: `, tokenBalance);
+
+            if (tokenBalance) {
+              const approval = await simulateContract(
+                temporaryModalStore.config,
+                {
+                  account: account.address as `0x${string}`,
+                  abi: contractABI,
+                  address: checksumAddress(token.address as `0x${string}`),
+                  functionName: "approve",
+                  args: [emethContractAddress, 10n * 10n ** 18n],
+                },
+              );
+              console.log("[requescior simulate]: ", approval.request);
+              // keep receipts for now, to use waitForTransactionReceipt
+              try {
+                const receipt = await writeContract(
+                  temporaryModalStore.config,
+                  approval.request,
+                );
+
+                console.log(
+                  `Contract for ${token.symbol} has been written... `,
+                  receipt,
+                );
+              } catch (err) {
+                console.log("Errorek: ", err);
+              }
+            }
+
+            const allowance = await readContract(temporaryModalStore.config, {
+              account: account.address,
+              address: checksumAddress(token.address as `0x${string}`),
+              abi: contractABI,
+              functionName: "allowance",
+              args: [account.address as `0x${string}`, emethContractAddress],
+            });
+
+            console.log(`checking allowance for ${token.symbol}: ${allowance}`);
+          }
         }
-      }
         // approving logged in user by observed wallet by emeth contract
         const cookie = getCookie("accessToken");
         if (!cookie) throw new Error("No accessToken cookie found");
 
         const { address } = jwtDecode.jwtDecode(cookie) as JwtPayload;
-      
-        const { request } = await simulateContract(temporaryModalStore.config as Config, {
-          account: addWalletFormStore.address as `0x${string}`,
-          address: emethContractAddress,
-          abi: emethContractAbi,
-          functionName: "approve",
-          args: [address as `0x${string}`],
-        });
 
-        const receipt = await writeContract(temporaryModalStore.config as Config, request);
+        const { request } = await simulateContract(
+          temporaryModalStore.config as Config,
+          {
+            account: addWalletFormStore.address as `0x${string}`,
+            address: emethContractAddress,
+            abi: emethContractAbi,
+            functionName: "approve",
+            args: [address as `0x${string}`],
+          },
+        );
+
+        const receipt = await writeContract(
+          temporaryModalStore.config as Config,
+          request,
+        );
         console.log(receipt);
-      
       }
 
       await addWalletAction.submit({
@@ -543,13 +553,16 @@ export default component$(() => {
       });
 
       console.log("wallet added successfully, adding address to stream...");
-      await addAddressToStreamConfig(streamId, addWalletFormStore.address as `0x${string}`);
+      await addAddressToStreamConfig(
+        streamId,
+        addWalletFormStore.address as `0x${string}`,
+      );
       // addWalletFormStore.address = "";
       // addWalletFormStore.name = "";
       // addWalletFormStore.privateKey = "";
       // addWalletFormStore.isExecutable = 0;
     } catch (err) {
-      console.log('[big error]: ', err)
+      console.log("[big error]: ", err);
       formMessageProvider.messages.push({
         id: formMessageProvider.messages.length,
         variant: "error",
@@ -563,8 +576,7 @@ export default component$(() => {
     if (!selectedWallet.value || !modalStore.config) {
       return { error: "no chosen wallet" };
     }
-  console.log('logged: ',getAccount(modalStore.config));
-  
+    console.log("logged: ", getAccount(modalStore.config));
 
     const from = selectedWallet.value.wallet.address;
     const to = receivingWalletAddress.value;
@@ -644,10 +656,11 @@ export default component$(() => {
       }
     }
   });
+
   const connectWallet = $(() => {
-    console.log('clicked connect wallet');
+    console.log("clicked connect wallet");
     openWeb3Modal();
-  })
+  });
 
   return (
     <div class="grid grid-cols-[24%_73%] grid-rows-[14%_1fr] gap-[24px] overflow-auto border-t border-white border-opacity-15 p-[24px]">
@@ -722,14 +735,14 @@ export default component$(() => {
       </div>
 
       {isAddWalletModalOpen.value && (
-        <Modal
-          isOpen={isAddWalletModalOpen}
-          // formStore={addWalletFormStore}
-          title="Add Wallet"
-        >
+        <Modal isOpen={isAddWalletModalOpen} title="Add Wallet">
           <Form class="p-[24px]">
             <IsExecutableSwitch addWalletFormStore={addWalletFormStore} />
-            <AddWalletFormFields addWalletFormStore={addWalletFormStore} onConnectWalletClick={connectWallet} isWalletConnected={temporaryModalStore.isConnected}/>
+            <AddWalletFormFields
+              addWalletFormStore={addWalletFormStore}
+              onConnectWalletClick={connectWallet}
+              isWalletConnected={temporaryModalStore.isConnected}
+            />
             <button
               type="reset"
               class="custom-border-2 absolute bottom-[20px] right-[120px] h-[32px] rounded-3xl px-[8px] text-xs font-normal text-white duration-300 ease-in-out hover:scale-110"
@@ -853,11 +866,9 @@ export default component$(() => {
   );
 });
 
-
 const isExecutableDisabled = (addWalletFormStore: addWalletFormStore) =>
   addWalletFormStore.name === "" ||
   !isValidName(addWalletFormStore.name) ||
-
   !addWalletFormStore.isNameUnique;
 
 const isNotExecutableDisabled = (addWalletFormStore: addWalletFormStore) =>
@@ -876,7 +887,3 @@ const isNotExecutableClass = (addWalletFormStore: addWalletFormStore) =>
   isNotExecutableDisabled(addWalletFormStore)
     ? "bg-modal-button text-gray-400"
     : "bg-black";
-function setWeb3Modal(): { config: any; modal: any; } | PromiseLike<{ config: any; modal: any; }> {
-  throw new Error("Function not implemented.");
-}
-

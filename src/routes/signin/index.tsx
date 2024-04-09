@@ -7,7 +7,7 @@ import {
   getNonceServer,
   verifyMessageServer,
 } from "~/components/wallet-connect/server";
-import { disconnect, getAccount, getChainId, signMessage } from "@wagmi/core";
+import { disconnect, getAccount, signMessage } from "@wagmi/core";
 import { SiweMessage } from "siwe";
 import { HeroSection } from "~/components/login-text/login-text";
 import IconHandshake from "/public/assets/icons/signin/handshake.svg?jsx";
