@@ -390,7 +390,7 @@ export const dbBalancesStream = server$(async function* () {
 
   const resultsStream = new Readable({
     objectMode: true,
-    read() {}, 
+    read() {},
   });
 
   await db.live("balance", ({ action, result }) => {
@@ -399,7 +399,7 @@ export const dbBalancesStream = server$(async function* () {
       return;
     }
     console.log("live query result", result);
-    resultsStream.push(result); 
+    resultsStream.push(result);
   });
 
   for await (const result of resultsStream) {
@@ -550,7 +550,9 @@ export default component$(() => {
           }
         }
         // approving logged in user by observed wallet by emeth contract
-        console.log("approving logged in user by observed wallet by emeth contract")
+        console.log(
+          "approving logged in user by observed wallet by emeth contract",
+        );
         const cookie = getCookie("accessToken");
         if (!cookie) throw new Error("No accessToken cookie found");
 
@@ -647,7 +649,7 @@ export default component$(() => {
         console.log("--> from", from);
         console.log("--> token", token);
         console.log("--> to", to);
-        
+
         const { request } = await simulateContract(modalStore.config, {
           abi: emethContractAbi,
           address: emethContractAddress,
