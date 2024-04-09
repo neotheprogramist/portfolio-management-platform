@@ -1,5 +1,9 @@
 import { component$ } from "@builder.io/qwik";
-import { type AddWalletFormProps } from "./addWalletNonExecutableFormControls";
+import { type addWalletFormStore } from "~/routes/app/wallets";
+
+export interface AddWalletFormProps {
+  addWalletFormStore: addWalletFormStore;
+}
 
 export default component$<AddWalletFormProps>(({ addWalletFormStore }) => {
   return (
