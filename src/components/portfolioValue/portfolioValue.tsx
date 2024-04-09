@@ -32,11 +32,17 @@ export const PortfolioValue = component$<PortfolioValueProps>(
     portfolioValueChange,
     onClick$,
     selectedPeriod,
-    chartData,
+    chartData
   }) => {
     const chart = $(() => {
-      console.log(portfolioValueChange)
       const data = chartData;
+      // const data = [
+      //   [0, 70],
+      //   [1, 70],
+      //   [2, 70],
+      //   [3, 70],
+      //   [4, 70],
+      // ] as [number, number][];
 
       const max =
         data.reduce(
@@ -66,7 +72,7 @@ export const PortfolioValue = component$<PortfolioValueProps>(
       );
 
       // Declare the y (vertical position) scale.
-      const y = d3.scaleLinear([20, 120], [height - marginBottom, marginTop]);
+      const y = d3.scaleLinear([min, max], [height - marginBottom, marginTop]);
 
       // Declare the line generator.
       const line = d3
@@ -140,7 +146,10 @@ export const PortfolioValue = component$<PortfolioValueProps>(
               ${totalPortfolioValue}
             </h1>
             <p class="text-[12px]">
-              24h change: +23,4 <span class="text-[#24A148]">+0,84%</span>
+              24h change: {portfolioValueChange.valueChange}{" "}
+              <span class="text-[#24A148]">
+                {portfolioValueChange.percentageChange}
+              </span>
             </p>
           </div>
         </div>
@@ -149,12 +158,50 @@ export const PortfolioValue = component$<PortfolioValueProps>(
           <div class="flex items-center gap-2">
             <h2 class="custom-text-50 uppercase">Value over time</h2>
             <div class="custom-bg-white custom-border-1 flex h-[32px] gap-[8px] rounded-[8px] p-[3.5px]">
-              <button class="custom-bg-button rounded-[8px] px-[8px]">
+              <button
+                name="24h"
+                class={
+                  selectedPeriod["24h"]
+                    ? "custom-bg-button rounded-[8px] px-[8px]"
+                    : "rounded-[8px] px-[8px]"
+                }
+                onClick$={onClick$}
+              >
                 24h
               </button>
-              <button class="rounded-[8px] px-[8px]">1W</button>
-              <button class="rounded-[8px] px-[8px]">1M</button>
-              <button class="rounded-[8px] px-[8px]">1Y</button>
+              <button
+                name="1W"
+                class={
+                  selectedPeriod["1W"]
+                    ? "custom-bg-button rounded-[8px] px-[8px]"
+                    : "rounded-[8px] px-[8px]"
+                }
+                onClick$={onClick$}
+              >
+                1W
+              </button>
+              <button
+                name="1M"
+                class={
+                  selectedPeriod["1M"]
+                    ? "custom-bg-button rounded-[8px] px-[8px]"
+                    : "rounded-[8px] px-[8px]"
+                }
+                onClick$={onClick$}
+              >
+                1M
+              </button>
+              <button
+                name="1Y"
+                class={
+                  selectedPeriod["1Y"]
+                    ? "custom-bg-button rounded-[8px] px-[8px]"
+                    : "rounded-[8px] px-[8px]"
+                }
+                onClick$={onClick$}
+              >
+                1Y
+              </button>
             </div>
           </div>
 
