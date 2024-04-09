@@ -83,7 +83,7 @@ export default component$<AddWalletFormFieldsProps>(
                 <div
                   class={`block flex h-12 w-full items-center justify-center rounded border border-[#24A148] bg-transparent p-3 text-[#24A148]`}
                 >
-                  wallet adddress
+                  wallet address
                   {/* {addWalletFormStore.address.substring(0,6)}... */}
                 </div>
               ) : (
