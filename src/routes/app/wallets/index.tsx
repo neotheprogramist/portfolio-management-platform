@@ -866,10 +866,9 @@ export default component$(() => {
 });
 
 const isExecutableDisabled = (addWalletFormStore: addWalletFormStore) =>
-  addWalletFormStore.name === "" ||
-  !isValidName(addWalletFormStore.name);
-  // !isPrivateKey32Bytes(addWalletFormStore.privateKey) ||
-  // !isPrivateKeyHex(addWalletFormStore.privateKey);
+  addWalletFormStore.name === "" || !isValidName(addWalletFormStore.name);
+// !isPrivateKey32Bytes(addWalletFormStore.privateKey) ||
+// !isPrivateKeyHex(addWalletFormStore.privateKey);
 
 const isNotExecutableDisabled = (addWalletFormStore: addWalletFormStore) =>
   addWalletFormStore.name === "" ||
