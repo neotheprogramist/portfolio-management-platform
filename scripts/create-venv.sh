@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 
-# Define the name of the virtual environment
+set -euo pipefail
+
+# Define the name of the virtual environment.
 VENV_NAME=".venv"
 
-# Check if the virtual environment already exists
+# Check if the virtual environment already exists.
 if [ ! -d "$VENV_NAME" ]; then
-    # If it doesn't exist, create the virtual environment
-    python -m venv $VENV_NAME
+    # If it doesn't exist, create the virtual environment.
+    # Use `python3` instead of `python`, because macOS from 12.3
+    # onwards does not come with Python 2 pre-installed.
+    python3 -m venv $VENV_NAME
 
     # Activate the virtual environment
     source $VENV_NAME/bin/activate && \

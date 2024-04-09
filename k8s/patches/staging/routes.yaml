@@ -8,7 +8,7 @@ spec:
       name: nginx-staging-gateway
       namespace: nginx-staging-gateway
   hostnames:
-    - emeth.staging.visoft.dev
+    - stg.emeth.xyz
   rules:
     - matches:
       backendRefs:

@@ -2,6 +2,8 @@
 
 ## Setup
 
+#### Local environment
+
 Install dependencies:
 
 ```bash
@@ -51,6 +53,32 @@ Install `surreal`:
 ```bash
 brew install surrealdb/tap/surreal
 ```
+
+#### Kubernetes in Docker (kind)
+
+Install `kind`:
+
+```bash
+# macOS
+brew install kind
+
+# Linux x86_64
+[ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.22.0/kind-$(uname)-amd64
+```
+
+Install `helm`:
+
+```bash
+# macOS
+brew install helm
+
+# Linux
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+```
+
+Create `.env` and `.env.local` files (based on templates above) in `k8s/patches/dev` directory.
 
 ## Run
 
