@@ -10,7 +10,23 @@ npm install
 
 Create account on [Moralis](https://moralis.io/) and create new app. You will need to get `MORALIS_API_KEY` from there.
 
-Create account on [Ngrok](https://ngrok.com/) and install it. You will need to run it and get https webhook url from there for `NGROK_WEBHOOK_URL` (you'll need to have it running during app operating).
+Create account on [Ngrok](https://ngrok.com/) and install it.
+
+```bash
+# macOS
+brew install ngrok/ngrok/ngrok
+
+# linux
+ curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null && echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list && sudo apt update && sudo apt install ngrok
+```
+
+Next step requires to add `authtoken` via ngrok configuration (you can find it on your account):
+
+```bash
+ngrok config add-authtoken <token>
+```
+
+Now start `ngrok` and get https webhook url from there for `NGROK_WEBHOOK_URL` (you'll need to have it running during app operating).
 
 ```bash
 npm run ngrok
@@ -58,13 +74,22 @@ PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA=
 Install `podman`:
 
 ```bash
+# macOS
 brew install podman
+
+# linux
+sudo apt-get update
+sudo apt-get -y install podman
 ```
 
 Install `surreal`:
 
 ```bash
+# macOS
 brew install surrealdb/tap/surreal
+
+# linux
+curl -sSf https://install.surrealdb.com | sh
 ```
 
 ## Run
@@ -137,7 +162,7 @@ npm run test.e2e.report
 
 #### Development setup
 
-You need to install [`Metamask` extension](https://metamask.io/) in your browser adn create dev wallet account. After that, please add `Sepolia` from test networks.
+You need to install [`Metamask` extension](https://metamask.io/) in your browser and create dev wallet account. After that, please add `Sepolia` from test networks.
 
 As a next step, import created tokens from `fixtures/tokens.surql` file:
 
