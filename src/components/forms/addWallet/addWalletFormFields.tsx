@@ -36,6 +36,9 @@ export default component$<AddWalletFormFieldsProps>(
             {!isValidName(addWalletFormStore.name) && (
               <span class="text-xs text-red-500">Invalid name</span>
             )}
+            {!addWalletFormStore.isNameUnique && (
+              <span class="text-xs text-red-500">Name already exists</span>
+            )}
           </label>
           <input
             type="text"
