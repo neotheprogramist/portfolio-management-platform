@@ -6,7 +6,6 @@ import {
   useSignal,
   useStore,
   noSerialize,
-  useTask$,
   useVisibleTask$,
 } from "@builder.io/qwik";
 import {
