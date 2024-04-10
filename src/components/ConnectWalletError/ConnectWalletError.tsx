@@ -1,17 +1,17 @@
 import { component$ } from "@builder.io/qwik";
-import { HeroSection } from "~/components/login-text/login-text";
+import { HeroText } from "~/components/HeroText/HeroText";
 import IconError from "/public/assets/icons/error.svg?jsx";
-import { Button } from "~/components/button-signin/button-signin";
+import { Button } from "~/components/Buttons/Buttons";
 
 export const ConnectWalletError = component$(() => {
   return (
     <>
-      <HeroSection
+      <HeroText
         title="Error Connecting"
         description="The connection attempt failed. Please click try again and follow the steps to connect in your wallet."
       >
         <IconError />
-      </HeroSection>
+      </HeroText>
       <div class="grid justify-items-center gap-4">
         <Button
           text="Try Again"

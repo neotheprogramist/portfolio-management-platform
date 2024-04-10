@@ -1,11 +1,10 @@
 import { Slot, component$ } from "@builder.io/qwik";
-export interface TitleDescriptionProps {
+export interface HeroTextProps {
   title?: string;
   description?: string;
-  image?: string;
 }
 
-export const HeroSection = component$<TitleDescriptionProps>((props) => {
+export const HeroText = component$<HeroTextProps>((props) => {
   return (
     <div class="grid justify-items-center gap-6 text-center">
       <Slot />

@@ -3,7 +3,7 @@ import { type Chain } from "viem/chains";
 import { reconnect, watchAccount } from "@wagmi/core";
 import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi";
 import { useNavigate } from "@builder.io/qwik-city";
-import { Button, type ButtonProps } from "../button-login/button-login";
+import { ConnectButton, type ConnectButtonProps } from "../Buttons/Buttons";
 import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
 
 const metadata = {
@@ -41,7 +41,7 @@ export const returnWeb3ModalAndClient = async (
 };
 
 export default component$<
-  ButtonProps & {
+  ConnectButtonProps & {
     enableWalletConnect: boolean;
     enableInjected: boolean;
     enableCoinbase: boolean;
@@ -79,11 +79,11 @@ export default component$<
   });
 
   return (
-    <Button
+    <ConnectButton
       onClick$={openWeb3Modal}
       text={props.text}
       image={props.image}
       class={props.class}
-    ></Button>
+    ></ConnectButton>
   );
 });
