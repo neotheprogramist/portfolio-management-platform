@@ -1,6 +1,6 @@
 import { HeroText } from "~/components/HeroText/HeroText";
 import { component$ } from "@builder.io/qwik";
-import { ConnectButton } from "~/components/buttons/Buttons";
+import { ConnectButton } from "~/components/Buttons/Buttons";
 import WalletConnect from "~/components/wallet-connect";
 import { Copyright } from "~/components/paragraph/paragraph";
 import { mainnet, sepolia } from "viem/chains";

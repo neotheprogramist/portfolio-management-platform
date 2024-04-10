@@ -1,6 +1,6 @@
 import { $, component$, useContext } from "@builder.io/qwik";
 import { useLocation, useNavigate } from "@builder.io/qwik-city";
-import { Button } from "~/components/buttons/Buttons";
+import { Button } from "~/components/Buttons/Buttons";
 import { Copyright } from "~/components/paragraph/paragraph";
 import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
 import {

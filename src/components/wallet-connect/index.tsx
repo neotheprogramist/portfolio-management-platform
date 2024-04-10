@@ -3,7 +3,7 @@ import { type Chain } from "viem/chains";
 import { reconnect, watchAccount } from "@wagmi/core";
 import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi";
 import { useNavigate } from "@builder.io/qwik-city";
-import { ConnectButton, type ConnectButtonProps } from "../buttons/Buttons";
+import { ConnectButton, type ConnectButtonProps } from "../Buttons/Buttons";
 import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
 
 const metadata = {
