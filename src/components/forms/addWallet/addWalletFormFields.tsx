@@ -19,7 +19,9 @@ export default component$<AddWalletFormFieldsProps>(
   ({ addWalletFormStore, onConnectWalletClick, isWalletConnected }) => {
     const nameInputDebounce = useDebouncer(
       $(async (value: string) => {
+        addWalletFormStore.isNameUniqueLoading = true;
         addWalletFormStore.isNameUnique = await isNameUnique(value);
+        addWalletFormStore.isNameUniqueLoading = false;
       }),
       300,
     );
@@ -56,7 +58,6 @@ export default component$<AddWalletFormFieldsProps>(
             value={addWalletFormStore.name}
             placeholder="Enter wallet name..."
             onInput$={async (e) => {
-              addWalletFormStore.isNameUnique = false;
               const target = e.target as HTMLInputElement;
               addWalletFormStore.name = target.value;
               nameInputDebounce(target.value);
