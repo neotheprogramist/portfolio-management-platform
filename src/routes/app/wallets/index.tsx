@@ -357,6 +357,7 @@ export interface addWalletFormStore {
   address: string;
   isExecutable: number;
   isNameUnique: boolean;
+  isNameUniqueLoading: boolean;
 }
 
 export interface transferredCoinInterface {
@@ -399,6 +400,7 @@ export default component$(() => {
     address: "",
     isExecutable: 0,
     isNameUnique: true,
+    isNameUniqueLoading: false,
   });
   const receivingWalletAddress = useSignal("");
   const transferredTokenAmount = useSignal("");
@@ -868,7 +870,8 @@ export default component$(() => {
 const isExecutableDisabled = (addWalletFormStore: addWalletFormStore) =>
   addWalletFormStore.name === "" ||
   !isValidName(addWalletFormStore.name) ||
-  !addWalletFormStore.isNameUnique;
+  !addWalletFormStore.isNameUnique ||
+  addWalletFormStore.isNameUniqueLoading;
 // !isPrivateKey32Bytes(addWalletFormStore.privateKey) ||
 // !isPrivateKeyHex(addWalletFormStore.privateKey);
 
@@ -877,7 +880,8 @@ const isNotExecutableDisabled = (addWalletFormStore: addWalletFormStore) =>
   addWalletFormStore.address === "" ||
   !isValidName(addWalletFormStore.name) ||
   !isValidAddress(addWalletFormStore.address) ||
-  !addWalletFormStore.isNameUnique;
+  !addWalletFormStore.isNameUnique ||
+  addWalletFormStore.isNameUniqueLoading;
 
 const isExecutableClass = (addWalletFormStore: addWalletFormStore) =>
   isExecutableDisabled(addWalletFormStore)
