@@ -1,6 +1,6 @@
 import { type Signal, component$ } from "@builder.io/qwik";
 import { type WalletTokensBalances } from "~/interface/walletsTokensBalances/walletsTokensBalances";
-import IconDelete from "/public/assets/icons/wallets/delete.svg?jsx";
+import IconDelete from "/public/assets/icons/wallets/delete-red.svg?jsx";
 import IconEthereum from "/public/assets/icons/ethereum.svg?jsx";
 import IconWallet from "/public/assets/icons/wallets/wallet.svg?jsx";
 import { TokenRowWallets } from "~/components/tokens/tokenRow-wallets";
