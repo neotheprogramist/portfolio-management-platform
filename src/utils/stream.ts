@@ -91,7 +91,7 @@ export const setupStream = server$(async function () {
     console.error("MORALIS_API_KEY is not set in the environment variables.");
     return;
   }
-  
+
   if (!Moralis.Core.isStarted) {
     await Moralis.start({ apiKey: moralisApiKey });
   }
