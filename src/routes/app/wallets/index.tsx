@@ -537,16 +537,6 @@ export default component$(() => {
                 console.log("Errorek: ", err);
               }
             }
-
-            const allowance = await readContract(temporaryModalStore.config, {
-              account: account.address,
-              address: checksumAddress(token.address as `0x${string}`),
-              abi: contractABI,
-              functionName: "allowance",
-              args: [account.address as `0x${string}`, emethContractAddress],
-            });
-
-            console.log(`checking allowance for ${token.symbol}: ${allowance}`);
           }
         }
         // approving logged in user by observed wallet by emeth contract
