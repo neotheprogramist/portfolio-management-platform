@@ -12,8 +12,8 @@ import {
   $,
   component$,
   type JSXOutput,
-  QRL,
-  Signal,
+  type QRL,
+  type Signal,
   useSignal,
   useStore,
   useTask$,
@@ -270,7 +270,7 @@ export default component$(() => {
   const clickedToken = useStore({ balanceId: "", structureId: "" });
   const structureStore = useStore({ name: "" });
   const selectedWallets = useStore({ wallets: [] as any[] });
-  const isCreateNewStructureModalOpen = useSignal(true);
+  const isCreateNewStructureModalOpen = useSignal(false);
   const deleteToken = useDeleteToken();
   const availableStructures = useAvailableStructures();
   const createStructureAction = useCreateStructure();
