@@ -1,6 +1,6 @@
 import { $, component$, useContext } from "@builder.io/qwik";
 import { useLocation, useNavigate } from "@builder.io/qwik-city";
-import { Button } from "~/components/Buttons/Buttons";
+import { Button } from "~/components/buttons/Buttons";
 import { Copyright } from "~/components/paragraph/paragraph";
 import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
 import {
@@ -9,7 +9,7 @@ import {
 } from "~/components/wallet-connect/server";
 import { disconnect, getAccount, signMessage } from "@wagmi/core";
 import { SiweMessage } from "siwe";
-import { HeroSection } from "~/components/HeroSection/HeroSection";
+import { HeroText } from "~/components/HeroText/HeroText";
 import IconHandshake from "/public/assets/icons/signin/handshake.svg?jsx";
 
 export default component$(() => {
@@ -62,12 +62,12 @@ export default component$(() => {
       <div class="background-container"></div>
       <div class="content-container grid h-full grid-rows-[85%_15%] items-center justify-items-center">
         <div class="grid min-w-[448px] max-w-md gap-10 pt-20">
-          <HeroSection
+          <HeroText
             title="Welcome to Emeth"
             description="By connecting your wallet and using Emeth, you agree to our Terms of Service and Privacy Policy."
           >
             <IconHandshake />
-          </HeroSection>
+          </HeroText>
           <div class="grid w-full grid-cols-2 gap-4">
             <Button
               onClick$={cancelHandler}

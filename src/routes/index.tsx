@@ -1,6 +1,6 @@
-import { HeroSection } from "~/components/HeroSection/HeroSection";
+import { HeroText } from "~/components/HeroText/HeroText";
 import { component$ } from "@builder.io/qwik";
-import { ConnectButton } from "~/components/Buttons/Buttons";
+import { ConnectButton } from "~/components/buttons/Buttons";
 import WalletConnect from "~/components/wallet-connect";
 import { Copyright } from "~/components/paragraph/paragraph";
 import { mainnet, sepolia } from "viem/chains";
@@ -12,12 +12,12 @@ export default component$(() => {
       <div class="background-container"></div>
       <div class="content-container grid h-full grid-rows-[85%_15%] items-center justify-items-center">
         <div class="grid min-w-[448px] max-w-md gap-10 pt-20">
-          <HeroSection
+          <HeroText
             title="Login to Emeth"
             description="Log in to the app using your Crypto Wallet"
           >
             <IconLogo class="h-6 w-28" />
-          </HeroSection>
+          </HeroText>
           <div class="grid justify-items-center gap-3">
             <WalletConnect
               image="/assets/icons/login/metamask.svg"

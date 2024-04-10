@@ -33,11 +33,7 @@ export const Info: Story = {
     <ConnectButton
       image="/assets/icons/info-white.svg"
       text="How to use Wallet?"
-      padding="8px 12px 8px 8px"
-      buttonWidth="200px"
-      borderColor="#2196F3"
-      containerGap="8px"
-      fontSize="12px"
-    ></ConnectButton>
+      class="w-52 !border-0 bg-customBlue py-2 pl-2 pr-3 text-xs"
+    />
   ),
 };

@@ -60,5 +60,3 @@ export const ConnectButton = component$<ConnectButtonProps>((props) => {
     </button>
   );
 });
-
-
