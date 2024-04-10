@@ -138,17 +138,17 @@ export const PortfolioValue = component$<PortfolioValueProps>(
     });
     return (
       <div
-        class={`custom-border-1 custom-bg-white custom-shadow grid gap-[16px] rounded-[16px] p-[24px] lg:overflow-hidden ${!isPortfolioFullScreen.value ? "col-start-1 col-end-3 row-span-1 row-start-1 grid-rows-[52px_32px_1fr]" : "m-[40px] grid-rows-[52px_32px_1fr_110px]"}`}
+        class={`custom-border-1 custom-shadow grid gap-[16px] rounded-[16px] p-[24px] lg:overflow-hidden ${!isPortfolioFullScreen.value ? "col-start-1 col-end-3 row-span-1 row-start-1 grid-rows-[52px_32px_1fr]" : "m-[40px] grid-rows-[52px_32px_1fr_110px]"}`}
       >
         <div class="custom-border-b-1 flex items-center justify-between pb-[16px]">
-          <h1 class="text-[20px] font-semibold">Portfolio Value</h1>
+          <h1 class="text- font-semibold">Portfolio Value</h1>
           <div class="text-right">
-            <h1 class="bg-gradient-to-r from-red-600 via-orange-400 to-pink-500 bg-clip-text pb-[8px] text-[20px] font-semibold text-transparent">
+            <h1 class="custom-text-gradient pb-[8px] text-[20px] font-semibold text-transparent">
               ${totalPortfolioValue}
             </h1>
-            <p class="text-[12px]">
+            <p class="text-xs">
               24h change: {portfolioValueChange?.valueChange ?? "0"}{" "}
-              <span class="text-[#24A148]">
+              <span class="text-customGreen">
                 {portfolioValueChange?.percentageChange ?? "0.00%"}
               </span>
             </p>

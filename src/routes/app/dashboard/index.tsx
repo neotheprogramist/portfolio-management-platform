@@ -529,7 +529,7 @@ export default component$(() => {
       }}
     />
   ) : (
-    <div class="grid grid-cols-4 grid-rows-[48%_48%] gap-[24px] overflow-auto p-[40px]">
+    <div class="grid grid-cols-4 grid-rows-[48%_48%] gap-6 overflow-auto p-10">
       <PortfolioValue
         totalPortfolioValue={totalPortfolioValue.value}
         isPortfolioFullScreen={isPortfolioFullScreen}
@@ -542,10 +542,10 @@ export default component$(() => {
         }}
       />
 
-      <div class="custom-border-1 custom-bg-white custom-shadow col-start-3 row-span-1 row-start-1 grid grid-rows-[32px_1fr] gap-[16px] overflow-auto rounded-[16px] p-[24px]">
+      <div class="custom-border-1 custom-shadow col-start-3 row-span-1 row-start-1 grid grid-rows-[32px_1fr] gap-4 overflow-auto rounded-[16px] p-6">
         <div class="flex items-center justify-between">
-          <h1 class="text-[20px] font-semibold">Alerts</h1>
-          <button class="custom-border-2 rounded-[40px] px-[14px] py-[6px] text-[12px] font-semibold duration-300 ease-in-out hover:scale-110">
+          <h1 class="text-xl font-semibold">Alerts</h1>
+          <button class="custom-border-2 rounded-[40px] px-[14px] py-[6px] text-xs font-semibold duration-300 ease-in-out hover:scale-110">
             See All
           </button>
         </div>
@@ -562,24 +562,24 @@ export default component$(() => {
         </div>
       </div>
 
-      <div class="custom-border-1 custom-bg-white custom-shadow col-start-4 row-span-1 row-start-1 grid grid-rows-[32px_1fr] gap-[16px] overflow-auto rounded-[16px] p-[24px]">
+      <div class="custom-border-1 custom-shadow col-start-4 row-span-1 row-start-1 grid grid-rows-[32px_1fr] gap-4 overflow-auto rounded-[16px] p-6">
         <div class="flex items-center justify-between">
-          <h1 class="text-[20px] font-semibold">Actions</h1>
-          <button class="custom-border-2 rounded-[40px] px-[14px] py-[6px] text-[12px] font-semibold duration-300 ease-in-out hover:scale-110">
+          <h1 class="text-xl font-semibold">Actions</h1>
+          <button class="custom-border-2 rounded-[40px] px-[14px] py-[6px] text-xs font-semibold duration-300 ease-in-out hover:scale-110">
             See All
           </button>
         </div>
         <div class="h-full overflow-auto">
           <Action />
           <Action />
-          <div class="flex items-center justify-between border-b border-white border-opacity-20 py-[20px]">
+          <div class="custom-border-bottom-1 flex items-center justify-between py-4">
             <div class="">
               <h3 class="text-sm">DCA</h3>
               <p class="custom-text-50 text-xs">1 day ago</p>
             </div>
-            <div class="custom-bg-white flex h-[28px] items-center gap-[4px] rounded-[8px] border border-[#ffc107] p-[8px]">
+            <div class="custom-bg-white flex h-7 items-center gap-1 rounded-[8px] border border-customWarning p-2">
               <IconWarning />
-              <p class="text-xs text-[#ffc107] lg:hidden">Warning</p>
+              <p class="text-xs text-customWarning lg:hidden">Warning</p>
             </div>
           </div>
           <Action />
@@ -588,11 +588,11 @@ export default component$(() => {
         </div>
       </div>
 
-      <div class="custom-border-1 custom-bg-white col-start-1 col-end-5 row-span-1 row-start-2 grid grid-rows-[32px_32px_1fr] gap-[24px] overflow-auto rounded-[16px] p-[24px]">
-        <div class="row-span-1 row-start-1 flex items-center justify-between">
+      <div class="custom-border-1 col-start-1 col-end-5 row-span-1 row-start-2 grid grid-rows-[32px_32px_1fr] gap-6 overflow-auto rounded-[16px] p-6">
+        <div class="flex items-center justify-between">
           <h1 class="text-xl font-semibold">Favourite Tokens</h1>
           <button
-            class="custom-border-2 rounded-[40px] px-[14px] py-[6px] text-[12px] font-semibold duration-300 ease-in-out hover:scale-110"
+            class="custom-border-2 rounded-[40px] px-[14px] py-[6px] text-xs font-semibold duration-300 ease-in-out hover:scale-110"
             onClick$={() => {
               nav("/app/portfolio");
             }}
@@ -601,23 +601,22 @@ export default component$(() => {
           </button>
         </div>
 
-        <div class="row-span-1 row-start-2">
-          <div class="custom-text-50 grid grid-cols-[17%_8%_13%_17%_14%_11%_12%_2%] items-center gap-[8px] text-left text-xs uppercase">
-            <div class="">Token name</div>
-            <div class="">Quantity</div>
-            <div class="">Value</div>
-            <div class="custom-bg-white custom-border-1 flex h-[32px] w-fit gap-[8px] rounded-[8px] p-[3.5px] text-white">
-              <button class="custom-bg-button rounded-[8px] px-[8px]">
-                24h
-              </button>
-              <button class="rounded-[8px] px-[8px]">3d</button>
-              <button class="rounded-[8px] px-[8px]">30d</button>
-            </div>
-            <div class="">Wallet</div>
-            <div class="">Network</div>
-            <div class="">Subportfolio</div>
-            <div class=""></div>
+        <div
+          style="grid-template-columns: minmax(200px, 500px) minmax(100px, 300px) minmax(150px, 300px) minmax(250px, 400px) repeat(2, minmax(120px, 400px)) minmax(100px, 400px) 40px;"
+          class="custom-text-50 grid gap-2 items-center text-xs font-normal uppercase"
+        >
+          <div class="">Token name</div>
+          <div class="">Quantity</div>
+          <div class="">Value</div>
+          <div class="custom-bg-white custom-border-1 flex h-8 w-fit gap-2 rounded-[8px] p-[3.5px] text-white">
+            <button class="custom-bg-button rounded-[8px] px-2">24h</button>
+            <button class="rounded-[8px] px-2">3d</button>
+            <button class="rounded-[8px] px-2">30d</button>
           </div>
+          <div class="">Wallet</div>
+          <div class="">Network</div>
+          <div class="">Subportfolio</div>
+          <div class=""></div>
         </div>
 
         <div class="row-span-1 row-start-3 inline-block h-full min-w-full overflow-auto">
