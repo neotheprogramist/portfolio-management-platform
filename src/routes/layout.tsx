@@ -46,12 +46,12 @@ export default component$(() => {
     isConnected: undefined,
     config: undefined,
   });
+
   useContextProvider(StreamStoreContext, { streamId: "" });
   const streamStore = useContext(StreamStoreContext);
 
   useTask$(async function () {
     console.log("Setting up stream...");
-
     await initializeStreamIfNeeded(setupStream);
     console.log("initialized stream");
     const stream = await getStream();
@@ -61,7 +61,7 @@ export default component$(() => {
   });
 
   // eslint-disable-next-line qwik/no-use-visible-task
-  useVisibleTask$(() => {
+  useVisibleTask$(async () => {
     const chains: [Chain, ...Chain[]] = [mainnet, sepolia];
     const projectId = import.meta.env.PUBLIC_PROJECT_ID;
     if (!projectId || typeof projectId !== "string") {
@@ -76,8 +76,7 @@ export default component$(() => {
       enableEIP6963: true, // Optional - true by default
       enableCoinbase: true, // Optional - true by default
     });
-
-    reconnect(config2);
+    await reconnect(config2);
 
     modalStore.config = noSerialize(config2);
     if (modalStore.config) {
