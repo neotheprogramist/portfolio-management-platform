@@ -1,75 +1,179 @@
-# Qwik City App ⚡️
+# portfolio-management-platform
 
-- [Qwik Docs](https://qwik.builder.io/)
-- [Discord](https://qwik.builder.io/chat)
-- [Qwik GitHub](https://github.com/BuilderIO/qwik)
-- [@QwikDev](https://twitter.com/QwikDev)
-- [Vite](https://vitejs.dev/)
+## Setup
 
----
+Install dependencies:
 
-## Project Structure
-
-This project is using Qwik with [QwikCity](https://qwik.builder.io/qwikcity/overview/). QwikCity is just an extra set of tools on top of Qwik to make it easier to build a full site, including directory-based routing, layouts, and more.
-
-Inside your project, you'll see the following directory structure:
-
-```
-├── public/
-│   └── ...
-└── src/
-    ├── components/
-    │   └── ...
-    └── routes/
-        └── ...
+```bash
+npm install
 ```
 
-- `src/routes`: Provides the directory-based routing, which can include a hierarchy of `layout.tsx` layout files, and an `index.tsx` file as the page. Additionally, `index.ts` files are endpoints. Please see the [routing docs](https://qwik.builder.io/qwikcity/routing/overview/) for more info.
+Create account on [Moralis](https://moralis.io/) and create new app. You will need to get `MORALIS_API_KEY` from there.
 
-- `src/components`: Recommended directory for components.
+Create account on [Ngrok](https://ngrok.com/) and install it.
 
-- `public`: Any static assets, like images, can be placed in the public directory. Please see the [Vite public directory](https://vitejs.dev/guide/assets.html#the-public-directory) for more info.
+```bash
+# macOS
+brew install ngrok/ngrok/ngrok
 
-## Add Integrations and deployment
-
-Use the `npm run qwik add` command to add additional integrations. Some examples of integrations includes: Cloudflare, Netlify or Express Server, and the [Static Site Generator (SSG)](https://qwik.builder.io/qwikcity/guides/static-site-generation/).
-
-```shell
-npm run qwik add # or `yarn qwik add`
+# linux
+curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null && echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list && sudo apt update && sudo apt install ngrok
 ```
 
-## Development
+Next step requires to add `authtoken` via ngrok configuration (you can find it on your account):
 
-Development mode uses [Vite's development server](https://vitejs.dev/). The `dev` command will server-side render (SSR) the output during development.
-
-```shell
-npm start # or `yarn start`
+```bash
+ngrok config add-authtoken <token>
 ```
 
-> Note: during dev mode, Vite may request a significant number of `.js` files. This does not represent a Qwik production build.
+Now start `ngrok` and get https webhook url from there for `NGROK_WEBHOOK_URL` (you'll need to have it running during app operating).
 
-## Preview
-
-The preview command will create a production build of the client modules, a production build of `src/entry.preview.tsx`, and run a local server. The preview server is only for convenience to preview a production build locally and should not be used as a production server.
-
-```shell
-npm run preview # or `yarn preview`
+```bash
+npm run ngrok
 ```
 
-## Production
-
-The production build will generate client and server modules by running both client and server build commands. The build command will use Typescript to run a type check on the source code.
-
-```shell
-npm run build # or `yarn build`
-```
-
-## Fastify Server
-
-This app has a minimal [Fastify server](https://fastify.dev/) implementation. After running a full build, you can preview the build using the command:
+Create `.env` (public values, used by client) and `.env.local` (secret values, used by API) files in root directory with templates below:
 
 ```
+# .env file
+
+PUBLIC_PROJECT_ID=
+PUBLIC_METADATA_NAME=emeth
+PUBLIC_METADATA_DESCRIPTION=emeth
+PUBLIC_EMETH_CONTRACT_ADDRESS=0x075FbeB3802AfdCDe6DDEB1d807E4805ed719eca
+PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA=0x9B2985a026c243A5133AaE819544ADb213366D7F
+
+PW_BASE_URL=
+```
+
+```
+# .env.local file
+
+SURREALDB_URL=
+SURREALDB_USER=
+SURREALDB_PASS=
+SURREALDB_NS=
+SURREALDB_DB=
+
+ACCESS_TOKEN_SECRET=
+REFRESH_TOKEN_SECRET=
+
+UNISWAP_SUBGRAPH_URL=https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3
+UNIV3_OPTIMIST_SUBGRAPH_URL=https://api.thegraph.com/subgraphs/name/graph-buildersdao/univ3-optimism
+
+# Generated from your personal account.
+MORALIS_API_KEY=
+# Every time you run `npm run ngrok`, it will generated new one url,
+# so you need to update it here accordingly.
+NGROK_WEBHOOK_URL=https://1111-11-111-11-111.ngrok-free.app/webhook/
+
+PUBLIC_EMETH_CONTRACT_ADDRESS=
+PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA=
+```
+
+Install `podman`:
+
+```bash
+# macOS
+brew install podman
+
+# linux
+sudo apt-get update
+sudo apt-get -y install podman
+```
+
+Install `surreal`:
+
+```bash
+# macOS
+brew install surrealdb/tap/surreal
+
+# linux
+curl -sSf https://install.surrealdb.com | sh
+```
+
+## Run
+
+Firstly, you need to run database:
+
+```bash
+./scripts/database-setup.sh
+```
+
+After that, you need to provision db:
+
+```bash
+./scripts/database-provision.sh
+```
+
+Run ngrok tunnel (and copy https url to `.env.local` into `NGROK_WEBHOOK_URL`):
+
+```bash
+npm run ngrok
+```
+
+Last step is run the app (in dev mode):
+
+```bash
+npm run dev
+```
+
+## Build
+
+Start database and provision it with data (as above) - `production` build require database up and running.
+
+Build `production` mode:
+
+```bash
+npm run build
+```
+
+Serve `production` mode:
+
+```bash
 npm run serve
 ```
 
-Then visit [http://localhost:3000/](http://localhost:3000/)
+## Test
+
+#### Setup
+
+You need to install extra dependencies (like browser drivers):
+
+```bash
+npm run test.e2e.setup
+```
+
+#### Run
+
+Run e2e scenarios:
+
+```bash
+npm run test.e2e
+```
+
+After every run you can serve report to your browser:
+
+```bash
+npm run test.e2e.report
+```
+
+## Wallet
+
+#### Development setup
+
+You need to install [`Metamask` extension](https://metamask.io/) in your browser and create dev wallet account. After that, please add `Sepolia` from test networks.
+
+As a next step, import created tokens from `fixtures/tokens.surql` file:
+
+```bash
+0x054E1324CF61fe915cca47C48625C07400F1B587 # GLM
+0xD418937d10c9CeC9d20736b2701E506867fFD85f # USDC
+0x9D16475f4d36dD8FC5fE41F74c9F44c7EcCd0709 # USDT
+```
+
+After that, please add second rich wallet account to your Metamask wallet (ask one of the core members to get private key).
+
+As next step, you need to install [`SubWallet` extension](https://www.subwallet.app/) in your browser and create new wallet account.
+
+Please select `EVM` network account, turn off all enabled networks and turn on `Sepolia` network.

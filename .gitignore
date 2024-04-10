@@ -15,7 +15,6 @@
 # Development
 node_modules
 *.local
-package-lock.json
 
 # Cache
 .cache

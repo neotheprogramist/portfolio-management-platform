@@ -1,0 +1,43 @@
+name: Check
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+env:
+  NODE_VERSION: "21.6.2"
+
+jobs:
+  check:
+    name: Style and build
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint code
+        run: npm run lint
+
+      - name: Prettier code
+        run: npm run fmt.check
+
+      - name: Check spelling
+        uses: crate-ci/typos@master
+
+      - name: Run build
+        run: npm run build

@@ -4,23 +4,30 @@ ARG NODE_VERSION=21.6.2
 # Use node image for base image for all stages.
 FROM node:${NODE_VERSION}-alpine as base
 
-# Set working directory for all build stages.
-WORKDIR /app
-
 ################################################################################
 # Create a stage for installing production dependencies.
 FROM base as deps
 
+# Install build-base.
+RUN apk add build-base python3
+
+# Set working directory.
+WORKDIR /app
+
 # Download dependencies as a separate step to take advantage of Docker's caching.
-# Leverage a cache mount to /root/.yarn to speed up subsequent builds.
-# Leverage bind mounts to package.json and yarn.lock to avoid having to copy them
-# into this layer.
 COPY ./package.json ./
 RUN npm install
 
 ################################################################################
 # Create a stage for building the application.
 FROM deps as build
+
+ARG PUBLIC_PROJECT_ID
+ARG PUBLIC_METADATA_NAME
+ARG PUBLIC_METADATA_DESCRIPTION
+
+# Set working directory.
+WORKDIR /app
 
 # Copy the rest of the source files into the image.
 COPY . .
@@ -39,8 +46,8 @@ ENV NODE_ENV production
 # Run the application as a non-root user.
 USER node
 
-# Copy package.json so that package manager commands can be used.
-COPY package.json .
+# Set working directory.
+WORKDIR /app
 
 # Copy the production dependencies from the deps stage and also
 # the built application from the build stage into the image.
@@ -49,4 +56,4 @@ COPY --from=build /app/dist ./dist
 COPY --from=build /app/server ./server
 
 # Run the application.
-ENTRYPOINT [ "npm", "run", "serve" ]
+ENTRYPOINT [ "node", "server/entry.fastify" ]
