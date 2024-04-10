@@ -29,6 +29,7 @@ body {
   padding: 0;
   margin: 0;
   line-height: inherit;
+  color: white;
 }
 
 @layer base {
@@ -185,4 +186,94 @@ body {
 .content-container {
   position: relative;
   z-index: 10;
+}
+
+.walletList {
+  display: none;
+  box-shadow: 0px 15px 50px #000;
+}
+.walletCheckbox:checked ~ .walletLabel {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.walletCheckbox:checked ~ .walletList {
+  display: flex;
+}
+
+.tokenList {
+  display: none;
+  box-shadow: 0px 15px 50px #000;
+}
+.tokenCheckbox:checked ~ .tokenLabel {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.tokenCheckbox:checked ~ .tokenList {
+  display: flex;
+}
+
+.border-gradient:checked {
+  background:
+    linear-gradient(98deg, black 0%, black) padding-box,
+    linear-gradient(
+        130deg,
+        #da301f 0.24%,
+        #f48946 18.43%,
+        #ee3560 35.57%,
+        #fa4784 51.68%,
+        #ff48c0 66.75%,
+        #8e38b5 81.82%,
+        #5542bb 89.09%,
+        #0051c3 100%
+      )
+      border-box;
+  border-radius: 4px;
+  border: 1px solid transparent;
+}
+
+.border-gradient:checked::after {
+  border-width: 0 1.5px 1.5px 0;
+  background:
+    linear-gradient(48deg, black 0%, black) padding-box,
+    linear-gradient(
+        150deg,
+        #da301f 0%,
+        #f48946 40%,
+        #ee3560 60%,
+        #fa4784 80%,
+        #ff48c0 100%
+      )
+      border-box;
+  border-style: solid;
+  border-color: transparent;
+}
+
+.border-gradient:checked ~ label {
+  background:
+    linear-gradient(
+        130deg,
+        #251716 0.24%,
+        #211a15 18.43%,
+        #1c1416 35.57%,
+        #171012 51.68%,
+        #1a1318 66.75%,
+        #1a131c 81.82%,
+        #13121b 89.09%,
+        #0a0e12 100%
+      )
+      padding-box,
+    linear-gradient(
+        130deg,
+        #da301f 0.24%,
+        #f48946 18.43%,
+        #ee3560 35.57%,
+        #fa4784 51.68%,
+        #ff48c0 66.75%,
+        #8e38b5 81.82%,
+        #5542bb 89.09%,
+        #0051c3 100%
+      )
+      border-box;
+  border-radius: 8px;
+  border: 1px solid transparent;
 }
