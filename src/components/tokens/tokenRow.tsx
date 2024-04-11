@@ -43,10 +43,10 @@ export const TokenRow = component$<TokenRowProps>(
     return (
       <div
         style="grid-template-columns: minmax(200px, 500px) minmax(100px, 300px) minmax(150px, 300px) minmax(250px, 400px) repeat(2, minmax(120px, 400px)) minmax(100px, 400px) 40px;"
-        class="grid items-center gap-2 text-sm font-normal h-[68px] custom-border-b-1"
+        class="custom-border-b-1 grid h-[68px] items-center gap-2 text-sm font-normal"
       >
         <div class="flex items-center gap-4">
-          <div class="rounded-lg custom-border-1 bg-white bg-opacity-10 p-2">
+          <div class="custom-border-1 rounded-lg bg-white bg-opacity-10 p-2">
             <Image
               layout="constrained"
               objectFit="fill"
@@ -57,17 +57,14 @@ export const TokenRow = component$<TokenRowProps>(
             />
           </div>
           <p class="text-sm">
-            {tokenName} <span class="custom-text-50 text-xs">{tokenSymbol}</span>
+            {tokenName}{" "}
+            <span class="custom-text-50 text-xs">{tokenSymbol}</span>
           </p>
         </div>
-        <div class="flex h-full items-center overflow-auto">
-          {quantity}
-        </div>
-        <div class="">
-          ${value}
-        </div>
+        <div class="flex h-full items-center overflow-auto">{quantity}</div>
+        <div class="">${value}</div>
         <div class="flex gap-4 text-customGreen">
-            +3,36%
+          +3,36%
           <IconGraph />
         </div>
         <div class="">{wallet}</div>

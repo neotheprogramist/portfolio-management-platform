@@ -1,7 +1,10 @@
 import { $, component$, useSignal, useStore, useTask$ } from "@builder.io/qwik";
 import { PortfolioValue } from "~/components/portfolioValue/portfolioValue";
 import { ActionAlertMessage } from "~/components/ActionAlertsMessage/ActionAlertsMessage";
-import { SuccessStatus, WarningStatus } from "~/components/ActionAlertsMessage/ActionStatus";
+import {
+  SuccessStatus,
+  WarningStatus,
+} from "~/components/ActionAlertsMessage/ActionStatus";
 import { TokenRow } from "~/components/tokens/tokenRow";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 import { connectToDB } from "~/utils/db";
@@ -549,11 +552,26 @@ export default component$(() => {
           </button>
         </div>
         <div class="overflow-auto">
-        <ActionAlertMessage title="Bitcoin share exceeded 20%" descrption="6 hours ago"/>
-        <ActionAlertMessage title="Bitcoin share exceeded 20%" descrption="6 hours ago"/>
-        <ActionAlertMessage title="Bitcoin share exceeded 20%" descrption="6 hours ago"/>
-        <ActionAlertMessage title="Bitcoin share exceeded 20%" descrption="6 hours ago"/>
-        <ActionAlertMessage title="Bitcoin share exceeded 20%" descrption="6 hours ago"/>
+          <ActionAlertMessage
+            title="Bitcoin share exceeded 20%"
+            descrption="6 hours ago"
+          />
+          <ActionAlertMessage
+            title="Bitcoin share exceeded 20%"
+            descrption="6 hours ago"
+          />
+          <ActionAlertMessage
+            title="Bitcoin share exceeded 20%"
+            descrption="6 hours ago"
+          />
+          <ActionAlertMessage
+            title="Bitcoin share exceeded 20%"
+            descrption="6 hours ago"
+          />
+          <ActionAlertMessage
+            title="Bitcoin share exceeded 20%"
+            descrption="6 hours ago"
+          />
         </div>
       </div>
 
@@ -565,23 +583,38 @@ export default component$(() => {
           </button>
         </div>
         <div class="overflow-auto">
-          <ActionAlertMessage title="Automation name #1" descrption="6 hours ago">
-            <SuccessStatus/>
+          <ActionAlertMessage
+            title="Automation name #1"
+            descrption="6 hours ago"
+          >
+            <SuccessStatus />
           </ActionAlertMessage>
-          <ActionAlertMessage title="Automation name #2" descrption="6 hours ago">
-            <SuccessStatus/>
+          <ActionAlertMessage
+            title="Automation name #2"
+            descrption="6 hours ago"
+          >
+            <SuccessStatus />
           </ActionAlertMessage>
           <ActionAlertMessage title="DCA" descrption="1 day ago">
-            <WarningStatus/>
+            <WarningStatus />
           </ActionAlertMessage>
-          <ActionAlertMessage title="Automation name #3" descrption="6 hours ago">
-            <SuccessStatus/>
+          <ActionAlertMessage
+            title="Automation name #3"
+            descrption="6 hours ago"
+          >
+            <SuccessStatus />
           </ActionAlertMessage>
-          <ActionAlertMessage title="Automation name #4" descrption="6 hours ago">
-            <SuccessStatus/>
+          <ActionAlertMessage
+            title="Automation name #4"
+            descrption="6 hours ago"
+          >
+            <SuccessStatus />
           </ActionAlertMessage>
-          <ActionAlertMessage title="Automation name #5" descrption="6 hours ago">
-            <WarningStatus/>
+          <ActionAlertMessage
+            title="Automation name #5"
+            descrption="6 hours ago"
+          >
+            <WarningStatus />
           </ActionAlertMessage>
         </div>
       </div>
@@ -601,12 +634,12 @@ export default component$(() => {
 
         <div
           style="grid-template-columns: minmax(200px, 500px) minmax(100px, 300px) minmax(150px, 300px) minmax(250px, 400px) repeat(2, minmax(120px, 400px)) minmax(100px, 400px) 40px;"
-          class="custom-text-50 grid gap-2 items-center text-xs font-normal uppercase"
+          class="custom-text-50 grid items-center gap-2 text-xs font-normal uppercase"
         >
           <div class="">Token name</div>
           <div class="">Quantity</div>
           <div class="">Value</div>
-          <div class="bg-white bg-opacity-5 custom-border-1 flex h-8 w-fit gap-2 rounded-[8px] p-[3.5px] text-white">
+          <div class="custom-border-1 flex h-8 w-fit gap-2 rounded-[8px] bg-white bg-opacity-5 p-[3.5px] text-white">
             <button class="custom-bg-button rounded-[8px] px-2">24h</button>
             <button class="rounded-[8px] px-2">3d</button>
             <button class="rounded-[8px] px-2">30d</button>
