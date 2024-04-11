@@ -771,7 +771,6 @@ export default component$(() => {
           )}
         </div>
       </div>
-  
 
       {isAddWalletModalOpen.value && (
         <Modal isOpen={isAddWalletModalOpen} title="Add Wallet">
@@ -799,13 +798,7 @@ export default component$(() => {
                 type="button"
                 disabled={isExecutableDisabled(addWalletFormStore)}
               >
-                <p
-                  class={
-                    "rounded-3xl px-2 py-3"
-                  }
-                >
-                  Add wallet
-                </p>
+                <p class={"rounded-3xl px-2 py-3"}>Add wallet</p>
               </button>
             ) : stepsCounter.value === 3 ? (
               <button
@@ -830,7 +823,7 @@ export default component$(() => {
               </button>
             ) : (
               <button
-                class="custom-bg-button py-3 w-full rounded-3xl p-[1px] font-normal text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
+                class="custom-bg-button w-full rounded-3xl p-[1px] py-3 font-normal text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
                 onClick$={() => {
                   if (stepsCounter.value === 2) {
                     for (

@@ -46,14 +46,10 @@ export const SelectedWalletDetails = component$<SelectedWalletProps>(
             </div>
           </div>
           <div class="flex gap-2">
-            <button
-              class="mr-1 mt-1  h-[32px] cursor-pointer rounded-[40px] custom-border-2 px-[16px] text-xs duration-300 ease-in-out hover:scale-105"
-            >
+            <button class="custom-border-2 mr-1  mt-1 h-[32px] cursor-pointer rounded-[40px] px-[16px] text-xs duration-300 ease-in-out hover:scale-105">
               Edit
             </button>
-            <button
-              class="mr-1 mt-1  h-[32px] cursor-pointer rounded-[40px] custom-border-2 px-[16px] text-xs duration-300 ease-in-out hover:scale-105"
-            >
+            <button class="custom-border-2 mr-1  mt-1 h-[32px] cursor-pointer rounded-[40px] px-[16px] text-xs duration-300 ease-in-out hover:scale-105">
               Deactivate
             </button>
             <button
@@ -68,7 +64,7 @@ export const SelectedWalletDetails = component$<SelectedWalletProps>(
           </div>
         </div>
 
-        <div class="grid grid-cols-[20%_13%_13%_14%_20%_8%_7%] items-center gap-[8px] text-left text-xs uppercase custom-text-50">
+        <div class="custom-text-50 grid grid-cols-[20%_13%_13%_14%_20%_8%_7%] items-center gap-[8px] text-left text-xs uppercase">
           <div class="">Token name</div>
           <div class="">Quantity</div>
           <div class="">Value</div>

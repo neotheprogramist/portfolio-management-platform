@@ -44,9 +44,9 @@ export const TokenRowWallets = component$<TokenRowWalletsProps>(
     });
     return (
       <>
-        <div class="grid grid-cols-[20%_13%_13%_14%_20%_8%_7%] items-center gap-[8px] custom-border-b-1 py-2 text-left text-[14px] text-opacity-50">
+        <div class="custom-border-b-1 grid grid-cols-[20%_13%_13%_14%_20%_8%_7%] items-center gap-[8px] py-2 text-left text-[14px] text-opacity-50">
           <div class="flex items-center gap-4 py-2">
-            <div class="rounded-lg custom-border-1 bg-white bg-opacity-10 p-2">
+            <div class="custom-border-1 rounded-lg bg-white bg-opacity-10 p-2">
               <Image
                 layout="constrained"
                 objectFit="fill"
@@ -60,19 +60,11 @@ export const TokenRowWallets = component$<TokenRowWalletsProps>(
               {name} <span class="custom-text-50 text-xs">{symbol}</span>
             </p>
           </div>
-          <div class="">
-              {balance}
-          </div>
-          <div class="">
-              ${balanceValueUSD}
-          </div>
-          <div class="">
-              {allowance}
-          </div>
-          <div class="flex h-full gap-4  items-center">
-            <span class="text-customGreen">
-              3,6%
-            </span>
+          <div class="">{balance}</div>
+          <div class="">${balanceValueUSD}</div>
+          <div class="">{allowance}</div>
+          <div class="flex h-full items-center  gap-4">
+            <span class="text-customGreen">3,6%</span>
             <IconGraph />
           </div>
           <div class="text-left">
