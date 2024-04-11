@@ -121,12 +121,12 @@ export const setupStream = server$(async function () {
       topic0: ["Transfer(address,address,uint256)"],
       webhookUrl: ngrokWebhookUrl,
       triggers: triggers,
-      getNativeBalances: [
-        {
-          selectors: ["$fromAddress", "$toAddress"],
-          type: "tx",
-        },
-      ],
+      // getNativeBalances: [
+      //   {
+      //     selectors: ["$fromAddress", "$toAddress"],
+      //     type: "tx",
+      //   },
+      // ],
     });
   }
 

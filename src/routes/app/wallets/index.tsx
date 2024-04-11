@@ -29,7 +29,6 @@ import { type WalletTokensBalances } from "~/interface/walletsTokensBalances/wal
 import { convertWeiToQuantity } from "~/utils/formatBalances/formatTokenBalance";
 import { isAddress, checksumAddress } from "viem";
 import IconArrowDown from "/public/assets/icons/arrow-down.svg?jsx";
-import IconInfo from "/public/assets/icons/info-blue.svg?jsx";
 import IconSearch from "/public/assets/icons/search.svg?jsx";
 import { isValidName, isValidAddress } from "~/utils/validators/addWallet";
 import {
@@ -71,6 +70,7 @@ import { returnWeb3ModalAndClient } from "~/components/wallet-connect";
 import AddWalletFormFields from "~/components/forms/addWallet/addWalletFormFields";
 import CoinsToApprove from "~/components/forms/addWallet/CoinsToApprove";
 import AmountOfCoins from "~/components/forms/addWallet/AmountOfCoins";
+// import { PendingAuthorization } from "~/components/PendingAuthorization/PendingAuthorization";
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
@@ -718,8 +718,8 @@ export default component$(() => {
   });
 
   return (
-    <div class="grid grid-cols-[24%_73%] grid-rows-[14%_1fr] gap-[24px] overflow-auto border-t border-white border-opacity-15 p-[24px]">
-      <div class="custom-bg-white custom-border-1 col-span-1 col-start-1 row-span-2 row-start-1 row-end-3 grid grid-rows-[56px_48px_64px_1fr] overflow-auto rounded-[16px] p-[24px]">
+    <div class="grid grid-cols-[24%_73%] gap-6 overflow-auto border-t border-white border-opacity-15 p-[24px]">
+      <div class="custom-border-1 grid grid-rows-[56px_48px_64px_1fr] overflow-auto rounded-[16px] p-[24px]">
         <div class="row-span-1 row-start-1 mb-[24px] flex items-center justify-between gap-[10px] text-white">
           <h1 class="text-xl">Wallets</h1>
           <button
@@ -732,17 +732,17 @@ export default component$(() => {
           </button>
         </div>
 
-        <button class="custom-border-1 custom-bg-white custom-text-50 row-span-1 row-start-2 mb-[8px] flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-xs">
+        <button class="custom-border-1 custom-text-50 mb-[8px] flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-xs">
           <IconSearch />
           Search for wallet
         </button>
 
-        <button class="custom-border-1 custom-bg-white row-span-1 row-start-3 mb-[24px] flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-xs text-white">
+        <button class="custom-border-1 mb-[24px] flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-xs text-white">
           Choose Network
           <IconArrowDown />
         </button>
 
-        <div class="row-span-1 row-start-4 h-full overflow-auto">
+        <div class="h-full overflow-auto">
           <div class="flex flex-col gap-[20px] overflow-auto">
             {observedWallets.value.map((observedWallet) => (
               <ObservedWallet
@@ -756,42 +756,26 @@ export default component$(() => {
         </div>
       </div>
 
-      <div class="row-span-1 flex items-center justify-between gap-[24px] rounded-[16px] border border-blue-500 bg-blue-500 bg-opacity-20 p-[24px]">
-        <div class="">
-          <h2 class="mb-[16px] flex items-center gap-2 text-sm">
-            <IconInfo /> Pending authorization
-          </h2>
-          <p class="text-xs">
-            This wallet requires authorization. Click Authorize to log in using
-            this wallet and approve all associated tokens.
-          </p>
-        </div>
-        <div class="lg:flex lg:gap-[8px]">
-          <button class="custom-border-2 mr-[12px] h-[32px] cursor-pointer rounded-3xl px-[16px] text-xs font-semibold text-white duration-300 ease-in-out hover:scale-110">
-            Dismiss
-          </button>
-          <button class="h-[32px] rounded-3xl border-none bg-blue-500 px-[16px] text-xs font-semibold text-white duration-300 ease-in-out hover:scale-110">
-            Authorize
-          </button>
+      <div class="grid gap-6">
+        {/* <PendingAuthorization/> */}
+        <div class="custom-border-1 flex flex-col gap-6 overflow-auto rounded-[20px] p-6">
+          {selectedWallet.value && (
+            <SelectedWalletDetails
+              key={selectedWallet.value.wallet.address}
+              selectedWallet={selectedWallet}
+              chainIdToNetworkName={chainIdToNetworkName}
+              isDeleteModalopen={isDeleteModalOpen}
+              isTransferModalOpen={isTransferModalOpen}
+              transferredCoin={transferredCoin}
+            />
+          )}
         </div>
       </div>
-
-      <div class="custom-bg-white custom-border-1 row-span-1 flex flex-col gap-[24px] overflow-auto rounded-[16px] p-[24px]">
-        {selectedWallet.value && (
-          <SelectedWalletDetails
-            key={selectedWallet.value.wallet.address}
-            selectedWallet={selectedWallet}
-            chainIdToNetworkName={chainIdToNetworkName}
-            isDeleteModalopen={isDeleteModalOpen}
-            isTransferModalOpen={isTransferModalOpen}
-            transferredCoin={transferredCoin}
-          />
-        )}
-      </div>
+  
 
       {isAddWalletModalOpen.value && (
         <Modal isOpen={isAddWalletModalOpen} title="Add Wallet">
-          <Form class="p-[24px]">
+          <Form class="p-6">
             {stepsCounter.value === 1 ? (
               <>
                 <IsExecutableSwitch addWalletFormStore={addWalletFormStore} />
@@ -810,14 +794,14 @@ export default component$(() => {
             ) : null}
             {addWalletFormStore.isExecutable === 0 ? (
               <button
-                class="custom-bg-button absolute bottom-[20px] h-[32px] w-[80%] rounded-3xl p-[1px] font-normal text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
+                class="custom-bg-button w-[100%] rounded-3xl text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
                 onClick$={handleAddWallet}
                 type="button"
                 disabled={isExecutableDisabled(addWalletFormStore)}
               >
                 <p
                   class={
-                    "bg-modal-button rounded-3xl px-[8px] py-[7px] text-xs text-gray-400"
+                    "rounded-3xl px-2 py-3"
                   }
                 >
                   Add wallet
@@ -825,7 +809,7 @@ export default component$(() => {
               </button>
             ) : stepsCounter.value === 3 ? (
               <button
-                class="custom-bg-button absolute bottom-[20px] h-[32px] w-[80%] rounded-3xl p-[1px] font-normal text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
+                class="custom-bg-button w-[100%] rounded-3xl p-[1px] font-normal text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
                 onClick$={handleAddWallet}
                 type="button"
                 disabled={
@@ -835,7 +819,7 @@ export default component$(() => {
                 }
               >
                 <p
-                  class={`rounded-3xl px-[8px] py-[7px] text-xs ${
+                  class={`rounded-3xl px-2 py-3 text-xs ${
                     addWalletFormStore.isExecutable
                       ? isExecutableClass(addWalletFormStore)
                       : isNotExecutableClass(addWalletFormStore)
@@ -846,7 +830,7 @@ export default component$(() => {
               </button>
             ) : (
               <button
-                class="custom-bg-button absolute bottom-[20px] h-[32px] w-[80%] rounded-3xl p-[1px] font-normal text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
+                class="custom-bg-button py-3 w-full rounded-3xl p-[1px] font-normal text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
                 onClick$={() => {
                   if (stepsCounter.value === 2) {
                     for (
@@ -886,7 +870,7 @@ export default component$(() => {
                 isDeleteModalOpen.value = false;
               }
             }}
-            class="absolute bottom-[20px] right-[24px] h-[32px] rounded-3xl bg-red-500 px-[8px] text-center text-xs text-white duration-300 ease-in-out hover:scale-110"
+            class="absolute bottom-5 right-6 h-[32px] rounded-3xl bg-red-500 px-2 text-center text-xs text-white duration-300 ease-in-out hover:scale-110"
           >
             Confirm Delete
           </button>
