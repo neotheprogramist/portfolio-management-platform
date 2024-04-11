@@ -1,4 +1,7 @@
-import { type PeriodState, type PeriodStateHours } from "~/interface/balance/Balance";
+import {
+  type PeriodState,
+  type PeriodStateHours,
+} from "~/interface/balance/Balance";
 
 export function generateTimestamps(
   timeRange: number,

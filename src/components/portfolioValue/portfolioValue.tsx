@@ -31,16 +31,18 @@ export const PortfolioValue = component$<PortfolioValueProps>(
     portfolioValueChange,
     onClick$,
     selectedPeriod,
-    chartData
+    chartData,
   }) => {
     const chart = $(() => {
-      let data: [number, number][] = []
-      if(chartData) {
+      let data: [number, number][] = [];
+      if (chartData) {
         data = chartData;
       } else {
-        data = [[0,0],[0,0]]
+        data = [
+          [0, 0],
+          [0, 0],
+        ];
       }
-
 
       const max =
         data.reduce(
@@ -130,8 +132,8 @@ export const PortfolioValue = component$<PortfolioValueProps>(
     });
 
     // eslint-disable-next-line qwik/no-use-visible-task
-    useVisibleTask$(({track}) => {
-      track(()=>chartData)
+    useVisibleTask$(({ track }) => {
+      track(() => chartData);
       chart();
     });
     return (
@@ -145,9 +147,9 @@ export const PortfolioValue = component$<PortfolioValueProps>(
               ${totalPortfolioValue}
             </h1>
             <p class="text-[12px]">
-              24h change: {portfolioValueChange?.valueChange ?? '0'}{" "}
+              24h change: {portfolioValueChange?.valueChange ?? "0"}{" "}
               <span class="text-[#24A148]">
-                {portfolioValueChange?.percentageChange ?? '0.00%'}
+                {portfolioValueChange?.percentageChange ?? "0.00%"}
               </span>
             </p>
           </div>
