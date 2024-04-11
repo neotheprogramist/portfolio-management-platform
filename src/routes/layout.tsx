@@ -51,13 +51,10 @@ export default component$(() => {
   const streamStore = useContext(StreamStoreContext);
 
   useTask$(async function () {
-    console.log("Setting up stream...");
     await initializeStreamIfNeeded(setupStream);
-    console.log("initialized stream");
     const stream = await getStream();
     console.log("Stream", stream);
     streamStore.streamId = stream["jsonResponse"]["id"];
-    console.log("stream id", streamStore.streamId);
   });
 
   // eslint-disable-next-line qwik/no-use-visible-task

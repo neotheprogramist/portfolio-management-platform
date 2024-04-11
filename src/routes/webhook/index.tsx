@@ -7,17 +7,20 @@ export const onPost: RequestHandler = async ({ request, json, env }) => {
   try {
     const db = await connectToDB(env);
     const webhook = await request.json();
+    console.log("WHOLE WEBHOOK:", webhook);
     const transfers = webhook["erc20Transfers"];
     if (transfers) {
       for (const transfer of transfers) {
         const { from, to, tokenSymbol, triggers } = transfer;
-        console.log("========================");
-        console.log("from", from);
-        console.log("to", to);
-        console.log("tokenSymbol", tokenSymbol);
-        console.log("========================");
+        // console.log("========================");
+        // console.log("from", from);
+        // console.log("to", to);
+        // console.log("tokenSymbol", tokenSymbol);
+        // console.log("========================");
+        // console.log("ALL TRIGGERS", triggers);
+        // console.log("========================")
         for (const trigger of triggers) {
-          console.log("trigger", trigger);
+          // console.log("trigger", trigger);
           if (trigger.name === "fromBalance") {
             await updateBalanceIfExists(db, from, tokenSymbol, trigger.value);
           } else {
