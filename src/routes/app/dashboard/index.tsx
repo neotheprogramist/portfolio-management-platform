@@ -168,7 +168,8 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
   const [result]: any = await db.query(
     `SELECT VALUE ->observes_wallet.out FROM ${userId};`,
   );
-  if (!result) throw new Error("No observed wallets");
+  if (!result) throw new Error("No observed wallets")
+
   const observedWalletsQueryResult = result[0];
 
   const dashboardBalance: { tokenAddress: string; balance: string }[] = [];
@@ -248,7 +249,7 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
               address: ethTokenAddress,
             });
             console.log('Token Price', tokenPrice);
-            
+
             partBalance += tokenBalance.raw.filter(item => item.symbol === tokenPrice.raw.tokenSymbol).reduce((sum, currentItem) => {
               return sum + parseFloat(currentItem.balance) * tokenPrice.raw.usdPrice;
             }, 0);
@@ -281,6 +282,7 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
       console.log(error);
     }
     const totalValueChange = getTotalValueChange(valueChange);
+
 
     return {
       valueChange: totalValueChange.toFixed(2),
@@ -463,7 +465,7 @@ export default component$(() => {
   const favoriteTokens = useGetFavoriteTokens();
   const toggleChart = useToggleChart();
   const portfolioValueChange = usePortfolio24hChange();
-  const chartDataStore = useStore({ data: portfolioValueChange.value.chartData });
+  const chartDataStore = useStore({ data: portfolioValueChange.value?.chartData ?? [[0,0], [0,0]] });
   const changePeriod = useSignal(false);
   const selectedPeriod: PeriodState = useStore({
     "24h": true,
