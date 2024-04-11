@@ -1,4 +1,4 @@
-import { component$, useSignal } from "@builder.io/qwik";
+import { $, component$, useSignal, useStore, useTask$ } from "@builder.io/qwik";
 import { PortfolioValue } from "~/components/portfolioValue/portfolioValue";
 import { Alert } from "~/components/alerts/alert";
 import { Action } from "~/components/actions/action";
@@ -6,7 +6,7 @@ import { TokenRow } from "~/components/tokens/tokenRow";
 import IconWarning from "/public/assets/icons/dashboard/warning.svg?jsx";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 import { connectToDB } from "~/utils/db";
-import { routeLoader$, useNavigate } from "@builder.io/qwik-city";
+import { routeAction$, routeLoader$, useNavigate } from "@builder.io/qwik-city";
 import {
   fetchTokenDayData,
   getDBTokenPriceUSD,
@@ -15,12 +15,299 @@ import {
 } from "~/interface/wallets/observedWallets";
 import { checksumAddress } from "viem";
 import { type Wallet } from "~/interface/auth/Wallet";
-import { convertWeiToQuantity } from "~/utils/formatBalances/formatTokenBalance";
+import {
+  convertWeiToQuantity,
+  getTotalValueChange,
+} from "~/utils/formatBalances/formatTokenBalance";
 import { chainIdToNetworkName } from "~/utils/chains";
-import { type Balance } from "~/interface/balance/Balance";
+import { type Balance, type PeriodState } from "~/interface/balance/Balance";
 import { type Token } from "~/interface/token/Token";
 import { testPublicClient } from "../wallets/testconfig";
 import { contractABI } from "~/abi/abi";
+import Moralis from "moralis";
+import {
+  generateTimestamps,
+  getSelectedPeriodInHours,
+} from "~/utils/timestamps/timestamp";
+import { EvmChain } from "@moralisweb3/common-evm-utils";
+
+function mapTokenAddress(sepoliaAddress: string): any {
+  const tokenMap: any = {
+    "0x054E1324CF61fe915cca47C48625C07400F1B587":
+      "0x7DD9c5Cba05E151C895FDe1CF355C9A1D5DA6429",
+    "0xD418937d10c9CeC9d20736b2701E506867fFD85f":
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    "0x9D16475f4d36dD8FC5fE41F74c9F44c7EcCd0709":
+      "0xdac17f958d2ee523a2206206994597c13d831ec7",
+  };
+  if (sepoliaAddress in tokenMap) {
+    return tokenMap[sepoliaAddress];
+  } else {
+    return null;
+  }
+}
+export const useToggleChart = routeAction$(async (data, requestEvent) => {
+  const selectedPeriod: { period: number; interval: number } =
+    getSelectedPeriodInHours(data as PeriodState);
+  const db = await connectToDB(requestEvent.env);
+
+  const cookie = requestEvent.cookie.get("accessToken");
+  if (!cookie) {
+    throw new Error("No cookie found");
+  }
+  const { userId } = jwt.decode(cookie.value) as JwtPayload;
+
+  const [result]: any = await db.query(
+    `SELECT VALUE ->observes_wallet.out FROM ${userId};`,
+  );
+  if (!result) throw new Error("No observed wallets");
+  const observedWalletsQueryResult = result[0];
+
+  const dashboardBalance: { tokenAddress: string; balance: string }[] = [];
+  const ethBlocks = [];
+  const sepBlocks = [];
+  const chartData = [];
+  const chartTimestamps = generateTimestamps(
+    selectedPeriod.period,
+    selectedPeriod.interval,
+  );
+  for (const item of chartTimestamps) {
+    try {
+      const blockDetails = await Moralis.EvmApi.block.getDateToBlock({
+        chain: EvmChain.ETHEREUM,
+        date: item,
+      });
+      ethBlocks.push(blockDetails.raw.block);
+
+      const sepoliaBlockDetails = await Moralis.EvmApi.block.getDateToBlock({
+        chain: EvmChain.SEPOLIA,
+        date: item,
+      });
+      sepBlocks.push(sepoliaBlockDetails.raw.block);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  for (const observedWallet of observedWalletsQueryResult) {
+    const [wallet] = await db.select<Wallet>(`${observedWallet}`);
+
+    // For each token update balance
+    const tokens = await db.select<Token>("token");
+    for (const token of tokens) {
+      const readBalance = await testPublicClient.readContract({
+        address: token.address as `0x${string}`,
+        abi: contractABI,
+        functionName: "balanceOf",
+        args: [wallet.address as `0x${string}`],
+      });
+
+      const formattedBalance = convertWeiToQuantity(
+        readBalance.toString(),
+        token.decimals,
+      );
+
+      if (readBalance !== BigInt(0) && formattedBalance !== "0.000") {
+        dashboardBalance.push({
+          tokenAddress: token.address,
+          balance: formattedBalance,
+        });
+      }
+    }
+
+    try {
+      for (let i = 0; i < chartTimestamps.length; i++) {
+        try {
+          const tokenBalance =
+            await Moralis.EvmApi.token.getWalletTokenBalances({
+              chain: EvmChain.SEPOLIA,
+              toBlock: sepBlocks[i],
+              tokenAddresses: [
+                "0x054E1324CF61fe915cca47C48625C07400F1B587",
+                "0xD418937d10c9CeC9d20736b2701E506867fFD85f",
+                "0x9D16475f4d36dD8FC5fE41F74c9F44c7EcCd0709",
+              ],
+              address: wallet.address,
+            });
+          let partBalance: number = 0;
+          for (const balanceEntry of dashboardBalance) {
+            const ethTokenAddress = mapTokenAddress(balanceEntry.tokenAddress);
+            const tokenPrice = await Moralis.EvmApi.token.getTokenPrice({
+              chain: EvmChain.ETHEREUM,
+              toBlock: ethBlocks[i],
+              address: ethTokenAddress,
+            });
+
+            partBalance += tokenBalance.raw
+              .filter((item) => item.symbol === tokenPrice.raw.tokenSymbol)
+              .reduce((sum, currentItem) => {
+                return (
+                  sum +
+                  parseFloat(currentItem.balance) * tokenPrice.raw.usdPrice
+                );
+              }, 0);
+          }
+          chartData.push(partBalance);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  return {
+    chartData: chartData.map((value, index) => [
+      index,
+      parseFloat(value.toFixed(2)),
+    ]) as [number, number][],
+  };
+});
+export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
+  const db = await connectToDB(requestEvent.env);
+
+  const cookie = requestEvent.cookie.get("accessToken");
+  if (!cookie) {
+    throw new Error("No cookie found");
+  }
+  const { userId } = jwt.decode(cookie.value) as JwtPayload;
+
+  const [result]: any = await db.query(
+    `SELECT VALUE ->observes_wallet.out FROM ${userId};`,
+  );
+  if (!result) throw new Error("No observed wallets");
+
+  const observedWalletsQueryResult = result[0];
+
+  const dashboardBalance: { tokenAddress: string; balance: string }[] = [];
+  const valueChange: { valueChangeUSD: string; percentageChange: string }[] =
+    [];
+  let totalBalance = 0;
+
+  const ethBlocks = [];
+  const sepBlocks = [];
+  const chartData = [];
+  const chartTimestamps = generateTimestamps(24, 4);
+
+  for (const item of chartTimestamps) {
+    try {
+      const blockDetails = await Moralis.EvmApi.block.getDateToBlock({
+        chain: EvmChain.ETHEREUM,
+        date: item,
+      });
+      ethBlocks.push(blockDetails.raw.block);
+
+      const sepoliaBlockDetails = await Moralis.EvmApi.block.getDateToBlock({
+        chain: EvmChain.SEPOLIA,
+        date: item,
+      });
+      sepBlocks.push(sepoliaBlockDetails.raw.block);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  for (const observedWallet of observedWalletsQueryResult) {
+    const [wallet] = await db.select<Wallet>(`${observedWallet}`);
+
+    // For each token update balance
+    const tokens = await db.select<Token>("token");
+    for (const token of tokens) {
+      const readBalance = await testPublicClient.readContract({
+        address: token.address as `0x${string}`,
+        abi: contractABI,
+        functionName: "balanceOf",
+        args: [wallet.address as `0x${string}`],
+      });
+
+      const formattedBalance = convertWeiToQuantity(
+        readBalance.toString(),
+        token.decimals,
+      );
+
+      if (readBalance !== BigInt(0) && formattedBalance !== "0.000") {
+        dashboardBalance.push({
+          tokenAddress: token.address,
+          balance: formattedBalance,
+        });
+      }
+    }
+
+    try {
+      for (let i = 0; i < chartTimestamps.length; i++) {
+        try {
+          const tokenBalance =
+            await Moralis.EvmApi.token.getWalletTokenBalances({
+              chain: EvmChain.SEPOLIA,
+              toBlock: sepBlocks[i],
+              tokenAddresses: [
+                "0x054E1324CF61fe915cca47C48625C07400F1B587",
+                "0xD418937d10c9CeC9d20736b2701E506867fFD85f",
+                "0x9D16475f4d36dD8FC5fE41F74c9F44c7EcCd0709",
+              ],
+              address: wallet.address,
+            });
+          let partBalance: number = 0;
+          for (const balanceEntry of dashboardBalance) {
+            const ethTokenAddress = mapTokenAddress(balanceEntry.tokenAddress);
+            const tokenPrice = await Moralis.EvmApi.token.getTokenPrice({
+              chain: EvmChain.ETHEREUM,
+              toBlock: ethBlocks[i],
+              include: "percent_change",
+              address: ethTokenAddress,
+            });
+            console.log("Token Price", tokenPrice);
+
+            partBalance += tokenBalance.raw
+              .filter((item) => item.symbol === tokenPrice.raw.tokenSymbol)
+              .reduce((sum, currentItem) => {
+                return (
+                  sum +
+                  parseFloat(currentItem.balance) * tokenPrice.raw.usdPrice
+                );
+              }, 0);
+
+            if (
+              tokenPrice.raw["24hrPercentChange"] &&
+              tokenPrice.raw.usdPrice
+            ) {
+              valueChange.push({
+                valueChangeUSD: (
+                  parseFloat(tokenPrice.raw["24hrPercentChange"]) *
+                  parseInt(balanceEntry.balance) *
+                  0.01
+                ).toFixed(2),
+                percentageChange:
+                  (parseFloat(tokenPrice.raw["24hrPercentChange"]).toFixed(
+                    2,
+                  ) as string) + "%",
+              });
+              totalBalance +=
+                parseFloat(balanceEntry.balance) * tokenPrice.raw.usdPrice;
+            }
+          }
+          chartData.push(partBalance);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    const totalValueChange = getTotalValueChange(valueChange);
+
+    return {
+      valueChange: totalValueChange.toFixed(2),
+      percentageChange:
+        ((100 * totalValueChange) / totalBalance).toFixed(2) + "%",
+      chartData: chartData.map((value, index) => [
+        index,
+        parseFloat(value.toFixed(2)),
+      ]) as [number, number][],
+    };
+  }
+});
 
 export const useTotalPortfolioValue = routeLoader$(async (requestEvent) => {
   const db = await connectToDB(requestEvent.env);
@@ -124,10 +411,10 @@ export const useGetFavoriteTokens = routeLoader$(async (requestEvent) => {
     `SELECT * FROM ${userId}->has_structure WHERE out.name = 'Favourite Tokens';`,
   );
   if (!result.length) return [];
-  console.log("result", result);
+  // console.log("result", result);
   const createdStructure = result[0].out;
 
-  console.log("createdStructure", createdStructure);
+  // console.log("createdStructure", createdStructure);
   const availableStructures: any[] = [];
 
   const [structure] = await db.select(`${createdStructure}`);
@@ -151,7 +438,7 @@ export const useGetFavoriteTokens = routeLoader$(async (requestEvent) => {
     );
     const [tokenValue] = await getDBTokenPriceUSD(db, token[0].address);
     const [imagePath] = await getTokenImagePath(db, token[0].symbol);
-    console.log("---------IMAGE PATH---------", imagePath.imagePath);
+    // console.log("---------IMAGE PATH---------", imagePath.imagePath);
     const tokenWithBalance = {
       id: token[0].id,
       name: token[0].name,
@@ -180,7 +467,7 @@ export const useGetFavoriteTokens = routeLoader$(async (requestEvent) => {
     structureBalance: structureTokens,
   });
 
-  console.log("Available Structures from routeloader: ", availableStructures);
+  // console.log("Available Structures from routeloader: ", availableStructures);
   return availableStructures;
 });
 
@@ -189,17 +476,70 @@ export default component$(() => {
   const isPortfolioFullScreen = useSignal(false);
   const totalPortfolioValue = useTotalPortfolioValue();
   const favoriteTokens = useGetFavoriteTokens();
+  const toggleChart = useToggleChart();
+  const portfolioValueChange = usePortfolio24hChange();
+  const chartDataStore = useStore({
+    data: portfolioValueChange.value?.chartData ?? [
+      [0, 0],
+      [0, 0],
+    ],
+  });
+  const changePeriod = useSignal(false);
+  const selectedPeriod: PeriodState = useStore({
+    "24h": true,
+    "1W": false,
+    "1M": false,
+    "1Y": false,
+  });
+
+  const togglePeriod = $(function togglePeriod(button: string) {
+    for (const key in selectedPeriod) {
+      selectedPeriod[key] = false;
+    }
+    selectedPeriod[button] = true;
+  });
+
+  useTask$(async ({ track }) => {
+    track(async () => {
+      selectedPeriod["24h"];
+      selectedPeriod["1W"];
+      selectedPeriod["1M"];
+      selectedPeriod["1Y"];
+
+      if (changePeriod.value !== false) {
+        const newChartData = await toggleChart.submit(selectedPeriod);
+        console.log("=========================");
+        console.log(newChartData);
+        console.log("=========================");
+        chartDataStore.data = newChartData.value.chartData;
+      }
+    });
+  });
 
   return isPortfolioFullScreen.value ? (
     <PortfolioValue
       totalPortfolioValue={totalPortfolioValue.value}
       isPortfolioFullScreen={isPortfolioFullScreen}
+      portfolioValueChange={portfolioValueChange.value}
+      chartData={chartDataStore.data}
+      selectedPeriod={selectedPeriod}
+      onClick$={(e: any) => {
+        togglePeriod(e.target.name);
+        changePeriod.value = true;
+      }}
     />
   ) : (
     <div class="grid grid-cols-4 grid-rows-[48%_48%] gap-[24px] overflow-auto p-[40px]">
       <PortfolioValue
         totalPortfolioValue={totalPortfolioValue.value}
         isPortfolioFullScreen={isPortfolioFullScreen}
+        portfolioValueChange={portfolioValueChange.value}
+        chartData={chartDataStore.data}
+        selectedPeriod={selectedPeriod}
+        onClick$={(e: any) => {
+          togglePeriod(e.target.name);
+          changePeriod.value = true;
+        }}
       />
 
       <div class="custom-border-1 custom-bg-white custom-shadow col-start-3 row-span-1 row-start-1 grid grid-rows-[32px_1fr] gap-[16px] overflow-auto rounded-[16px] p-[24px]">
