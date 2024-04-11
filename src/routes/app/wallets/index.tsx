@@ -69,8 +69,8 @@ import {
 } from "@wagmi/core";
 import { returnWeb3ModalAndClient } from "~/components/wallet-connect";
 import AddWalletFormFields from "~/components/forms/addWallet/addWalletFormFields";
-import Step2 from "~/components/forms/addWallet/Step2";
-import Step3 from "~/components/forms/addWallet/Step3";
+import CoinsToApprove from "~/components/forms/addWallet/CoinsToApprove";
+import AmountOfCoins from "~/components/forms/addWallet/AmountOfCoins";
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
@@ -322,7 +322,7 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
   return observedWallets;
 });
 
-const convertToFraction = (numericString: string) => {
+export const convertToFraction = (numericString: string) => {
   let fractionObject;
   if (!numericString.includes(".")) {
     fractionObject = {
@@ -341,7 +341,7 @@ const convertToFraction = (numericString: string) => {
   return fractionObject;
 };
 
-function replaceNonMatching(
+export function replaceNonMatching(
   inputString: string,
   regex: RegExp,
   replacement: string,
@@ -352,7 +352,7 @@ function replaceNonMatching(
   );
 }
 
-const chekckIfProperAmount = (input: string, regex: RegExp) => {
+export const chekckIfProperAmount = (input: string, regex: RegExp) => {
   return regex.test(input);
 };
 
@@ -365,7 +365,7 @@ export interface addWalletFormStore {
   coinsToCount: string[];
   coinsToApprove: {
     symbol: string;
-    amount: BigInt;
+    amount: string;
   }[];
 }
 
@@ -478,137 +478,154 @@ export default component$(() => {
 
   const handleAddWallet = $(async () => {
     console.log("IN HANDLE ADD WALLET");
-    console.log(addWalletFormStore.coinsToCount);
-    // isAddWalletModalOpen.value = false;
 
-    // formMessageProvider.messages.push({
-    //   id: formMessageProvider.messages.length,
-    //   variant: "info",
-    //   message: "Processing wallet...",
-    //   isVisible: true,
-    // });
+    isAddWalletModalOpen.value = false;
 
-    // const emethContractAddress = import.meta.env
-    //   .PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA;
+    formMessageProvider.messages.push({
+      id: formMessageProvider.messages.length,
+      variant: "info",
+      message: "Processing wallet...",
+      isVisible: true,
+    });
 
-    // try {
-    //   if (addWalletFormStore.isExecutable) {
-    //     if (temporaryModalStore.isConnected && temporaryModalStore.config) {
-    //       const account = getAccount(temporaryModalStore.config);
-    //       console.log("IN EXECUTABLE BLOCK");
-    //       console.log("[address]: ", account.address);
+    const emethContractAddress = import.meta.env
+      .PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA;
 
-    //       addWalletFormStore.address = account.address as `0x${string}`;
+    try {
+      if (addWalletFormStore.isExecutable) {
+        if (temporaryModalStore.isConnected && temporaryModalStore.config) {
+          const account = getAccount(temporaryModalStore.config);
+          console.log("IN EXECUTABLE BLOCK");
+          console.log("[address]: ", account.address);
 
-    //       if (!emethContractAddress) {
-    //         throw new Error("Missing PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA");
-    //       }
+          addWalletFormStore.address = account.address as `0x${string}`;
 
-    //       const tokens: any = await fetchTokens();
+          if (!emethContractAddress) {
+            throw new Error("Missing PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA");
+          }
 
-    //       for (const token of tokens) {
-    //         console.log(`Trying ${token.symbol}...`);
+          const tokens: any = await fetchTokens();
 
-    //         const tokenBalance = await readContract(
-    //           temporaryModalStore.config,
-    //           {
-    //             account: account.address as `0x${string}`,
-    //             abi: contractABI,
-    //             address: checksumAddress(token.address as `0x${string}`),
-    //             functionName: "balanceOf",
-    //             args: [account.address as `0x${string}`],
-    //           },
-    //         );
+          for (const token of tokens) {
+            if (addWalletFormStore.coinsToCount.includes(token.symbol)) {
+              console.log(`Trying ${token.symbol}...`);
 
-    //         console.log(`[Balance of ${token.symbol}]: `, tokenBalance);
+              const tokenBalance = await readContract(
+                temporaryModalStore.config,
+                {
+                  account: account.address as `0x${string}`,
+                  abi: contractABI,
+                  address: checksumAddress(token.address as `0x${string}`),
+                  functionName: "balanceOf",
+                  args: [account.address as `0x${string}`],
+                },
+              );
 
-    //         if (tokenBalance) {
-    //           const approval = await simulateContract(
-    //             temporaryModalStore.config,
-    //             {
-    //               account: account.address as `0x${string}`,
-    //               abi: contractABI,
-    //               address: checksumAddress(token.address as `0x${string}`),
-    //               functionName: "approve",
-    //               args: [emethContractAddress, 10n * 10n ** 18n],
-    //             },
-    //           );
-    //           console.log("[requescior simulate]: ", approval.request);
-    //           // keep receipts for now, to use waitForTransactionReceipt
-    //           try {
-    //             const receipt = await writeContract(
-    //               temporaryModalStore.config,
-    //               approval.request,
-    //             );
+              console.log(`[Balance of ${token.symbol}]: `, tokenBalance);
+              const amount = addWalletFormStore.coinsToApprove.find(
+                (item) => item.symbol === token.symbol,
+              )!.amount;
 
-    //             console.log(
-    //               `Contract for ${token.symbol} has been written... `,
-    //               receipt,
-    //             );
-    //           } catch (err) {
-    //             console.log("Errorek: ", err);
-    //           }
-    //         }
-    //       }
-    //     }
-    //     // approving logged in user by observed wallet by emeth contract
-    //     console.log(
-    //       "approving logged in user by observed wallet by emeth contract",
-    //     );
-    //     const cookie = getCookie("accessToken");
-    //     if (!cookie) throw new Error("No accessToken cookie found");
+              const { numerator, denominator } = convertToFraction(amount);
 
-    //     const { address } = jwtDecode.jwtDecode(cookie) as JwtPayload;
+              const calculation =
+                BigInt(numerator * BigInt(Math.pow(10, token.decimals))) /
+                BigInt(denominator);
+              console.log("calculation: ", calculation);
 
-    //     const { request } = await simulateContract(
-    //       temporaryModalStore.config as Config,
-    //       {
-    //         account: addWalletFormStore.address as `0x${string}`,
-    //         address: emethContractAddress,
-    //         abi: emethContractAbi,
-    //         functionName: "approve",
-    //         args: [address as `0x${string}`],
-    //       },
-    //     );
+              if (tokenBalance) {
+                const approval = await simulateContract(
+                  temporaryModalStore.config,
+                  {
+                    account: account.address as `0x${string}`,
+                    abi: contractABI,
+                    address: checksumAddress(token.address as `0x${string}`),
+                    functionName: "approve",
+                    args: [emethContractAddress, BigInt(calculation)],
+                  },
+                );
+                console.log("[requescior simulate]: ", approval.request);
+                // keep receipts for now, to use waitForTransactionReceipt
+                try {
+                  const receipt = await writeContract(
+                    temporaryModalStore.config,
+                    approval.request,
+                  );
 
-    //     const receipt = await writeContract(
-    //       temporaryModalStore.config as Config,
-    //       request,
-    //     );
-    //     console.log(receipt);
-    //   }
+                  console.log(
+                    `Contract for ${token.symbol} has been written... `,
+                    receipt,
+                  );
+                } catch (err) {
+                  console.log("Errorek: ", err);
+                }
+              }
+            } else {
+              console.log(`Skipping ${token.symbol}`);
+            }
+          }
+        }
+        // approving logged in user by observed wallet by emeth contract
+        console.log(
+          "approving logged in user by observed wallet by emeth contract",
+        );
+        const cookie = getCookie("accessToken");
+        if (!cookie) throw new Error("No accessToken cookie found");
 
-    //   await addWalletAction.submit({
-    //     address: addWalletFormStore.address as `0x${string}`,
-    //     name: addWalletFormStore.name,
-    //     isExecutable: addWalletFormStore.isExecutable.toString(),
-    //   });
+        const { address } = jwtDecode.jwtDecode(cookie) as JwtPayload;
 
-    //   formMessageProvider.messages.push({
-    //     id: formMessageProvider.messages.length,
-    //     variant: "success",
-    //     message: "Wallet successfully added.",
-    //     isVisible: true,
-    //   });
+        const { request } = await simulateContract(
+          temporaryModalStore.config as Config,
+          {
+            account: addWalletFormStore.address as `0x${string}`,
+            address: emethContractAddress,
+            abi: emethContractAbi,
+            functionName: "approve",
+            args: [address as `0x${string}`],
+          },
+        );
 
-    //   console.log("wallet added successfully, adding address to stream...");
-    //   await addAddressToStreamConfig(
-    //     streamId,
-    //     addWalletFormStore.address as `0x${string}`,
-    //   );
-    //   // addWalletFormStore.address = "";
-    //   // addWalletFormStore.name = "";
-    //   // addWalletFormStore.privateKey = "";
-    //   // addWalletFormStore.isExecutable = 0;
-    // } catch (err) {
-    //   console.log("[big error]: ", err);
-    //   formMessageProvider.messages.push({
-    //     id: formMessageProvider.messages.length,
-    //     variant: "error",
-    //     message: "Something went wrong.",
-    //     isVisible: true,
-    //   });
-    // }
+        const receipt = await writeContract(
+          temporaryModalStore.config as Config,
+          request,
+        );
+        console.log(receipt);
+      }
+
+      await addWalletAction.submit({
+        address: addWalletFormStore.address as `0x${string}`,
+        name: addWalletFormStore.name,
+        isExecutable: addWalletFormStore.isExecutable.toString(),
+      });
+
+      formMessageProvider.messages.push({
+        id: formMessageProvider.messages.length,
+        variant: "success",
+        message: "Wallet successfully added.",
+        isVisible: true,
+      });
+
+      console.log("wallet added successfully, adding address to stream...");
+      await addAddressToStreamConfig(
+        streamId,
+        addWalletFormStore.address as `0x${string}`,
+      );
+      addWalletFormStore.address = "";
+      addWalletFormStore.name = "";
+      addWalletFormStore.isExecutable = 0;
+      addWalletFormStore.coinsToCount = [];
+      addWalletFormStore.coinsToApprove = [];
+      stepsCounter.value = 1;
+      // temporaryModalStore.config = {} as Config;
+    } catch (err) {
+      console.log("[big error]: ", err);
+      formMessageProvider.messages.push({
+        id: formMessageProvider.messages.length,
+        variant: "error",
+        message: "Something went wrong.",
+        isVisible: true,
+      });
+    }
   });
 
   const handleTransfer = $(async () => {
@@ -788,28 +805,22 @@ export default component$(() => {
               </>
             ) : null}
             {stepsCounter.value === 2 ? (
-              <Step2 addWalletFormStore={addWalletFormStore} />
+              <CoinsToApprove addWalletFormStore={addWalletFormStore} />
             ) : null}
             {stepsCounter.value === 3 ? (
-              <Step3 addWalletFormStore={addWalletFormStore} />
+              <AmountOfCoins addWalletFormStore={addWalletFormStore} />
             ) : null}
             {addWalletFormStore.isExecutable === 0 ? (
               <button
                 class="custom-bg-button absolute bottom-[20px] h-[32px] w-[80%] rounded-3xl p-[1px] font-normal text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
                 onClick$={handleAddWallet}
                 type="button"
-                disabled={
-                  addWalletFormStore.isExecutable
-                    ? isExecutableDisabled(addWalletFormStore)
-                    : isNotExecutableDisabled(addWalletFormStore)
-                }
+                disabled={isExecutableDisabled(addWalletFormStore)}
               >
                 <p
-                  class={`rounded-3xl px-[8px] py-[7px] text-xs ${
-                    addWalletFormStore.isExecutable
-                      ? isExecutableClass(addWalletFormStore)
-                      : isNotExecutableClass(addWalletFormStore)
-                  }`}
+                  class={
+                    "bg-modal-button rounded-3xl px-[8px] py-[7px] text-xs text-gray-400"
+                  }
                 >
                   Add wallet
                 </p>
@@ -839,8 +850,19 @@ export default component$(() => {
               <button
                 class="custom-bg-button absolute bottom-[20px] h-[32px] w-[80%] rounded-3xl p-[1px] font-normal text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
                 onClick$={() => {
+                  if (stepsCounter.value === 2) {
+                    for (
+                      let i = 0;
+                      i < addWalletFormStore.coinsToCount.length;
+                      i++
+                    ) {
+                      addWalletFormStore.coinsToApprove.push({
+                        symbol: addWalletFormStore.coinsToCount[i],
+                        amount: "0",
+                      });
+                    }
+                  }
                   stepsCounter.value = stepsCounter.value + 1;
-                  console.log(stepsCounter.value);
                 }}
                 disabled={isProceedDisabled(
                   addWalletFormStore,
@@ -947,8 +969,9 @@ const isProceedDisabled = (
 ) =>
   addWalletFormStore.name === "" ||
   !isValidName(addWalletFormStore.name) ||
-  !addWalletFormStore.isNameUnique;
-// || addWalletFormStore.isNameUniqueLoading || temporaryModalStore.isConnected === false;
+  !addWalletFormStore.isNameUnique ||
+  addWalletFormStore.isNameUniqueLoading ||
+  temporaryModalStore.isConnected === false;
 
 const isExecutableDisabled = (addWalletFormStore: addWalletFormStore) =>
   addWalletFormStore.name === "" ||

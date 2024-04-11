@@ -1,19 +1,19 @@
-import { type QRL, component$, $ } from "@builder.io/qwik";
+import { component$ } from "@builder.io/qwik";
 
 import { type addWalletFormStore } from "~/routes/app/wallets";
 
-export interface Step2Props {
+export interface CoinsToApproveProps {
   addWalletFormStore: addWalletFormStore;
 }
 
-export default component$<Step2Props>(({ addWalletFormStore }) => {
+export default component$<CoinsToApproveProps>(({ addWalletFormStore }) => {
   const coins = ["GLM", "USDC", "USDT"];
 
   return (
     <>
       <div class="flex flex-col p-4">
         {coins.map((symbol) => (
-          <label class="cursor-pointer py-2" for={symbol}>
+          <label class="cursor-pointer py-2" for={symbol} key={symbol}>
             <input
               class="ml-2"
               id={symbol}
