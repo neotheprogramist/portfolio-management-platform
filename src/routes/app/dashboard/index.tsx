@@ -1,9 +1,8 @@
 import { $, component$, useSignal, useStore, useTask$ } from "@builder.io/qwik";
 import { PortfolioValue } from "~/components/portfolioValue/portfolioValue";
-import { Alert } from "~/components/alerts/alert";
-import { Action } from "~/components/actions/action";
+import { ActionAlertMessage } from "~/components/ActionAlertsMessage/ActionAlertsMessage";
+import { SuccessStatus, WarningStatus } from "~/components/ActionAlertsMessage/ActionStatus";
 import { TokenRow } from "~/components/tokens/tokenRow";
-import IconWarning from "/public/assets/icons/dashboard/warning.svg?jsx";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 import { connectToDB } from "~/utils/db";
 import { routeAction$, routeLoader$, useNavigate } from "@builder.io/qwik-city";
@@ -544,47 +543,46 @@ export default component$(() => {
 
       <div class="custom-border-1 custom-shadow col-start-3 row-span-1 row-start-1 grid grid-rows-[32px_1fr] gap-4 overflow-auto rounded-[16px] p-6">
         <div class="flex items-center justify-between">
-          <h1 class="text-xl font-semibold">Alerts</h1>
-          <button class="custom-border-2 rounded-[40px] px-[14px] py-[6px] text-xs font-semibold duration-300 ease-in-out hover:scale-110">
+          <h1 class="text-[20px] font-semibold">Alerts</h1>
+          <button class="custom-border-2 rounded-[40px] px-4 py-[11px] text-[12px] font-medium duration-300 ease-in-out hover:scale-110">
             See All
           </button>
         </div>
-        <div class="h-full overflow-auto">
-          <Alert />
-          <Alert />
-          <Alert />
-          <Alert />
-          <Alert />
-          <Alert />
-          <Alert />
-          <Alert />
-          <Alert />
+        <div class="overflow-auto">
+        <ActionAlertMessage title="Bitcoin share exceeded 20%" descrption="6 hours ago"/>
+        <ActionAlertMessage title="Bitcoin share exceeded 20%" descrption="6 hours ago"/>
+        <ActionAlertMessage title="Bitcoin share exceeded 20%" descrption="6 hours ago"/>
+        <ActionAlertMessage title="Bitcoin share exceeded 20%" descrption="6 hours ago"/>
+        <ActionAlertMessage title="Bitcoin share exceeded 20%" descrption="6 hours ago"/>
         </div>
       </div>
 
       <div class="custom-border-1 custom-shadow col-start-4 row-span-1 row-start-1 grid grid-rows-[32px_1fr] gap-4 overflow-auto rounded-[16px] p-6">
         <div class="flex items-center justify-between">
-          <h1 class="text-xl font-semibold">Actions</h1>
-          <button class="custom-border-2 rounded-[40px] px-[14px] py-[6px] text-xs font-semibold duration-300 ease-in-out hover:scale-110">
+          <h1 class="text-[20px] font-semibold">Actions</h1>
+          <button class="custom-border-2 rounded-[40px] px-4 py-[11px] text-[12px] font-medium duration-300 ease-in-out hover:scale-110">
             See All
           </button>
         </div>
-        <div class="h-full overflow-auto">
-          <Action />
-          <Action />
-          <div class="custom-border-bottom-1 flex items-center justify-between py-4">
-            <div class="">
-              <h3 class="text-sm">DCA</h3>
-              <p class="custom-text-50 text-xs">1 day ago</p>
-            </div>
-            <div class="custom-bg-white flex h-7 items-center gap-1 rounded-[8px] border border-customWarning p-2">
-              <IconWarning />
-              <p class="text-xs text-customWarning lg:hidden">Warning</p>
-            </div>
-          </div>
-          <Action />
-          <Action />
-          <Action />
+        <div class="overflow-auto">
+          <ActionAlertMessage title="Automation name #1" descrption="6 hours ago">
+            <SuccessStatus/>
+          </ActionAlertMessage>
+          <ActionAlertMessage title="Automation name #2" descrption="6 hours ago">
+            <SuccessStatus/>
+          </ActionAlertMessage>
+          <ActionAlertMessage title="DCA" descrption="1 day ago">
+            <WarningStatus/>
+          </ActionAlertMessage>
+          <ActionAlertMessage title="Automation name #3" descrption="6 hours ago">
+            <SuccessStatus/>
+          </ActionAlertMessage>
+          <ActionAlertMessage title="Automation name #4" descrption="6 hours ago">
+            <SuccessStatus/>
+          </ActionAlertMessage>
+          <ActionAlertMessage title="Automation name #5" descrption="6 hours ago">
+            <WarningStatus/>
+          </ActionAlertMessage>
         </div>
       </div>
 
@@ -592,7 +590,7 @@ export default component$(() => {
         <div class="flex items-center justify-between">
           <h1 class="text-xl font-semibold">Favourite Tokens</h1>
           <button
-            class="custom-border-2 rounded-[40px] px-[14px] py-[6px] text-xs font-semibold duration-300 ease-in-out hover:scale-110"
+            class="custom-border-2 rounded-[40px] px-4 py-[11px] text-xs font-medium duration-300 ease-in-out hover:scale-110"
             onClick$={() => {
               nav("/app/portfolio");
             }}
@@ -608,7 +606,7 @@ export default component$(() => {
           <div class="">Token name</div>
           <div class="">Quantity</div>
           <div class="">Value</div>
-          <div class="custom-bg-white custom-border-1 flex h-8 w-fit gap-2 rounded-[8px] p-[3.5px] text-white">
+          <div class="bg-white bg-opacity-5 custom-border-1 flex h-8 w-fit gap-2 rounded-[8px] p-[3.5px] text-white">
             <button class="custom-bg-button rounded-[8px] px-2">24h</button>
             <button class="rounded-[8px] px-2">3d</button>
             <button class="rounded-[8px] px-2">30d</button>

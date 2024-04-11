@@ -135,7 +135,7 @@ body {
     #0051c3 100%
   );
   opacity: 0.5;
-  filter: blur(170px);
+  filter: blur(220px);
   z-index: -1;
 }
 

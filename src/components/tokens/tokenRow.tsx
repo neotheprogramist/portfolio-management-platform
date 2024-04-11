@@ -56,8 +56,8 @@ export const TokenRow = component$<TokenRowProps>(
               src={imagePath}
             />
           </div>
-          <p class="">
-            {tokenName} <span class="custom-text-50">{tokenSymbol}</span>
+          <p class="text-sm">
+            {tokenName} <span class="custom-text-50 text-xs">{tokenSymbol}</span>
           </p>
         </div>
         <div class="flex h-full items-center overflow-auto">
