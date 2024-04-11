@@ -554,23 +554,23 @@ export default component$(() => {
         <div class="overflow-auto">
           <ActionAlertMessage
             title="Bitcoin share exceeded 20%"
-            descrption="6 hours ago"
+            description="6 hours ago"
           />
           <ActionAlertMessage
             title="Bitcoin share exceeded 20%"
-            descrption="6 hours ago"
+            description="6 hours ago"
           />
           <ActionAlertMessage
             title="Bitcoin share exceeded 20%"
-            descrption="6 hours ago"
+            description="6 hours ago"
           />
           <ActionAlertMessage
             title="Bitcoin share exceeded 20%"
-            descrption="6 hours ago"
+            description="6 hours ago"
           />
           <ActionAlertMessage
             title="Bitcoin share exceeded 20%"
-            descrption="6 hours ago"
+            description="6 hours ago"
           />
         </div>
       </div>
@@ -585,34 +585,34 @@ export default component$(() => {
         <div class="overflow-auto">
           <ActionAlertMessage
             title="Automation name #1"
-            descrption="6 hours ago"
+            description="6 hours ago"
           >
             <SuccessStatus />
           </ActionAlertMessage>
           <ActionAlertMessage
             title="Automation name #2"
-            descrption="6 hours ago"
+            description="6 hours ago"
           >
             <SuccessStatus />
           </ActionAlertMessage>
-          <ActionAlertMessage title="DCA" descrption="1 day ago">
+          <ActionAlertMessage title="DCA" description="1 day ago">
             <WarningStatus />
           </ActionAlertMessage>
           <ActionAlertMessage
             title="Automation name #3"
-            descrption="6 hours ago"
+            description="6 hours ago"
           >
             <SuccessStatus />
           </ActionAlertMessage>
           <ActionAlertMessage
             title="Automation name #4"
-            descrption="6 hours ago"
+            description="6 hours ago"
           >
             <SuccessStatus />
           </ActionAlertMessage>
           <ActionAlertMessage
             title="Automation name #5"
-            descrption="6 hours ago"
+            description="6 hours ago"
           >
             <WarningStatus />
           </ActionAlertMessage>
