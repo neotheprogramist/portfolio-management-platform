@@ -9,9 +9,15 @@ type Story = StoryObj<CheckBoxProps>;
 
 export default meta;
 
-export const WalletName: Story = {
+export const checkbox: Story = {
   render: () => (
-    <CheckBox/>
+    <CheckBox image="/assets/icons/tokens/btc.svg" text="Bitcoin" description="BTC"/>
+  ),
+};
+
+export const input: Story = {
+  render: () => (
+    <CheckBox image="/assets/icons/tokens/btc.svg" text="Bitcoin" description="BTC"/>
   ),
 };
 

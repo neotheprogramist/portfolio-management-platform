@@ -35,7 +35,7 @@ export default component$<AddWalletFormFieldsProps>(
           <input
             type="text"
             name="network"
-            class={`border-white-opacity-20 mb-5 block w-full rounded bg-transparent p-3 text-sm placeholder-white placeholder-opacity-50`}
+            class={`custom-border-1 mb-5 block w-full rounded bg-transparent p-3 text-sm placeholder-white placeholder-opacity-50`}
             placeholder="Select network"
             disabled={true}
           />
@@ -53,7 +53,7 @@ export default component$<AddWalletFormFieldsProps>(
           <input
             type="text"
             name="name"
-            class={`border-white-opacity-20 mb-5 block w-[80%] rounded bg-transparent p-3 text-white 
+            class={`custom-border-1 mb-5 block w-[80%] rounded bg-transparent p-3 text-white 
                ${!isValidName(addWalletFormStore.name) ? "border-red-700" : ""}`}
             value={addWalletFormStore.name}
             placeholder="Enter wallet name..."
@@ -96,14 +96,14 @@ export default component$<AddWalletFormFieldsProps>(
             <div>
               {isWalletConnected ? (
                 <div
-                  class={`flex h-12 w-full items-center justify-center rounded border border-[#24A148] bg-transparent p-3 text-[#24A148]`}
+                  class={`flex h-12 w-full items-center justify-center rounded border border-[#24A148] bg-transparent p-3 text-[#24A148] bg-[#24A148] bg-transparent-10`}
                 >
                   wallet address
                   {/* {addWalletFormStore.address.substring(0,6)}... */}
                 </div>
               ) : (
                 <div
-                  class={`mb-10 flex h-12 w-full items-center justify-center rounded border border-[#FDD835] bg-transparent p-3 text-[#FDD835]`}
+                  class={`mb-10 flex h-12 w-full items-center justify-center rounded border border-[#FDD835] bg-transparent p-3 text-[#FDD835] bg-[#FDD835] bg-transparent-10`}
                 >
                   Wallet not connected
                 </div>
@@ -114,7 +114,7 @@ export default component$<AddWalletFormFieldsProps>(
               <input
                 type="text"
                 name="address"
-                class={`border-white-opacity-20  block w-[80%] rounded bg-transparent p-3 text-white 
+                class={`custom-border-1  block w-[80%] rounded bg-transparent p-3 text-white 
                  ${!isValidAddress(addWalletFormStore.address) ? "border-red-700" : ""}`}
                 value={addWalletFormStore.address}
                 placeholder="Enter wallet address..."
