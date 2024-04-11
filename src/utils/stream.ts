@@ -50,26 +50,6 @@ export const setupStream = server$(async function () {
     type: "erc20transfer" as const,
   };
 
-  const allowanceABI = {
-    constant: true,
-    inputs: [
-      { name: "owner", type: "address" },
-      { name: "spender", type: "address" },
-    ],
-    name: "allowance",
-    outputs: [{ name: "remaining", type: "uint256" }],
-    payable: false,
-    stateMutability: "view",
-    type: "function",
-  };
-
-  const triggerAllowance = {
-    contractAddress: "$contract",
-    functionAbi: allowanceABI,
-    inputs: ["$owner", "$spender"],
-    type: "erc20approval" as const,
-  };
-
   const triggers = [triggerFrom, triggerTo];
 
   const ERC20TransferABI = [
@@ -144,10 +124,9 @@ export const setupStream = server$(async function () {
       getNativeBalances: [
         {
           selectors: ["$fromAddress", "$toAddress"],
-          type: 'tx'
-        }
-      ]
-      
+          type: "tx",
+        },
+      ],
     });
   }
 
