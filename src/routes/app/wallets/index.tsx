@@ -845,9 +845,7 @@ export default component$(() => {
                   temporaryModalStore,
                 )}
                 text="Proceed"
-              >
-                {/* Proceed */}
-              </Button>
+              />
             )}
           </Form>
         </Modal>
