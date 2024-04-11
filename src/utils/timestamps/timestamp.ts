@@ -1,4 +1,4 @@
-import { PeriodState, PeriodStateHours } from "~/interface/balance/Balance";
+import { type PeriodState, type PeriodStateHours } from "~/interface/balance/Balance";
 
 export function generateTimestamps(
   timeRange: number,
@@ -30,10 +30,10 @@ export function getSelectedPeriodInHours(dataPeriod: PeriodState) {
     "1Y": 8760,
   };
   const availableIntervals: PeriodStateHours = {
-    "24h": 6,
+    "24h": 4,
     "1W": 24,
-    "1M": 96,
-    "1Y": 720,
+    "1M": 72,
+    "1Y": 730,
   };
   for (const key in dataPeriod) {
     if (dataPeriod[key])
