@@ -1,9 +1,8 @@
 import {
   $,
   component$,
-  QRL,
+  type QRL,
   type Signal,
-  useStore,
   useVisibleTask$,
 } from "@builder.io/qwik";
 import IconMaximize from "/public/assets/icons/dashboard/maximize.svg?jsx";
@@ -11,7 +10,7 @@ import ImgPfButton from "/public/assets/icons/pfButton.svg?jsx";
 import ImgMinimalize from "/public/assets/icons/minimalize.svg?jsx";
 import IconArrowDown from "/public/assets/icons/arrow-down.svg?jsx";
 import * as d3 from "d3";
-import { PeriodState } from "~/interface/balance/Balance";
+import { type PeriodState } from "~/interface/balance/Balance";
 
 export interface PortfolioValueProps {
   totalPortfolioValue: string;
@@ -128,11 +127,12 @@ export const PortfolioValue = component$<PortfolioValueProps>(
 
       // Append the svg element
       const container = document.getElementById("container");
-      container!.append(svg.node()!);
+      container!.replaceChildren(svg.node()!);
     });
 
     // eslint-disable-next-line qwik/no-use-visible-task
-    useVisibleTask$(() => {
+    useVisibleTask$(({track}) => {
+      track(()=>chartData)
       chart();
     });
     return (

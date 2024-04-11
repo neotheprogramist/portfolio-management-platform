@@ -90,9 +90,11 @@ export const setupStream = server$(async function () {
     console.error("MORALIS_API_KEY is not set in the environment variables.");
     return;
   }
-  Moralis.start({
-    apiKey: this.env.get("MORALIS_API_KEY"),
-  });
+  if (!Moralis.Core.isStarted) {
+    Moralis.start({
+      apiKey: this.env.get("MORALIS_API_KEY"),
+    })
+  }
 
   const ngrokWebhookUrl = this.env.get("NGROK_WEBHOOK_URL");
   if (!ngrokWebhookUrl) {

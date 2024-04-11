@@ -20,7 +20,7 @@ import {
   getTotalValueChange,
 } from "~/utils/formatBalances/formatTokenBalance";
 import { chainIdToNetworkName } from "~/utils/chains";
-import { type Balance, PeriodState } from "~/interface/balance/Balance";
+import { type Balance, type PeriodState } from "~/interface/balance/Balance";
 import { type Token } from "~/interface/token/Token";
 import { testPublicClient } from "../wallets/testconfig";
 import { contractABI } from "~/abi/abi";
@@ -29,13 +29,14 @@ import {
   generateTimestamps,
   getSelectedPeriodInHours,
 } from "~/utils/timestamps/timestamp";
+import { EvmChain } from "@moralisweb3/common-evm-utils";
 
 function mapTokenAddress(sepoliaAddress: string): any {
 
   const tokenMap: any = {
-    '0x054E1324CF61fe915cca47C48625C07400F1B587' : '0x7DD9c5Cba05E151C895FDe1CF355C9A1D5DA6429',
-    '0xD418937d10c9CeC9d20736b2701E506867fFD85f' : '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-    '0x9D16475f4d36dD8FC5fE41F74c9F44c7EcCd0709' : '0xdac17f958d2ee523a2206206994597c13d831ec7'
+    '0x054E1324CF61fe915cca47C48625C07400F1B587': '0x7DD9c5Cba05E151C895FDe1CF355C9A1D5DA6429',
+    '0xD418937d10c9CeC9d20736b2701E506867fFD85f': '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    '0x9D16475f4d36dD8FC5fE41F74c9F44c7EcCd0709': '0xdac17f958d2ee523a2206206994597c13d831ec7'
   }
   if (sepoliaAddress in tokenMap) {
     return tokenMap[sepoliaAddress];
@@ -46,7 +47,6 @@ function mapTokenAddress(sepoliaAddress: string): any {
 export const useToggleChart = routeAction$(async (data, requestEvent) => {
   const selectedPeriod: { period: number; interval: number } =
     getSelectedPeriodInHours(data as PeriodState);
-
   const db = await connectToDB(requestEvent.env);
 
   const cookie = requestEvent.cookie.get("accessToken");
@@ -62,7 +62,8 @@ export const useToggleChart = routeAction$(async (data, requestEvent) => {
   const observedWalletsQueryResult = result[0];
 
   const dashboardBalance: { tokenAddress: string; balance: string }[] = [];
-  const blocks = [];
+  const ethBlocks = [];
+  const sepBlocks = [];
   const chartData = [];
   const chartTimestamps = generateTimestamps(
     selectedPeriod.period,
@@ -71,10 +72,16 @@ export const useToggleChart = routeAction$(async (data, requestEvent) => {
   for (const item of chartTimestamps) {
     try {
       const blockDetails = await Moralis.EvmApi.block.getDateToBlock({
-        chain: "0x1",
+        chain: EvmChain.ETHEREUM,
         date: item,
       });
-      blocks.push(blockDetails.raw.block);
+      ethBlocks.push(blockDetails.raw.block);
+
+      const sepoliaBlockDetails = await Moralis.EvmApi.block.getDateToBlock({
+        chain: EvmChain.SEPOLIA,
+        date: item,
+      });
+      sepBlocks.push(sepoliaBlockDetails.raw.block);
     } catch (error) {
       console.error(error);
     }
@@ -107,22 +114,34 @@ export const useToggleChart = routeAction$(async (data, requestEvent) => {
     }
 
     try {
-      for (const balanceEntry of dashboardBalance) {
-        for (const block of blocks) {
-          try {
-            const ethTokenAddress = mapTokenAddress(balanceEntry.tokenAddress)
+      for (let i = 0; i < chartTimestamps.length; i++) {
+        try {
+          const tokenBalance = await Moralis.EvmApi.token.getWalletTokenBalances({
+            chain: EvmChain.SEPOLIA,
+            toBlock: sepBlocks[i],
+            tokenAddresses: [
+              '0x054E1324CF61fe915cca47C48625C07400F1B587',
+              '0xD418937d10c9CeC9d20736b2701E506867fFD85f',
+              '0x9D16475f4d36dD8FC5fE41F74c9F44c7EcCd0709'
+            ],
+            address: wallet.address,
+          });
+          let partBalance: number = 0
+          for (const balanceEntry of dashboardBalance) {
+            const ethTokenAddress = mapTokenAddress(balanceEntry.tokenAddress);
             const tokenPrice = await Moralis.EvmApi.token.getTokenPrice({
-              chain: '0x1',
-              toBlock: block,
+              chain: EvmChain.ETHEREUM,
+              toBlock: ethBlocks[i],
               address: ethTokenAddress,
             });
 
-            chartData.push(
-              tokenPrice.raw.usdPrice * parseFloat(balanceEntry.balance),
-            );
-          } catch (error) {
-            console.error(error);
+            partBalance += tokenBalance.raw.filter(item => item.symbol === tokenPrice.raw.tokenSymbol).reduce((sum, currentItem) => {
+              return sum + parseFloat(currentItem.balance) * tokenPrice.raw.usdPrice;
+            }, 0);
           }
+          chartData.push(partBalance);
+        } catch (error) {
+          console.error(error);
         }
       }
     } catch (error) {
@@ -153,23 +172,28 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
   const observedWalletsQueryResult = result[0];
 
   const dashboardBalance: { tokenAddress: string; balance: string }[] = [];
-  const valueChange: { valueChangeUSD: string; percentageChange: string }[] =
-    [];
+  const valueChange: { valueChangeUSD: string; percentageChange: string }[] = [];
   let totalBalance = 0;
 
-  const blocks = [];
+  const ethBlocks = [];
+  const sepBlocks = [];
   const chartData = [];
-  const chartTimestamps = generateTimestamps(24, 6);
+  const chartTimestamps = generateTimestamps(24, 4);
 
 
   for (const item of chartTimestamps) {
     try {
       const blockDetails = await Moralis.EvmApi.block.getDateToBlock({
-        chain: '0x1',
+        chain: EvmChain.ETHEREUM,
         date: item,
       });
-      blocks.push(blockDetails.raw.block);
+      ethBlocks.push(blockDetails.raw.block);
 
+      const sepoliaBlockDetails = await Moralis.EvmApi.block.getDateToBlock({
+        chain: EvmChain.SEPOLIA,
+        date: item,
+      });
+      sepBlocks.push(sepoliaBlockDetails.raw.block);
     } catch (error) {
       console.error(error);
     }
@@ -202,70 +226,74 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
     }
 
     try {
-      for (const balanceEntry of dashboardBalance) {
-        const ethTokenAddress = mapTokenAddress(balanceEntry.tokenAddress)
-
-        const tokenPriceChange = await Moralis.EvmApi.token.getTokenPrice({
-          chain: '0x1',
-          include: "percent_change",
-          address: ethTokenAddress
-        });
-
-        if (
-          tokenPriceChange.raw["24hrPercentChange"] &&
-          tokenPriceChange.raw.usdPrice
-        ) {
-          valueChange.push({
-            valueChangeUSD: (
-              parseFloat(tokenPriceChange.raw["24hrPercentChange"]) *
-              parseInt(balanceEntry.balance) *
-              0.01
-            ).toFixed(2),
-            percentageChange:
-              (parseFloat(tokenPriceChange.raw["24hrPercentChange"]).toFixed(
-                2,
-              ) as string) + "%",
+      for (let i = 0; i < chartTimestamps.length; i++) {
+        try {
+          const tokenBalance = await Moralis.EvmApi.token.getWalletTokenBalances({
+            chain: EvmChain.SEPOLIA,
+            toBlock: sepBlocks[i],
+            tokenAddresses: [
+              '0x054E1324CF61fe915cca47C48625C07400F1B587',
+              '0xD418937d10c9CeC9d20736b2701E506867fFD85f',
+              '0x9D16475f4d36dD8FC5fE41F74c9F44c7EcCd0709'
+            ],
+            address: wallet.address,
           });
-          totalBalance +=
-            parseFloat(balanceEntry.balance) * tokenPriceChange.raw.usdPrice;
-        }
-
-
-        // ===========================================================================================
-        for (const block of blocks.slice(0, blocks.length - 1)) {
-          try {
-            const ethTokenAddress = mapTokenAddress(balanceEntry.tokenAddress)
+          let partBalance: number = 0
+          for (const balanceEntry of dashboardBalance) {
+            const ethTokenAddress = mapTokenAddress(balanceEntry.tokenAddress);
             const tokenPrice = await Moralis.EvmApi.token.getTokenPrice({
-              chain: '0x1',
-              toBlock: block,
+              chain: EvmChain.ETHEREUM,
+              toBlock: ethBlocks[i],
+              include: "percent_change",
               address: ethTokenAddress,
             });
+            console.log('Token Price', tokenPrice);
+            
+            partBalance += tokenBalance.raw.filter(item => item.symbol === tokenPrice.raw.tokenSymbol).reduce((sum, currentItem) => {
+              return sum + parseFloat(currentItem.balance) * tokenPrice.raw.usdPrice;
+            }, 0);
 
-            chartData.push(
-              tokenPrice.raw.usdPrice * parseFloat(balanceEntry.balance),
-            );
-          } catch (error) {
-            console.error(error);
+            if (
+              tokenPrice.raw["24hrPercentChange"] &&
+              tokenPrice.raw.usdPrice
+            ) {
+              valueChange.push({
+                valueChangeUSD: (
+                  parseFloat(tokenPrice.raw["24hrPercentChange"]) *
+                  parseInt(balanceEntry.balance) *
+                  0.01
+                ).toFixed(2),
+                percentageChange:
+                  (parseFloat(tokenPrice.raw["24hrPercentChange"]).toFixed(
+                    2,
+                  ) as string) + "%",
+              });
+              totalBalance +=
+                parseFloat(balanceEntry.balance) * tokenPrice.raw.usdPrice;
+            }
           }
+          chartData.push(partBalance);
+        } catch (error) {
+          console.error(error);
         }
-        // ===========================================================================================
       }
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
-  }
-  const totalValueChange = getTotalValueChange(valueChange);
+    const totalValueChange = getTotalValueChange(valueChange);
 
-  return {
-    valueChange: totalValueChange.toFixed(2),
-    percentageChange:
-      ((100 * totalValueChange) / totalBalance).toFixed(2) + "%",
-    chartData: chartData.map((value, index) => [
-      index,
-      parseFloat(value.toFixed(2)),
-    ]) as [number, number][],
-  };
+    return {
+      valueChange: totalValueChange.toFixed(2),
+      percentageChange:
+        ((100 * totalValueChange) / totalBalance).toFixed(2) + "%",
+      chartData: chartData.map((value, index) => [
+        index,
+        parseFloat(value.toFixed(2)),
+      ]) as [number, number][],
+    };
+  }
 });
+
 export const useTotalPortfolioValue = routeLoader$(async (requestEvent) => {
   const db = await connectToDB(requestEvent.env);
 
@@ -459,11 +487,11 @@ export default component$(() => {
       selectedPeriod["1Y"];
 
       if (changePeriod.value !== false) {
-       const newChartData = await toggleChart.submit(selectedPeriod);
+        const newChartData = await toggleChart.submit(selectedPeriod);
         console.log('=========================')
         console.log(newChartData)
         console.log('=========================')
-       chartDataStore.data = newChartData.value.chartData
+        chartDataStore.data = newChartData.value.chartData
       }
     });
   });
