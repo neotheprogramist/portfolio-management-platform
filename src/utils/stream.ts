@@ -114,7 +114,7 @@ export const setupStream = server$(async function () {
     newStream = await Moralis.Streams.add({
       chains: [EvmChain.SEPOLIA],
       description: "Listen for Transfers",
-      tag: "transfers -- filip",
+      tag: "transfers",
       includeNativeTxs: true,
       abi: ERC20TransferABI,
       includeContractLogs: true,
