@@ -1,4 +1,4 @@
-import { component$, type QRL } from "@builder.io/qwik";
+import { component$, Slot, type QRL } from "@builder.io/qwik";
 import { twMerge } from "tailwind-merge";
 
 export interface ButtonProps {
@@ -6,6 +6,7 @@ export interface ButtonProps {
   text?: string;
   onClick$?: QRL<() => void>;
   isDisabled?: boolean;
+  type?: "button" | "submit" | "reset" | undefined;
 }
 
 export const Button = component$<ButtonProps>((props) => {
@@ -17,7 +18,9 @@ export const Button = component$<ButtonProps>((props) => {
         props.class,
       )}
       disabled={props.isDisabled}
+      type={props.type}
     >
+      <Slot />
       {props.text}
     </button>
   );
