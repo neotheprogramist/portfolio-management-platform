@@ -96,14 +96,14 @@ export default component$<AddWalletFormFieldsProps>(
             <div>
               {isWalletConnected ? (
                 <div
-                  class={`flex h-12 w-full items-center justify-center rounded border border-[#24A148] bg-transparent p-3 text-[#24A148] bg-[#24A148] bg-transparent-10`}
+                  class={`bg-transparent-10 flex h-12 w-full items-center justify-center rounded border border-[#24A148] bg-[#24A148] bg-transparent p-3 text-[#24A148]`}
                 >
                   wallet address
                   {/* {addWalletFormStore.address.substring(0,6)}... */}
                 </div>
               ) : (
                 <div
-                  class={`mb-10 flex h-12 w-full items-center justify-center rounded border border-[#FDD835] bg-transparent p-3 text-[#FDD835] bg-[#FDD835] bg-transparent-10`}
+                  class={`bg-transparent-10 mb-10 flex h-12 w-full items-center justify-center rounded border border-[#FDD835] bg-[#FDD835] bg-transparent p-3 text-[#FDD835]`}
                 >
                   Wallet not connected
                 </div>

@@ -15,16 +15,13 @@ export default meta;
 export const WalletsAdd: Story = {
   render: () => (
     <Modal title="Add Wallet">
-      <div class="flex flex-col gap-4 mb-8">
-        <Select labelText="Type" text="Observable"/>
-        <Select labelText="Network" text="Ethereum (Default)"/>
-        <Input text="wallet name" placeholder="Enter wallet name..."/>
-        <Input
-          text="wallet address"
-          placeholder="Enter wallet address..."
-        />
+      <div class="mb-8 flex flex-col gap-4">
+        <Select labelText="Type" text="Observable" />
+        <Select labelText="Network" text="Ethereum (Default)" />
+        <Input text="wallet name" placeholder="Enter wallet name..." />
+        <Input text="wallet address" placeholder="Enter wallet address..." />
       </div>
-      <Button class="w-full" text="Add Wallet"/>
+      <Button class="w-full" text="Add Wallet" />
     </Modal>
   ),
 };
@@ -32,17 +29,16 @@ export const WalletsAdd: Story = {
 export const WalletsAuthorization: Story = {
   render: () => (
     <Modal title="Wallet authorization">
-      <div class="flex flex-col gap-4 mb-8">
-        <Select labelText="Type" text="Executable"/>
-        <Select labelText="Network" text="Ethereum (Default)"/>
-        <Input text="wallet name" placeholder="Enter wallet name..."/>
-        <div class="flex justify-between items-center">
-          <span class="uppercase custom-text-50 text-xs">Wallet address</span>
-          <Button class="h-8" text="Connect Wallet"/>
+      <div class="mb-8 flex flex-col gap-4">
+        <Select labelText="Type" text="Executable" />
+        <Select labelText="Network" text="Ethereum (Default)" />
+        <Input text="wallet name" placeholder="Enter wallet name..." />
+        <div class="flex items-center justify-between">
+          <span class="custom-text-50 text-xs uppercase">Wallet address</span>
+          <Button class="h-8" text="Connect Wallet" />
         </div>
-        
       </div>
-      <Button class="w-full" text="Proceed"/>
+      <Button class="w-full" text="Proceed" />
     </Modal>
   ),
 };
