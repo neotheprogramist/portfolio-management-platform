@@ -227,7 +227,6 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
   const observedWalletsQueryResult = result[0]["->observes_wallet"].out;
 
   const observedWallets: WalletTokensBalances[] = [];
-  console.log("looping observed wallets...");
   for (const observedWallet of observedWalletsQueryResult) {
     const [wallet] = await db.select<Wallet>(`${observedWallet}`);
     const nativeBalance = await testPublicClient.getBalance({
@@ -297,7 +296,6 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
       if (readBalance !== BigInt(0) && formattedBalance !== "0.000") {
         // Add the token to the wallet object
         const [{ priceUSD }] = await getDBTokenPriceUSD(db, token.address);
-        console.log(priceUSD);
         const [imagePath] = await getTokenImagePath(db, token.symbol);
 
         walletTokensBalances.tokens.push({

@@ -152,6 +152,5 @@ export const getTokenImagePath = async (db: Surreal, tokenSymbol: string) => {
       `SELECT imagePath FROM token WHERE symbol = '${tokenSymbol}';`,
     )
   ).at(0);
-  console.log("tokenImagePath", tokenImagePath);
   return GetTokenImagePath.array().parse(tokenImagePath);
 };

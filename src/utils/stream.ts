@@ -5,7 +5,6 @@ import Moralis from "moralis";
 let _stream: any;
 
 export async function getStream() {
-  console.log("--> Stream from getStream", _stream);
   if (!_stream) {
     throw new Error("Stream not set");
   }
@@ -15,10 +14,6 @@ export async function getStream() {
 export async function initializeStreamIfNeeded(factory: () => Promise<any>) {
   if (!_stream) {
     _stream = await factory();
-    console.log(
-      "--> Stream in initializeStreamIfNeeded after initialization",
-      _stream,
-    );
   }
 }
 
@@ -53,6 +48,26 @@ export const setupStream = server$(async function () {
     functionAbi: balanceOfReceiverABI,
     inputs: ["$to"],
     type: "erc20transfer" as const,
+  };
+
+  const allowanceABI = {
+    constant: true,
+    inputs: [
+      { name: "owner", type: "address" },
+      { name: "spender", type: "address" },
+    ],
+    name: "allowance",
+    outputs: [{ name: "remaining", type: "uint256" }],
+    payable: false,
+    stateMutability: "view",
+    type: "function",
+  };
+
+  const triggerAllowance = {
+    contractAddress: "$contract",
+    functionAbi: allowanceABI,
+    inputs: ["$owner", "$spender"],
+    type: "erc20approval" as const,
   };
 
   const triggers = [triggerFrom, triggerTo];
@@ -119,17 +134,23 @@ export const setupStream = server$(async function () {
     newStream = await Moralis.Streams.add({
       chains: [EvmChain.SEPOLIA],
       description: "Listen for Transfers",
-      tag: "transfers",
+      tag: "transfers -- filip",
+      includeNativeTxs: true,
       abi: ERC20TransferABI,
       includeContractLogs: true,
       topic0: ["Transfer(address,address,uint256)"],
-      includeNativeTxs: false,
       webhookUrl: ngrokWebhookUrl,
       triggers: triggers,
+      getNativeBalances: [
+        {
+          selectors: ["$fromAddress", "$toAddress"],
+          type: 'tx'
+        }
+      ]
+      
     });
   }
 
   _stream = newStream;
-  console.log("-->Stream in setupStream", _stream);
   return newStream;
 });
