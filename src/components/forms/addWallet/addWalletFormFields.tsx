@@ -28,6 +28,7 @@ export default component$<AddWalletFormFieldsProps>(
 
     return (
       <>
+        {/* network */}
         <div>
           <label for="network" class="block pb-1 text-xs text-white">
             Networker
@@ -40,6 +41,7 @@ export default component$<AddWalletFormFieldsProps>(
             disabled={true}
           />
         </div>
+        {/* Name */}
         <div>
           <label for="name" class="flex gap-2 pb-1 text-xs text-white">
             Name
@@ -64,6 +66,7 @@ export default component$<AddWalletFormFieldsProps>(
             }}
           />
         </div>
+        {/* Address */}
         <div class="flex flex-col">
           <label
             for="address"
