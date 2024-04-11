@@ -70,6 +70,7 @@ import { returnWeb3ModalAndClient } from "~/components/wallet-connect";
 import AddWalletFormFields from "~/components/forms/addWallet/addWalletFormFields";
 import CoinsToApprove from "~/components/forms/addWallet/CoinsToApprove";
 import AmountOfCoins from "~/components/forms/addWallet/AmountOfCoins";
+import { Button } from "~/components/blue-button/blue-button";
 // import { PendingAuthorization } from "~/components/PendingAuthorization/PendingAuthorization";
 
 export const useAddWallet = routeAction$(
@@ -822,8 +823,8 @@ export default component$(() => {
                 </p>
               </button>
             ) : (
-              <button
-                class="custom-bg-button w-full rounded-3xl p-[1px] py-3 font-normal text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
+              <Button
+                class="w-[100%] disabled:scale-100"
                 onClick$={() => {
                   if (stepsCounter.value === 2) {
                     for (
@@ -839,13 +840,14 @@ export default component$(() => {
                   }
                   stepsCounter.value = stepsCounter.value + 1;
                 }}
-                disabled={isProceedDisabled(
+                isDisabled={isProceedDisabled(
                   addWalletFormStore,
                   temporaryModalStore,
                 )}
+                text="Proceed"
               >
-                Proceed
-              </button>
+                {/* Proceed */}
+              </Button>
             )}
           </Form>
         </Modal>
