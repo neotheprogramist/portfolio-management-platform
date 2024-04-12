@@ -72,6 +72,7 @@ import CoinsToApprove from "~/components/forms/addWallet/CoinsToApprove";
 import AmountOfCoins from "~/components/forms/addWallet/AmountOfCoins";
 import { Button } from "~/components/blue-button/blue-button";
 // import { PendingAuthorization } from "~/components/PendingAuthorization/PendingAuthorization";
+import ImgError from "../../../../public/assets/icons/error.svg";
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
@@ -790,7 +791,7 @@ export default component$(() => {
             temporaryModalStore.config = undefined;
           })}
         >
-          <Form class="p-[24px]">
+          <Form>
             {stepsCounter.value === 1 ? (
               <>
                 <IsExecutableSwitch addWalletFormStore={addWalletFormStore} />
@@ -809,15 +810,15 @@ export default component$(() => {
             ) : null}
             {addWalletFormStore.isExecutable === 0 ? (
               <Button
-                class="h-[32px] w-full  disabled:scale-100"
+                class="w-full disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
                 onClick$={handleAddWallet}
                 type="button"
                 disabled={isExecutableDisabled(addWalletFormStore)}
-                text="Add wallet"
+                text="Add Wallet"
               />
             ) : stepsCounter.value === 3 ? (
               <Button
-                class="h-[32px] w-full  disabled:scale-100"
+                class="w-full  disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
                 onClick$={handleAddWallet}
                 type="button"
                 disabled={
@@ -829,7 +830,7 @@ export default component$(() => {
               />
             ) : (
               <Button
-                class="h-[32px] w-full  disabled:scale-100"
+                class="w-full disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
                 onClick$={() => {
                   if (stepsCounter.value === 2) {
                     for (
@@ -857,21 +858,42 @@ export default component$(() => {
       )}
 
       {isDeleteModalOpen.value && (
-        <Modal isOpen={isDeleteModalOpen} title="Delete Wallet">
-          <button
-            onClick$={async () => {
-              if (selectedWallet.value && selectedWallet.value.wallet.id) {
-                await removeWalletAction.submit({
-                  id: selectedWallet.value.wallet.id,
-                });
-                selectedWallet.value = null;
-                isDeleteModalOpen.value = false;
-              }
-            }}
-            class="absolute bottom-5 right-6 h-[32px] rounded-3xl bg-red-500 px-2 text-center text-xs text-white duration-300 ease-in-out hover:scale-110"
-          >
-            Confirm Delete
-          </button>
+        <Modal isOpen={isDeleteModalOpen} title="">
+          <h1 class="text-center text-xl">
+            You are going to permanently delete your wallet!
+          </h1>
+          <ul class="custom-text-50 relative left-[20%] my-8 text-sm">
+            <li>
+              <span class="pr-2 text-green-500">&#10003;</span>We will stop all
+              related automation
+            </li>
+            <li>
+              <span class="pr-2 text-green-500">&#10003;</span>Change all future
+              report processes
+            </li>
+            <li>
+              <span class="pr-2 text-green-500">&#10003;</span>Stop all alerts
+            </li>
+          </ul>
+          <div class="grid grid-cols-[49%_49%] gap-2">
+            <butto class=" custom-border-1 h-[48px] rounded-3xl px-2 text-center text-xs text-white duration-300 ease-in-out hover:scale-105">
+              Cancel
+            </butto>
+            <button
+              onClick$={async () => {
+                if (selectedWallet.value && selectedWallet.value.wallet.id) {
+                  await removeWalletAction.submit({
+                    id: selectedWallet.value.wallet.id,
+                  });
+                  selectedWallet.value = null;
+                  isDeleteModalOpen.value = false;
+                }
+              }}
+              class=" h-[48px] rounded-3xl bg-red-500 px-2 text-center text-xs text-white duration-300 ease-in-out hover:scale-105"
+            >
+              Yes, let’s do it!
+            </button>
+          </div>
         </Modal>
       )}
 

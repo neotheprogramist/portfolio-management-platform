@@ -6,6 +6,7 @@ interface ModalProps {
   isOpen: Signal<boolean>;
   myClass?: string;
   onClose?: QRL<() => void>;
+  hasButton?: boolean;
 }
 
 export const Modal = component$<ModalProps>(
@@ -26,8 +27,8 @@ export const Modal = component$<ModalProps>(
           }}
           class="bg-modal-glass custom-border-1 relative h-fit w-1/3 rounded-xl p-6"
         >
-          <div class=" flex items-center justify-between">
-            <div class="text-xl text-white">{title}</div>
+          <div class="mb-8 flex items-center justify-between">
+            <div class="text-xl font-semibold text-white">{title}</div>
             <button
               class="cursor-pointer"
               onClick$={() => {

@@ -24,7 +24,7 @@ export const Input = component$<InputProps>(
     disabled,
   }) => {
     return (
-      <div class="mb-2">
+      <div class="mb-4">
         <label class="custom-text-50 text-xs uppercase">{text}</label>
         <input
           class={twMerge(
