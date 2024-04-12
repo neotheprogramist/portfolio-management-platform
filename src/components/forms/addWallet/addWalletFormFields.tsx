@@ -1,5 +1,6 @@
 import { type QRL, component$, $ } from "@builder.io/qwik";
 import { getAddress } from "viem";
+import { Input } from "~/components/input/input";
 import { type addWalletFormStore } from "~/routes/app/wallets";
 import { useDebouncer } from "~/utils/debouncer";
 import {
@@ -52,18 +53,18 @@ export default component$<AddWalletFormFieldsProps>(
               <span class="text-xs text-red-500">Name already exists</span>
             )}
           </label>
-          <input
+          <Input
             type="text"
             name="name"
-            class={`custom-border-1 mb-5 block w-[80%] rounded bg-transparent p-3 text-white 
-               ${!isValidName(addWalletFormStore.name) ? "border-red-700" : ""}`}
+            customClass={` 
+              ${!isValidName(addWalletFormStore.name) ? "border-red-700" : ""}`}
             value={addWalletFormStore.name}
             placeholder="Enter wallet name..."
-            onInput$={async (e) => {
+            onInput={$(async (e) => {
               const target = e.target as HTMLInputElement;
               addWalletFormStore.name = target.value;
               nameInputDebounce(target.value);
-            }}
+            })}
           />
         </div>
         {/* Address */}
@@ -114,17 +115,17 @@ export default component$<AddWalletFormFieldsProps>(
             </div>
           ) : (
             <div class="mb-5 flex items-center gap-2">
-              <input
+              <Input
                 type="text"
                 name="address"
-                class={`custom-border-1  block w-[80%] rounded bg-transparent p-3 text-white 
-                 ${!isValidAddress(addWalletFormStore.address) ? "border-red-700" : ""}`}
+                customClass={`
+                ${!isValidAddress(addWalletFormStore.address) ? "border-red-700" : ""}`}
                 value={addWalletFormStore.address}
                 placeholder="Enter wallet address..."
-                onInput$={(e) => {
+                onInput={$((e) => {
                   const target = e.target as HTMLInputElement;
                   addWalletFormStore.address = target.value;
-                }}
+                })}
               />
               {isValidAddress(addWalletFormStore.address) &&
               !isCheckSum(addWalletFormStore.address) ? (

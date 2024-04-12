@@ -282,6 +282,7 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
         allowance.toString(),
         token.decimals,
       );
+      console.log("formatted allowance", formattedAllowance);
       // Certain balance which shall be updated
       const [[balanceToUpdate]]: any = await db.query(
         `SELECT * FROM balance WHERE ->(for_wallet WHERE out = '${wallet.id}') AND ->(for_token WHERE out = '${token.id}');`,
@@ -615,7 +616,8 @@ export default component$(() => {
       addWalletFormStore.coinsToCount = [];
       addWalletFormStore.coinsToApprove = [];
       stepsCounter.value = 1;
-      // temporaryModalStore.config = {} as Config;
+      temporaryModalStore.isConnected = false;
+      temporaryModalStore.config = undefined;
     } catch (err) {
       console.log("[big error]: ", err);
       formMessageProvider.messages.push({
@@ -774,8 +776,21 @@ export default component$(() => {
       </div>
 
       {isAddWalletModalOpen.value && (
-        <Modal isOpen={isAddWalletModalOpen} title="Add Wallet">
-          <Form class="p-6">
+        <Modal
+          isOpen={isAddWalletModalOpen}
+          title="Add Wallet"
+          onClose={$(() => {
+            addWalletFormStore.address = "";
+            addWalletFormStore.name = "";
+            addWalletFormStore.isExecutable = 0;
+            addWalletFormStore.coinsToCount = [];
+            addWalletFormStore.coinsToApprove = [];
+            stepsCounter.value = 1;
+            temporaryModalStore.isConnected = false;
+            temporaryModalStore.config = undefined;
+          })}
+        >
+          <Form class="p-[24px]">
             {stepsCounter.value === 1 ? (
               <>
                 <IsExecutableSwitch addWalletFormStore={addWalletFormStore} />
@@ -823,8 +838,8 @@ export default component$(() => {
                 </p>
               </button>
             ) : (
-              <Button
-                class="w-[100%] disabled:scale-100"
+              <button
+                class="custom-bg-button absolute bottom-[20px] h-[32px] w-[80%] rounded-3xl p-[1px] font-normal text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
                 onClick$={() => {
                   if (stepsCounter.value === 2) {
                     for (
@@ -840,12 +855,13 @@ export default component$(() => {
                   }
                   stepsCounter.value = stepsCounter.value + 1;
                 }}
-                isDisabled={isProceedDisabled(
+                disabled={isProceedDisabled(
                   addWalletFormStore,
                   temporaryModalStore,
                 )}
-                text="Proceed"
-              />
+              >
+                Proceed
+              </button>
             )}
           </Form>
         </Modal>
