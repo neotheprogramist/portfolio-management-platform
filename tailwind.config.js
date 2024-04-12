@@ -8,7 +8,9 @@ export default {
     },
     extend: {
       colors: {
-        customBlue: "#2196F3"
+        customBlue: "#2196F3",
+        customWarning: "#ffc107",
+        customGreen: "#4CAF50"
       },
       keyframes: {
         arrival:{

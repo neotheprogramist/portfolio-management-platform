@@ -29,7 +29,7 @@ export default component$<AddWalletFormFieldsProps>(
     return (
       <>
         {/* network */}
-        <div>
+        <div class="mb-4">
           <label for="network" class="block pb-1 text-xs text-white">
             Networker
           </label>
@@ -70,7 +70,7 @@ export default component$<AddWalletFormFieldsProps>(
         <div class="flex flex-col">
           <label
             for="address"
-            class="mb-6 flex items-center justify-between gap-2 pb-1 text-xs text-white"
+            class="flex items-center justify-between gap-2 pb-1 text-xs text-white"
           >
             Wallet Address
             {addWalletFormStore.isExecutable ? (
@@ -99,14 +99,14 @@ export default component$<AddWalletFormFieldsProps>(
             <div>
               {isWalletConnected ? (
                 <div
-                  class={`bg-transparent-10 flex h-12 w-full items-center justify-center rounded border border-[#24A148] bg-[#24A148] bg-transparent p-3 text-[#24A148]`}
+                  class={`bg-transparent-10 my-4 flex h-12 w-full items-center justify-center rounded border border-[#24A148] bg-[#24A148] bg-transparent p-3 text-[#24A148]`}
                 >
                   wallet address
                   {/* {addWalletFormStore.address.substring(0,6)}... */}
                 </div>
               ) : (
                 <div
-                  class={`bg-transparent-10 mb-10 flex h-12 w-full items-center justify-center rounded border border-[#FDD835] bg-[#FDD835] bg-transparent p-3 text-[#FDD835]`}
+                  class={`bg-transparent-10 my-4 flex h-12 w-full items-center justify-center rounded border border-[#FDD835] bg-[#FDD835] bg-transparent p-3 text-[#FDD835]`}
                 >
                   Wallet not connected
                 </div>

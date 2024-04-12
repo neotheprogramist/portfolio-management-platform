@@ -3,8 +3,6 @@ import {
   ButtonTokenList,
 } from "~/components/portfolio/button-master/button";
 import IconEdit from "/public/assets/icons/portfolio/edit.svg?jsx";
-import ImgChart from "/public/assets/images/chart.png?jsx";
-import IconBtc from "/public/assets/icons/portfolio/btc.svg?jsx";
 import IconArrowDown from "/public/assets/icons/arrow-down.svg?jsx";
 import IconClose from "/public/assets/icons/close.svg?jsx";
 import { Group } from "~/components/groups/group";
@@ -337,7 +335,7 @@ export default component$(() => {
 
   return (
     <>
-      <div class="grid grid-rows-[auto_auto] overflow-auto px-[40px] ">
+      <div class="grid grid-rows-[10%_auto] overflow-auto px-[40px] ">
         <div class="flex items-center justify-between py-[32px]">
           <div class="flex items-center gap-[8px] text-[24px] font-semibold">
             <h2>Portfolio Name</h2>
@@ -365,8 +363,8 @@ export default component$(() => {
             />
           </div>
         </div>
-        <div class="grid grid-cols-[auto_auto] gap-[24px] overflow-auto pb-[145px]">
-          <div class="custom-bg-white custom-border-1 flex min-h-[260px] min-w-[580px] flex-col gap-[24px] overflow-auto rounded-[16px] p-[24px] ">
+        <div class="grid overflow-auto ">
+          <div class=" custom-border-1 flex min-h-[260px] min-w-[580px] flex-col gap-4 overflow-auto rounded-[16px] p-[24px] ">
             <p class="text-[20px] font-semibold">Token list</p>
             <div class="grid grid-cols-4 gap-[8px]">
               <ButtonTokenList
@@ -390,15 +388,15 @@ export default component$(() => {
                 class=""
               />
             </div>
-            <div class="grid grid-rows-[40px_auto] items-center gap-[24px] overflow-auto text-[14px]">
+            <div class="grid grid-rows-[40px_auto] items-center gap-4 overflow-auto text-left text-[14px]">
               <div
-                style="grid-template-columns: minmax(200px, 400px) repeat(2, minmax(100px, 200px)) minmax(180px, 300px) repeat(2, minmax(145px, 300px)) 40px;"
+                style="grid-template-columns: minmax(200px, 400px) minmax(145px, 200px) minmax(200px, 200px) minmax(200px, 300px) repeat(2, minmax(100px, 300px)) minmax(130px, 300px) 40px;"
                 class="grid items-center text-[12px] font-normal text-white text-opacity-[50%]"
               >
                 <div class="">TOKEN NAME</div>
                 <div class="">QUANTITY</div>
                 <div class="">VALUE</div>
-                <div class="custom-bg-white custom-border-1 flex h-[32px] w-fit gap-[8px] rounded-lg p-[2px] ">
+                <div class="custom-bg-white custom-border-1 flex h-[32px] w-fit gap-[8px] rounded-lg p-[2px] text-center text-white">
                   <button class="custom-bg-button rounded-[8px] px-[8px]">
                     24h
                   </button>
@@ -771,7 +769,7 @@ export default component$(() => {
               </Modal>
             )}
           </div>
-          <div class="custom-border-1 custom-bg-white flex w-[322px] flex-col gap-[24px] overflow-auto rounded-[16px] p-[24px]">
+          {/* <div class="custom-border-1 custom-bg-white flex w-[322px] flex-col gap-[24px] overflow-auto rounded-[16px] p-[24px]">
             <div class="flex h-[32px] items-center justify-between">
               <p class="text-[20px] font-semibold">Details</p>
               <Button
@@ -813,7 +811,7 @@ export default component$(() => {
                 sem, posuere condimentum dolor justo convallis leo.
               </p>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </>

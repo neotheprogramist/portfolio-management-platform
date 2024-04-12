@@ -41,9 +41,12 @@ export const TokenRow = component$<TokenRowProps>(
       imageTransformer$,
     });
     return (
-      <div class="grid grid-cols-[17%_8%_11%_20%_14%_11%_12%_3%] items-center gap-[8px] border-b border-white border-opacity-10 py-[16px] text-left text-[14px]">
-        <div class="flex items-center gap-4 py-2">
-          <div class="rounded-lg border border-white border-opacity-20 bg-white bg-opacity-10 p-2">
+      <div
+        style="grid-template-columns: minmax(200px, 500px) minmax(100px, 300px) minmax(150px, 300px) minmax(250px, 400px) repeat(2, minmax(120px, 400px)) minmax(100px, 400px) 40px;"
+        class="custom-border-b-1 grid h-[68px] items-center gap-2 text-sm font-normal"
+      >
+        <div class="flex items-center gap-4">
+          <div class="custom-border-1 rounded-lg bg-white bg-opacity-10 p-2">
             <Image
               layout="constrained"
               objectFit="fill"
@@ -53,42 +56,20 @@ export const TokenRow = component$<TokenRowProps>(
               src={imagePath}
             />
           </div>
-          <p class="text-white">
+          <p class="text-sm">
             {tokenName}{" "}
-            <span class="text-white text-opacity-50">{tokenSymbol}</span>
+            <span class="custom-text-50 text-xs">{tokenSymbol}</span>
           </p>
         </div>
-        <div class="">
-          <span class="bg-glass rounded-lg border border-white border-opacity-20 px-2 py-1 text-white ">
-            {quantity}
-          </span>
-        </div>
-        <div class="">
-          <span class="bg-glass rounded-lg border border-white border-opacity-20 px-2 py-1 text-white">
-            ${value}
-          </span>
-        </div>
-        <div class="flex justify-center gap-[16px]">
-          <span class="bg-glass rounded-lg border border-green-500 bg-green-500 px-2 py-1 text-green-500">
-            +3,36%
-          </span>
+        <div class="flex h-full items-center overflow-auto">{quantity}</div>
+        <div class="">${value}</div>
+        <div class="flex gap-4 text-customGreen">
+          +3,36%
           <IconGraph />
         </div>
-        <div class="">
-          <span class="bg-glass rounded-lg border border-white border-opacity-20 px-2 py-1 text-white">
-            {wallet}
-          </span>
-        </div>
-        <div class="">
-          <span class="bg-glass rounded-lg border border-white border-opacity-20 px-2 py-1 text-white">
-            {networkName}
-          </span>
-        </div>
-        <div class="">
-          <span class="bg-glass rounded-lg border border-white border-opacity-20 px-2 py-1 text-white">
-            {subportfolio}
-          </span>
-        </div>
+        <div class="">{wallet}</div>
+        <div class="">{networkName}</div>
+        <div class="">{subportfolio}</div>
         <div class="flex justify-end">
           <IconStar />
         </div>

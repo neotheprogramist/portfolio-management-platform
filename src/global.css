@@ -108,6 +108,7 @@ body {
     rgba(255, 255, 255, 0) 100%
   );
 }
+
 .custom-bg-button {
   background: linear-gradient(
     130deg,
@@ -135,7 +136,7 @@ body {
     #0051c3 100%
   );
   opacity: 0.5;
-  filter: blur(170px);
+  filter: blur(220px);
   z-index: -1;
 }
 
@@ -151,6 +152,21 @@ body {
     #5542bb,
     #0051c3
   );
+}
+
+.custom-text-gradient {
+  background: linear-gradient(
+    to right,
+    #da301f,
+    #f48946,
+    #ee3560,
+    #fa4784,
+    #ff48c0,
+    #8e38b5,
+    #5542bb,
+    #0051c3
+  );
+  background-clip: text;
 }
 
 .bg-modal-glass {
