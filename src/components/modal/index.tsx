@@ -1,4 +1,4 @@
-import { QRL, type Signal, Slot, component$ } from "@builder.io/qwik";
+import { type QRL, type Signal, Slot, component$ } from "@builder.io/qwik";
 import IconClose from "/public/assets/icons/close.svg?jsx";
 
 interface ModalProps {

@@ -967,12 +967,12 @@ const isNotExecutableDisabled = (addWalletFormStore: addWalletFormStore) =>
   !addWalletFormStore.isNameUnique ||
   addWalletFormStore.isNameUniqueLoading;
 
-const isExecutableClass = (addWalletFormStore: addWalletFormStore) =>
-  isExecutableDisabled(addWalletFormStore)
-    ? "bg-modal-button text-gray-400"
-    : "bg-black";
+// const isExecutableClass = (addWalletFormStore: addWalletFormStore) =>
+//   isExecutableDisabled(addWalletFormStore)
+//     ? "bg-modal-button text-gray-400"
+//     : "bg-black";
 
-const isNotExecutableClass = (addWalletFormStore: addWalletFormStore) =>
-  isNotExecutableDisabled(addWalletFormStore)
-    ? "bg-modal-button text-gray-400"
-    : "bg-black";
+// const isNotExecutableClass = (addWalletFormStore: addWalletFormStore) =>
+//   isNotExecutableDisabled(addWalletFormStore)
+//     ? "bg-modal-button text-gray-400"
+//     : "bg-black";
