@@ -9,12 +9,12 @@ interface ModalProps {
 }
 
 export const Modal = component$<ModalProps>(
-  ({ isOpen, title = "", onClose}) => {
+  ({ isOpen, title = "", onClose }) => {
     return (
       <div
         onClick$={() => {
           isOpen.value = false;
-          if(onClose) {
+          if (onClose) {
             onClose();
           }
         }}

@@ -13,14 +13,23 @@ export interface InputProps {
 }
 
 export const Input = component$<InputProps>(
-  ({ text, placeholder, name, type, value, onInput, customClass, disabled}) => {
+  ({
+    text,
+    placeholder,
+    name,
+    type,
+    value,
+    onInput,
+    customClass,
+    disabled,
+  }) => {
     return (
       <div class="mb-2">
         <label class="custom-text-50 text-xs uppercase">{text}</label>
         <input
           class={twMerge(
             "custom-border-1 mt-2 h-12 w-full cursor-pointer rounded-lg bg-transparent px-4 text-white placeholder:text-white",
-            customClass
+            customClass,
           )}
           placeholder={placeholder}
           name={name}

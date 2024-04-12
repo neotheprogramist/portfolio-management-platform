@@ -4,7 +4,7 @@ import { twMerge } from "tailwind-merge";
 export type Option = {
   value: number | string;
   text: string;
-}
+};
 export interface SelectProps {
   labelText?: string;
   text?: string;
@@ -30,7 +30,13 @@ export const Select = component$<SelectProps>((props) => {
         )}
       >
         {props.options?.map((option, index) => (
-          <option class="text-black" key={`${option.text}${index}`} value={option.value}>{option.text}</option>
+          <option
+            class="text-black"
+            key={`${option.text}${index}`}
+            value={option.value}
+          >
+            {option.text}
+          </option>
         ))}
       </select>
     </div>

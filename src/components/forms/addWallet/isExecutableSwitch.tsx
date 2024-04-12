@@ -55,5 +55,3 @@ export default component$<AddWalletFormProps>(({ addWalletFormStore }) => {
     </>
   );
 });
-
-
