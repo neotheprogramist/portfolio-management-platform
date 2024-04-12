@@ -808,17 +808,16 @@ export default component$(() => {
               <AmountOfCoins addWalletFormStore={addWalletFormStore} />
             ) : null}
             {addWalletFormStore.isExecutable === 0 ? (
-              <button
-                class="custom-bg-button w-[100%] rounded-3xl text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
+              <Button
+                class="h-[32px] w-full  disabled:scale-100"
                 onClick$={handleAddWallet}
                 type="button"
                 disabled={isExecutableDisabled(addWalletFormStore)}
-              >
-                <p class={"rounded-3xl px-2 py-3"}>Add wallet</p>
-              </button>
+                text="Add wallet"
+              />
             ) : stepsCounter.value === 3 ? (
-              <button
-                class="custom-bg-button w-[100%] rounded-3xl p-[1px] font-normal text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
+              <Button
+                class="h-[32px] w-full  disabled:scale-100"
                 onClick$={handleAddWallet}
                 type="button"
                 disabled={
@@ -826,20 +825,11 @@ export default component$(() => {
                     ? isExecutableDisabled(addWalletFormStore)
                     : isNotExecutableDisabled(addWalletFormStore)
                 }
-              >
-                <p
-                  class={`rounded-3xl px-2 py-3 text-xs ${
-                    addWalletFormStore.isExecutable
-                      ? isExecutableClass(addWalletFormStore)
-                      : isNotExecutableClass(addWalletFormStore)
-                  }`}
-                >
-                  Add wallet
-                </p>
-              </button>
+                text="Add wallet"
+              />
             ) : (
-              <button
-                class="custom-bg-button absolute bottom-[20px] h-[32px] w-[80%] rounded-3xl p-[1px] font-normal text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
+              <Button
+                class="h-[32px] w-full  disabled:scale-100"
                 onClick$={() => {
                   if (stepsCounter.value === 2) {
                     for (
@@ -859,9 +849,8 @@ export default component$(() => {
                   addWalletFormStore,
                   temporaryModalStore,
                 )}
-              >
-                Proceed
-              </button>
+                text="Proceed"
+              />
             )}
           </Form>
         </Modal>

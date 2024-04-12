@@ -34,10 +34,9 @@ export default component$<AddWalletFormFieldsProps>(
           <label for="network" class="block pb-1 text-xs text-white">
             Networker
           </label>
-          <input
+          <Input
             type="text"
             name="network"
-            class={`custom-border-1 mb-5 block w-full rounded bg-transparent p-3 text-sm placeholder-white placeholder-opacity-50`}
             placeholder="Select network"
             disabled={true}
           />
@@ -100,25 +99,25 @@ export default component$<AddWalletFormFieldsProps>(
             <div>
               {isWalletConnected ? (
                 <div
-                  class={`bg-transparent-10 my-4 flex h-12 w-full items-center justify-center rounded border border-[#24A148] bg-[#24A148] bg-transparent p-3 text-[#24A148]`}
+                  class={`bg-transparent-10 mb-4 mt-2 flex h-12 w-full items-center justify-center rounded border border-[#24A148] bg-[#24A148] bg-transparent p-3 text-[#24A148]`}
                 >
                   wallet address
                   {/* {addWalletFormStore.address.substring(0,6)}... */}
                 </div>
               ) : (
                 <div
-                  class={`bg-transparent-10 my-4 flex h-12 w-full items-center justify-center rounded border border-[#FDD835] bg-[#FDD835] bg-transparent p-3 text-[#FDD835]`}
+                  class={`bg-transparent-10 mb-4 mt-2 flex h-12 w-full items-center justify-center rounded border border-[#FDD835] bg-[#FDD835] bg-transparent p-3 text-[#FDD835]`}
                 >
                   Wallet not connected
                 </div>
               )}
             </div>
           ) : (
-            <div class="mb-5 flex items-center gap-2">
+            <div class="mb-5 flex items-center">
               <Input
                 type="text"
                 name="address"
-                customClass={`
+                customClass={` 
                 ${!isValidAddress(addWalletFormStore.address) ? "border-red-700" : ""}`}
                 value={addWalletFormStore.address}
                 placeholder="Enter wallet address..."
@@ -127,20 +126,23 @@ export default component$<AddWalletFormFieldsProps>(
                   addWalletFormStore.address = target.value;
                 })}
               />
-              {isValidAddress(addWalletFormStore.address) &&
-              !isCheckSum(addWalletFormStore.address) ? (
-                <button
-                  class="border-buttons h-[32px] rounded-3xl px-[8px] text-xs font-normal text-white duration-300 ease-in-out hover:scale-110"
-                  type="button"
-                  onClick$={() => {
-                    addWalletFormStore.address = getAddress(
-                      addWalletFormStore.address,
-                    );
-                  }}
-                >
-                  Convert
-                </button>
-              ) : null}
+
+              <button
+                class="custom-border-1 ml-2 h-[32px] rounded-3xl px-[8px] text-xs font-normal text-white disabled:cursor-default disabled:bg-gray-400"
+                type="button"
+                onClick$={() => {
+                  addWalletFormStore.address = getAddress(
+                    addWalletFormStore.address,
+                  );
+                }}
+                disabled={
+                  addWalletFormStore.address.length === 0 ||
+                  !isValidAddress(addWalletFormStore.address) ||
+                  !isCheckSum(addWalletFormStore.address)
+                }
+              >
+                Convert
+              </button>
             </div>
           )}
         </div>

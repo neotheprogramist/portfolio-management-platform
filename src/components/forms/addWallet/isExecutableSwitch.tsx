@@ -1,4 +1,5 @@
-import { component$ } from "@builder.io/qwik";
+import { $, component$ } from "@builder.io/qwik";
+import { Select } from "~/components/select/select";
 import { type addWalletFormStore } from "~/routes/app/wallets";
 
 export interface AddWalletFormProps {
@@ -6,6 +7,11 @@ export interface AddWalletFormProps {
 }
 
 export default component$<AddWalletFormProps>(({ addWalletFormStore }) => {
+  const handleIsExecutableChange = $((newValue: number) => {
+    addWalletFormStore.isExecutable = newValue;
+    console.log("newValue", newValue);
+    console.log("isExecutable", addWalletFormStore.isExecutable);
+  });
   return (
     <>
       <div class="mb-5">
@@ -38,6 +44,16 @@ export default component$<AddWalletFormProps>(({ addWalletFormStore }) => {
           />
         </div>
       </div>
+      {/* <Select
+        options={[
+          { value: 0, text: "Observable" },
+          { value: 1, text: "Executable" },
+        ]}
+        value={addWalletFormStore.isExecutable}
+        onValueChange={handleIsExecutableChange}
+      /> */}
     </>
   );
 });
+
+
