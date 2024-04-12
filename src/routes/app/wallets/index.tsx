@@ -70,6 +70,7 @@ import { returnWeb3ModalAndClient } from "~/components/wallet-connect";
 import AddWalletFormFields from "~/components/forms/addWallet/addWalletFormFields";
 import CoinsToApprove from "~/components/forms/addWallet/CoinsToApprove";
 import AmountOfCoins from "~/components/forms/addWallet/AmountOfCoins";
+import { Button } from "~/components/blue-button/blue-button";
 // import { PendingAuthorization } from "~/components/PendingAuthorization/PendingAuthorization";
 
 export const useAddWallet = routeAction$(
@@ -281,6 +282,7 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
         allowance.toString(),
         token.decimals,
       );
+      console.log("formatted allowance", formattedAllowance);
       // Certain balance which shall be updated
       const [[balanceToUpdate]]: any = await db.query(
         `SELECT * FROM balance WHERE ->(for_wallet WHERE out = '${wallet.id}') AND ->(for_token WHERE out = '${token.id}');`,
@@ -614,7 +616,8 @@ export default component$(() => {
       addWalletFormStore.coinsToCount = [];
       addWalletFormStore.coinsToApprove = [];
       stepsCounter.value = 1;
-      // temporaryModalStore.config = {} as Config;
+      temporaryModalStore.isConnected = false;
+      temporaryModalStore.config = undefined;
     } catch (err) {
       console.log("[big error]: ", err);
       formMessageProvider.messages.push({
@@ -773,8 +776,21 @@ export default component$(() => {
       </div>
 
       {isAddWalletModalOpen.value && (
-        <Modal isOpen={isAddWalletModalOpen} title="Add Wallet">
-          <Form class="p-6">
+        <Modal
+          isOpen={isAddWalletModalOpen}
+          title="Add Wallet"
+          onClose={$(() => {
+            addWalletFormStore.address = "";
+            addWalletFormStore.name = "";
+            addWalletFormStore.isExecutable = 0;
+            addWalletFormStore.coinsToCount = [];
+            addWalletFormStore.coinsToApprove = [];
+            stepsCounter.value = 1;
+            temporaryModalStore.isConnected = false;
+            temporaryModalStore.config = undefined;
+          })}
+        >
+          <Form class="p-[24px]">
             {stepsCounter.value === 1 ? (
               <>
                 <IsExecutableSwitch addWalletFormStore={addWalletFormStore} />
@@ -792,17 +808,16 @@ export default component$(() => {
               <AmountOfCoins addWalletFormStore={addWalletFormStore} />
             ) : null}
             {addWalletFormStore.isExecutable === 0 ? (
-              <button
-                class="custom-bg-button w-[100%] rounded-3xl text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
+              <Button
+                class="h-[32px] w-full  disabled:scale-100"
                 onClick$={handleAddWallet}
                 type="button"
                 disabled={isExecutableDisabled(addWalletFormStore)}
-              >
-                <p class={"rounded-3xl px-2 py-3"}>Add wallet</p>
-              </button>
+                text="Add wallet"
+              />
             ) : stepsCounter.value === 3 ? (
-              <button
-                class="custom-bg-button w-[100%] rounded-3xl p-[1px] font-normal text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
+              <Button
+                class="h-[32px] w-full  disabled:scale-100"
                 onClick$={handleAddWallet}
                 type="button"
                 disabled={
@@ -810,20 +825,11 @@ export default component$(() => {
                     ? isExecutableDisabled(addWalletFormStore)
                     : isNotExecutableDisabled(addWalletFormStore)
                 }
-              >
-                <p
-                  class={`rounded-3xl px-2 py-3 text-xs ${
-                    addWalletFormStore.isExecutable
-                      ? isExecutableClass(addWalletFormStore)
-                      : isNotExecutableClass(addWalletFormStore)
-                  }`}
-                >
-                  Add wallet
-                </p>
-              </button>
+                text="Add wallet"
+              />
             ) : (
-              <button
-                class="custom-bg-button w-full rounded-3xl p-[1px] py-3 font-normal text-white duration-300 ease-in-out hover:scale-110 disabled:scale-100"
+              <Button
+                class="h-[32px] w-full  disabled:scale-100"
                 onClick$={() => {
                   if (stepsCounter.value === 2) {
                     for (
@@ -843,9 +849,8 @@ export default component$(() => {
                   addWalletFormStore,
                   temporaryModalStore,
                 )}
-              >
-                Proceed
-              </button>
+                text="Proceed"
+              />
             )}
           </Form>
         </Modal>
@@ -962,12 +967,12 @@ const isNotExecutableDisabled = (addWalletFormStore: addWalletFormStore) =>
   !addWalletFormStore.isNameUnique ||
   addWalletFormStore.isNameUniqueLoading;
 
-const isExecutableClass = (addWalletFormStore: addWalletFormStore) =>
-  isExecutableDisabled(addWalletFormStore)
-    ? "bg-modal-button text-gray-400"
-    : "bg-black";
+// const isExecutableClass = (addWalletFormStore: addWalletFormStore) =>
+//   isExecutableDisabled(addWalletFormStore)
+//     ? "bg-modal-button text-gray-400"
+//     : "bg-black";
 
-const isNotExecutableClass = (addWalletFormStore: addWalletFormStore) =>
-  isNotExecutableDisabled(addWalletFormStore)
-    ? "bg-modal-button text-gray-400"
-    : "bg-black";
+// const isNotExecutableClass = (addWalletFormStore: addWalletFormStore) =>
+//   isNotExecutableDisabled(addWalletFormStore)
+//     ? "bg-modal-button text-gray-400"
+//     : "bg-black";
