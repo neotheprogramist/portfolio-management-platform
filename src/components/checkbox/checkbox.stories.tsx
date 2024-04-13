@@ -10,9 +10,10 @@ type Story = StoryObj<CheckBoxProps>;
 export default meta;
 
 export const checkbox: Story = {
-  render: () => <CheckBox />,
+  render: () => <CheckBox
+  name='name'
+  value='1'
+  checked={false}
+  />,
 };
 
-export const input: Story = {
-  render: () => <CheckBox />,
-};
