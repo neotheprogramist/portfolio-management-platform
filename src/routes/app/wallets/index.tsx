@@ -72,7 +72,7 @@ import CoinsToApprove from "~/components/forms/addWallet/CoinsToApprove";
 import AmountOfCoins from "~/components/forms/addWallet/AmountOfCoins";
 import { Button } from "~/components/blue-button/blue-button";
 // import { PendingAuthorization } from "~/components/PendingAuthorization/PendingAuthorization";
-import ImgError from "../../../../public/assets/icons/error.svg";
+import ImgWarningRed from '/public/assets/icons/wallets/warning-red.svg?jsx';
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
@@ -858,27 +858,32 @@ export default component$(() => {
       )}
 
       {isDeleteModalOpen.value && (
-        <Modal isOpen={isDeleteModalOpen} title="">
-          <h1 class="text-center text-xl">
+        <Modal isOpen={isDeleteModalOpen} title="" hasButton={false} customClass="py-8 px-14 w-fit">
+          <div class="flex flex-col items-center gap-4">
+            <ImgWarningRed/>
+            <h1 class="text-center text-xl">
             You are going to permanently delete your wallet!
-          </h1>
-          <ul class="custom-text-50 relative left-[20%] my-8 text-sm">
+            </h1>
+          </div>
+          <div class="flex justify-center my-8">
+          <ul class="custom-text-50 text-sm">
             <li>
-              <span class="pr-2 text-green-500">&#10003;</span>We will stop all
+              <span class="before:inline-block before:w-2 before:h-3 before:border-solid before:border-green-600 before:border-b-2 before:border-r-2 before:rotate-45 before:mr-3"/>We will stop all
               related automation
             </li>
             <li>
-              <span class="pr-2 text-green-500">&#10003;</span>Change all future
+              <span class="before:inline-block before:w-2 before:h-3 before:border-solid before:border-green-600 before:border-b-2 before:border-r-2 before:rotate-45 before:mr-3"/>Change all future
               report processes
             </li>
             <li>
-              <span class="pr-2 text-green-500">&#10003;</span>Stop all alerts
+              <span class="before:inline-block before:w-2 before:h-3 before:border-solid before:border-green-600 before:border-b-2 before:border-r-2 before:rotate-45 before:mr-3"/>Stop all alerts
             </li>
           </ul>
+          </div>
           <div class="grid grid-cols-[49%_49%] gap-2">
-            <butto class=" custom-border-1 h-[48px] rounded-3xl px-2 text-center text-xs text-white duration-300 ease-in-out hover:scale-105">
+            <button class="custom-border-1 h-[48px] rounded-3xl px-2 text-center text-sm text-white duration-300 ease-in-out hover:scale-105">
               Cancel
-            </butto>
+            </button>
             <button
               onClick$={async () => {
                 if (selectedWallet.value && selectedWallet.value.wallet.id) {
@@ -889,7 +894,7 @@ export default component$(() => {
                   isDeleteModalOpen.value = false;
                 }
               }}
-              class=" h-[48px] rounded-3xl bg-red-500 px-2 text-center text-xs text-white duration-300 ease-in-out hover:scale-105"
+              class=" h-[48px] rounded-3xl bg-red-500 px-2 text-center text-sm text-white duration-300 ease-in-out hover:scale-105"
             >
               Yes, let’s do it!
             </button>

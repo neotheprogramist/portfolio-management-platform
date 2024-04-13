@@ -1,16 +1,17 @@
 import { type QRL, type Signal, Slot, component$ } from "@builder.io/qwik";
 import IconClose from "/public/assets/icons/close.svg?jsx";
+import { twMerge } from "tailwind-merge";
 
 interface ModalProps {
   title: string;
   isOpen: Signal<boolean>;
-  myClass?: string;
+  customClass?: string;
   onClose?: QRL<() => void>;
   hasButton?: boolean;
 }
 
 export const Modal = component$<ModalProps>(
-  ({ isOpen, title = "", onClose }) => {
+  ({ isOpen, title = "", onClose, hasButton=true, customClass }) => {
     return (
       <div
         onClick$={() => {
@@ -25,11 +26,11 @@ export const Modal = component$<ModalProps>(
           onClick$={(event) => {
             event.stopPropagation();
           }}
-          class="bg-modal-glass custom-border-1 relative h-fit w-1/3 rounded-xl p-6"
+          class={twMerge("bg-black custom-border-1 relative h-fit w-1/3 rounded-xl p-6 ", customClass)}
         >
-          <div class="mb-8 flex items-center justify-between">
+          {hasButton ? <div class="mb-8 flex items-center justify-between">
             <div class="text-xl font-semibold text-white">{title}</div>
-            <button
+             <button
               class="cursor-pointer"
               onClick$={() => {
                 isOpen.value = !isOpen.value;
@@ -40,7 +41,7 @@ export const Modal = component$<ModalProps>(
             >
               <IconClose />
             </button>
-          </div>
+          </div> : null}
           <Slot />
         </div>
       </div>
