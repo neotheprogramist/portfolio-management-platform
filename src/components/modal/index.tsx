@@ -11,7 +11,7 @@ interface ModalProps {
 }
 
 export const Modal = component$<ModalProps>(
-  ({ isOpen, title = "", onClose, hasButton=true, customClass }) => {
+  ({ isOpen, title = "", onClose, hasButton = true, customClass }) => {
     return (
       <div
         onClick$={() => {
@@ -26,22 +26,27 @@ export const Modal = component$<ModalProps>(
           onClick$={(event) => {
             event.stopPropagation();
           }}
-          class={twMerge("bg-black custom-border-1 relative h-fit w-1/3 rounded-xl p-6 ", customClass)}
+          class={twMerge(
+            "custom-border-1 relative h-fit w-1/3 rounded-xl bg-black p-6 ",
+            customClass,
+          )}
         >
-          {hasButton ? <div class="mb-8 flex items-center justify-between">
-            <div class="text-xl font-semibold text-white">{title}</div>
-             <button
-              class="cursor-pointer"
-              onClick$={() => {
-                isOpen.value = !isOpen.value;
-                if (onClose) {
-                  onClose();
-                }
-              }}
-            >
-              <IconClose />
-            </button>
-          </div> : null}
+          {hasButton ? (
+            <div class="mb-8 flex items-center justify-between">
+              <div class="text-xl font-semibold text-white">{title}</div>
+              <button
+                class="cursor-pointer"
+                onClick$={() => {
+                  isOpen.value = !isOpen.value;
+                  if (onClose) {
+                    onClose();
+                  }
+                }}
+              >
+                <IconClose />
+              </button>
+            </div>
+          ) : null}
           <Slot />
         </div>
       </div>
