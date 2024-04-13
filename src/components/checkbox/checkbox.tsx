@@ -1,11 +1,13 @@
 import { component$ } from "@builder.io/qwik";
 
 export interface CheckBoxProps {
-  // hasText: boolean;
+  hasText?: boolean;
   text?: string;
   description?: string;
   image?: string;
   placeholder?: string;
+  type: string;
+
 }
 
 export const CheckBox = component$<CheckBoxProps>((props) => {
