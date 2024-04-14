@@ -433,7 +433,7 @@ export default component$(() => {
   const addWalletFormStore = useStore<addWalletFormStore>({
     name: "",
     address: "",
-    isExecutable: 1,
+    isExecutable: 0,
     isNameUnique: true,
     isNameUniqueLoading: false,
     coinsToCount: [],
@@ -809,7 +809,7 @@ export default component$(() => {
               <AmountOfCoins addWalletFormStore={addWalletFormStore} />
             ) : null}
             <div class='w-full flex items-center justify-between gap-2'>
-              {(stepsCounter.value > 1 && addWalletFormStore.isExecutable === 0 ) ? <Button
+              {(stepsCounter.value > 1 && addWalletFormStore.isExecutable ) ? <Button
                 class="w-full  disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
                 onClick$={()=> {
                   stepsCounter.value = stepsCounter.value - 1
@@ -818,7 +818,7 @@ export default component$(() => {
                 text="Previous"
               /> :
               null}
-            {addWalletFormStore.isExecutable === 1 ? (
+            {addWalletFormStore.isExecutable === 0 ? (
               <Button
                 class="w-full disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
                 onClick$={handleAddWallet}

@@ -75,7 +75,7 @@ export default component$<AddWalletFormFieldsProps>(
             class="custom-text-50 flex items-center justify-between gap-2 text-xs uppercase"
           >
             Wallet Address
-            {addWalletFormStore.isExecutable ? (
+            {!addWalletFormStore.isExecutable ? (
               <div>
                 {!isValidAddress(addWalletFormStore.address) ? (
                   <span class=" text-xs text-red-500">Invalid address</span>
@@ -97,7 +97,7 @@ export default component$<AddWalletFormFieldsProps>(
             )}
           </label>
 
-          {addWalletFormStore.isExecutable ? (
+          {!addWalletFormStore.isExecutable ? (
             <div class="mb-5 grid grid-cols-[75%_25%] items-center justify-between">
               <Input
                 type="text"
