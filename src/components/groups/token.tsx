@@ -18,14 +18,13 @@ export const Token = component$<TokenProps>((props) => {
   return (
     <>
       <div
-        class="custom-border-b custom-border-b-1 grid items-center text-nowrap py-4 text-sm"
-        style="grid-template-columns: minmax(200px, 400px) minmax(145px, 200px) minmax(200px, 200px) minmax(200px, 300px) repeat(2, minmax(100px, 300px)) minmax(130px, 300px) 40px;"
+        class="custom-border-b-1 grid-cols-[18%_13%_15%_18%_10%_10%_13%_6%] grid items-center text-nowrap py-4 text-sm"
       >
-        <div class="flex h-[40px] items-center gap-[6px]">
-          <div class="custom-border-1 flex items-center justify-center rounded-[8px] p-[8px]">
+        <div class="flex h-10 items-center gap-1">
+          <div class="custom-border-1 flex items-center justify-center rounded-2 p-2">
             {props.icon && <img src={props.icon} width="20" height="20" />}
           </div>
-          <div class="flex h-full items-center gap-[6px] overflow-x-auto">
+          <div class="flex h-full items-center gap-1 overflow-x-auto">
             <p>{props.name}</p>
             <span class="custom-text-50">{props.symbol}</span>
           </div>
@@ -35,7 +34,7 @@ export const Token = component$<TokenProps>((props) => {
         </div>
         <div class="flex h-full items-center overflow-auto">{props.value}</div>
 
-        <div class="flex h-full items-center  gap-4">
+        <div class="flex h-full items-center gap-4">
           <span class="text-customGreen">3,6%</span>
           <IconGraph />
         </div>
@@ -50,7 +49,7 @@ export const Token = component$<TokenProps>((props) => {
           </button>
         </div>
         <button
-          class=" flex h-[28px] w-[28px] items-center justify-center rounded-[8px]"
+          class="flex h-7 w-7 items-center justify-center rounded-2"
           onClick$={props.onClick$}
         >
           <IconDelete />
