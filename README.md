@@ -177,3 +177,13 @@ After that, please add second rich wallet account to your Metamask wallet (ask o
 As next step, you need to install [`SubWallet` extension](https://www.subwallet.app/) in your browser and create new wallet account.
 
 Please select `EVM` network account, turn off all enabled networks and turn on `Sepolia` network.
+
+## Express Server
+
+This app has a minimal [Express server](https://expressjs.com/) implementation. After running a full build, you can preview the build using the command:
+
+```
+npm run serve
+```
+
+Then visit [http://localhost:8080/](http://localhost:8080/)
