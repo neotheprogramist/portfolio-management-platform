@@ -337,7 +337,7 @@ export default component$(() => {
     <>
       <div class="grid grid-rows-[32px_auto] gap-6 px-10 pb-10 pt-8">
         <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2 text text-2xl font-semibold">
+          <div class="text flex items-center gap-2 text-2xl font-semibold">
             <h2>Portfolio Name</h2>
             <IconEdit />
           </div>
@@ -384,16 +384,12 @@ export default component$(() => {
               />
             </div>
             <div class="grid grid-rows-[40px_auto] items-center gap-4 overflow-auto text-left text-sm">
-              <div
-                class="grid items-center grid-cols-[18%_13%_15%_18%_10%_10%_16%_3%] text-xs font-normal custom-text-50"
-              >
+              <div class="custom-text-50 grid grid-cols-[18%_13%_15%_18%_10%_10%_16%_3%] items-center text-xs font-normal">
                 <div class="">TOKEN NAME</div>
                 <div class="">QUANTITY</div>
                 <div class="">VALUE</div>
                 <div class="custom-bg-white custom-border-1 flex h-8 w-fit gap-2 rounded-lg p-[2px] text-center text-white">
-                  <button class="custom-bg-button rounded-2 px-2">
-                    24h
-                  </button>
+                  <button class="custom-bg-button rounded-2 px-2">24h</button>
                   <button class="rounded-2 px-2">3d</button>
                   <button class="rounded-2 px-2">30d</button>
                 </div>

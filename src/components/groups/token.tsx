@@ -17,9 +17,7 @@ export interface TokenProps {
 export const Token = component$<TokenProps>((props) => {
   return (
     <>
-      <div
-        class="custom-border-b-1 grid-cols-[18%_13%_15%_18%_10%_10%_13%_6%] grid items-center text-nowrap py-4 text-sm"
-      >
+      <div class="custom-border-b-1 grid grid-cols-[18%_13%_15%_18%_10%_10%_13%_6%] items-center text-nowrap py-4 text-sm">
         <div class="flex h-10 items-center gap-1">
           <div class="custom-border-1 flex items-center justify-center rounded-2 p-2">
             {props.icon && <img src={props.icon} width="20" height="20" />}

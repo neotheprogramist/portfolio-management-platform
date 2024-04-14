@@ -32,21 +32,21 @@ export const SelectedWalletDetails = component$<SelectedWalletProps>(
               {selectedWallet.value.wallet.name}
             </h1>
             <div class="mt-4 flex gap-2">
-              <span class="flex items-center custom-btn-gradient h-7 px-[1px] rounded-2 text-xs ">
-                <div class="flex items-center bg-black h-[26px] px-3 rounded-2">
+              <span class="custom-btn-gradient flex h-7 items-center rounded-2 px-[1px] text-xs ">
+                <div class="flex h-[26px] items-center rounded-2 bg-black px-3">
                   Executable
                 </div>
               </span>
-              <span class="flex items-center gap-2 px-2 text-xs custom-text-50 custom-border-1 rounded-2">
+              <span class="custom-text-50 custom-border-1 flex items-center gap-2 rounded-2 px-2 text-xs">
                 <IconWallet />
                 {/* {selectedWallet.value.wallet.address} */}
                 0x5B...83db
               </span>
-              <span class="flex items-center gap-2 px-2 text-xs custom-text-50 custom-border-1 rounded-2">
+              <span class="custom-text-50 custom-border-1 flex items-center gap-2 rounded-2 px-2 text-xs">
                 <IconEthereum />
                 {chainIdToNetworkName[selectedWallet.value.wallet.chainId]}
               </span>
-              <span class="flex items-center gap-2 px-2 text-xs text-nowrap text-customBlue border border-customBlue rounded-2">
+              <span class="flex items-center gap-2 text-nowrap rounded-2 border border-customBlue px-2 text-xs text-customBlue">
                 <IconLoading />
                 Loading Tokens 5/10
               </span>
@@ -71,37 +71,37 @@ export const SelectedWalletDetails = component$<SelectedWalletProps>(
           </div>
         </div>
         <div class="grid gap-4">
-        <div class="custom-text-50 grid grid-cols-[22%_12%_15%_22%_20%_4%] items-center gap-2 text-left text-xs uppercase">
-          <div class="">Token name</div>
-          <div class="">Quantity</div>
-          <div class="">Value</div>
-          {/* <div class="">Allowance</div> */}
-          <div class="custom-border-1 flex h-8 w-fit gap-2 rounded-[8px] bg-white bg-opacity-5 p-1 text-white">
-            <button class="custom-bg-button rounded-2 px-2">24h</button>
-            <button class="rounded-2 px-2">3d</button>
-            <button class="rounded-2 px-2">30d</button>
+          <div class="custom-text-50 grid grid-cols-[22%_12%_15%_22%_20%_4%] items-center gap-2 text-left text-xs uppercase">
+            <div class="">Token name</div>
+            <div class="">Quantity</div>
+            <div class="">Value</div>
+            {/* <div class="">Allowance</div> */}
+            <div class="custom-border-1 flex h-8 w-fit gap-2 rounded-[8px] bg-white bg-opacity-5 p-1 text-white">
+              <button class="custom-bg-button rounded-2 px-2">24h</button>
+              <button class="rounded-2 px-2">3d</button>
+              <button class="rounded-2 px-2">30d</button>
+            </div>
+            <div class="">Authorization</div>
+            <div></div>
           </div>
-          <div class="">Authorization</div>
-          <div></div>
-        </div> 
-        <div>
-          {selectedWallet.value.tokens.map((token: any) => {
-            return (
-              <TokenRowWallets
-                key={token.id}
-                allowance={token.allowance}
-                address={token.address}
-                name={token.name}
-                symbol={token.symbol}
-                balance={token.balance}
-                imagePath={token.imagePath}
-                balanceValueUSD={token.balanceValueUSD}
-                isTransferModalOpen={isTransferModalOpen}
-                transferredCoin={transferredCoin}
-              />
-            );
-          })}
-        </div>
+          <div>
+            {selectedWallet.value.tokens.map((token: any) => {
+              return (
+                <TokenRowWallets
+                  key={token.id}
+                  allowance={token.allowance}
+                  address={token.address}
+                  name={token.name}
+                  symbol={token.symbol}
+                  balance={token.balance}
+                  imagePath={token.imagePath}
+                  balanceValueUSD={token.balanceValueUSD}
+                  isTransferModalOpen={isTransferModalOpen}
+                  transferredCoin={transferredCoin}
+                />
+              );
+            })}
+          </div>
         </div>
       </div>
     );

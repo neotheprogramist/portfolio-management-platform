@@ -57,7 +57,7 @@ export const TokenRowWallets = component$<TokenRowWalletsProps>(
               />
             </div>
             <p class="">
-              {name} <span class="pl-1 custom-text-50 text-xs">{symbol}</span>
+              {name} <span class="custom-text-50 pl-1 text-xs">{symbol}</span>
             </p>
           </div>
           <div class="overflow-auto">{balance}</div>

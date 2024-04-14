@@ -19,12 +19,12 @@ export const ObservedWallet = component$<ObservedWalletProps>(
         }}
       >
         <div class="flex items-center gap-3">
-          <div class="custom-border-1 h-6 w-6 flex justify-center items-center rounded-1 bg-white bg-opacity-5">
+          <div class="custom-border-1 flex h-6 w-6 items-center justify-center rounded-1 bg-white bg-opacity-5">
             <IconEthereum />
           </div>
           <div class="">
             <div class="text-sm">{observedWallet.wallet.name}</div>
-            <div class="text-xs custom-text-50">
+            <div class="custom-text-50 text-xs">
               {chainIdToNetworkName[observedWallet.wallet.chainId]}
             </div>
           </div>
