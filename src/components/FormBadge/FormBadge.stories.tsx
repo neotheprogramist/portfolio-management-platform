@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "storybook-framework-qwik";
 import { FormBadge, type FormBadgeProps } from "./FormBadge";
 import { CheckBox } from "../checkbox/checkbox";
 import { Input } from "../input/input";
+import { $ } from "@builder.io/qwik";
 
 const meta: Meta<FormBadgeProps> = {
   component: FormBadge,
@@ -14,7 +15,7 @@ export default meta;
 export const WithCheckbox: Story = {
   render: () => (
     <FormBadge
-      input={<CheckBox value="1" checked={false} name="name" />}
+      input={<CheckBox value="1" checked={false} name="name" onClick={$(()=>{})} />}
       image="/assets/icons/tokens/btc.svg"
       text="Bitcoin"
       description="BTC"

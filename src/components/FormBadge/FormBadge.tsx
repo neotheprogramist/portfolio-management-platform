@@ -7,12 +7,13 @@ export interface FormBadgeProps {
   image?: string;
   placeholder?: string;
   input?: JSXOutput | null;
+  class?: string
 }
 
 export const FormBadge = component$<FormBadgeProps>((props) => {
   return (
-    <div>
-      <div class="flex ">
+    <div class={props.class}>
+      <div class="flex">
         <label
           for="checkBox"
           class="custom-bg-white custom-border-1 inline-flex w-full cursor-pointer  items-center justify-between rounded-lg p-2 pr-4"

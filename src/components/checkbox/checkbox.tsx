@@ -1,9 +1,9 @@
-import { QRL, Signal, component$ } from "@builder.io/qwik";
+import { QRL, component$ } from "@builder.io/qwik";
 import { twMerge } from "tailwind-merge";
 
 export interface CheckBoxProps {
   value: string | number;
-  onClick?: QRL<() => void>;
+  onClick: QRL<() => void>;
   checked: boolean;
   name: string;
   class?: string;
@@ -20,7 +20,7 @@ export const CheckBox = component$<CheckBoxProps>((props) => {
         props.class,
       )}
       value={props.value}
-      onClick$={props.onClick && props.onClick}
+      onClick$={props.onClick}
       checked={props.checked}
     />
   );
