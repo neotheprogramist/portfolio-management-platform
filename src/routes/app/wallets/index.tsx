@@ -808,6 +808,16 @@ export default component$(() => {
             {stepsCounter.value === 3 ? (
               <AmountOfCoins addWalletFormStore={addWalletFormStore} />
             ) : null}
+            <div class='w-full flex items-center justify-between gap-2'>
+              {(stepsCounter.value > 1 && addWalletFormStore.isExecutable === 0 ) ? <Button
+                class="w-full  disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
+                onClick$={()=> {
+                  stepsCounter.value = stepsCounter.value - 1
+                }}
+                type="button"
+                text="Previous"
+              /> :
+              null}
             {addWalletFormStore.isExecutable === 1 ? (
               <Button
                 class="w-full disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
@@ -853,6 +863,7 @@ export default component$(() => {
                 text="Proceed"
               />
             )}
+            </div>
           </Form>
         </Modal>
       )}
