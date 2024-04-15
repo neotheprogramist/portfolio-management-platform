@@ -76,13 +76,13 @@ export const useToggleChart = routeAction$(async (data, requestEvent) => {
   for (const item of chartTimestamps) {
     try {
       const blockDetails = await Moralis.EvmApi.block.getDateToBlock({
-        chain: EvmChain.ETHEREUM,
+        chain: EvmChain.ETHEREUM.hex,
         date: item,
       });
       ethBlocks.push(blockDetails.raw.block);
 
       const sepoliaBlockDetails = await Moralis.EvmApi.block.getDateToBlock({
-        chain: EvmChain.SEPOLIA,
+        chain: EvmChain.SEPOLIA.hex,
         date: item,
       });
       sepBlocks.push(sepoliaBlockDetails.raw.block);
@@ -122,7 +122,7 @@ export const useToggleChart = routeAction$(async (data, requestEvent) => {
         try {
           const tokenBalance =
             await Moralis.EvmApi.token.getWalletTokenBalances({
-              chain: EvmChain.SEPOLIA,
+              chain: EvmChain.SEPOLIA.hex,
               toBlock: sepBlocks[i],
               tokenAddresses: [
                 "0x054E1324CF61fe915cca47C48625C07400F1B587",
@@ -135,7 +135,7 @@ export const useToggleChart = routeAction$(async (data, requestEvent) => {
           for (const balanceEntry of dashboardBalance) {
             const ethTokenAddress = mapTokenAddress(balanceEntry.tokenAddress);
             const tokenPrice = await Moralis.EvmApi.token.getTokenPrice({
-              chain: EvmChain.ETHEREUM,
+              chain: EvmChain.ETHEREUM.hex,
               toBlock: ethBlocks[i],
               address: ethTokenAddress,
             });
@@ -195,13 +195,13 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
   for (const item of chartTimestamps) {
     try {
       const blockDetails = await Moralis.EvmApi.block.getDateToBlock({
-        chain: EvmChain.ETHEREUM,
+        chain: EvmChain.ETHEREUM.hex,
         date: item,
       });
       ethBlocks.push(blockDetails.raw.block);
 
       const sepoliaBlockDetails = await Moralis.EvmApi.block.getDateToBlock({
-        chain: EvmChain.SEPOLIA,
+        chain: EvmChain.SEPOLIA.hex,
         date: item,
       });
       sepBlocks.push(sepoliaBlockDetails.raw.block);
@@ -241,7 +241,7 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
         try {
           const tokenBalance =
             await Moralis.EvmApi.token.getWalletTokenBalances({
-              chain: EvmChain.SEPOLIA,
+              chain: EvmChain.SEPOLIA.hex,
               toBlock: sepBlocks[i],
               tokenAddresses: [
                 "0x054E1324CF61fe915cca47C48625C07400F1B587",
@@ -254,7 +254,7 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
           for (const balanceEntry of dashboardBalance) {
             const ethTokenAddress = mapTokenAddress(balanceEntry.tokenAddress);
             const tokenPrice = await Moralis.EvmApi.token.getTokenPrice({
-              chain: EvmChain.ETHEREUM,
+              chain: EvmChain.ETHEREUM.hex,
               toBlock: ethBlocks[i],
               include: "percent_change",
               address: ethTokenAddress,

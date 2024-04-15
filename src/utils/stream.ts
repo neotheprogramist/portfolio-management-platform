@@ -112,7 +112,7 @@ export const setupStream = server$(async function () {
     });
   } else {
     newStream = await Moralis.Streams.add({
-      chains: [EvmChain.SEPOLIA],
+      chains: [EvmChain.SEPOLIA.hex],
       description: "Listen for Transfers",
       tag: "transfers",
       includeNativeTxs: true,

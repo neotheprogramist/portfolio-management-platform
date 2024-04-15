@@ -2,7 +2,7 @@ import { type QRL, type Signal, Slot, component$ } from "@builder.io/qwik";
 import IconClose from "/public/assets/icons/close.svg?jsx";
 import { twMerge } from "tailwind-merge";
 
-interface ModalProps {
+export interface ModalProps {
   title: string;
   isOpen: Signal<boolean>;
   customClass?: string;
