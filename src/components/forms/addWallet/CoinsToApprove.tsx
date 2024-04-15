@@ -19,7 +19,7 @@ export default component$<CoinsToApproveProps>(({ addWalletFormStore }) => {
             class="mb-2"
             image={`/assets/icons/tokens/${symbol.toLowerCase()}.svg`}
             description={symbol}
-            //  TODO: Why the checbox component returns "insertBefore" error while it is the same thing.
+            //  TODO: Why the checkbox component returns "insertBefore" error while it is the same thing.
             //  input={<CheckBox
             //   name={symbol}
             //   value={symbol}
