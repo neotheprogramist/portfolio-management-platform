@@ -10,6 +10,7 @@ export interface InputProps {
   onInput?: QRL<(value: any) => void>;
   customClass?: string;
   disabled?: boolean;
+  labelClass?: string;
 }
 
 export const Input = component$<InputProps>(
@@ -22,13 +23,14 @@ export const Input = component$<InputProps>(
     onInput,
     customClass,
     disabled,
+    labelClass,
   }) => {
     return (
-      <div class="mb-2">
+      <div class={twMerge("mb-4", labelClass)}>
         <label class="custom-text-50 text-xs uppercase">{text}</label>
         <input
           class={twMerge(
-            "custom-border-1 mt-2 h-12 w-full cursor-pointer rounded-lg bg-transparent px-4 text-white placeholder:text-white",
+            "custom-border-1 mt-2 flex h-12 w-full cursor-pointer items-center rounded-lg bg-transparent px-4 text-white placeholder:text-white",
             customClass,
           )}
           placeholder={placeholder}

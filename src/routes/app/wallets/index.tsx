@@ -72,6 +72,7 @@ import CoinsToApprove from "~/components/forms/addWallet/CoinsToApprove";
 import AmountOfCoins from "~/components/forms/addWallet/AmountOfCoins";
 import { Button } from "~/components/blue-button/blue-button";
 // import { PendingAuthorization } from "~/components/PendingAuthorization/PendingAuthorization";
+import ImgWarningRed from "/public/assets/icons/wallets/warning-red.svg?jsx";
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
@@ -790,7 +791,7 @@ export default component$(() => {
             temporaryModalStore.config = undefined;
           })}
         >
-          <Form class="p-[24px]">
+          <Form>
             {stepsCounter.value === 1 ? (
               <>
                 <IsExecutableSwitch addWalletFormStore={addWalletFormStore} />
@@ -807,71 +808,118 @@ export default component$(() => {
             {stepsCounter.value === 3 ? (
               <AmountOfCoins addWalletFormStore={addWalletFormStore} />
             ) : null}
-            {addWalletFormStore.isExecutable === 0 ? (
-              <Button
-                class="h-[32px] w-full  disabled:scale-100"
-                onClick$={handleAddWallet}
-                type="button"
-                disabled={isExecutableDisabled(addWalletFormStore)}
-                text="Add wallet"
-              />
-            ) : stepsCounter.value === 3 ? (
-              <Button
-                class="h-[32px] w-full  disabled:scale-100"
-                onClick$={handleAddWallet}
-                type="button"
-                disabled={
-                  addWalletFormStore.isExecutable
-                    ? isExecutableDisabled(addWalletFormStore)
-                    : isNotExecutableDisabled(addWalletFormStore)
-                }
-                text="Add wallet"
-              />
-            ) : (
-              <Button
-                class="h-[32px] w-full  disabled:scale-100"
-                onClick$={() => {
-                  if (stepsCounter.value === 2) {
-                    for (
-                      let i = 0;
-                      i < addWalletFormStore.coinsToCount.length;
-                      i++
-                    ) {
-                      addWalletFormStore.coinsToApprove.push({
-                        symbol: addWalletFormStore.coinsToCount[i],
-                        amount: "0",
-                      });
-                    }
+            <div class="flex w-full items-center justify-between gap-2">
+              {stepsCounter.value > 1 && addWalletFormStore.isExecutable ? (
+                <Button
+                  class="custom-border-1 w-full bg-transparent  disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
+                  onClick$={() => {
+                    stepsCounter.value = stepsCounter.value - 1;
+                  }}
+                  type="button"
+                  text="Back"
+                />
+              ) : null}
+              {addWalletFormStore.isExecutable === 0 ? (
+                <Button
+                  class="w-full disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
+                  onClick$={handleAddWallet}
+                  type="button"
+                  disabled={isExecutableDisabled(addWalletFormStore)}
+                  text="Add Wallet"
+                />
+              ) : stepsCounter.value === 3 ? (
+                <Button
+                  class="w-full  disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
+                  onClick$={handleAddWallet}
+                  type="button"
+                  disabled={
+                    addWalletFormStore.isExecutable
+                      ? isExecutableDisabled(addWalletFormStore)
+                      : isNotExecutableDisabled(addWalletFormStore)
                   }
-                  stepsCounter.value = stepsCounter.value + 1;
-                }}
-                disabled={isProceedDisabled(
-                  addWalletFormStore,
-                  temporaryModalStore,
-                )}
-                text="Proceed"
-              />
-            )}
+                  text="Add wallet"
+                />
+              ) : (
+                <Button
+                  class="w-full disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
+                  onClick$={() => {
+                    if (stepsCounter.value === 2) {
+                      for (
+                        let i = 0;
+                        i < addWalletFormStore.coinsToCount.length;
+                        i++
+                      ) {
+                        addWalletFormStore.coinsToApprove.push({
+                          symbol: addWalletFormStore.coinsToCount[i],
+                          amount: "0",
+                        });
+                      }
+                    }
+                    stepsCounter.value = stepsCounter.value + 1;
+                  }}
+                  disabled={isProceedDisabled(
+                    addWalletFormStore,
+                    temporaryModalStore,
+                  )}
+                  text="Proceed"
+                />
+              )}
+            </div>
           </Form>
         </Modal>
       )}
 
       {isDeleteModalOpen.value && (
-        <Modal isOpen={isDeleteModalOpen} title="Delete Wallet">
-          <button
-            onClick$={async () => {
-              if (selectedWallet.value && selectedWallet.value.wallet.id) {
-                await removeWalletAction.submit({
-                  id: selectedWallet.value.wallet.id,
-                });
-                selectedWallet.value = null;
-                isDeleteModalOpen.value = false;
-              }
-            }}
-            class="absolute bottom-5 right-6 h-[32px] rounded-3xl bg-red-500 px-2 text-center text-xs text-white duration-300 ease-in-out hover:scale-110"
-          >
-            Confirm Delete
-          </button>
+        <Modal
+          isOpen={isDeleteModalOpen}
+          title=""
+          hasButton={false}
+          customClass="py-8 px-14 w-fit"
+        >
+          <div class="flex flex-col items-center gap-4">
+            <ImgWarningRed />
+            <h1 class="text-center text-xl">
+              You are going to permanently delete your wallet!
+            </h1>
+          </div>
+          <div class="my-8 flex justify-center">
+            <ul class="custom-text-50 text-sm">
+              <li>
+                <span class="before:mr-3 before:inline-block before:h-3 before:w-2 before:rotate-45 before:border-b-2 before:border-r-2 before:border-solid before:border-green-600" />
+                We will stop all related automation
+              </li>
+              <li>
+                <span class="before:mr-3 before:inline-block before:h-3 before:w-2 before:rotate-45 before:border-b-2 before:border-r-2 before:border-solid before:border-green-600" />
+                Change all future report processes
+              </li>
+              <li>
+                <span class="before:mr-3 before:inline-block before:h-3 before:w-2 before:rotate-45 before:border-b-2 before:border-r-2 before:border-solid before:border-green-600" />
+                Stop all alerts
+              </li>
+            </ul>
+          </div>
+          <div class="grid grid-cols-[49%_49%] gap-2">
+            <button
+              class="custom-border-1 flex h-[48px] items-center justify-center rounded-3xl px-2 text-center text-xs text-white duration-300 ease-in-out hover:scale-105"
+              onClick$={() => (isDeleteModalOpen.value = false)}
+            >
+              Cancel
+            </button>
+            <button
+              onClick$={async () => {
+                if (selectedWallet.value && selectedWallet.value.wallet.id) {
+                  await removeWalletAction.submit({
+                    id: selectedWallet.value.wallet.id,
+                  });
+                  selectedWallet.value = null;
+                  isDeleteModalOpen.value = false;
+                }
+              }}
+              class=" h-[48px] rounded-3xl bg-red-500 px-2 text-center text-sm text-white duration-300 ease-in-out hover:scale-105"
+            >
+              Yes, let’s do it!
+            </button>
+          </div>
         </Modal>
       )}
 

@@ -22,7 +22,7 @@
     "fmt": "prettier --write .",
     "fmt.check": "prettier --check .",
     "lint": "eslint .",
-    "ngrok": "ngrok http http://localhost:3000",
+    "ngrok": "ngrok http http://localhost:5173",
     "preview": "qwik build preview && vite preview --open",
     "serve": "node server/entry.express",
     "start": "vite --open --mode ssr",

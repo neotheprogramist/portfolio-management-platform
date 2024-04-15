@@ -31,8 +31,8 @@ export default component$<AddWalletFormFieldsProps>(
       <>
         {/* network */}
         <div class="mb-4">
-          <label for="network" class="block pb-1 text-xs text-white">
-            Networker
+          <label for="network" class="custom-text-50 pb-2 text-xs uppercase">
+            Network
           </label>
           <Input
             type="text"
@@ -43,16 +43,18 @@ export default component$<AddWalletFormFieldsProps>(
         </div>
         {/* Name */}
         <div>
-          <label for="name" class="flex gap-2 pb-1 text-xs text-white">
-            Name
-            {!isValidName(addWalletFormStore.name) && (
-              <span class="text-xs text-red-500">Invalid name</span>
-            )}
-            {!addWalletFormStore.isNameUnique && (
-              <span class="text-xs text-red-500">Name already exists</span>
-            )}
-          </label>
+          {!isValidName(addWalletFormStore.name) && (
+            <span class="absolute start-[70px] pt-[1px] text-xs text-red-500">
+              Invalid name
+            </span>
+          )}
+          {!addWalletFormStore.isNameUnique && (
+            <span class="absolute start-[70px] pt-[1px] text-xs text-red-500">
+              Name already exists
+            </span>
+          )}
           <Input
+            text="Wallet Name"
             type="text"
             name="name"
             customClass={` 
@@ -67,22 +69,13 @@ export default component$<AddWalletFormFieldsProps>(
           />
         </div>
         {/* Address */}
-        <div class="flex flex-col">
+        <div>
           <label
             for="address"
-            class="flex items-center justify-between gap-2 pb-1 text-xs text-white"
+            class="custom-text-50 flex items-center justify-between gap-2 text-xs uppercase"
           >
             Wallet Address
-            {addWalletFormStore.isExecutable ? (
-              <div>
-                <button
-                  onClick$={onConnectWalletClick}
-                  class={`mt-2 h-[32px] rounded-3xl border-none ${isWalletConnected ? "" : "bg-blue-500"} px-[16px] text-xs font-semibold text-white duration-300 ease-in-out hover:scale-110`}
-                >
-                  {isWalletConnected ? "Disconnect " : "Connect Wallet"}
-                </button>
-              </div>
-            ) : (
+            {!addWalletFormStore.isExecutable ? (
               <div>
                 {!isValidAddress(addWalletFormStore.address) ? (
                   <span class=" text-xs text-red-500">Invalid address</span>
@@ -92,33 +85,24 @@ export default component$<AddWalletFormFieldsProps>(
                   </span>
                 ) : null}
               </div>
+            ) : (
+              <div>
+                <button
+                  onClick$={onConnectWalletClick}
+                  class={`h-[32px] rounded-3xl border-none ${isWalletConnected ? "" : "bg-blue-500"} px-[16px] text-xs font-semibold text-white duration-300 ease-in-out hover:scale-105`}
+                >
+                  {isWalletConnected ? "Disconnect " : "Connect Wallet"}
+                </button>
+              </div>
             )}
           </label>
 
-          {addWalletFormStore.isExecutable ? (
-            <div>
-              {isWalletConnected ? (
-                <div
-                  class={`bg-transparent-10 mb-4 mt-2 flex h-12 w-full items-center justify-center rounded border border-[#24A148] bg-[#24A148] bg-transparent p-3 text-[#24A148]`}
-                >
-                  wallet address
-                  {/* {addWalletFormStore.address.substring(0,6)}... */}
-                </div>
-              ) : (
-                <div
-                  class={`bg-transparent-10 mb-4 mt-2 flex h-12 w-full items-center justify-center rounded border border-[#FDD835] bg-[#FDD835] bg-transparent p-3 text-[#FDD835]`}
-                >
-                  Wallet not connected
-                </div>
-              )}
-            </div>
-          ) : (
-            <div class="mb-5 flex items-center">
+          {!addWalletFormStore.isExecutable ? (
+            <div class="mb-5 grid grid-cols-[75%_25%] items-center justify-between">
               <Input
                 type="text"
                 name="address"
-                customClass={` 
-                ${!isValidAddress(addWalletFormStore.address) ? "border-red-700" : ""}`}
+                customClass={`${!isValidAddress(addWalletFormStore.address) ? "border-red-700" : ""} mt-4 w-full`}
                 value={addWalletFormStore.address}
                 placeholder="Enter wallet address..."
                 onInput={$((e) => {
@@ -128,7 +112,7 @@ export default component$<AddWalletFormFieldsProps>(
               />
 
               <button
-                class="custom-border-1 ml-2 h-[32px] rounded-3xl px-[8px] text-xs font-normal text-white disabled:cursor-default disabled:bg-gray-400"
+                class="custom-border-1 ml-2 h-[32px] rounded-3xl px-[8px] text-xs font-normal text-white disabled:cursor-default disabled:bg-[#e6e6e6] disabled:text-gray-500"
                 type="button"
                 onClick$={() => {
                   addWalletFormStore.address = getAddress(
@@ -143,6 +127,24 @@ export default component$<AddWalletFormFieldsProps>(
               >
                 Convert
               </button>
+            </div>
+          ) : (
+            <div>
+              {isWalletConnected ? (
+                <div
+                  class={`mb-8 mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-[#24A148] bg-[#24A148] bg-opacity-10 p-3 text-[#24A148]`}
+                >
+                  {addWalletFormStore.address
+                    ? `${addWalletFormStore.address.substring(0, 6)}...`
+                    : "wallet address"}
+                </div>
+              ) : (
+                <div
+                  class={`mb-8 mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-[#FDD835] bg-[#FDD835] bg-opacity-10 p-3 text-[#FDD835]`}
+                >
+                  Wallet not connected
+                </div>
+              )}
             </div>
           )}
         </div>

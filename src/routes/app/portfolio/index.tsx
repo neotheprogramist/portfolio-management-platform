@@ -510,83 +510,84 @@ export default component$(() => {
                           </span>{" "}
                           selected{" "}
                         </p>
-                        <label class="flex h-6 items-center gap-3">
-                          <input
-                            type="checkbox"
-                            class="custom-bg-white custom-border-1 relative h-5 w-5 appearance-none rounded checked:after:absolute checked:after:ms-[0.35rem] checked:after:mt-0.5 checked:after:h-2.5 checked:after:w-1.5 checked:after:rotate-45 checked:after:border-[0.1rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent hover:cursor-pointer focus:after:absolute focus:after:z-[1]"
-                            checked={isSelectAllChecked.wallets}
-                            onClick$={(e) => {
-                              isSelectAllChecked.wallets = true;
-                              const { checked } = e.target as HTMLInputElement;
-                              if (checked) {
-                                observedWalletsWithBalance.value.map(
-                                  (wallet) => {
-                                    if (
-                                      !selectedWallets.wallets.find(
-                                        (item) =>
-                                          item.wallet.id === wallet.wallet.id,
-                                      )
-                                    ) {
-                                      selectedWallets.wallets.push(wallet);
-                                      wallet.balance.map((balance) =>
-                                        isTokenSelected.selection.push({
-                                          balanceId: balance.balanceId,
-                                          status: false,
-                                        }),
-                                      );
-                                    }
+                        <div class="relative">
+                          <label class="flex h-6 items-center gap-3">
+                            <input
+                              type="checkbox"
+                              class="border-gradient custom-border-1 custom-bg-white checked:after:border-bg z-10 h-5 w-5 appearance-none rounded checked:after:absolute checked:after:ms-[0.35rem] checked:after:mt-0.5 checked:after:h-2.5 checked:after:w-1.5 checked:after:rotate-45 checked:after:border-solid hover:cursor-pointer focus:after:absolute focus:after:z-[1]"
+                              checked={isSelectAllChecked.wallets}
+                              onClick$={(e) => {
+                                isSelectAllChecked.wallets = true;
+                                const { checked } =
+                                  e.target as HTMLInputElement;
+                                if (checked) {
+                                  observedWalletsWithBalance.value.map(
+                                    (wallet) => {
+                                      if (
+                                        !selectedWallets.wallets.find(
+                                          (item) =>
+                                            item.wallet.id === wallet.wallet.id,
+                                        )
+                                      ) {
+                                        selectedWallets.wallets.push(wallet);
+                                        wallet.balance.map((balance) =>
+                                          isTokenSelected.selection.push({
+                                            balanceId: balance.balanceId,
+                                            status: false,
+                                          }),
+                                        );
+                                      }
 
-                                    const selectedIndex =
-                                      isWalletSelected.selection.findIndex(
-                                        (item) =>
-                                          item.walletId === wallet.wallet.id,
-                                      );
+                                      const selectedIndex =
+                                        isWalletSelected.selection.findIndex(
+                                          (item) =>
+                                            item.walletId === wallet.wallet.id,
+                                        );
 
-                                    if (selectedIndex === -1) {
-                                      isWalletSelected.selection.push({
-                                        walletId: wallet.wallet.id,
-                                        status: true,
-                                      });
-                                    } else {
-                                      isWalletSelected.selection[
-                                        selectedIndex
-                                      ].status = true;
-                                    }
-                                  },
-                                );
-                              } else {
-                                isSelectAllChecked.wallets = false;
-                                isSelectAllChecked.tokens = false;
-                                isWalletSelected.selection = [];
-                                selectedWallets.wallets = [];
-                                isTokenSelected.selection.map(
-                                  (balance) => (balance.status = false),
-                                );
-                                selectedTokens.balances = [];
-                              }
-                            }}
-                          />
-                          <span class="custom-text-50 text-xs uppercase">
-                            select all
-                          </span>
-                        </label>
+                                      if (selectedIndex === -1) {
+                                        isWalletSelected.selection.push({
+                                          walletId: wallet.wallet.id,
+                                          status: true,
+                                        });
+                                      } else {
+                                        isWalletSelected.selection[
+                                          selectedIndex
+                                        ].status = true;
+                                      }
+                                    },
+                                  );
+                                } else {
+                                  isSelectAllChecked.wallets = false;
+                                  isSelectAllChecked.tokens = false;
+                                  isWalletSelected.selection = [];
+                                  selectedWallets.wallets = [];
+                                  isTokenSelected.selection.map(
+                                    (balance) => (balance.status = false),
+                                  );
+                                  selectedTokens.balances = [];
+                                }
+                              }}
+                            />
+                            <span class="custom-text-50 text-xs uppercase">
+                              select all
+                            </span>
+                          </label>
+                        </div>
                       </div>
                       {/* div strikte z opcjami */}
                       <div class="flex max-h-[180px] w-[98%] flex-col gap-2 overflow-auto">
                         {observedWalletsWithBalance.value.map((option) => (
-                          <label
-                            class="custom-border-1 custom-bg-white inline-flex min-h-9 cursor-pointer items-center space-x-2 rounded-lg p-2"
-                            key={option.wallet.id}
-                          >
+                          <div class="relative min-h-9" key={option.wallet.id}>
                             <input
                               type="checkbox"
                               name="walletsId[]"
+                              id={option.wallet.id}
                               checked={isWalletSelected.selection.some(
                                 (item) =>
                                   option.wallet.id === item.walletId &&
                                   item.status,
                               )}
-                              class="custom-bg-white custom-border-1 relative h-5 w-5 appearance-none rounded checked:after:absolute checked:after:ms-[0.35rem] checked:after:mt-0.5 checked:after:h-2.5 checked:after:w-1.5 checked:after:rotate-45 checked:after:border-[0.1rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent hover:cursor-pointer focus:after:absolute focus:after:z-[1]"
+                              class="border-gradient custom-border-1 custom-bg-white checked:after:border-bg absolute start-2 top-2 z-10 h-5 w-5 appearance-none rounded checked:after:absolute checked:after:ms-[0.35rem] checked:after:mt-0.5 checked:after:h-2.5 checked:after:w-1.5 checked:after:rotate-45 checked:after:border-solid hover:cursor-pointer focus:after:absolute focus:after:z-[1]"
                               value={option.wallet.id}
                               onClick$={(e) => {
                                 handleCheckboxChange(
@@ -624,8 +625,15 @@ export default component$(() => {
                                 }
                               }}
                             />
-                            <span>{option.wallet.name}</span>
-                          </label>
+                            <label
+                              for={option.wallet.id}
+                              class="custom-bg-white custom-border-1 absolute inline-flex min-h-9 w-full cursor-pointer items-center space-x-2 rounded-lg"
+                            >
+                              <span class="absolute start-9">
+                                {option.wallet.name}
+                              </span>
+                            </label>
+                          </div>
                         ))}
                       </div>
                     </div>
@@ -681,61 +689,65 @@ export default component$(() => {
                           </span>{" "}
                           selected{" "}
                         </p>
-                        <label class="flex h-6 items-center gap-3">
-                          <input
-                            type="checkbox"
-                            checked={isSelectAllChecked.tokens}
-                            class="custom-bg-white custom-border-1 relative h-5 w-5 appearance-none rounded checked:after:absolute checked:after:ms-[0.35rem] checked:after:mt-0.5 checked:after:h-2.5 checked:after:w-1.5 checked:after:rotate-45 checked:after:border-[0.1rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent hover:cursor-pointer focus:after:absolute focus:after:z-[1]"
-                            onClick$={(e) => {
-                              isSelectAllChecked.tokens = true;
+                        <div class="">
+                          <label class="flex h-6 items-center gap-3">
+                            <input
+                              type="checkbox"
+                              checked={isSelectAllChecked.tokens}
+                              class="border-gradient custom-border-1 custom-bg-white checked:after:border-bg  z-10 h-5 w-5 appearance-none rounded checked:after:absolute checked:after:ms-[0.35rem] checked:after:mt-0.5 checked:after:h-2.5 checked:after:w-1.5 checked:after:rotate-45 checked:after:border-solid hover:cursor-pointer focus:after:absolute focus:after:z-[1]"
+                              onClick$={(e) => {
+                                isSelectAllChecked.tokens = true;
 
-                              const { checked } = e.target as HTMLInputElement;
+                                const { checked } =
+                                  e.target as HTMLInputElement;
 
-                              if (checked) {
-                                selectedWallets.wallets.map((wallet) => {
-                                  wallet.balance.map((balance: any) => {
-                                    if (
-                                      !selectedTokens.balances.find(
-                                        (balanceId) =>
-                                          balanceId === balance.balanceId,
-                                      )
-                                    ) {
-                                      selectedTokens.balances.push(
-                                        balance.balanceId,
-                                      );
-                                    }
+                                if (checked) {
+                                  selectedWallets.wallets.map((wallet) => {
+                                    wallet.balance.map((balance: any) => {
+                                      if (
+                                        !selectedTokens.balances.find(
+                                          (balanceId) =>
+                                            balanceId === balance.balanceId,
+                                        )
+                                      ) {
+                                        selectedTokens.balances.push(
+                                          balance.balanceId,
+                                        );
+                                      }
 
-                                    const selectedIndex =
-                                      isTokenSelected.selection.findIndex(
-                                        (item) =>
-                                          item.balanceId === balance.balanceId,
-                                      );
+                                      const selectedIndex =
+                                        isTokenSelected.selection.findIndex(
+                                          (item) =>
+                                            item.balanceId ===
+                                            balance.balanceId,
+                                        );
 
-                                    if (selectedIndex === -1) {
-                                      isTokenSelected.selection.push({
-                                        balanceId: wallet.balanceId,
-                                        status: true,
-                                      });
-                                    } else {
-                                      isTokenSelected.selection[
-                                        selectedIndex
-                                      ].status = true;
-                                    }
+                                      if (selectedIndex === -1) {
+                                        isTokenSelected.selection.push({
+                                          balanceId: wallet.balanceId,
+                                          status: true,
+                                        });
+                                      } else {
+                                        isTokenSelected.selection[
+                                          selectedIndex
+                                        ].status = true;
+                                      }
+                                    });
                                   });
-                                });
-                              } else {
-                                isSelectAllChecked.tokens = false;
-                                isTokenSelected.selection.map(
-                                  (balance) => (balance.status = false),
-                                );
-                                selectedTokens.balances = [];
-                              }
-                            }}
-                          />
-                          <span class="custom-text-50 text-xs uppercase">
-                            select all
-                          </span>
-                        </label>
+                                } else {
+                                  isSelectAllChecked.tokens = false;
+                                  isTokenSelected.selection.map(
+                                    (balance) => (balance.status = false),
+                                  );
+                                  selectedTokens.balances = [];
+                                }
+                              }}
+                            />
+                            <span class="custom-text-50 text-xs uppercase">
+                              select all
+                            </span>
+                          </label>
+                        </div>
                       </div>
                       {/* div strikte z opcjami */}
                       <div class="flex max-h-[180px] w-[98%] flex-col gap-2 overflow-auto">
@@ -831,15 +843,13 @@ function parseWalletsToOptions(
     item.balance.forEach((balance) => {
       totalBalances += 1;
       options.push(
-        <label
-          class="custom-border-1 custom-bg-white inline-flex min-h-9 items-center space-x-2 rounded-lg p-2"
-          key={`${balance.balanceId} - ${balance.tokenId}`}
-        >
+        <div class="relative min-h-9">
           <input
             key={balance.balanceId}
+            id={balance.balanceId}
             type="checkbox"
             name="balancesId[]"
-            class="custom-bg-white custom-border-1 relative h-5 w-5 appearance-none rounded checked:after:absolute checked:after:ms-[0.35rem] checked:after:mt-0.5 checked:after:h-2.5 checked:after:w-1.5 checked:after:rotate-45 checked:after:border-[0.1rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent hover:cursor-pointer focus:after:absolute focus:after:z-[1]"
+            class="border-gradient custom-border-1 custom-bg-white checked:after:border-bg absolute start-2 top-2 z-10 h-5 w-5 appearance-none rounded checked:after:absolute checked:after:ms-[0.35rem] checked:after:mt-0.5 checked:after:h-2.5 checked:after:w-1.5 checked:after:rotate-45 checked:after:border-solid hover:cursor-pointer focus:after:absolute focus:after:z-[1]"
             value={balance.balanceId}
             checked={isTokenSelected.selection.some(
               (item) => balance.balanceId === item.balanceId && item.status,
@@ -859,8 +869,14 @@ function parseWalletsToOptions(
               }
             }}
           />
-          <span>{`${balance.tokenSymbol} - ${item.wallet.name}`}</span>
-        </label>,
+          <label
+            for={balance.balanceId}
+            class="custom-bg-white custom-border-1 absolute inline-flex min-h-9 w-full cursor-pointer items-center space-x-2 rounded-lg"
+            key={`${balance.balanceId} - ${balance.tokenId}`}
+          >
+            <span class="absolute start-9">{`${balance.tokenSymbol} - ${item.wallet.name}`}</span>
+          </label>
+        </div>,
       );
     });
   });
