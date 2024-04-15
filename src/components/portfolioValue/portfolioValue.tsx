@@ -138,7 +138,7 @@ export const PortfolioValue = component$<PortfolioValueProps>(
     });
     return (
       <div
-        class={`custom-border-1 custom-shadow grid gap-4 rounded-4 p-6 ${!isPortfolioFullScreen.value ? " grid-rows-[52px_32px_1fr]" : "m-10 grid-rows-[52px_32px_1fr_110px]"}`}
+        class={`custom-border-1 custom-shadow grid gap-4 rounded-2xl p-6 ${!isPortfolioFullScreen.value ? " grid-rows-[52px_32px_1fr]" : "m-10 grid-rows-[52px_32px_1fr_110px]"}`}
       >
         <div class="custom-border-b-1 flex items-center justify-between pb-4">
           <h1 class="text-xl font-semibold">Portfolio Value</h1>
@@ -158,13 +158,13 @@ export const PortfolioValue = component$<PortfolioValueProps>(
         <div class="flex items-center justify-between text-xs">
           <div class="flex items-center gap-2">
             <h3 class="custom-text-50 uppercase">Value over time</h3>
-            <div class="custom-bg-white custom-border-1 flex h-8 gap-2 rounded-2 p-1">
+            <div class="custom-bg-white custom-border-1 flex h-8 gap-2 rounded-lg p-1">
               <button
                 name="24h"
                 class={
                   selectedPeriod["24h"]
-                    ? "custom-bg-button rounded-2 px-2"
-                    : "rounded-2 px-2"
+                    ? "custom-bg-button rounded-lg px-2"
+                    : "rounded-lg px-2"
                 }
                 onClick$={onClick$}
               >
@@ -174,8 +174,8 @@ export const PortfolioValue = component$<PortfolioValueProps>(
                 name="1W"
                 class={
                   selectedPeriod["1W"]
-                    ? "custom-bg-button rounded-2 px-2"
-                    : "rounded-2 px-2"
+                    ? "custom-bg-button rounded-lg px-2"
+                    : "rounded-lg px-2"
                 }
                 onClick$={onClick$}
               >
@@ -185,8 +185,8 @@ export const PortfolioValue = component$<PortfolioValueProps>(
                 name="1M"
                 class={
                   selectedPeriod["1M"]
-                    ? "custom-bg-button rounded-2 px-2"
-                    : "rounded-2 px-2"
+                    ? "custom-bg-button rounded-lg px-2"
+                    : "rounded-lg px-2"
                 }
                 onClick$={onClick$}
               >
@@ -196,8 +196,8 @@ export const PortfolioValue = component$<PortfolioValueProps>(
                 name="1Y"
                 class={
                   selectedPeriod["1Y"]
-                    ? "custom-bg-button rounded-2 px-2"
-                    : "rounded-2 px-2"
+                    ? "custom-bg-button rounded-lg px-2"
+                    : "rounded-lg px-2"
                 }
                 onClick$={onClick$}
               >
@@ -208,12 +208,12 @@ export const PortfolioValue = component$<PortfolioValueProps>(
 
           <div class="flex items-center gap-2">
             <h2 class="custom-text-50 uppercase lg:hidden">Portfolio</h2>
-            <button class="custom-border-1 flex h-8 items-center gap-2 rounded-2 bg-white bg-opacity-5 px-2">
+            <button class="custom-border-1 flex h-8 items-center gap-2 rounded-lg bg-white bg-opacity-5 px-2">
               <p>All</p>
               <IconArrowDown />
             </button>
             <button
-              class="custom-border-1 h-8 items-center rounded-2 bg-white bg-opacity-5 px-2 duration-300 ease-in-out hover:scale-110"
+              class="custom-border-1 h-8 items-center rounded-lg bg-white bg-opacity-5 px-2 duration-300 ease-in-out hover:scale-110"
               onClick$={() => {
                 isPortfolioFullScreen.value = !isPortfolioFullScreen.value;
                 console.log(isPortfolioFullScreen.value);

@@ -397,7 +397,7 @@ export default component$(() => {
                 <div class="">QUANTITY</div>
                 <div class="">VALUE</div>
                 <div class="custom-bg-white custom-border-1 flex h-[32px] w-fit gap-[8px] rounded-lg p-[2px] text-center text-white">
-                  <button class="custom-bg-button rounded-[8px] px-[8px]">
+                  <button class="custom-bg-button rounded-lg px-2">
                     24h
                   </button>
                   <button class="px-[8px]">3d</button>

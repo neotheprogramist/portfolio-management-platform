@@ -727,7 +727,7 @@ export default component$(() => {
         <div class="row-span-1 row-start-1 mb-[24px] flex items-center justify-between gap-[10px] text-white">
           <h1 class="text-xl">Wallets</h1>
           <button
-            class="custom-border-2 h-[32px] cursor-pointer rounded-[40px] px-4 text-xs font-semibold leading-none text-white duration-300 ease-in-out hover:scale-110 lg:text-[10px]"
+            class="custom-border-2 h-[32px] cursor-pointer rounded-10 px-4 text-xs font-semibold leading-none text-white duration-300 ease-in-out hover:scale-110 lg:text-[10px]"
             onClick$={() => {
               isAddWalletModalOpen.value = !isAddWalletModalOpen.value;
             }}
@@ -762,7 +762,7 @@ export default component$(() => {
 
       <div class="grid gap-6">
         {/* <PendingAuthorization/> */}
-        <div class="custom-border-1 flex flex-col gap-6 overflow-auto rounded-[20px] p-6">
+        <div class="custom-border-1 flex flex-col gap-6 overflow-auto rounded-3xl p-6">
           {selectedWallet.value && (
             <SelectedWalletDetails
               key={selectedWallet.value.wallet.address}

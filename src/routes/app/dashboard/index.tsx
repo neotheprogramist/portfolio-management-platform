@@ -545,7 +545,7 @@ export default component$(() => {
           }}
         />
 
-        <div class="custom-border-1 custom-shadow grid min-w-max grid-rows-[32px_1fr] gap-4 rounded-4 p-6">
+        <div class="custom-border-1 custom-shadow grid min-w-max grid-rows-[32px_1fr] gap-4 rounded-2xl p-6">
           <div class="flex items-center justify-between gap-2">
             <h1 class="text-xl font-semibold">Alerts</h1>
             <button class="custom-border-2 rounded-10 px-4 py-2 text-xs font-medium duration-300 ease-in-out hover:scale-110">
@@ -568,7 +568,7 @@ export default component$(() => {
           </div>
         </div>
 
-        <div class="custom-border-1 custom-shadow grid min-w-max grid-rows-[32px_1fr] gap-4 rounded-4 p-6">
+        <div class="custom-border-1 custom-shadow grid min-w-max grid-rows-[32px_1fr] gap-4 rounded-2xl p-6">
           <div class="flex items-center justify-between gap-2">
             <h1 class="text-xl font-semibold">Actions</h1>
             <button class="custom-border-2 rounded-10 px-4 py-2 text-xs font-medium duration-300 ease-in-out hover:scale-110">
@@ -595,7 +595,7 @@ export default component$(() => {
         </div>
       </div>
 
-      <div class="custom-border-1 grid grid-rows-[32px_1fr] gap-6 rounded-4 p-6">
+      <div class="custom-border-1 grid grid-rows-[32px_1fr] gap-6 rounded-2xl p-6">
         <div class="flex items-center justify-between">
           <h1 class="text-xl font-semibold">Favourite Tokens</h1>
           <button
@@ -613,10 +613,10 @@ export default component$(() => {
             <div class="">Token name</div>
             <div class="">Quantity</div>
             <div class="">Value</div>
-            <div class="custom-border-1 flex h-8 w-fit gap-2 rounded-2 bg-white bg-opacity-5 p-1 text-white">
-              <button class="custom-bg-button rounded-2 px-2">24h</button>
-              <button class="rounded-2 px-2">3d</button>
-              <button class="rounded-2 px-2">30d</button>
+            <div class="custom-border-1 flex h-8 w-fit gap-2 rounded-lg bg-white bg-opacity-5 p-1 text-white">
+              <button class="custom-bg-button rounded-lg px-2">24h</button>
+              <button class="rounded-lg px-2">3d</button>
+              <button class="rounded-lg px-2">30d</button>
             </div>
             <div class="">Wallet</div>
             <div class="">Network</div>
