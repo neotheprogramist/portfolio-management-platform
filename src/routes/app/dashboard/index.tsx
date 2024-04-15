@@ -609,7 +609,7 @@ export default component$(() => {
         </div>
 
         <div class="grid grid-rows-[32px_auto] gap-4">
-          <div class="custom-text-50 grid grid-cols-[20%_10%_15%_20%_10%_10%_10%_5%] items-center gap-2 text-xs font-normal uppercase">
+          <div class="custom-text-50 grid grid-cols-[18%_10%_15%_18%_10%_10%_12%_8%] items-center gap-2 text-xs font-normal uppercase">
             <div class="">Token name</div>
             <div class="">Quantity</div>
             <div class="">Value</div>
