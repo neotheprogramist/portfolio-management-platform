@@ -791,7 +791,7 @@ export default component$(() => {
             temporaryModalStore.config = undefined;
           })}
         >
-          <Form class="p-6">
+          <Form>
             {stepsCounter.value === 1 ? (
               <>
                 <IsExecutableSwitch addWalletFormStore={addWalletFormStore} />
