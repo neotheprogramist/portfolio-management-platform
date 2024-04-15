@@ -3,38 +3,29 @@ import type WebSocketStrategy from "surrealdb.js";
 import { checksumAddress } from "viem";
 import { connectToDB } from "~/utils/db";
 
-export const onPost: RequestHandler = async ({ request, json, env }) => {
-  try {
-    const db = await connectToDB(env);
-    const webhook = await request.json();
-    console.log("WHOLE WEBHOOK:", webhook);
-    const transfers = webhook["erc20Transfers"];
-    if (transfers) {
-      for (const transfer of transfers) {
-        const { from, to, tokenSymbol, triggers } = transfer;
-        // console.log("========================");
-        // console.log("from", from);
-        // console.log("to", to);
-        // console.log("tokenSymbol", tokenSymbol);
-        // console.log("========================");
-        // console.log("ALL TRIGGERS", triggers);
-        // console.log("========================")
-        for (const trigger of triggers) {
-          // console.log("trigger", trigger);
-          if (trigger.name === "fromBalance") {
-            await updateBalanceIfExists(db, from, tokenSymbol, trigger.value);
-          } else {
-            await updateBalanceIfExists(db, to, tokenSymbol, trigger.value);
-          }
+export const onPost: RequestHandler = async ({
+  request,
+  env,
+  json,
+}) => {
+  // json(200, { message: "Hello from webhook!" });
+  const db = await connectToDB(env);
+  const webhook = await request.json();
+  console.log("WHOLE WEBHOOK:", webhook);
+  const transfers = webhook["erc20Transfers"];
+  if (transfers) {
+    for (const transfer of transfers) {
+      const { from, to, tokenSymbol, triggers } = transfer;
+      for (const trigger of triggers) {
+        if (trigger.name === "fromBalance") {
+          await updateBalanceIfExists(db, from, tokenSymbol, trigger.value);
+        } else {
+          await updateBalanceIfExists(db, to, tokenSymbol, trigger.value);
         }
       }
     }
-
-    json(200, { message: "Success" });
-  } catch (error) {
-    console.error(error);
-    json(500, { message: "Internal Server Error - erc20 transfers failed" });
   }
+  json(200, {});
 };
 
 const updateBalanceIfExists = server$(async function (
