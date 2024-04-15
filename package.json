@@ -38,9 +38,6 @@
   "devDependencies": {
     "@builder.io/qwik": "1.5.1",
     "@builder.io/qwik-city": "1.5.1",
-    "@dnlup/fastify-traps": "3.0.2",
-    "@fastify/compress": "7.0.0",
-    "@fastify/static": "7.0.1",
     "@playwright/test": "1.42.1",
     "@storybook/addon-essentials": "7.6.17",
     "@storybook/addon-links": "7.6.17",
@@ -62,8 +59,6 @@
     "eslint": "8.57.0",
     "eslint-plugin-qwik": "1.5.1",
     "express": "4.18.2",
-    "fastify": "4.26.2",
-    "fastify-plugin": "4.5.1",
     "postcss": "8.4.35",
     "prettier": "3.2.5",
     "prettier-plugin-tailwindcss": "0.5.12",
