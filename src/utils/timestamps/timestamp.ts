@@ -50,3 +50,11 @@ export function getSelectedPeriodInHours(dataPeriod: PeriodState) {
     interval: 0,
   };
 }
+
+export function getSelectedPeriodKey(dataPeriod: PeriodState) {
+  for (const key in dataPeriod) {
+    if (dataPeriod[key])
+      return key
+  }
+  return ""
+}

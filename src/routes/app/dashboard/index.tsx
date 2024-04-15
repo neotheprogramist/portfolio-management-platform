@@ -19,7 +19,8 @@ import { checksumAddress } from "viem";
 import { type Wallet } from "~/interface/auth/Wallet";
 import {
   convertWeiToQuantity,
-  getTotalValueChange,
+  getPercentageOfTotalValueChange,
+  getProperTotalValueChange,
 } from "~/utils/formatBalances/formatTokenBalance";
 import { chainIdToNetworkName } from "~/utils/chains";
 import { type Balance, type PeriodState } from "~/interface/balance/Balance";
@@ -30,6 +31,7 @@ import Moralis from "moralis";
 import {
   generateTimestamps,
   getSelectedPeriodInHours,
+  getSelectedPeriodKey,
 } from "~/utils/timestamps/timestamp";
 import { EvmChain } from "@moralisweb3/common-evm-utils";
 
@@ -68,11 +70,12 @@ export const useToggleChart = routeAction$(async (data, requestEvent) => {
   const dashboardBalance: { tokenAddress: string; balance: string }[] = [];
   const ethBlocks = [];
   const sepBlocks = [];
-  const chartData = [];
   const chartTimestamps = generateTimestamps(
     selectedPeriod.period,
     selectedPeriod.interval,
   );
+  const chartData: number[] = new Array(chartTimestamps.length).fill(0);
+
   for (const item of chartTimestamps) {
     try {
       const blockDetails = await Moralis.EvmApi.block.getDateToBlock({
@@ -145,11 +148,11 @@ export const useToggleChart = routeAction$(async (data, requestEvent) => {
               .reduce((sum, currentItem) => {
                 return (
                   sum +
-                  parseFloat(currentItem.balance) * tokenPrice.raw.usdPrice
+                  parseFloat(convertWeiToQuantity(currentItem.balance, currentItem.decimals)) * tokenPrice.raw.usdPrice
                 );
               }, 0);
           }
-          chartData.push(partBalance);
+          chartData[i] += partBalance;
         } catch (error) {
           console.error(error);
         }
@@ -159,13 +162,29 @@ export const useToggleChart = routeAction$(async (data, requestEvent) => {
     }
   }
 
+  let totalValueChange = 0
+
+  if (chartData.length >= 2) {
+    totalValueChange = getProperTotalValueChange(chartData[0], chartData[chartData.length - 1])
+  }
+
+  let percentageOfTotalValueChange = 0
+
+  if (chartData.length >= 2) {
+    percentageOfTotalValueChange = getPercentageOfTotalValueChange(chartData[0], totalValueChange)
+  }
+
   return {
+    percentageOfTotalValueChange: percentageOfTotalValueChange.toFixed(2) + "%",
+    totalValueChange: totalValueChange.toFixed(2),
+    period: getSelectedPeriodKey(data as PeriodState),
     chartData: chartData.map((value, index) => [
       index,
       parseFloat(value.toFixed(2)),
     ]) as [number, number][],
   };
 });
+
 export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
   const db = await connectToDB(requestEvent.env);
 
@@ -181,16 +200,11 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
   if (!result) throw new Error("No observed wallets");
 
   const observedWalletsQueryResult = result[0];
-
   const dashboardBalance: { tokenAddress: string; balance: string }[] = [];
-  const valueChange: { valueChangeUSD: string; percentageChange: string }[] =
-    [];
-  let totalBalance = 0;
-
   const ethBlocks = [];
   const sepBlocks = [];
-  const chartData = [];
   const chartTimestamps = generateTimestamps(24, 4);
+  const chartData: number[] = new Array(chartTimestamps.length).fill(0);
 
   for (const item of chartTimestamps) {
     try {
@@ -209,7 +223,6 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
       console.error(error);
     }
   }
-
   for (const observedWallet of observedWalletsQueryResult) {
     const [wallet] = await db.select<Wallet>(`${observedWallet}`);
 
@@ -235,7 +248,7 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
         });
       }
     }
-
+    
     try {
       for (let i = 0; i < chartTimestamps.length; i++) {
         try {
@@ -250,46 +263,26 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
               ],
               address: wallet.address,
             });
+
           let partBalance: number = 0;
           for (const balanceEntry of dashboardBalance) {
             const ethTokenAddress = mapTokenAddress(balanceEntry.tokenAddress);
             const tokenPrice = await Moralis.EvmApi.token.getTokenPrice({
               chain: EvmChain.ETHEREUM.hex,
               toBlock: ethBlocks[i],
-              include: "percent_change",
               address: ethTokenAddress,
             });
-            console.log("Token Price", tokenPrice);
 
             partBalance += tokenBalance.raw
               .filter((item) => item.symbol === tokenPrice.raw.tokenSymbol)
               .reduce((sum, currentItem) => {
                 return (
                   sum +
-                  parseFloat(currentItem.balance) * tokenPrice.raw.usdPrice
+                  parseFloat(convertWeiToQuantity(currentItem.balance, currentItem.decimals)) * tokenPrice.raw.usdPrice
                 );
               }, 0);
-
-            if (
-              tokenPrice.raw["24hrPercentChange"] &&
-              tokenPrice.raw.usdPrice
-            ) {
-              valueChange.push({
-                valueChangeUSD: (
-                  parseFloat(tokenPrice.raw["24hrPercentChange"]) *
-                  parseInt(balanceEntry.balance) *
-                  0.01
-                ).toFixed(2),
-                percentageChange:
-                  (parseFloat(tokenPrice.raw["24hrPercentChange"]).toFixed(
-                    2,
-                  ) as string) + "%",
-              });
-              totalBalance +=
-                parseFloat(balanceEntry.balance) * tokenPrice.raw.usdPrice;
-            }
           }
-          chartData.push(partBalance);
+          chartData[i] += partBalance;
         } catch (error) {
           console.error(error);
         }
@@ -297,18 +290,24 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
     } catch (error) {
       console.log(error);
     }
-    const totalValueChange = getTotalValueChange(valueChange);
-
-    return {
-      valueChange: totalValueChange.toFixed(2),
-      percentageChange:
-        ((100 * totalValueChange) / totalBalance).toFixed(2) + "%",
-      chartData: chartData.map((value, index) => [
-        index,
-        parseFloat(value.toFixed(2)),
-      ]) as [number, number][],
-    };
   }
+  let totalValueChange = 0
+
+  totalValueChange = getProperTotalValueChange(chartData[0], chartData[chartData.length - 1])
+
+  let percentageOfTotalValueChange = 0
+
+  percentageOfTotalValueChange = getPercentageOfTotalValueChange(chartData[0], totalValueChange)
+
+  return {
+    percentageOfTotalValueChange: percentageOfTotalValueChange.toFixed(2) + "%",
+    totalValueChange: totalValueChange.toFixed(2),
+    period: "24h",
+    chartData: chartData.map((value, index) => [
+      index,
+      parseFloat(value.toFixed(2)),
+    ]) as [number, number][],
+  };
 });
 
 export const useTotalPortfolioValue = routeLoader$(async (requestEvent) => {
@@ -481,11 +480,13 @@ export default component$(() => {
   const toggleChart = useToggleChart();
   const portfolioValueChange = usePortfolio24hChange();
   const chartDataStore = useStore({
-    data: portfolioValueChange.value?.chartData ?? [
-      [0, 0],
-      [0, 0],
-    ],
+    data: portfolioValueChange.value.chartData
   });
+  const portfolioValueStore = useStore({
+    selectedPeriodLabel: portfolioValueChange.value.period,
+    portfolioValueChange: portfolioValueChange.value.totalValueChange,
+    portfolioPercentageValueChange: portfolioValueChange.value.percentageOfTotalValueChange,
+  })
   const changePeriod = useSignal(false);
   const selectedPeriod: PeriodState = useStore({
     "24h": true,
@@ -514,6 +515,9 @@ export default component$(() => {
         console.log(newChartData);
         console.log("=========================");
         chartDataStore.data = newChartData.value.chartData;
+        portfolioValueStore.selectedPeriodLabel = newChartData.value.period;
+        portfolioValueStore.portfolioValueChange = newChartData.value.totalValueChange;
+        portfolioValueStore.portfolioPercentageValueChange = newChartData.value.percentageOfTotalValueChange;
       }
     });
   });
@@ -522,9 +526,11 @@ export default component$(() => {
     <PortfolioValue
       totalPortfolioValue={totalPortfolioValue.value}
       isPortfolioFullScreen={isPortfolioFullScreen}
-      portfolioValueChange={portfolioValueChange.value}
+      portfolioValueChange={portfolioValueStore.portfolioValueChange}
+      portfolioPercentageValueChange={portfolioValueStore.portfolioPercentageValueChange}
       chartData={chartDataStore.data}
       selectedPeriod={selectedPeriod}
+      period={portfolioValueStore.selectedPeriodLabel}
       onClick$={(e: any) => {
         togglePeriod(e.target.name);
         changePeriod.value = true;
@@ -536,10 +542,12 @@ export default component$(() => {
         <PortfolioValue
           totalPortfolioValue={totalPortfolioValue.value}
           isPortfolioFullScreen={isPortfolioFullScreen}
-          portfolioValueChange={portfolioValueChange.value}
+          portfolioValueChange={portfolioValueStore.portfolioValueChange}
+        portfolioPercentageValueChange={portfolioValueStore.portfolioPercentageValueChange}
           chartData={chartDataStore.data}
           selectedPeriod={selectedPeriod}
-          onClick$={(e: any) => {
+          period={portfolioValueStore.selectedPeriodLabel}
+        onClick$={(e: any) => {
             togglePeriod(e.target.name);
             changePeriod.value = true;
           }}

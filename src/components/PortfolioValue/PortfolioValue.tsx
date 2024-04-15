@@ -15,13 +15,12 @@ import { type PeriodState } from "~/interface/balance/Balance";
 export interface PortfolioValueProps {
   totalPortfolioValue: string;
   isPortfolioFullScreen: Signal<boolean>;
-  portfolioValueChange?: {
-    valueChange: string;
-    percentageChange: string;
-  };
+  portfolioValueChange: string;
+  portfolioPercentageValueChange: string;
   chartData?: [number, number][];
   onClick$?: QRL<(e: any) => void>;
   selectedPeriod: PeriodState;
+  period: string;
 }
 
 export const PortfolioValue = component$<PortfolioValueProps>(
@@ -29,9 +28,11 @@ export const PortfolioValue = component$<PortfolioValueProps>(
     totalPortfolioValue,
     isPortfolioFullScreen,
     portfolioValueChange,
+    portfolioPercentageValueChange,
     onClick$,
     selectedPeriod,
     chartData,
+    period,
   }) => {
     const chart = $(() => {
       let data: [number, number][] = [];
@@ -147,9 +148,9 @@ export const PortfolioValue = component$<PortfolioValueProps>(
               ${totalPortfolioValue}
             </h1>
             <p class="text-xs">
-              24h change: {portfolioValueChange?.valueChange ?? "0"}{" "}
+              {period} change: {portfolioValueChange}{" "}
               <span class="text-customGreen">
-                {portfolioValueChange?.percentageChange ?? "0.00%"}
+                {portfolioPercentageValueChange}
               </span>
             </p>
           </div>
@@ -161,6 +162,7 @@ export const PortfolioValue = component$<PortfolioValueProps>(
             <div class="custom-bg-white custom-border-1 flex h-8 gap-2 rounded-lg p-1">
               <button
                 name="24h"
+                type="button"
                 class={
                   selectedPeriod["24h"]
                     ? "custom-bg-button rounded-lg px-2"
@@ -172,6 +174,7 @@ export const PortfolioValue = component$<PortfolioValueProps>(
               </button>
               <button
                 name="1W"
+                type="button"
                 class={
                   selectedPeriod["1W"]
                     ? "custom-bg-button rounded-lg px-2"
@@ -183,6 +186,7 @@ export const PortfolioValue = component$<PortfolioValueProps>(
               </button>
               <button
                 name="1M"
+                type="button"
                 class={
                   selectedPeriod["1M"]
                     ? "custom-bg-button rounded-lg px-2"
@@ -194,6 +198,7 @@ export const PortfolioValue = component$<PortfolioValueProps>(
               </button>
               <button
                 name="1Y"
+                type="button"
                 class={
                   selectedPeriod["1Y"]
                     ? "custom-bg-button rounded-lg px-2"
