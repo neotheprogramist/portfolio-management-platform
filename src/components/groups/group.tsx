@@ -70,8 +70,8 @@ export const Group = component$<GroupProps>((props) => {
   return (
     <>
       <div>
-        <div class="flex gap-6 text-[14px]">
-          <div class="flex items-center gap-[8px] ">
+        <div class="flex gap-6 text-sm">
+          <div class="flex items-center gap-2">
             <IconArrowDown />
             <h3>{props.createdStructure.structure.name}</h3>
             <IconDelete />

@@ -13,7 +13,7 @@ export const Button = component$<ButtonProps>((props) => {
     <button
       onClick$={props.onClick$}
       class={twMerge(
-        "flex h-[32px] items-center justify-center gap-[8px] rounded-[40px] bg-transparent px-[16px] text-[12px]",
+        "flex h-8 items-center justify-center gap-2 rounded-10 bg-transparent px-4 text-xs",
         props.class,
       )}
     >
@@ -28,7 +28,7 @@ export const ButtonTokenList = component$<ButtonProps>((props) => {
     <button
       onClick$={props.onClick$}
       class={twMerge(
-        "custom-border-1 flex h-[40px] items-center justify-between gap-[8px] rounded-[8px] bg-transparent px-[12px] text-[12px] text-white ",
+        "custom-border-1 flex h-10 items-center justify-between gap-2 rounded-lg bg-transparent px-3 text-xs text-white ",
         props.class,
       )}
     >

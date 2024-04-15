@@ -14,7 +14,7 @@ export const Button = component$<ButtonProps>((props) => {
     <button
       onClick$={props.onClick$}
       class={twMerge(
-        "h-12 cursor-pointer rounded-[48px] bg-[#2196F3] px-6 text-sm text-white duration-300 ease-in-out hover:scale-105",
+        "h-12 cursor-pointer rounded-[48px] bg-customBlue px-6 text-sm text-white duration-300 ease-in-out hover:scale-105",
         props.class,
       )}
       disabled={props.disabled}

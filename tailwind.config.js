@@ -12,6 +12,9 @@ export default {
         customWarning: "#ffc107",
         customGreen: "#4CAF50"
       },
+      borderRadius: {
+        10: "40px",
+      },
       keyframes: {
         arrival:{
           '0%, 100%': {

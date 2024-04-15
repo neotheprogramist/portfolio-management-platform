@@ -28,8 +28,6 @@ import { type Balance } from "~/interface/balance/Balance";
 import { type WalletTokensBalances } from "~/interface/walletsTokensBalances/walletsTokensBalances";
 import { convertWeiToQuantity } from "~/utils/formatBalances/formatTokenBalance";
 import { isAddress, checksumAddress } from "viem";
-import IconArrowDown from "/public/assets/icons/arrow-down.svg?jsx";
-import IconSearch from "/public/assets/icons/search.svg?jsx";
 import { isValidName, isValidAddress } from "~/utils/validators/addWallet";
 import {
   getUsersObservingWallet,
@@ -71,6 +69,7 @@ import AddWalletFormFields from "~/components/forms/addWallet/addWalletFormField
 import CoinsToApprove from "~/components/forms/addWallet/CoinsToApprove";
 import AmountOfCoins from "~/components/forms/addWallet/AmountOfCoins";
 import { Button } from "~/components/blue-button/blue-button";
+import { ButtonTokenList } from "~/components/portfolio/button-master/button";
 // import { PendingAuthorization } from "~/components/PendingAuthorization/PendingAuthorization";
 import ImgWarningRed from "/public/assets/icons/wallets/warning-red.svg?jsx";
 
@@ -722,12 +721,12 @@ export default component$(() => {
   });
 
   return (
-    <div class="grid grid-cols-[24%_73%] gap-6 overflow-auto border-t border-white border-opacity-15 p-[24px]">
-      <div class="custom-border-1 grid grid-rows-[56px_48px_64px_1fr] overflow-auto rounded-[16px] p-[24px]">
-        <div class="row-span-1 row-start-1 mb-[24px] flex items-center justify-between gap-[10px] text-white">
-          <h1 class="text-xl">Wallets</h1>
+    <div class="grid grid-cols-[1fr_3fr] gap-6 p-6">
+      <div class="custom-border-1 grid grid-rows-[32px_88px_1fr] gap-6 rounded-2xl p-6">
+        <div class="flex items-center justify-between gap-2">
+          <h1 class="text-xl font-semibold">Wallets</h1>
           <button
-            class="custom-border-2 h-[32px] cursor-pointer rounded-[40px] px-4 text-xs font-semibold leading-none text-white duration-300 ease-in-out hover:scale-110 lg:text-[10px]"
+            class="custom-border-2 h-8 cursor-pointer text-nowrap rounded-10 px-4 text-xs font-medium duration-300 ease-in-out hover:scale-110"
             onClick$={() => {
               isAddWalletModalOpen.value = !isAddWalletModalOpen.value;
             }}
@@ -736,33 +735,34 @@ export default component$(() => {
           </button>
         </div>
 
-        <button class="custom-border-1 custom-text-50 mb-[8px] flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-xs">
-          <IconSearch />
-          Search for wallet
-        </button>
+        <div class="grid w-full gap-2">
+          <ButtonTokenList
+            image="/assets/icons/search.svg"
+            text="Search for wallet"
+            class="flex-row-reverse justify-end text-opacity-50"
+          />
+          <ButtonTokenList
+            image="/assets/icons/arrow-down.svg"
+            text="Choose Network"
+            class=""
+          />
+        </div>
 
-        <button class="custom-border-1 mb-[24px] flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-xs text-white">
-          Choose Network
-          <IconArrowDown />
-        </button>
-
-        <div class="h-full overflow-auto">
-          <div class="flex flex-col gap-[20px] overflow-auto">
-            {observedWallets.value.map((observedWallet) => (
-              <ObservedWallet
-                key={observedWallet.wallet.address}
-                observedWallet={observedWallet}
-                selectedWallet={selectedWallet}
-                chainIdToNetworkName={chainIdToNetworkName}
-              />
-            ))}
-          </div>
+        <div class="">
+          {observedWallets.value.map((observedWallet) => (
+            <ObservedWallet
+              key={observedWallet.wallet.address}
+              observedWallet={observedWallet}
+              selectedWallet={selectedWallet}
+              chainIdToNetworkName={chainIdToNetworkName}
+            />
+          ))}
         </div>
       </div>
 
       <div class="grid gap-6">
         {/* <PendingAuthorization/> */}
-        <div class="custom-border-1 flex flex-col gap-6 overflow-auto rounded-[20px] p-6">
+        <div class="custom-border-1 grid grid-rows-[64px_24px_1fr] gap-4 rounded-2xl p-6">
           {selectedWallet.value && (
             <SelectedWalletDetails
               key={selectedWallet.value.wallet.address}
@@ -791,7 +791,7 @@ export default component$(() => {
             temporaryModalStore.config = undefined;
           })}
         >
-          <Form>
+          <Form class="p-6">
             {stepsCounter.value === 1 ? (
               <>
                 <IsExecutableSwitch addWalletFormStore={addWalletFormStore} />
@@ -915,7 +915,7 @@ export default component$(() => {
                   isDeleteModalOpen.value = false;
                 }
               }}
-              class=" h-[48px] rounded-3xl bg-red-500 px-2 text-center text-sm text-white duration-300 ease-in-out hover:scale-105"
+              class="h-8 rounded-3xl bg-red-500 px-2 text-center text-sm text-white duration-300 ease-in-out hover:scale-105"
             >
               Yes, let’s do it!
             </button>
@@ -927,7 +927,7 @@ export default component$(() => {
         <Modal isOpen={isTransferModalOpen} title="Transfer">
           <Form>
             <div class="p-4">
-              <p class="mb-[16px] mt-4 flex items-center gap-2 text-sm">
+              <p class="mb-4 mt-4 flex items-center gap-2 text-sm">
                 {transferredCoin.symbol ? transferredCoin.symbol : null}
               </p>
 
@@ -978,7 +978,7 @@ export default component$(() => {
                 ) : null}
               </span>
               <button
-                class="custom-border-1 custom-bg-white row-span-1 row-start-3 mb-[24px] flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-xs text-white"
+                class="custom-border-1 custom-bg-white row-span-1 row-start-3 mb-6 flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-xs text-white"
                 onClick$={() => handleTransfer()}
               >
                 transfer

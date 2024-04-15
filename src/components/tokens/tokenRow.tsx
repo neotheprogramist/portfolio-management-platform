@@ -41,10 +41,7 @@ export const TokenRow = component$<TokenRowProps>(
       imageTransformer$,
     });
     return (
-      <div
-        style="grid-template-columns: minmax(200px, 500px) minmax(100px, 300px) minmax(150px, 300px) minmax(250px, 400px) repeat(2, minmax(120px, 400px)) minmax(100px, 400px) 40px;"
-        class="custom-border-b-1 grid h-[68px] items-center gap-2 text-sm font-normal"
-      >
+      <div class="custom-border-b-1 grid h-16 grid-cols-[18%_10%_15%_18%_10%_10%_12%_8%] items-center gap-2 text-sm ">
         <div class="flex items-center gap-4">
           <div class="custom-border-1 rounded-lg bg-white bg-opacity-10 p-2">
             <Image
@@ -56,23 +53,21 @@ export const TokenRow = component$<TokenRowProps>(
               src={imagePath}
             />
           </div>
-          <p class="text-sm">
+          <p class="overflow-auto text-sm">
             {tokenName}{" "}
             <span class="custom-text-50 text-xs">{tokenSymbol}</span>
           </p>
         </div>
-        <div class="flex h-full items-center overflow-auto">{quantity}</div>
-        <div class="">${value}</div>
+        <div class="overflow-auto">{quantity}</div>
+        <div class="overflow-auto">${value}</div>
         <div class="flex gap-4 text-customGreen">
           +3,36%
           <IconGraph />
         </div>
-        <div class="">{wallet}</div>
-        <div class="">{networkName}</div>
-        <div class="">{subportfolio}</div>
-        <div class="flex justify-end">
-          <IconStar />
-        </div>
+        <div class="overflow-auto">{wallet}</div>
+        <div class="overflow-auto">{networkName}</div>
+        <div class="overflow-auto">{subportfolio}</div>
+        <IconStar />
       </div>
     );
   },

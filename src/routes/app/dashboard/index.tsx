@@ -531,99 +531,75 @@ export default component$(() => {
       }}
     />
   ) : (
-    <div class="grid grid-cols-4 grid-rows-[48%_48%] gap-6 overflow-auto p-10">
-      <PortfolioValue
-        totalPortfolioValue={totalPortfolioValue.value}
-        isPortfolioFullScreen={isPortfolioFullScreen}
-        portfolioValueChange={portfolioValueChange.value}
-        chartData={chartDataStore.data}
-        selectedPeriod={selectedPeriod}
-        onClick$={(e: any) => {
-          togglePeriod(e.target.name);
-          changePeriod.value = true;
-        }}
-      />
+    <div class="grid grid-rows-[max(330px)_auto] gap-6 p-10">
+      <div class="grid grid-cols-[2fr_1fr_1fr] gap-6">
+        <PortfolioValue
+          totalPortfolioValue={totalPortfolioValue.value}
+          isPortfolioFullScreen={isPortfolioFullScreen}
+          portfolioValueChange={portfolioValueChange.value}
+          chartData={chartDataStore.data}
+          selectedPeriod={selectedPeriod}
+          onClick$={(e: any) => {
+            togglePeriod(e.target.name);
+            changePeriod.value = true;
+          }}
+        />
 
-      <div class="custom-border-1 custom-shadow col-start-3 row-span-1 row-start-1 grid grid-rows-[32px_1fr] gap-4 overflow-auto rounded-[16px] p-6">
-        <div class="flex items-center justify-between">
-          <h1 class="text-[20px] font-semibold">Alerts</h1>
-          <button class="custom-border-2 rounded-[40px] px-4 py-[11px] text-[12px] font-medium duration-300 ease-in-out hover:scale-110">
-            See All
-          </button>
+        <div class="custom-border-1 custom-shadow grid min-w-max grid-rows-[32px_1fr] gap-4 rounded-2xl p-6">
+          <div class="flex items-center justify-between gap-2">
+            <h1 class="text-xl font-semibold">Alerts</h1>
+            <button class="custom-border-2 rounded-10 px-4 py-2 text-xs font-medium duration-300 ease-in-out hover:scale-110">
+              See All
+            </button>
+          </div>
+          <div class="">
+            <ActionAlertMessage
+              title="Bitcoin share exceeded 20%"
+              description="6 hours ago"
+            />
+            <ActionAlertMessage
+              title="Bitcoin share exceeded 20%"
+              description="6 hours ago"
+            />
+            <ActionAlertMessage
+              title="Bitcoin share exceeded 20%"
+              description="6 hours ago"
+            />
+          </div>
         </div>
-        <div class="overflow-auto">
-          <ActionAlertMessage
-            title="Bitcoin share exceeded 20%"
-            description="6 hours ago"
-          />
-          <ActionAlertMessage
-            title="Bitcoin share exceeded 20%"
-            description="6 hours ago"
-          />
-          <ActionAlertMessage
-            title="Bitcoin share exceeded 20%"
-            description="6 hours ago"
-          />
-          <ActionAlertMessage
-            title="Bitcoin share exceeded 20%"
-            description="6 hours ago"
-          />
-          <ActionAlertMessage
-            title="Bitcoin share exceeded 20%"
-            description="6 hours ago"
-          />
+
+        <div class="custom-border-1 custom-shadow grid min-w-max grid-rows-[32px_1fr] gap-4 rounded-2xl p-6">
+          <div class="flex items-center justify-between gap-2">
+            <h1 class="text-xl font-semibold">Actions</h1>
+            <button class="custom-border-2 rounded-10 px-4 py-2 text-xs font-medium duration-300 ease-in-out hover:scale-110">
+              See All
+            </button>
+          </div>
+          <div>
+            <ActionAlertMessage title="DCA" description="1 day ago">
+              <WarningStatus />
+            </ActionAlertMessage>
+            <ActionAlertMessage
+              title="Automation name #2"
+              description="6 hours ago"
+            >
+              <SuccessStatus />
+            </ActionAlertMessage>
+            <ActionAlertMessage
+              title="Automation name #3"
+              description="6 hours ago"
+            >
+              <WarningStatus />
+            </ActionAlertMessage>
+          </div>
         </div>
       </div>
 
-      <div class="custom-border-1 custom-shadow col-start-4 row-span-1 row-start-1 grid grid-rows-[32px_1fr] gap-4 overflow-auto rounded-[16px] p-6">
-        <div class="flex items-center justify-between">
-          <h1 class="text-[20px] font-semibold">Actions</h1>
-          <button class="custom-border-2 rounded-[40px] px-4 py-[11px] text-[12px] font-medium duration-300 ease-in-out hover:scale-110">
-            See All
-          </button>
-        </div>
-        <div class="overflow-auto">
-          <ActionAlertMessage
-            title="Automation name #1"
-            description="6 hours ago"
-          >
-            <SuccessStatus />
-          </ActionAlertMessage>
-          <ActionAlertMessage
-            title="Automation name #2"
-            description="6 hours ago"
-          >
-            <SuccessStatus />
-          </ActionAlertMessage>
-          <ActionAlertMessage title="DCA" description="1 day ago">
-            <WarningStatus />
-          </ActionAlertMessage>
-          <ActionAlertMessage
-            title="Automation name #3"
-            description="6 hours ago"
-          >
-            <SuccessStatus />
-          </ActionAlertMessage>
-          <ActionAlertMessage
-            title="Automation name #4"
-            description="6 hours ago"
-          >
-            <SuccessStatus />
-          </ActionAlertMessage>
-          <ActionAlertMessage
-            title="Automation name #5"
-            description="6 hours ago"
-          >
-            <WarningStatus />
-          </ActionAlertMessage>
-        </div>
-      </div>
-
-      <div class="custom-border-1 col-start-1 col-end-5 row-span-1 row-start-2 grid grid-rows-[32px_32px_1fr] gap-6 overflow-auto rounded-[16px] p-6">
+      <div class="custom-border-1 grid grid-rows-[32px_1fr] gap-6 rounded-2xl p-6">
         <div class="flex items-center justify-between">
           <h1 class="text-xl font-semibold">Favourite Tokens</h1>
           <button
-            class="custom-border-2 rounded-[40px] px-4 py-[11px] text-xs font-medium duration-300 ease-in-out hover:scale-110"
+            class="custom-border-2 rounded-10 px-4 py-2 text-xs font-medium duration-300 ease-in-out hover:scale-110"
             onClick$={() => {
               nav("/app/portfolio");
             }}
@@ -632,26 +608,22 @@ export default component$(() => {
           </button>
         </div>
 
-        <div
-          style="grid-template-columns: minmax(200px, 500px) minmax(100px, 300px) minmax(150px, 300px) minmax(250px, 400px) repeat(2, minmax(120px, 400px)) minmax(100px, 400px) 40px;"
-          class="custom-text-50 grid items-center gap-2 text-xs font-normal uppercase"
-        >
-          <div class="">Token name</div>
-          <div class="">Quantity</div>
-          <div class="">Value</div>
-          <div class="custom-border-1 flex h-8 w-fit gap-2 rounded-[8px] bg-white bg-opacity-5 p-[3.5px] text-white">
-            <button class="custom-bg-button rounded-[8px] px-2">24h</button>
-            <button class="rounded-[8px] px-2">3d</button>
-            <button class="rounded-[8px] px-2">30d</button>
+        <div class="grid grid-rows-[32px_auto] gap-4">
+          <div class="custom-text-50 grid grid-cols-[18%_10%_15%_18%_10%_10%_12%_8%] items-center gap-2 text-xs font-normal uppercase">
+            <div class="">Token name</div>
+            <div class="">Quantity</div>
+            <div class="">Value</div>
+            <div class="custom-border-1 flex h-8 w-fit gap-2 rounded-lg bg-white bg-opacity-5 p-1 text-white">
+              <button class="custom-bg-button rounded-lg px-2">24h</button>
+              <button class="rounded-lg px-2">3d</button>
+              <button class="rounded-lg px-2">30d</button>
+            </div>
+            <div class="">Wallet</div>
+            <div class="">Network</div>
+            <div class="">Subportfolio</div>
+            <div class=""></div>
           </div>
-          <div class="">Wallet</div>
-          <div class="">Network</div>
-          <div class="">Subportfolio</div>
-          <div class=""></div>
-        </div>
-
-        <div class="row-span-1 row-start-3 inline-block h-full min-w-full overflow-auto">
-          <div class="overflow-auto">
+          <div>
             {favoriteTokens.value[0] &&
               favoriteTokens.value[0].structureBalance.map(
                 async (token: any, index: number) => {
