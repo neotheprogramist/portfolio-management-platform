@@ -751,14 +751,14 @@ export default component$(() => {
                   <div class="flex gap-4">
                     <button
                       type="submit"
-                      class="custom-border-1 h-12 w-1/2 rounded-[48px] duration-300 ease-in-out hover:scale-105"
+                      class="custom-border-1 h-12 w-1/2 rounded-10 duration-300 ease-in-out hover:scale-105"
                       disabled={!isValidName(structureStore.name)}
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      class=" h-12 w-1/2 rounded-[48px] bg-blue-500 duration-300 ease-in-out hover:scale-105"
+                      class=" h-12 w-1/2 rounded-10 bg-blue-500 duration-300 ease-in-out hover:scale-105"
                       disabled={!isValidName(structureStore.name)}
                     >
                       Add token

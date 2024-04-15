@@ -15,7 +15,7 @@ export const Navbar = component$<NavbarProps>((props) => {
           props.class,
         )}
       >
-        <div class="h-[20px] w-[94px]">
+        <div class="h-5 w-[94px]">
           <IconLogo />
         </div>
         <Slot />
