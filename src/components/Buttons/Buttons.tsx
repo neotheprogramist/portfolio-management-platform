@@ -3,10 +3,14 @@ import { twMerge } from "tailwind-merge";
 
 export interface ButtonProps {
   text?: string;
+  image?: string;
   border?: string;
   class?: string;
   background?: string;
   width?: string;
+  divClass?: string;
+  disabled?: boolean;
+  type?: "button" | "submit" | "reset" | undefined;
   onClick$?: QRL<() => Promise<void>>;
 }
 
@@ -14,31 +18,31 @@ export const Button = component$<ButtonProps>((props) => {
   return (
     <button
       onClick$={props.onClick$}
-      class={twMerge(
-        "h-12 cursor-pointer rounded-[48px] border-2",
-        props.background,
-        props.border,
-        props.width,
-      )}
+      class={twMerge("h-12 cursor-pointer rounded-10 border-2", props.class)}
+      disabled={props.disabled}
+      type={props.type}
     >
-      <div class={props.class}>{props.text}</div>
+      <div class={props.divClass}>{props.text}</div>
     </button>
   );
 });
 
-export interface ConnectButtonProps {
-  image?: string;
-  text?: string;
-  buttonWidth?: string;
-  borderColor?: string;
-  padding?: string;
-  containerGap?: string;
-  fontSize?: string;
-  onClick$?: QRL<() => Promise<void>>;
-  class?: string;
-}
+export const ButtonWithIcon = component$<ButtonProps>((props) => {
+  return (
+    <button
+      onClick$={props.onClick$}
+      class={twMerge(
+        "flex h-8 items-center justify-center gap-2 rounded-10 px-4 text-xs",
+        props.class,
+      )}
+    >
+      {props.image && <img src={props.image} width="16" height="16" />}
+      <span>{props.text}</span>
+    </button>
+  );
+});
 
-export const ConnectButton = component$<ConnectButtonProps>((props) => {
+export const ConnectButton = component$<ButtonProps>((props) => {
   return (
     <button
       onClick$={props.onClick$}

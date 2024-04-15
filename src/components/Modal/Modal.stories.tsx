@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "storybook-framework-qwik";
-import { Modal, type ModalProps } from "./index";
-import { Select } from "../select/select";
-import { Input } from "../input/input";
-import { Button } from "../blue-button/blue-button";
+import { Modal, type ModalProps } from "./Modal";
+import { Select } from "../Select/Select";
+import { Input } from "../Input/Input";
+import { Button } from "../Buttons/Buttons";
 import { type Signal } from "@builder.io/qwik";
 
 const meta: Meta<ModalProps> = {

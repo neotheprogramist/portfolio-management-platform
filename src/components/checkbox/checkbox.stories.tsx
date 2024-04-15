@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "storybook-framework-qwik";
-import { CheckBox, type CheckBoxProps } from "./checkbox";
+import { CheckBox, type CheckBoxProps } from "~/components/Checkbox/Checkbox";
 import { $ } from "@builder.io/qwik";
 
 const meta: Meta<CheckBoxProps> = {

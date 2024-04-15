@@ -4,7 +4,7 @@ import IconDelete from "/public/assets/icons/wallets/delete-red.svg?jsx";
 import IconEthereum from "/public/assets/icons/ethereum.svg?jsx";
 import IconWallet from "/public/assets/icons/wallets/wallet.svg?jsx";
 import IconLoading from "/public/assets/icons/wallets/loading.svg?jsx";
-import { TokenRowWallets } from "~/components/tokens/tokenRow-wallets";
+import { TokenRowWallets } from "~/components/Tokens/TokenRowWallets";
 import { type transferredCoinInterface } from "~/routes/app/wallets";
 
 interface SelectedWalletProps {

@@ -1,12 +1,12 @@
 import { $, component$, useContext } from "@builder.io/qwik";
 import { useLocation, useNavigate } from "@builder.io/qwik-city";
 import { Button } from "~/components/Buttons/Buttons";
-import { Copyright } from "~/components/paragraph/paragraph";
+import { Copyright } from "~/components/Paragraph/Paragraph";
 import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
 import {
   getNonceServer,
   verifyMessageServer,
-} from "~/components/wallet-connect/server";
+} from "~/components/WalletConnect/server";
 import { disconnect, getAccount, signMessage } from "@wagmi/core";
 import { SiweMessage } from "siwe";
 import { HeroText } from "~/components/HeroText/HeroText";
@@ -72,15 +72,13 @@ export default component$(() => {
             <Button
               onClick$={cancelHandler}
               text="Cancel"
-              border="custom-border-2"
-              width="w-full"
+              class="custom-border-2 w-full"
             />
             <Button
               onClick$={signInHandler}
               text="Accept and Sign"
-              width="w-full"
-              class="rounded-[48px] bg-black py-[14px]"
-              background="border-none custom-btn-gradient p-[2px]"
+              class="custom-btn-gradient w-full border-none p-[2px]"
+              divClass="rounded-10 bg-black py-[14px]"
             />
           </div>
         </div>

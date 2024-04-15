@@ -1,11 +1,11 @@
 import { $, component$, useSignal, useStore, useTask$ } from "@builder.io/qwik";
-import { PortfolioValue } from "~/components/portfolioValue/portfolioValue";
+import { PortfolioValue } from "~/components/PortfolioValue/PortfolioValue";
 import { ActionAlertMessage } from "~/components/ActionAlertsMessage/ActionAlertsMessage";
 import {
   SuccessStatus,
   WarningStatus,
 } from "~/components/ActionAlertsMessage/ActionStatus";
-import { TokenRow } from "~/components/tokens/tokenRow";
+import { TokenRow } from "~/components/Tokens/TokenRow";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 import { connectToDB } from "~/utils/db";
 import { routeAction$, routeLoader$, useNavigate } from "@builder.io/qwik-city";

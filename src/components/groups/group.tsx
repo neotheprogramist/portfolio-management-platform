@@ -5,7 +5,7 @@ import {
   type Structure,
   type StructureBalance,
 } from "~/interface/structure/Structure";
-import { Token } from "~/components/groups/token";
+import { TokenRow } from "~/components/Groups/TokenRow";
 import { convertWeiToQuantity } from "~/utils/formatBalances/formatTokenBalance";
 import { chainIdToNetworkName } from "~/utils/chains";
 import IconDelete from "/public/assets/icons/delete-white.svg?jsx";
@@ -49,7 +49,7 @@ function extractData(
   );
 
   return extractedArray.map((entry: any, index: number) => (
-    <Token
+    <TokenRow
       key={`${entry.balanceId} - ${index}`}
       icon={`/assets/icons/tokens/${entry.symbol.toLowerCase()}.svg`}
       name={entry.name}

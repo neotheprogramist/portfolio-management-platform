@@ -3,7 +3,7 @@ import ImgAvatar from "/public/assets/images/avatar.png?jsx";
 import IconArrowDown from "/public/assets/icons/arrow-down.svg?jsx";
 import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
 import { getAccount } from "@wagmi/core";
-import { NavLink } from "./navlink";
+import { NavLink } from "./NavLink";
 
 export const NavbarContent = component$(() => {
   const modalStore = useContext(ModalStoreContext);
@@ -22,12 +22,12 @@ export const NavbarContent = component$(() => {
         <NavLink href="/app/alerts/">Alerts</NavLink>
         <NavLink href="/app/reports/">Reports</NavLink>
       </div>
-      <div class="flex items-center gap-[8px]">
+      <div class="flex items-center gap-2">
         <ImgAvatar />
-        <div class="flex flex-col gap-[4px]">
+        <div class="flex flex-col gap-1">
           <p>{address}</p>
 
-          <p class="text-[10px] text-[#12A58C]">Account verified</p>
+          <p class="text-[10px] text-customGreen">Account verified</p>
         </div>
         <button>
           <IconArrowDown />

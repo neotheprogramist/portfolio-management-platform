@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "storybook-framework-qwik";
-import { Select, type SelectProps } from "./select";
+import { Select, type SelectProps } from "./Select";
 
 const meta: Meta<SelectProps> = {
   component: Select,

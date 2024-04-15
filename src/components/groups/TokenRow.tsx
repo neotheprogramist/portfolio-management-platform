@@ -2,9 +2,9 @@ import { component$ } from "@builder.io/qwik";
 import type { QRL } from "@builder.io/qwik";
 import IconDelete from "/public/assets/icons/delete-white.svg?jsx";
 import IconGraph from "/public/assets/icons/graph.svg?jsx";
-import IconSwap from "/public/assets/icons/portfolio/swap.svg?jsx";
+import { ButtonWithIcon } from "../Buttons/Buttons";
 
-export interface TokenProps {
+export interface TokenRowProps {
   icon?: string;
   name?: string;
   symbol?: string;
@@ -14,7 +14,7 @@ export interface TokenProps {
   network?: string;
   onClick$?: QRL<() => void>;
 }
-export const Token = component$<TokenProps>((props) => {
+export const TokenRow = component$<TokenRowProps>((props) => {
   return (
     <>
       <div class="custom-border-b-1 grid grid-cols-[18%_13%_15%_18%_10%_10%_13%_6%] items-center text-nowrap py-4 text-sm">
@@ -32,7 +32,7 @@ export const Token = component$<TokenProps>((props) => {
         </div>
         <div class="flex h-full items-center overflow-auto">{props.value}</div>
 
-        <div class="flex h-full items-center gap-4">
+        <div class="flex h-full items-center justify-center gap-4">
           <span class="text-customGreen">3,6%</span>
           <IconGraph />
         </div>
@@ -41,10 +41,11 @@ export const Token = component$<TokenProps>((props) => {
           {props.network}
         </div>
         <div class="flex h-full items-center overflow-auto font-medium">
-          <button class="custom-border-1 flex gap-2 rounded-3xl px-4 py-2">
-            <IconSwap />
-            <span>Swap Token</span>
-          </button>
+          <ButtonWithIcon
+            text="Swap Token"
+            image="/public/assets/icons/portfolio/swap.svg?jsx"
+            class="custom-border-1 py-2 text-sm "
+          />
         </div>
         <button
           class="flex h-7 w-7 items-center justify-center rounded-lg"

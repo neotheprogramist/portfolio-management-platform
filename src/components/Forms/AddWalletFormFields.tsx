@@ -1,7 +1,6 @@
 import { type QRL, component$, $ } from "@builder.io/qwik";
 import { getAddress } from "viem";
-import { Button } from "~/components/blue-button/blue-button";
-import { Input } from "~/components/input/input";
+import { Input } from "~/components/Input/Input";
 import { type addWalletFormStore } from "~/routes/app/wallets";
 import { useDebouncer } from "~/utils/debouncer";
 import {
@@ -45,12 +44,12 @@ export default component$<AddWalletFormFieldsProps>(
         {/* Name */}
         <div>
           {!isValidName(addWalletFormStore.name) && (
-            <span class="absolute end-6 pt-[1px] text-xs text-red-500">
+            <span class="absolute start-[70px] pt-[1px] text-xs text-red-500">
               Invalid name
             </span>
           )}
           {!addWalletFormStore.isNameUnique && (
-            <span class="absolute end-6 pt-[1px] text-xs text-red-500">
+            <span class="absolute start-[70px] pt-[1px] text-xs text-red-500">
               Name already exists
             </span>
           )}
@@ -90,7 +89,7 @@ export default component$<AddWalletFormFieldsProps>(
               <div>
                 <button
                   onClick$={onConnectWalletClick}
-                  class={`h-[32px] rounded-3xl border-none ${isWalletConnected ? "custom-border-1" : "bg-blue-500"} px-[16px] text-xs font-semibold text-white duration-300 ease-in-out hover:scale-105`}
+                  class={`h-8 rounded-3xl border-none ${isWalletConnected ? "" : "bg-customBlue"} px-4 text-xs font-semibold text-white duration-300 ease-in-out hover:scale-105`}
                 >
                   {isWalletConnected ? "Disconnect " : "Connect Wallet"}
                 </button>
@@ -112,10 +111,9 @@ export default component$<AddWalletFormFieldsProps>(
                 })}
               />
 
-              <Button
-                class="custom-border-1 ml-2 h-[32px] rounded-3xl px-[8px] text-xs font-normal disabled:scale-100 disabled:cursor-default disabled:border disabled:border-white disabled:border-opacity-10 disabled:bg-white disabled:bg-opacity-10 disabled:text-opacity-20"
+              <button
+                class="custom-border-1 ml-2 h-8 rounded-3xl px-2 text-xs font-normal text-white disabled:cursor-default disabled:bg-[#e6e6e6] disabled:text-gray-500"
                 type="button"
-                text="Convert"
                 onClick$={() => {
                   addWalletFormStore.address = getAddress(
                     addWalletFormStore.address,
@@ -128,7 +126,7 @@ export default component$<AddWalletFormFieldsProps>(
                 }
               >
                 Convert
-              </Button>
+              </button>
             </div>
           ) : (
             <div>

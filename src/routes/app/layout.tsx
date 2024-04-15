@@ -8,9 +8,9 @@ import {
 } from "@builder.io/qwik";
 import { type RequestHandler } from "@builder.io/qwik-city";
 import jwt from "jsonwebtoken";
-import { Message } from "~/components/message/Message";
-import { Navbar } from "~/components/navbar/navbar";
-import { NavbarContent } from "~/components/navbar/navbar-content";
+import { Message } from "~/components/Message/Message";
+import { Navbar } from "~/components/Navbar/Navbar";
+import { NavbarContent } from "~/components/Navbar/NavbarContent";
 
 export const onRequest: RequestHandler = ({ json, cookie, env }) => {
   const accessToken = cookie.get("accessToken");

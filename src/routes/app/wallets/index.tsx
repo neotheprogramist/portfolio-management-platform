@@ -21,9 +21,9 @@ import { contractABI } from "~/abi/abi";
 import { type Wallet } from "~/interface/auth/Wallet";
 import { connectToDB } from "~/utils/db";
 import { chainIdToNetworkName } from "~/utils/chains";
-import { Modal } from "~/components/modal";
-import { SelectedWalletDetails } from "~/components/wallets/details";
-import { ObservedWallet } from "~/components/wallets/observed";
+import { Modal } from "~/components/Modal/Modal";
+import { SelectedWalletDetails } from "~/components/Wallets/Details/SelectedWalletDetails";
+import { ObservedWallet } from "~/components/Wallets/Observed/ObservedWallet";
 import { type Balance } from "~/interface/balance/Balance";
 import { type WalletTokensBalances } from "~/interface/walletsTokensBalances/walletsTokensBalances";
 import { convertWeiToQuantity } from "~/utils/formatBalances/formatTokenBalance";
@@ -44,7 +44,7 @@ import {
   getTokenImagePath,
 } from "~/interface/wallets/observedWallets";
 import { emethContractAbi } from "~/abi/emethContractAbi";
-import IsExecutableSwitch from "~/components/forms/addWallet/isExecutableSwitch";
+import IsExecutableSwitch from "~/components/Forms/isExecutableSwitch";
 import { getCookie } from "~/utils/refresh";
 import * as jwtDecode from "jwt-decode";
 import { type Token } from "~/interface/token/Token";
@@ -64,12 +64,11 @@ import {
   readContract,
   waitForTransactionReceipt,
 } from "@wagmi/core";
-import { returnWeb3ModalAndClient } from "~/components/wallet-connect";
-import AddWalletFormFields from "~/components/forms/addWallet/addWalletFormFields";
-import CoinsToApprove from "~/components/forms/addWallet/CoinsToApprove";
-import AmountOfCoins from "~/components/forms/addWallet/AmountOfCoins";
-import { Button } from "~/components/blue-button/blue-button";
-import { ButtonTokenList } from "~/components/portfolio/button-master/button";
+import { returnWeb3ModalAndClient } from "~/components/WalletConnect";
+import AddWalletFormFields from "~/components/Forms/AddWalletFormFields";
+import CoinsToApprove from "~/components/Forms/CoinsToApprove";
+import AmountOfCoins from "~/components/Forms/AmountOfCoins";
+import { Button, ButtonWithIcon } from "~/components/Buttons/Buttons";
 // import { PendingAuthorization } from "~/components/PendingAuthorization/PendingAuthorization";
 import ImgWarningRed from "/public/assets/icons/wallets/warning-red.svg?jsx";
 
@@ -736,15 +735,15 @@ export default component$(() => {
         </div>
 
         <div class="grid w-full gap-2">
-          <ButtonTokenList
+          <ButtonWithIcon
             image="/assets/icons/search.svg"
             text="Search for wallet"
-            class="flex-row-reverse justify-end text-opacity-50"
+            class="custom-text-50 custom-border-1 h-10 justify-start gap-2 rounded-lg px-3"
           />
-          <ButtonTokenList
+          <ButtonWithIcon
             image="/assets/icons/arrow-down.svg"
             text="Choose Network"
-            class=""
+            class="custom-border-1 h-10 flex-row-reverse justify-between gap-2 rounded-lg px-3"
           />
         </div>
 
@@ -811,8 +810,8 @@ export default component$(() => {
             <div class="flex w-full items-center justify-between gap-2">
               {stepsCounter.value > 1 && addWalletFormStore.isExecutable ? (
                 <Button
-                  class="custom-border-1 w-full bg-transparent disabled:scale-100 disabled:cursor-default disabled:border disabled:border-white disabled:border-opacity-10 disabled:bg-white disabled:bg-opacity-10 disabled:text-opacity-20"
-                  onClick$={() => {
+                  class="custom-border-1 w-full bg-transparent  disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
+                  onClick$={async () => {
                     stepsCounter.value = stepsCounter.value - 1;
                   }}
                   type="button"
@@ -821,7 +820,7 @@ export default component$(() => {
               ) : null}
               {addWalletFormStore.isExecutable === 0 ? (
                 <Button
-                  class="w-full disabled:scale-100 disabled:cursor-default disabled:border disabled:border-white disabled:border-opacity-10 disabled:bg-white disabled:bg-opacity-10 disabled:text-opacity-20"
+                  class="w-full border-0 bg-customBlue disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
                   onClick$={handleAddWallet}
                   type="button"
                   disabled={isExecutableDisabled(addWalletFormStore)}
@@ -829,7 +828,7 @@ export default component$(() => {
                 />
               ) : stepsCounter.value === 3 ? (
                 <Button
-                  class="w-full disabled:scale-100 disabled:cursor-default disabled:border disabled:border-white disabled:border-opacity-10 disabled:bg-white disabled:bg-opacity-10 disabled:text-opacity-20"
+                  class="w-full border-0 bg-customBlue disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
                   onClick$={handleAddWallet}
                   type="button"
                   disabled={
@@ -841,8 +840,8 @@ export default component$(() => {
                 />
               ) : (
                 <Button
-                  class="w-full disabled:scale-100 disabled:cursor-default disabled:border disabled:border-white disabled:border-opacity-10 disabled:bg-white disabled:bg-opacity-10 disabled:text-opacity-20"
-                  onClick$={() => {
+                  class="w-full border-0 bg-customBlue disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
+                  onClick$={async () => {
                     if (stepsCounter.value === 2) {
                       for (
                         let i = 0;

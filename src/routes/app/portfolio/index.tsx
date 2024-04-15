@@ -1,11 +1,8 @@
-import {
-  Button,
-  ButtonTokenList,
-} from "~/components/portfolio/button-master/button";
+import { ButtonWithIcon } from "~/components/Buttons/Buttons";
 import IconEdit from "/public/assets/icons/portfolio/edit.svg?jsx";
 import IconArrowDown from "/public/assets/icons/arrow-down.svg?jsx";
 import IconClose from "/public/assets/icons/close.svg?jsx";
-import { Group } from "~/components/groups/group";
+import { Group } from "~/components/Groups/Group";
 import {
   $,
   component$,
@@ -31,7 +28,7 @@ import {
   getWalletDetails,
 } from "~/interface/wallets/observedWallets";
 import { type Wallet } from "~/interface/auth/Wallet";
-import { Modal } from "~/components/modal";
+import { Modal } from "~/components/Modal/Modal";
 import { isValidName } from "~/utils/validators/addWallet";
 import { structureExists } from "~/interface/structure/removeStructure";
 
@@ -342,16 +339,16 @@ export default component$(() => {
             <IconEdit />
           </div>
           <div class="flex items-center gap-2">
-            <Button
+            <ButtonWithIcon
               image="/assets/icons/portfolio/transfer.svg"
               text="Transfer"
               class="custom-border-2"
             />
-            <Button
+            <ButtonWithIcon
               image="/assets/icons/portfolio/add.svg"
               text="Add Sub Portfolio"
               class="bg-customBlue"
-              onClick$={() => {
+              onClick$={async () => {
                 isCreateNewStructureModalOpen.value =
                   !isCreateNewStructureModalOpen.value;
               }}
@@ -362,25 +359,25 @@ export default component$(() => {
           <div class="custom-border-1 flex min-h-[260px] flex-col gap-4 rounded-2xl p-6">
             <p class="text-xl font-semibold">Token list</p>
             <div class="grid grid-cols-4 gap-2">
-              <ButtonTokenList
+              <ButtonWithIcon
                 image="/assets/icons/search.svg"
                 text="Search for name"
-                class="flex-row-reverse justify-end text-opacity-50"
+                class="custom-text-50 custom-border-1 h-10 justify-start gap-2 rounded-lg px-3"
               />
-              <ButtonTokenList
+              <ButtonWithIcon
                 image="/assets/icons/arrow-down.svg"
                 text="Choose Subportfolio"
-                class=""
+                class="custom-border-1 h-10 flex-row-reverse justify-between gap-2 rounded-lg px-3"
               />
-              <ButtonTokenList
+              <ButtonWithIcon
                 image="/assets/icons/arrow-down.svg"
                 text="Choose Wallet"
-                class=""
+                class="custom-border-1 h-10 flex-row-reverse justify-between gap-2 rounded-lg px-3"
               />
-              <ButtonTokenList
+              <ButtonWithIcon
                 image="/assets/icons/arrow-down.svg"
                 text="Choose Network"
-                class=""
+                class="custom-border-1 h-10 flex-row-reverse justify-between gap-2 rounded-lg px-3"
               />
             </div>
             <div class="grid grid-rows-[40px_auto] items-center gap-4 overflow-auto text-left text-sm">

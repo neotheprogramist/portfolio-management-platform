@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "storybook-framework-qwik";
-import { ConnectButton, type ConnectButtonProps } from "./Buttons";
+import { ConnectButton, type ButtonProps } from "./Buttons";
 
-const meta: Meta<ConnectButtonProps> = {
+const meta: Meta<ButtonProps> = {
   component: ConnectButton,
 };
 
-type Story = StoryObj<ConnectButtonProps>;
+type Story = StoryObj<ButtonProps>;
 
 export default meta;
 
