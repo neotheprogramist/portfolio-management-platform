@@ -72,7 +72,6 @@ import CoinsToApprove from "~/components/forms/addWallet/CoinsToApprove";
 import AmountOfCoins from "~/components/forms/addWallet/AmountOfCoins";
 import { Button } from "~/components/blue-button/blue-button";
 // import { PendingAuthorization } from "~/components/PendingAuthorization/PendingAuthorization";
-import ImgError from "../../../../public/assets/icons/error.svg";
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
@@ -808,61 +807,62 @@ export default component$(() => {
             {stepsCounter.value === 3 ? (
               <AmountOfCoins addWalletFormStore={addWalletFormStore} />
             ) : null}
-            <div class='w-full flex items-center justify-between gap-2'>
-              {(stepsCounter.value > 1 && addWalletFormStore.isExecutable ) ? <Button
-                class="w-full  disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
-                onClick$={()=> {
-                  stepsCounter.value = stepsCounter.value - 1
-                }}
-                type="button"
-                text="Previous"
-              /> :
-              null}
-            {addWalletFormStore.isExecutable === 0 ? (
-              <Button
-                class="w-full disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
-                onClick$={handleAddWallet}
-                type="button"
-                disabled={isExecutableDisabled(addWalletFormStore)}
-                text="Add Wallet"
-              />
-            ) : stepsCounter.value === 3 ? (
-              <Button
-                class="w-full  disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
-                onClick$={handleAddWallet}
-                type="button"
-                disabled={
-                  addWalletFormStore.isExecutable
-                    ? isExecutableDisabled(addWalletFormStore)
-                    : isNotExecutableDisabled(addWalletFormStore)
-                }
-                text="Add wallet"
-              />
-            ) : (
-              <Button
-                class="w-full disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
-                onClick$={() => {
-                  if (stepsCounter.value === 2) {
-                    for (
-                      let i = 0;
-                      i < addWalletFormStore.coinsToCount.length;
-                      i++
-                    ) {
-                      addWalletFormStore.coinsToApprove.push({
-                        symbol: addWalletFormStore.coinsToCount[i],
-                        amount: "0",
-                      });
-                    }
+            <div class="flex w-full items-center justify-between gap-2">
+              {stepsCounter.value > 1 && addWalletFormStore.isExecutable ? (
+                <Button
+                  class="custom-border-1 w-full bg-transparent  disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
+                  onClick$={() => {
+                    stepsCounter.value = stepsCounter.value - 1;
+                  }}
+                  type="button"
+                  text="Back"
+                />
+              ) : null}
+              {addWalletFormStore.isExecutable === 0 ? (
+                <Button
+                  class="w-full disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
+                  onClick$={handleAddWallet}
+                  type="button"
+                  disabled={isExecutableDisabled(addWalletFormStore)}
+                  text="Add Wallet"
+                />
+              ) : stepsCounter.value === 3 ? (
+                <Button
+                  class="w-full  disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
+                  onClick$={handleAddWallet}
+                  type="button"
+                  disabled={
+                    addWalletFormStore.isExecutable
+                      ? isExecutableDisabled(addWalletFormStore)
+                      : isNotExecutableDisabled(addWalletFormStore)
                   }
-                  stepsCounter.value = stepsCounter.value + 1;
-                }}
-                disabled={isProceedDisabled(
-                  addWalletFormStore,
-                  temporaryModalStore,
-                )}
-                text="Proceed"
-              />
-            )}
+                  text="Add wallet"
+                />
+              ) : (
+                <Button
+                  class="w-full disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
+                  onClick$={() => {
+                    if (stepsCounter.value === 2) {
+                      for (
+                        let i = 0;
+                        i < addWalletFormStore.coinsToCount.length;
+                        i++
+                      ) {
+                        addWalletFormStore.coinsToApprove.push({
+                          symbol: addWalletFormStore.coinsToCount[i],
+                          amount: "0",
+                        });
+                      }
+                    }
+                    stepsCounter.value = stepsCounter.value + 1;
+                  }}
+                  disabled={isProceedDisabled(
+                    addWalletFormStore,
+                    temporaryModalStore,
+                  )}
+                  text="Proceed"
+                />
+              )}
             </div>
           </Form>
         </Modal>
@@ -887,7 +887,7 @@ export default component$(() => {
             </li>
           </ul>
           <div class="grid grid-cols-[49%_49%] gap-2">
-            <butto class=" custom-border-1 h-[48px] rounded-3xl px-2 text-center text-xs text-white duration-300 ease-in-out hover:scale-105">
+            <butto class=" custom-border-1 flex h-[48px] items-center justify-center rounded-3xl px-2 text-center text-xs text-white duration-300 ease-in-out hover:scale-105">
               Cancel
             </butto>
             <button

@@ -102,8 +102,7 @@ export default component$<AddWalletFormFieldsProps>(
               <Input
                 type="text"
                 name="address"
-                customClass={` 
-                          ${!isValidAddress(addWalletFormStore.address) ? "border-red-700" : ""} mt-4 w-full`}
+                customClass={`${!isValidAddress(addWalletFormStore.address) ? "border-red-700" : ""} mt-4 w-full`}
                 value={addWalletFormStore.address}
                 placeholder="Enter wallet address..."
                 onInput={$((e) => {
@@ -135,8 +134,9 @@ export default component$<AddWalletFormFieldsProps>(
                 <div
                   class={`mb-8 mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-[#24A148] bg-[#24A148] bg-opacity-10 p-3 text-[#24A148]`}
                 >
-                  wallet address
-                  {/* {addWalletFormStore.address.substring(0,6)}... */}
+                  {addWalletFormStore.address
+                    ? `${addWalletFormStore.address.substring(0, 6)}...`
+                    : "wallet address"}
                 </div>
               ) : (
                 <div

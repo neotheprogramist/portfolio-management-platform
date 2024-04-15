@@ -11,14 +11,10 @@ type Story = StoryObj<CheckBoxProps>;
 export default meta;
 
 export const checkbox: Story = {
-  render: () => <CheckBox
-  onClick={$(() => {})}
-  name='name'
-  value='1'
-  checked={false}
-  />,
+  render: () => (
+    <CheckBox onClick={$(() => {})} name="name" value="1" checked={false} />
+  ),
 };
-
 
 // <input
 //   class="ml-2"

@@ -15,7 +15,9 @@ export default meta;
 export const WithCheckbox: Story = {
   render: () => (
     <FormBadge
-      input={<CheckBox value="1" checked={false} name="name" onClick={$(()=>{})} />}
+      input={
+        <CheckBox value="1" checked={false} name="name" onClick={$(() => {})} />
+      }
       image="/assets/icons/tokens/btc.svg"
       text="Bitcoin"
       description="BTC"

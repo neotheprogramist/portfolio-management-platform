@@ -1,4 +1,4 @@
-import { JSXOutput, component$ } from "@builder.io/qwik";
+import { type JSXOutput, component$ } from "@builder.io/qwik";
 
 export interface FormBadgeProps {
   hasText?: boolean;
@@ -7,7 +7,7 @@ export interface FormBadgeProps {
   image?: string;
   placeholder?: string;
   input?: JSXOutput | null;
-  class?: string
+  class?: string;
 }
 
 export const FormBadge = component$<FormBadgeProps>((props) => {

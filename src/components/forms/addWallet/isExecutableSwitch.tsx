@@ -23,7 +23,7 @@ export default component$<AddWalletFormProps>(({ addWalletFormStore }) => {
               console.log("isExecutable", !!addWalletFormStore.isExecutable);
             }}
             type="button"
-            class={`${addWalletFormStore.isExecutable ?  "bg-black" : "custom-bg-button" }  col-span-1 rounded p-2.5  text-white`}
+            class={`${addWalletFormStore.isExecutable ? "bg-black" : "custom-bg-button"}  col-span-1 rounded p-2.5  text-white`}
           >
             Observable
           </button>
@@ -33,7 +33,7 @@ export default component$<AddWalletFormProps>(({ addWalletFormStore }) => {
               console.log("isExecutable", !!addWalletFormStore.isExecutable);
             }}
             type="button"
-            class={`${addWalletFormStore.isExecutable ?  "custom-bg-button" : "bg-black" } col-span-1 rounded p-2.5  text-white`}
+            class={`${addWalletFormStore.isExecutable ? "custom-bg-button" : "bg-black"} col-span-1 rounded p-2.5  text-white`}
           >
             Executable
           </button>
