@@ -3,7 +3,11 @@ import type WebSocketStrategy from "surrealdb.js";
 import { checksumAddress } from "viem";
 import { connectToDB } from "~/utils/db";
 
-export const onPost: RequestHandler = async ({ request, env, json, status }) => {
+export const onPost: RequestHandler = async ({
+  request,
+  env,
+  json,
+}) => {
   // json(200, { message: "Hello from webhook!" });
   const db = await connectToDB(env);
   const webhook = await request.json();
