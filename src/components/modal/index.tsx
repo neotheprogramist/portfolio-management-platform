@@ -27,7 +27,7 @@ export const Modal = component$<ModalProps>(
             event.stopPropagation();
           }}
           class={twMerge(
-            "custom-border-1 relative h-fit w-1/3 rounded-xl bg-black p-6 ",
+            "custom-border-1 relative h-fit w-1/3 rounded-xl bg-black p-6",
             customClass,
           )}
         >

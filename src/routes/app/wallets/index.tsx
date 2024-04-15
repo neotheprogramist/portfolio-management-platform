@@ -811,7 +811,7 @@ export default component$(() => {
             <div class="flex w-full items-center justify-between gap-2">
               {stepsCounter.value > 1 && addWalletFormStore.isExecutable ? (
                 <Button
-                  class="custom-border-1 w-full bg-transparent  disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
+                  class="custom-border-1 w-full bg-transparent disabled:scale-100 disabled:cursor-default disabled:border disabled:border-white disabled:border-opacity-10 disabled:bg-white disabled:bg-opacity-10 disabled:text-opacity-20"
                   onClick$={() => {
                     stepsCounter.value = stepsCounter.value - 1;
                   }}
@@ -821,7 +821,7 @@ export default component$(() => {
               ) : null}
               {addWalletFormStore.isExecutable === 0 ? (
                 <Button
-                  class="w-full disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
+                  class="w-full disabled:scale-100 disabled:cursor-default disabled:border disabled:border-white disabled:border-opacity-10 disabled:bg-white disabled:bg-opacity-10 disabled:text-opacity-20"
                   onClick$={handleAddWallet}
                   type="button"
                   disabled={isExecutableDisabled(addWalletFormStore)}
@@ -829,7 +829,7 @@ export default component$(() => {
                 />
               ) : stepsCounter.value === 3 ? (
                 <Button
-                  class="w-full  disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
+                  class="w-full disabled:scale-100 disabled:cursor-default disabled:border disabled:border-white disabled:border-opacity-10 disabled:bg-white disabled:bg-opacity-10 disabled:text-opacity-20"
                   onClick$={handleAddWallet}
                   type="button"
                   disabled={
@@ -841,7 +841,7 @@ export default component$(() => {
                 />
               ) : (
                 <Button
-                  class="w-full disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
+                  class="w-full disabled:scale-100 disabled:cursor-default disabled:border disabled:border-white disabled:border-opacity-10 disabled:bg-white disabled:bg-opacity-10 disabled:text-opacity-20"
                   onClick$={() => {
                     if (stepsCounter.value === 2) {
                       for (
