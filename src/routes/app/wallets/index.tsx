@@ -899,7 +899,10 @@ export default component$(() => {
             </ul>
           </div>
           <div class="grid grid-cols-[49%_49%] gap-2">
-            <button class="custom-border-1 flex h-[48px] items-center justify-center rounded-3xl px-2 text-center text-xs text-white duration-300 ease-in-out hover:scale-105">
+            <button
+              class="custom-border-1 flex h-[48px] items-center justify-center rounded-3xl px-2 text-center text-xs text-white duration-300 ease-in-out hover:scale-105"
+              onClick$={() => (isDeleteModalOpen.value = false)}
+            >
               Cancel
             </button>
             <button
