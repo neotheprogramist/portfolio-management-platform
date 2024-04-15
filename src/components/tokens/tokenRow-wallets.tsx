@@ -29,7 +29,7 @@ export const TokenRowWallets = component$<TokenRowWalletsProps>(
     balanceValueUSD,
     isTransferModalOpen,
     transferredCoin,
-    allowance,
+    // allowance,
   }) => {
     console.log("imagePath", imagePath);
     const imageTransformer$ = $(
@@ -44,9 +44,9 @@ export const TokenRowWallets = component$<TokenRowWalletsProps>(
     });
     return (
       <>
-        <div class="custom-border-b-1 grid grid-cols-[20%_13%_13%_14%_20%_8%_7%] items-center gap-[8px] py-2 text-left text-[14px] text-opacity-50">
+        <div class="custom-border-b-1 grid grid-cols-[22%_12%_15%_22%_20%_4%] items-center gap-2 py-2 text-sm">
           <div class="flex items-center gap-4 py-2">
-            <div class="custom-border-1 rounded-lg bg-white bg-opacity-10 p-2">
+            <div class="custom-border-1 rounded-lg p-[10px]">
               <Image
                 layout="constrained"
                 objectFit="fill"
@@ -57,19 +57,19 @@ export const TokenRowWallets = component$<TokenRowWalletsProps>(
               />
             </div>
             <p class="">
-              {name} <span class="custom-text-50 text-xs">{symbol}</span>
+              {name} <span class="pl-1 custom-text-50 text-xs">{symbol}</span>
             </p>
           </div>
-          <div class="">{balance}</div>
-          <div class="">${balanceValueUSD}</div>
-          <div class="">{allowance}</div>
-          <div class="flex h-full items-center  gap-4">
+          <div class="overflow-auto">{balance}</div>
+          <div class="overflow-auto">${balanceValueUSD}</div>
+          {/* <div class="">{allowance}</div> */}
+          <div class="flex h-full items-center gap-4">
             <span class="text-customGreen">3,6%</span>
             <IconGraph />
           </div>
           <div class="text-left">
             <button
-              class="custom-border-1 rounded-lg p-1.5 "
+              class=""
               onClick$={() => {
                 isTransferModalOpen.value = !isTransferModalOpen.value;
                 transferredCoin.symbol = symbol;
@@ -81,7 +81,7 @@ export const TokenRowWallets = component$<TokenRowWalletsProps>(
           </div>
 
           <div class="text-right">
-            <button class="custom-border-1 rounded-lg p-1">
+            <button class="">
               <IconMenuDots />
             </button>
           </div>
