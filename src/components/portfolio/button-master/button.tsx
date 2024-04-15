@@ -28,7 +28,7 @@ export const ButtonTokenList = component$<ButtonProps>((props) => {
     <button
       onClick$={props.onClick$}
       class={twMerge(
-        "custom-border-1 flex h-10 items-center justify-between gap-2 rounded-2 bg-transparent px-3 text-xs text-white ",
+        "custom-border-1 flex h-10 items-center justify-between gap-2 rounded-lg bg-transparent px-3 text-xs text-white ",
         props.class,
       )}
     >

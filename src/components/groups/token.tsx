@@ -19,7 +19,7 @@ export const Token = component$<TokenProps>((props) => {
     <>
       <div class="custom-border-b-1 grid grid-cols-[18%_13%_15%_18%_10%_10%_13%_6%] items-center text-nowrap py-4 text-sm">
         <div class="flex h-10 items-center gap-1">
-          <div class="custom-border-1 flex items-center justify-center rounded-2 p-2">
+          <div class="custom-border-1 flex items-center justify-center rounded-lg p-2">
             {props.icon && <img src={props.icon} width="20" height="20" />}
           </div>
           <div class="flex h-full items-center gap-1 overflow-x-auto">
@@ -47,7 +47,7 @@ export const Token = component$<TokenProps>((props) => {
           </button>
         </div>
         <button
-          class="flex h-7 w-7 items-center justify-center rounded-2"
+          class="flex h-7 w-7 items-center justify-center rounded-lg"
           onClick$={props.onClick$}
         >
           <IconDelete />

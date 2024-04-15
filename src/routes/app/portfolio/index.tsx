@@ -359,7 +359,7 @@ export default component$(() => {
           </div>
         </div>
         <div class="grid">
-          <div class="custom-border-1 flex min-h-[260px] flex-col gap-4 rounded-4 p-6">
+          <div class="custom-border-1 flex min-h-[260px] flex-col gap-4 rounded-2xl p-6">
             <p class="text-xl font-semibold">Token list</p>
             <div class="grid grid-cols-4 gap-2">
               <ButtonTokenList
@@ -389,9 +389,9 @@ export default component$(() => {
                 <div class="">QUANTITY</div>
                 <div class="">VALUE</div>
                 <div class="custom-bg-white custom-border-1 flex h-8 w-fit gap-2 rounded-lg p-[2px] text-center text-white">
-                  <button class="custom-bg-button rounded-2 px-2">24h</button>
-                  <button class="rounded-2 px-2">3d</button>
-                  <button class="rounded-2 px-2">30d</button>
+                  <button class="custom-bg-button rounded-lg px-2">24h</button>
+                  <button class="rounded-lg px-2">3d</button>
+                  <button class="rounded-lg px-2">30d</button>
                 </div>
                 <div class="">WALLET</div>
                 <div class="">NETWORK</div>
@@ -470,7 +470,7 @@ export default component$(() => {
                       class="walletLabel custom-border-1 relative block h-12 w-full cursor-pointer rounded-lg bg-transparent outline-none"
                     >
                       {selectedWallets.wallets.length > 0 && (
-                        <div class="custom-bg-button absolute start-2 top-[0.45rem] flex h-8 w-fit gap-2 rounded-[6px] px-3 py-1.5">
+                        <div class="custom-bg-button absolute start-2 top-[0.45rem] flex h-8 w-fit gap-2 rounded-md px-3 py-1.5">
                           <p>{selectedWallets.wallets.length} selections</p>
                           <button
                             class="cursor-pointer"
@@ -648,7 +648,7 @@ export default component$(() => {
                       class="tokenLabel custom-border-1 relative block h-12 w-full cursor-pointer rounded-lg bg-transparent outline-none"
                     >
                       {selectedTokens.balances.length > 0 && (
-                        <div class="custom-bg-button absolute start-2 top-[0.45rem] flex h-8 w-fit gap-2 rounded-[6px] px-3 py-1.5">
+                        <div class="custom-bg-button absolute start-2 top-[0.45rem] flex h-8 w-fit gap-2 rounded-md px-3 py-1.5">
                           <p>{selectedTokens.balances.length} selections</p>
                           <button
                             class="cursor-pointer"
@@ -754,14 +754,14 @@ export default component$(() => {
                   <div class="flex gap-4">
                     <button
                       type="submit"
-                      class="custom-border-1 h-12 w-[50%] rounded-[48px] duration-300 ease-in-out hover:scale-105"
+                      class="custom-border-1 h-12 w-1/2 rounded-[48px] duration-300 ease-in-out hover:scale-105"
                       disabled={!isValidName(structureStore.name)}
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      class=" h-12 w-[50%] rounded-[48px] bg-blue-500 duration-300 ease-in-out hover:scale-105"
+                      class=" h-12 w-1/2 rounded-[48px] bg-blue-500 duration-300 ease-in-out hover:scale-105"
                       disabled={!isValidName(structureStore.name)}
                     >
                       Add token
@@ -771,8 +771,8 @@ export default component$(() => {
               </Modal>
             )}
           </div>
-          {/* <div class="custom-border-1 custom-bg-white flex w-[322px] flex-col gap-[24px] overflow-auto rounded-[16px] p-[24px]">
-            <div class="flex h-[32px] items-center justify-between">
+          {/* <div class="custom-border-1 custom-bg-white flex w-[322px] flex-col gap-6 overflow-auto rounded-2xl p-6">
+            <div class="flex h-8 items-center justify-between">
               <p class="text-[20px] font-semibold">Details</p>
               <Button
                 image="/assets/icons/portfolio/rebalance.svg"
@@ -780,28 +780,28 @@ export default component$(() => {
                 class="custom-border-2"
               />
             </div>
-            <div class="flex h-auto items-center gap-[16px]">
-              <div class="custom-border-1 flex h-[44px] w-[44px] items-center justify-center rounded-[8px]">
-                <IconBtc width={24} height={24} class="min-w-[24px]" />
+            <div class="flex h-auto items-center gap-4">
+              <div class="custom-border-1 flex h-11 w-11 items-center justify-center rounded-lg">
+                <IconBtc width={24} height={24} class="min-w-6" />
               </div>
-              <div class="flex flex-col gap-[8px]">
-                <h4 class="text-[14px] font-medium">Bitcoin</h4>
-                <p class="text-[12px] text-white text-opacity-50">BTC</p>
+              <div class="flex flex-col gap-2">
+                <h4 class="text-sm font-medium">Bitcoin</h4>
+                <p class="text-xs text-white text-opacity-50">BTC</p>
               </div>
             </div>
             <p class="text-[16px] font-medium">$82 617,96</p>
-            <div class="custom-border-1  custom-bg-white grid grid-cols-4 items-center rounded-[8px] px-[4px] py-[3.5px] text-[12px] font-normal">
-              <button class="custom-bg-button rounded-[6px] p-[8px]">
+            <div class="custom-border-1  custom-bg-white grid grid-cols-4 items-center rounded-lg px-1 py-1 text-xs font-normal">
+              <button class="custom-bg-button rounded-md p-2">
                 Hour
               </button>
-              <button class="rounded-[6px] p-[8px]">Day</button>
-              <button class="rounded-[6px] p-[8px]">Month</button>
-              <button class="rounded-[6px] p-[8px]">Year</button>
+              <button class="rounded-md p-2">Day</button>
+              <button class="rounded-md p-2">Month</button>
+              <button class="rounded-md p-2">Year</button>
             </div>
             <ImgChart />
-            <div class="flex flex-col gap-[16px]">
-              <h4 class="text-[14px] font-medium">Market data</h4>
-              <p class="text-[12px] font-thin leading-[180%]">
+            <div class="flex flex-col gap-4">
+              <h4 class="text-sm font-medium">Market data</h4>
+              <p class="text-xs font-thin leading-[180%]">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                 Pellentesque quis rutrum mi. Fusce elit est, condimentum eget
                 various et, tempor in erat. Fusce vulputate faucibus arcu id

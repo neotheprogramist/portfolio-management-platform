@@ -13,9 +13,6 @@ export default {
         customGreen: "#4CAF50"
       },
       borderRadius: {
-        1: "4px",
-        2: "8px",
-        4: "16px",
         5: "20px",
         10: "40px"
 

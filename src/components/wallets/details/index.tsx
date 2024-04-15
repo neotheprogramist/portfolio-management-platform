@@ -32,21 +32,21 @@ export const SelectedWalletDetails = component$<SelectedWalletProps>(
               {selectedWallet.value.wallet.name}
             </h1>
             <div class="mt-4 flex gap-2">
-              <span class="custom-btn-gradient flex h-7 items-center rounded-2 px-[1px] text-xs ">
-                <div class="flex h-[26px] items-center rounded-2 bg-black px-3">
+              <span class="custom-btn-gradient flex h-7 items-center rounded-lg px-[1px] text-xs ">
+                <div class="flex h-[26px] items-center rounded-lg bg-black px-3">
                   Executable
                 </div>
               </span>
-              <span class="custom-text-50 custom-border-1 flex items-center gap-2 rounded-2 px-2 text-xs">
+              <span class="custom-text-50 custom-border-1 flex items-center gap-2 rounded-lg px-2 text-xs">
                 <IconWallet />
                 {/* {selectedWallet.value.wallet.address} */}
                 0x5B...83db
               </span>
-              <span class="custom-text-50 custom-border-1 flex items-center gap-2 rounded-2 px-2 text-xs">
+              <span class="custom-text-50 custom-border-1 flex items-center gap-2 rounded-lg px-2 text-xs">
                 <IconEthereum />
                 {chainIdToNetworkName[selectedWallet.value.wallet.chainId]}
               </span>
-              <span class="flex items-center gap-2 text-nowrap rounded-2 border border-customBlue px-2 text-xs text-customBlue">
+              <span class="flex items-center gap-2 text-nowrap rounded-lg border border-customBlue px-2 text-xs text-customBlue">
                 <IconLoading />
                 Loading Tokens 5/10
               </span>
@@ -76,10 +76,10 @@ export const SelectedWalletDetails = component$<SelectedWalletProps>(
             <div class="">Quantity</div>
             <div class="">Value</div>
             {/* <div class="">Allowance</div> */}
-            <div class="custom-border-1 flex h-8 w-fit gap-2 rounded-[8px] bg-white bg-opacity-5 p-1 text-white">
-              <button class="custom-bg-button rounded-2 px-2">24h</button>
-              <button class="rounded-2 px-2">3d</button>
-              <button class="rounded-2 px-2">30d</button>
+            <div class="custom-border-1 flex h-8 w-fit gap-2 rounded-lg bg-white bg-opacity-5 p-1 text-white">
+              <button class="custom-bg-button rounded-lg px-2">24h</button>
+              <button class="rounded-lg px-2">3d</button>
+              <button class="rounded-lg px-2">30d</button>
             </div>
             <div class="">Authorization</div>
             <div></div>

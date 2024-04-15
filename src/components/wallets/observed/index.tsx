@@ -13,13 +13,13 @@ export const ObservedWallet = component$<ObservedWalletProps>(
   ({ observedWallet, selectedWallet, chainIdToNetworkName }) => {
     return (
       <div
-        class="flex h-14 cursor-pointer items-center justify-between rounded-2"
+        class="flex h-14 cursor-pointer items-center justify-between rounded-lg"
         onClick$={() => {
           selectedWallet.value = observedWallet;
         }}
       >
         <div class="flex items-center gap-3">
-          <div class="custom-border-1 flex h-6 w-6 items-center justify-center rounded-1 bg-white bg-opacity-5">
+          <div class="custom-border-1 flex h-6 w-6 items-center justify-center rounded bg-white bg-opacity-5">
             <IconEthereum />
           </div>
           <div class="">

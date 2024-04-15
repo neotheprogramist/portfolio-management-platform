@@ -722,7 +722,7 @@ export default component$(() => {
 
   return (
     <div class="grid grid-cols-[1fr_3fr] gap-6 p-6">
-      <div class="custom-border-1 grid grid-rows-[32px_88px_1fr] gap-6 rounded-4 p-6">
+      <div class="custom-border-1 grid grid-rows-[32px_88px_1fr] gap-6 rounded-2xl p-6">
         <div class="flex items-center justify-between gap-2">
           <h1 class="text-xl font-semibold">Wallets</h1>
           <button
@@ -762,7 +762,7 @@ export default component$(() => {
 
       <div class="grid gap-6">
         {/* <PendingAuthorization/> */}
-        <div class="custom-border-1 grid grid-rows-[64px_24px_1fr] gap-4 rounded-5 p-6">
+        <div class="custom-border-1 grid grid-rows-[64px_24px_1fr] gap-4 rounded-2xl p-6">
           {selectedWallet.value && (
             <SelectedWalletDetails
               key={selectedWallet.value.wallet.address}
@@ -915,7 +915,7 @@ export default component$(() => {
                   isDeleteModalOpen.value = false;
                 }
               }}
-              class=" h-[48px] rounded-3xl bg-red-500 px-2 text-center text-sm text-white duration-300 ease-in-out hover:scale-105"
+              class="h-8 rounded-3xl bg-red-500 px-2 text-center text-sm text-white duration-300 ease-in-out hover:scale-105"
             >
               Yes, let’s do it!
             </button>
@@ -927,7 +927,7 @@ export default component$(() => {
         <Modal isOpen={isTransferModalOpen} title="Transfer">
           <Form>
             <div class="p-4">
-              <p class="mb-[16px] mt-4 flex items-center gap-2 text-sm">
+              <p class="mb-4 mt-4 flex items-center gap-2 text-sm">
                 {transferredCoin.symbol ? transferredCoin.symbol : null}
               </p>
 
@@ -978,7 +978,7 @@ export default component$(() => {
                 ) : null}
               </span>
               <button
-                class="custom-border-1 custom-bg-white row-span-1 row-start-3 mb-[24px] flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-xs text-white"
+                class="custom-border-1 custom-bg-white row-span-1 row-start-3 mb-6 flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-xs text-white"
                 onClick$={() => handleTransfer()}
               >
                 transfer
