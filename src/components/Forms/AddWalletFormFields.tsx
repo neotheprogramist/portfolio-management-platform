@@ -10,6 +10,7 @@ import {
   isValidName,
 } from "~/utils/validators/addWallet";
 import IconSuccess from "/public/assets/icons/dashboard/success.svg?jsx";
+import { Button } from "../Buttons/Buttons";
 
 export interface AddWalletFormFieldsProps {
   addWalletFormStore: addWalletFormStore;
@@ -45,12 +46,12 @@ export default component$<AddWalletFormFieldsProps>(
         {/* Name */}
         <div>
           {!isValidName(addWalletFormStore.name) && (
-            <span class="absolute start-[70px] pt-[1px] text-xs text-red-500">
+            <span class="absolute end-6 pt-[1px] text-xs text-red-500">
               Name too short
             </span>
           )}
           {!addWalletFormStore.isNameUnique && (
-            <span class="absolute start-[70px] pt-[1px] text-xs text-red-500">
+            <span class="absolute end-6 pt-[1px] text-xs text-red-500">
               Name already exists
             </span>
           )}
@@ -90,7 +91,7 @@ export default component$<AddWalletFormFieldsProps>(
               <div>
                 <button
                   onClick$={onConnectWalletClick}
-                  class={`h-8 rounded-3xl border-none ${isWalletConnected ? "" : "bg-customBlue"} px-4 text-xs font-semibold text-white duration-300 ease-in-out hover:scale-105`}
+                  class={`h-8 rounded-3xl border-none ${isWalletConnected ? "custom-border-1" : "bg-customBlue"} px-4 text-xs font-semibold text-white duration-300 ease-in-out hover:scale-105`}
                 >
                   {isWalletConnected ? "Disconnect " : "Connect Wallet"}
                 </button>
@@ -112,10 +113,11 @@ export default component$<AddWalletFormFieldsProps>(
                 })}
               />
 
-              <button
-                class="custom-border-1 ml-2 h-8 rounded-3xl px-2 text-xs font-normal text-white disabled:cursor-default disabled:bg-[#e6e6e6] disabled:text-gray-500"
+              <Button
+                class="custom-border-1 ml-2 h-8 rounded-3xl px-2 text-xs font-normal text-white disabled:scale-100 disabled:cursor-default disabled:border disabled:border-white disabled:border-opacity-10 disabled:bg-white disabled:bg-opacity-10 disabled:text-opacity-20"
                 type="button"
-                onClick$={() => {
+                text="Convert"
+                onClick$={async () => {
                   addWalletFormStore.address = getAddress(
                     addWalletFormStore.address,
                   );
@@ -125,9 +127,7 @@ export default component$<AddWalletFormFieldsProps>(
                   !isValidAddress(addWalletFormStore.address) ||
                   !isCheckSum(addWalletFormStore.address)
                 }
-              >
-                Convert
-              </button>
+              />
             </div>
           ) : (
             <div>
