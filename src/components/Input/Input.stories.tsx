@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "storybook-framework-qwik";
-import { Input, type InputProps } from "./Input2";
+import { Input, type InputProps } from "./Input";
 
 const meta: Meta<InputProps> = {
   component: Input,

@@ -21,7 +21,7 @@ import { contractABI } from "~/abi/abi";
 import { type Wallet } from "~/interface/auth/Wallet";
 import { connectToDB } from "~/utils/db";
 import { chainIdToNetworkName } from "~/utils/chains";
-import { Modal } from "~/components/Modal/Modal2";
+import { Modal } from "~/components/Modal/Modal";
 import { SelectedWalletDetails } from "~/components/Wallets/Details/SelectedWalletDetails";
 import { ObservedWallet } from "~/components/Wallets/Observed/ObservedWallet";
 import { type Balance } from "~/interface/balance/Balance";

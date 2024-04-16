@@ -5,7 +5,7 @@ import {
   type Structure,
   type StructureBalance,
 } from "~/interface/structure/Structure";
-import { TokenRow } from "~/components/Groups/TokenRow2";
+import { TokenRow } from "~/components/Groups/TokenRow";
 import { convertWeiToQuantity } from "~/utils/formatBalances/formatTokenBalance";
 import { chainIdToNetworkName } from "~/utils/chains";
 import IconDelete from "/public/assets/icons/delete-white.svg?jsx";

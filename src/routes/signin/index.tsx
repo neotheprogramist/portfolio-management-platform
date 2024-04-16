@@ -1,7 +1,7 @@
 import { $, component$, useContext } from "@builder.io/qwik";
 import { useLocation, useNavigate } from "@builder.io/qwik-city";
 import { Button } from "~/components/Buttons/Buttons";
-import { Copyright } from "~/components/Paragraph/Paragraph2";
+import { Copyright } from "~/components/Paragraph/Paragraph";
 import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
 import {
   getNonceServer,
