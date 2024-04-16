@@ -684,7 +684,7 @@ export default component$(() => {
         <div class="flex items-center justify-between gap-2">
           <h1 class="text-xl font-semibold">Wallets</h1>
           <button
-            class="custom-border-2 h-8 cursor-pointer text-nowrap rounded-10 px-4 text-xs font-medium duration-300 ease-in-out hover:scale-110"
+            class="custom-border-opacity-30 h-8 cursor-pointer text-nowrap rounded-10 px-4 text-xs font-medium duration-300 ease-in-out hover:scale-110"
             onClick$={() => {
               isAddWalletModalOpen.value = !isAddWalletModalOpen.value;
             }}
@@ -873,7 +873,7 @@ export default component$(() => {
                   isDeleteModalOpen.value = false;
                 }
               }}
-              class="h-8 rounded-3xl bg-red-500 px-2 text-center text-sm text-white duration-300 ease-in-out hover:scale-105"
+              class="h-12 rounded-3xl bg-red-500 px-2 text-center text-sm text-white duration-300 ease-in-out hover:scale-105"
             >
               Yes, let’s do it!
             </button>

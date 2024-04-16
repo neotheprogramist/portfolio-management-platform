@@ -74,7 +74,7 @@ export default component$<AddWalletFormFieldsProps>(
         <div>
           <label
             for="address"
-            class="custom-text-50 flex items-center justify-between gap-2 text-xs uppercase"
+            class="custom-text-50 flex items-center justify-between gap-2 text-xs"
           >
             Wallet Address
             {!addWalletFormStore.isExecutable ? (

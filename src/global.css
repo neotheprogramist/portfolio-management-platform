@@ -97,6 +97,9 @@ body {
 .custom-border-2 {
   border: 2px solid rgba(255, 255, 255, 0.15);
 }
+.custom-border-opacity-30 {
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
 
 .custom-border-b-1 {
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
