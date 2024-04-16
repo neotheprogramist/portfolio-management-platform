@@ -26,7 +26,7 @@ export const SelectedWalletDetails = component$<SelectedWalletProps>(
     if (!selectedWallet.value) return <></>;
     let shortAddress = selectedWallet.value.wallet.address;
     if (shortAddress) {
-        shortAddress = shortAddress.slice(0, 4) + "..." + shortAddress.slice(-4);
+      shortAddress = shortAddress.slice(0, 4) + "..." + shortAddress.slice(-4);
     }
     return (
       <div class="grid grid-rows-[64px_1fr] gap-6">

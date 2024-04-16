@@ -135,11 +135,12 @@ export default component$<AddWalletFormFieldsProps>(
                 <div
                   class={`mb-8 mt-4 flex h-12 w-full items-center justify-between rounded-lg border border-customGreen bg-customGreen bg-opacity-10 p-3 text-customGreen`}
                 >
-                  <div></div> {/* don't delete this div it's for correct flex */}
+                  <div></div>{" "}
+                  {/* don't delete this div it's for correct flex */}
                   {addWalletFormStore.address
                     ? `${addWalletFormStore.address.slice(0, 4) + "..." + addWalletFormStore.address.slice(-4)}`
                     : "wallet address"}
-                  <IconSuccess width={16} height={16}/>
+                  <IconSuccess width={16} height={16} />
                 </div>
               ) : (
                 <div
