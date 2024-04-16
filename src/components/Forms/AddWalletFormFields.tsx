@@ -45,7 +45,7 @@ export default component$<AddWalletFormFieldsProps>(
         <div>
           {!isValidName(addWalletFormStore.name) && (
             <span class="absolute start-[70px] pt-[1px] text-xs text-red-500">
-              Invalid name
+              Name too short
             </span>
           )}
           {!addWalletFormStore.isNameUnique && (

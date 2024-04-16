@@ -445,7 +445,7 @@ export default component$(() => {
                     }}
                   />
                   {!isValidName(structureStore.name) && (
-                    <p class="mb-4 text-red-500">Invalid name</p>
+                    <p class="mb-4 text-red-500">Name too short</p>
                   )}
 
                   <label
