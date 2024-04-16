@@ -26,7 +26,7 @@ export default component$<AmountOfCoinsProps>(({ addWalletFormStore }) => {
                 <input
                   type="text"
                   name={`${symbol}Amount`}
-                  class={`custom-border-1 block w-full rounded bg-transparent p-3 text-sm placeholder-white placeholder-opacity-50`}
+                  class={` absolute end-2 block h-9 w-1/2 rounded border border-[#24a148] bg-transparent p-3 text-sm text-[#24a148] placeholder-white placeholder-opacity-50`}
                   placeholder={`${symbol} approval limit`}
                   value={
                     addWalletFormStore.coinsToApprove.find(
@@ -43,6 +43,7 @@ export default component$<AmountOfCoinsProps>(({ addWalletFormStore }) => {
                   }}
                 />
               }
+              hasImg={"/public/assets/icons/dashboard/success.svg?jsx"}
             />
             <span class="block pb-1 text-xs text-white">
               {!chekckIfProperAmount(
