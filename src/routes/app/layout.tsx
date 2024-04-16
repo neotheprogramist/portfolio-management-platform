@@ -8,7 +8,7 @@ import {
 } from "@builder.io/qwik";
 import { type RequestHandler } from "@builder.io/qwik-city";
 import jwt from "jsonwebtoken";
-import { Message } from "~/components/Message2/Message2";
+import { Message } from "~/components/Message/Message";
 import { Navbar } from "~/components/Navbar/Navbar";
 import { NavbarContent } from "~/components/Navbar/NavbarContent";
 
