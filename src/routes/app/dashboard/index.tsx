@@ -1,5 +1,5 @@
 import { $, component$, useSignal, useStore, useTask$ } from "@builder.io/qwik";
-import { PortfolioValue } from "~/components/PortfolioValue/PortfolioValue";
+import { PortfolioValue } from "~/components/PortfolioValue/PortfolioValue2";
 import { ActionAlertMessage } from "~/components/ActionAlertsMessage/ActionAlertsMessage";
 import {
   SuccessStatus,
