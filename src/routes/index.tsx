@@ -1,8 +1,8 @@
 import { HeroText } from "~/components/HeroText/HeroText";
 import { component$ } from "@builder.io/qwik";
 import { ConnectButton } from "~/components/Buttons/Buttons";
-import WalletConnect from "~/components/wallet-connect";
-import { Copyright } from "~/components/paragraph/paragraph";
+import WalletConnect from "~/components/WalletConnect";
+import { Copyright } from "~/components/Paragraph/Paragraph";
 import { mainnet, sepolia } from "viem/chains";
 import IconLogo from "/public/assets/icons/logo.svg?jsx";
 

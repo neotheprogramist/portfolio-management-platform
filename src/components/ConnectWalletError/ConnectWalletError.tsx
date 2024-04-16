@@ -15,9 +15,8 @@ export const ConnectWalletError = component$(() => {
       <div class="grid justify-items-center gap-4">
         <Button
           text="Try Again"
-          width="w-[284px]"
-          class="rounded-[48px] bg-black py-[13.5px] font-medium"
-          background="border-none custom-btn-gradient p-[2.5px]"
+          class="custom-btn-gradient w-[284px] border-none p-[2.5px]"
+          divClass="rounded-10 bg-black py-[13.5px] font-medium"
         />
         <p class="cursor-pointer text-xs font-medium underline">
           Go back to wallet selection
