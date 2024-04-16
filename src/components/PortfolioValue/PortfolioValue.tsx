@@ -54,8 +54,6 @@ export const PortfolioValue = component$<PortfolioValueProps>(
           (acc, curr) => Math.min(acc, curr[1]),
           Number.POSITIVE_INFINITY,
         ) * 0.999;
-      console.log(`max: ${max}`);
-      console.log(`min: ${min}`);
 
       // Declare the chart dimensions and margins.
       const width = isPortfolioFullScreen.value ? 1310 : 618;
@@ -216,7 +214,6 @@ export const PortfolioValue = component$<PortfolioValueProps>(
               class="custom-border-1 h-8 items-center rounded-lg bg-white bg-opacity-5 px-2 duration-300 ease-in-out hover:scale-110"
               onClick$={() => {
                 isPortfolioFullScreen.value = !isPortfolioFullScreen.value;
-                console.log(isPortfolioFullScreen.value);
               }}
             >
               {!isPortfolioFullScreen.value ? (

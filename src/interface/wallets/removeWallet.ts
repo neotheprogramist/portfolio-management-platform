@@ -7,7 +7,6 @@ export const walletExists = async (
   walletId: string,
 ): Promise<boolean> => {
   const queryResult = (await db.select<Wallet>(`${walletId}`)).at(0);
-  console.log("walletToRemove", queryResult);
   return !!queryResult;
 };
 
@@ -27,6 +26,5 @@ export const getUsersObservingWallet = async (
   const usersObservingWallet = (
     await db.query(`SELECT <-observes_wallet.in FROM ${walletId};`)
   ).at(0);
-  console.log("usersObservingWallet", usersObservingWallet);
   return GetUsersObservingWalletResult.array().parse(usersObservingWallet);
 };

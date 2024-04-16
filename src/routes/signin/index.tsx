@@ -18,15 +18,13 @@ export default component$(() => {
   const modalStore = useContext(ModalStoreContext);
 
   const signInHandler = $(async () => {
-    console.log("clicked");
     if (modalStore.isConnected && modalStore.config) {
-      console.log("connected");
       const { address, chainId } = getAccount(modalStore.config);
-      console.log("address", address);
+
       // const chainId = getChainId(modalStore.config);
-      console.log("chainId", chainId);
+
       const { nonce } = await getNonceServer();
-      console.log("nonce", nonce);
+
       const message = new SiweMessage({
         version: "1",
         domain: loc.url.host,
@@ -37,15 +35,15 @@ export default component$(() => {
         // Human-readable ASCII assertion that the user will sign, and it must not contain `\n`.
         statement: "Sign to continue...",
       }).prepareMessage();
-      console.log("message", message);
+
       const signature = await signMessage(modalStore.config, {
         message,
       });
-      console.log("signature", signature);
+
       const { refreshToken } = await verifyMessageServer(message, signature);
-      console.log("refreshToken", refreshToken);
+
       localStorage.setItem("refreshToken", refreshToken);
-      console.log("setting refresh token");
+
       await nav("/app/dashboard");
     }
   });

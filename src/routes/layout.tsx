@@ -53,7 +53,6 @@ export default component$(() => {
   useTask$(async function () {
     await initializeStreamIfNeeded(setupStream);
     const stream = await getStream();
-    console.log("Stream", stream);
     streamStore.streamId = stream["jsonResponse"]["id"];
   });
 

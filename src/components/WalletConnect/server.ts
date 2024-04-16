@@ -11,8 +11,7 @@ import { createUserIfNotExists } from "~/interface/user";
 
 export const getNonceServer = server$(async function () {
   const db = await connectToDB(this.env);
-  const deletedNonces = await deleteExpiredNonces(db);
-  console.log("Deleted nonces", deletedNonces);
+  await deleteExpiredNonces(db);
   const nonce = generateNonce();
   const result = await createNonce(db, nonce);
   return { nonce: result.val };
@@ -22,9 +21,7 @@ export const verifyMessageServer = server$(async function (
   message: string,
   signature: string,
 ) {
-  console.log("before connectToDB");
   const db = await connectToDB(this.env);
-  console.log("after connectToDB");
 
   const siweMessage = new SiweMessage(message);
   await deleteExpiredNonces(db);
@@ -37,7 +34,6 @@ export const verifyMessageServer = server$(async function (
 
   const { address, chainId } = verifiedSiweMessage.data;
   const userId = await createUserIfNotExists(db, address);
-  console.log("User ID", userId);
 
   const accessTokenSecret = this.env.get("ACCESS_TOKEN_SECRET");
   const refreshTokenSecret = this.env.get("REFRESH_TOKEN_SECRET");
@@ -77,9 +73,7 @@ export const getSessionServer = server$(async function () {
   }
   const tokenValidator = z.object({ address: z.string(), chainId: z.number() });
   const token = jwt.verify(accessToken.value, secret);
-  console.log(token);
   const result = tokenValidator.parse(token);
-  console.log("Decoded Token", result);
   return { address: result.address, chainId: result.chainId };
 });
 

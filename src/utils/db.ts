@@ -8,14 +8,6 @@ export const connectToDB = async (env: EnvGetter) => {
   const database = env.get("SURREALDB_DB");
   const username = env.get("SURREALDB_USER");
   const password = env.get("SURREALDB_PASS");
-  console.log(
-    "Connecting to SurrealDB",
-    url,
-    namespace,
-    database,
-    username,
-    password,
-  );
   if (!url || !namespace || !database || !username || !password) {
     const errorMessage = !url
       ? "Missing SURREALDB_URL"

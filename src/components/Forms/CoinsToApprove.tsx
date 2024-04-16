@@ -50,7 +50,6 @@ export default component$<CoinsToApproveProps>(({ addWalletFormStore }) => {
                 class="border-gradient custom-border-1 custom-bg-white checked checked:after:border-bg absolute end-2 z-10  h-6 w-6 appearance-none rounded checked:after:absolute checked:after:left-1/2 checked:after:top-1/2 checked:after:h-2.5 checked:after:w-1.5 checked:after:-translate-x-1/2 checked:after:-translate-y-1/2 checked:after:rotate-45 checked:after:border-solid hover:cursor-pointer focus:after:absolute focus:after:z-[1]"
                 checked={addWalletFormStore.coinsToCount.includes(symbol)}
                 onClick$={() => {
-                  console.log("coins: ", addWalletFormStore.coinsToCount);
                   if (!addWalletFormStore.coinsToCount.includes(symbol)) {
                     addWalletFormStore.coinsToCount = [
                       ...addWalletFormStore.coinsToCount,

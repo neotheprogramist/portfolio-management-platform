@@ -12,7 +12,6 @@ export const createNonce = async (db: Surreal, val: string) => {
   const queryResult = (
     await db.query("CREATE ONLY nonce SET val = type::string($val)", { val })
   ).at(0);
-  console.log("Created nonce", queryResult);
   return CreateNonceResult.parse(queryResult);
 };
 
@@ -30,7 +29,6 @@ export const getNonce = async (db: Surreal, val: string) => {
       },
     )
   ).at(0);
-  console.log("Got nonce", queryResult);
   return GetNonceResult.array().parse(queryResult);
 };
 
@@ -65,6 +63,5 @@ export const deleteExpiredNonces = async (db: Surreal) => {
   const queryResult = (
     await db.query("DELETE nonce WHERE exp < time::now() RETURN BEFORE")
   ).at(0);
-  console.log("Deleted expired nonces", queryResult);
   return DeleteExpiredNoncesResult.array().parse(queryResult);
 };

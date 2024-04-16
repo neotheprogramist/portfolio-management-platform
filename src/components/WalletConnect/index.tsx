@@ -71,7 +71,6 @@ export default component$<
     modalStore.config = noSerialize(config);
     watchAccount(config, {
       onChange(data) {
-        console.log("dude: ", data);
         modalStore.isConnected = data.isConnected;
         modalStore.isConnected && (modal.close(), nav("/signin"));
       },

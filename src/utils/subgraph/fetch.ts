@@ -60,7 +60,6 @@ export async function fetchSubgraphOneAccount(
   }
 
   const { account } = jsonResponse.data;
-  console.log("account", account);
 
   return AccountSchemaWithoutID.parse(account);
 }
@@ -96,7 +95,6 @@ export async function fetchSubgraphAccountsData(
   const {
     data: { accounts },
   } = await response.json();
-  console.log("accounts", accounts);
 
   return accounts.map((account: any) => AccountSchemaWithID.parse(account));
 }
