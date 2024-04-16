@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "storybook-framework-qwik";
-import { Message, type MessageProps } from "./Message";
+import { Message, type MessageProps } from "./Message2";
 
 const meta: Meta<MessageProps> = {
   component: Message,
