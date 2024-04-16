@@ -43,7 +43,7 @@ export default component$<AmountOfCoinsProps>(({ addWalletFormStore }) => {
                   }}
                 />
               }
-              hasImg={"/public/assets/icons/dashboard/success.svg?jsx"}
+              hasImg={"/assets/icons/dashboard/success.svg?jsx"}
             />
             <span class="block pb-1 text-xs text-white">
               {!chekckIfProperAmount(
