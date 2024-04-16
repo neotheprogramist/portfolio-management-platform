@@ -162,7 +162,6 @@ export const PortfolioValue = component$<PortfolioValueProps>(
             <div class="custom-bg-white custom-border-1 flex h-8 gap-2 rounded-lg p-1">
               <button
                 name="24h"
-                type="button"
                 class={
                   selectedPeriod["24h"]
                     ? "custom-bg-button rounded-lg px-2"
@@ -174,7 +173,6 @@ export const PortfolioValue = component$<PortfolioValueProps>(
               </button>
               <button
                 name="1W"
-                type="button"
                 class={
                   selectedPeriod["1W"]
                     ? "custom-bg-button rounded-lg px-2"
@@ -186,7 +184,6 @@ export const PortfolioValue = component$<PortfolioValueProps>(
               </button>
               <button
                 name="1M"
-                type="button"
                 class={
                   selectedPeriod["1M"]
                     ? "custom-bg-button rounded-lg px-2"
@@ -198,7 +195,6 @@ export const PortfolioValue = component$<PortfolioValueProps>(
               </button>
               <button
                 name="1Y"
-                type="button"
                 class={
                   selectedPeriod["1Y"]
                     ? "custom-bg-button rounded-lg px-2"
