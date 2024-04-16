@@ -75,18 +75,18 @@ export const SelectedWalletDetails = component$<SelectedWalletProps>(
           </div>
         </div>
         <div class="grid gap-4">
-          <div class="custom-text-50 grid grid-cols-[22%_12%_15%_22%_20%_4%] items-center gap-2 text-left text-xs uppercase">
+          <div class="custom-text-50 grid grid-cols-[22%_15%_15%_15%_15%_15%_3%] items-center gap-2 text-left text-xs uppercase">
             <div class="">Token name</div>
             <div class="">Quantity</div>
             <div class="">Value</div>
-            {/* <div class="">Allowance</div> */}
+            <div class="">Allowance</div>
             <div class="custom-border-1 flex h-8 w-fit gap-2 rounded-lg bg-white bg-opacity-5 p-1 text-white">
               <button class="custom-bg-button rounded-lg px-2">24h</button>
               <button class="rounded-lg px-2">3d</button>
               <button class="rounded-lg px-2">30d</button>
             </div>
             <div class="">Authorization</div>
-            <div></div>
+            {/* <div class="">Menu</div> */}
           </div>
           <div>
             {selectedWallet.value.tokens.map((token: any) => {
