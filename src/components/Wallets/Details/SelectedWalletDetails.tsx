@@ -24,6 +24,10 @@ export const SelectedWalletDetails = component$<SelectedWalletProps>(
     transferredCoin,
   }) => {
     if (!selectedWallet.value) return <></>;
+    let shortAddress = selectedWallet.value.wallet.address;
+    if (shortAddress) {
+        shortAddress = shortAddress.slice(0, 4) + "..." + shortAddress.slice(-4);
+    }
     return (
       <div class="grid grid-rows-[64px_1fr] gap-6">
         <div class="flex justify-between">
@@ -40,7 +44,7 @@ export const SelectedWalletDetails = component$<SelectedWalletProps>(
               <span class="custom-text-50 custom-border-1 flex items-center gap-2 rounded-lg px-2 text-xs">
                 <IconWallet />
                 {/* {selectedWallet.value.wallet.address} */}
-                0x5B...83db
+                {shortAddress}
               </span>
               <span class="custom-text-50 custom-border-1 flex items-center gap-2 rounded-lg px-2 text-xs">
                 <IconEthereum />

@@ -9,6 +9,7 @@ import {
   isValidAddress,
   isValidName,
 } from "~/utils/validators/addWallet";
+import IconSuccess from "/public/assets/icons/dashboard/success.svg?jsx";
 
 export interface AddWalletFormFieldsProps {
   addWalletFormStore: addWalletFormStore;
@@ -132,11 +133,13 @@ export default component$<AddWalletFormFieldsProps>(
             <div>
               {isWalletConnected ? (
                 <div
-                  class={`mb-8 mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-customGreen bg-customGreen bg-opacity-10 p-3 text-customGreen`}
+                  class={`mb-8 mt-4 flex h-12 w-full items-center justify-between rounded-lg border border-customGreen bg-customGreen bg-opacity-10 p-3 text-customGreen`}
                 >
+                  <div></div> {/* don't delete this div it's for correct flex */}
                   {addWalletFormStore.address
-                    ? `${addWalletFormStore.address.substring(0, 6)}...`
+                    ? `${addWalletFormStore.address.slice(0, 4) + "..." + addWalletFormStore.address.slice(-4)}`
                     : "wallet address"}
+                  <IconSuccess width={16} height={16}/>
                 </div>
               ) : (
                 <div
