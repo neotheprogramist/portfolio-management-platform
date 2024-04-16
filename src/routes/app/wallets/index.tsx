@@ -684,7 +684,7 @@ export default component$(() => {
         <div class="flex items-center justify-between gap-2">
           <h1 class="text-xl font-semibold">Wallets</h1>
           <button
-            class="custom-border-2 h-8 cursor-pointer text-nowrap rounded-10 px-4 text-xs font-medium duration-300 ease-in-out hover:scale-110"
+            class="custom-border-opacity-30 h-8 cursor-pointer text-nowrap rounded-10 px-4 text-xs font-medium duration-300 ease-in-out hover:scale-110"
             onClick$={() => {
               isAddWalletModalOpen.value = !isAddWalletModalOpen.value;
             }}
@@ -769,7 +769,7 @@ export default component$(() => {
             <div class="flex w-full items-center justify-between gap-2">
               {stepsCounter.value > 1 && addWalletFormStore.isExecutable ? (
                 <Button
-                  class="custom-border-1 w-full bg-transparent  disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
+                  class="custom-border-1 w-full bg-transparent text-white disabled:scale-100 disabled:cursor-default disabled:border disabled:border-white disabled:border-opacity-10 disabled:bg-white disabled:bg-opacity-10 disabled:text-opacity-20"
                   onClick$={async () => {
                     stepsCounter.value = stepsCounter.value - 1;
                   }}
@@ -779,7 +779,7 @@ export default component$(() => {
               ) : null}
               {addWalletFormStore.isExecutable === 0 ? (
                 <Button
-                  class="w-full border-0 bg-customBlue disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
+                  class="w-full border-0 bg-customBlue text-white disabled:scale-100 disabled:cursor-default disabled:border disabled:border-white disabled:border-opacity-10 disabled:bg-white disabled:bg-opacity-10 disabled:text-opacity-20"
                   onClick$={handleAddWallet}
                   type="button"
                   disabled={isExecutableDisabled(addWalletFormStore)}
@@ -787,7 +787,7 @@ export default component$(() => {
                 />
               ) : stepsCounter.value === 3 ? (
                 <Button
-                  class="w-full border-0 bg-customBlue disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
+                  class="w-full border-0 bg-customBlue text-white disabled:scale-100 disabled:cursor-default disabled:border disabled:border-white disabled:border-opacity-10 disabled:bg-white disabled:bg-opacity-10 disabled:text-opacity-20"
                   onClick$={handleAddWallet}
                   type="button"
                   disabled={
@@ -799,7 +799,7 @@ export default component$(() => {
                 />
               ) : (
                 <Button
-                  class="w-full border-0 bg-customBlue disabled:scale-100 disabled:bg-[#e6e6e6] disabled:text-gray-500"
+                  class="w-full border-0 bg-customBlue text-white disabled:scale-100 disabled:cursor-default disabled:border disabled:border-white disabled:border-opacity-10 disabled:bg-white disabled:bg-opacity-10 disabled:text-opacity-20"
                   onClick$={async () => {
                     if (stepsCounter.value === 2) {
                       for (
@@ -873,7 +873,7 @@ export default component$(() => {
                   isDeleteModalOpen.value = false;
                 }
               }}
-              class="h-8 rounded-3xl bg-red-500 px-2 text-center text-sm text-white duration-300 ease-in-out hover:scale-105"
+              class="h-12 rounded-3xl bg-red-500 px-2 text-center text-sm text-white duration-300 ease-in-out hover:scale-105"
             >
               Yes, let’s do it!
             </button>

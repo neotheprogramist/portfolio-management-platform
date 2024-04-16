@@ -579,7 +579,7 @@ export default component$(() => {
         <div class="custom-border-1 custom-shadow grid min-w-max grid-rows-[32px_1fr] gap-4 rounded-2xl p-6">
           <div class="flex items-center justify-between gap-2">
             <h1 class="text-xl font-semibold">Alerts</h1>
-            <button class="custom-border-2 rounded-10 px-4 py-2 text-xs font-medium duration-300 ease-in-out hover:scale-110">
+            <button class="custom-border-opacity-30 h-8 rounded-10 px-4 text-xs font-medium duration-300 ease-in-out hover:scale-110">
               See All
             </button>
           </div>
@@ -602,7 +602,7 @@ export default component$(() => {
         <div class="custom-border-1 custom-shadow grid min-w-max grid-rows-[32px_1fr] gap-4 rounded-2xl p-6">
           <div class="flex items-center justify-between gap-2">
             <h1 class="text-xl font-semibold">Actions</h1>
-            <button class="custom-border-2 rounded-10 px-4 py-2 text-xs font-medium duration-300 ease-in-out hover:scale-110">
+            <button class="custom-border-opacity-30 h-8 rounded-10 px-4 text-xs font-medium duration-300 ease-in-out hover:scale-110">
               See All
             </button>
           </div>
@@ -630,7 +630,7 @@ export default component$(() => {
         <div class="flex items-center justify-between">
           <h1 class="text-xl font-semibold">Favourite Tokens</h1>
           <button
-            class="custom-border-2 rounded-10 px-4 py-2 text-xs font-medium duration-300 ease-in-out hover:scale-110"
+            class="custom-border-opacity-30 h-8 rounded-10 px-4 text-xs font-medium duration-300 ease-in-out hover:scale-110"
             onClick$={() => {
               nav("/app/portfolio");
             }}

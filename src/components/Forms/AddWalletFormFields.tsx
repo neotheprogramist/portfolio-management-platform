@@ -9,6 +9,8 @@ import {
   isValidAddress,
   isValidName,
 } from "~/utils/validators/addWallet";
+import IconSuccess from "/public/assets/icons/dashboard/success.svg?jsx";
+import { Button } from "../Buttons/Buttons";
 
 export interface AddWalletFormFieldsProps {
   addWalletFormStore: addWalletFormStore;
@@ -44,12 +46,12 @@ export default component$<AddWalletFormFieldsProps>(
         {/* Name */}
         <div>
           {!isValidName(addWalletFormStore.name) && (
-            <span class="absolute start-[70px] pt-[1px] text-xs text-red-500">
+            <span class="absolute end-6 pt-[1px] text-xs text-red-500">
               Name too short
             </span>
           )}
           {!addWalletFormStore.isNameUnique && (
-            <span class="absolute start-[70px] pt-[1px] text-xs text-red-500">
+            <span class="absolute end-6 pt-[1px] text-xs text-red-500">
               Name already exists
             </span>
           )}
@@ -72,7 +74,7 @@ export default component$<AddWalletFormFieldsProps>(
         <div>
           <label
             for="address"
-            class="custom-text-50 flex items-center justify-between gap-2 text-xs uppercase"
+            class="custom-text-50 flex items-center justify-between gap-2 text-xs"
           >
             Wallet Address
             {!addWalletFormStore.isExecutable ? (
@@ -89,7 +91,7 @@ export default component$<AddWalletFormFieldsProps>(
               <div>
                 <button
                   onClick$={onConnectWalletClick}
-                  class={`h-8 rounded-3xl border-none ${isWalletConnected ? "" : "bg-customBlue"} px-4 text-xs font-semibold text-white duration-300 ease-in-out hover:scale-105`}
+                  class={`h-8 rounded-3xl border-none ${isWalletConnected ? "custom-border-1" : "bg-customBlue"} px-4 text-xs font-semibold text-white duration-300 ease-in-out hover:scale-105`}
                 >
                   {isWalletConnected ? "Disconnect " : "Connect Wallet"}
                 </button>
@@ -111,10 +113,11 @@ export default component$<AddWalletFormFieldsProps>(
                 })}
               />
 
-              <button
-                class="custom-border-1 ml-2 h-8 rounded-3xl px-2 text-xs font-normal text-white disabled:cursor-default disabled:bg-[#e6e6e6] disabled:text-gray-500"
+              <Button
+                class="custom-border-1 ml-2 h-8 rounded-3xl px-2 text-xs font-normal text-white disabled:scale-100 disabled:cursor-default disabled:border disabled:border-white disabled:border-opacity-10 disabled:bg-white disabled:bg-opacity-10 disabled:text-opacity-20"
                 type="button"
-                onClick$={() => {
+                text="Convert"
+                onClick$={async () => {
                   addWalletFormStore.address = getAddress(
                     addWalletFormStore.address,
                   );
@@ -124,19 +127,20 @@ export default component$<AddWalletFormFieldsProps>(
                   !isValidAddress(addWalletFormStore.address) ||
                   !isCheckSum(addWalletFormStore.address)
                 }
-              >
-                Convert
-              </button>
+              />
             </div>
           ) : (
             <div>
               {isWalletConnected ? (
                 <div
-                  class={`mb-8 mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-customGreen bg-customGreen bg-opacity-10 p-3 text-customGreen`}
+                  class={`mb-8 mt-4 flex h-12 w-full items-center justify-between rounded-lg border border-customGreen bg-customGreen bg-opacity-10 p-3 text-customGreen`}
                 >
+                  <div></div>{" "}
+                  {/* don't delete this div it's for correct flex */}
                   {addWalletFormStore.address
-                    ? `${addWalletFormStore.address.substring(0, 6)}...`
+                    ? `${addWalletFormStore.address.slice(0, 4) + "..." + addWalletFormStore.address.slice(-4)}`
                     : "wallet address"}
+                  <IconSuccess width={16} height={16} />
                 </div>
               ) : (
                 <div
