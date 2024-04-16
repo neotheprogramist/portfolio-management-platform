@@ -7,7 +7,6 @@ export const onPost: RequestHandler = async ({ request, env, json }) => {
   try {
     const db = await connectToDB(env);
     const webhook = await request.json();
-    console.log("WHOLE WEBHOOK:", webhook);
     const transfers = webhook["erc20Transfers"];
     if (transfers) {
       for (const transfer of transfers) {
@@ -33,10 +32,7 @@ const updateBalanceIfExists = server$(async function (
   tokenSymbol: string,
   value: string,
 ) {
-  console.log("====================================");
-  const [[updatedBalance]]: any = await db.query(
+  await db.query(
     `UPDATE balance SET value = '${value}' WHERE ->(for_wallet WHERE out.address = '${checksumAddress(address as `0x${string}`)}') AND ->(for_token WHERE out.symbol = '${tokenSymbol}');`,
   );
-  console.log("updatedBalance", updatedBalance);
-  console.log("====================================");
 });

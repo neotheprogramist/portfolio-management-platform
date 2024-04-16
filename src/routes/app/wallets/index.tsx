@@ -74,7 +74,6 @@ import ImgWarningRed from "/public/assets/icons/wallets/warning-red.svg?jsx";
 
 export const useAddWallet = routeAction$(
   async (data, requestEvent) => {
-    console.log("data", data);
     const db = await connectToDB(requestEvent.env);
     await db.query(
       `DEFINE INDEX walletAddressChainIndex ON TABLE wallet COLUMNS address, chainId UNIQUE;`,
@@ -86,7 +85,6 @@ export const useAddWallet = routeAction$(
     }
 
     const { userId } = jwt.decode(cookie.value) as JwtPayload;
-    console.log("USERID", userId);
 
     const existingWallet = await getExistingWallet(db, data.address.toString());
 
@@ -133,11 +131,6 @@ export const useAddWallet = routeAction$(
     if (!(await getExistingRelation(db, userId, walletId)).at(0)) {
       await db.query(`RELATE ONLY ${userId}->observes_wallet->${walletId};`);
     }
-
-    const streams = await Moralis.Streams.getAll({
-      limit: 100,
-    });
-    console.log("add wallet streams", streams["jsonResponse"]["result"]);
 
     return {
       success: true,
@@ -281,7 +274,7 @@ export const useObservedWallets = routeLoader$(async (requestEvent) => {
         allowance.toString(),
         token.decimals,
       );
-      console.log("formatted allowance", formattedAllowance);
+
       // Certain balance which shall be updated
       const [[balanceToUpdate]]: any = await db.query(
         `SELECT * FROM balance WHERE ->(for_wallet WHERE out = '${wallet.id}') AND ->(for_token WHERE out = '${token.id}');`,
@@ -335,8 +328,6 @@ export const convertToFraction = (numericString: string) => {
       denominator: BigInt(Math.pow(10, fractionArray[1].length)),
     };
   }
-
-  console.log(fractionObject);
   return fractionObject;
 };
 
@@ -383,7 +374,6 @@ const addAddressToStreamConfig = server$(async function (
   address: string,
 ) {
   await Moralis.Streams.addAddress({ address, id: streamId });
-  console.log("address added to stream config");
 });
 
 interface ModalStore {
@@ -404,7 +394,6 @@ export const dbBalancesStream = server$(async function* () {
       resultsStream.push(null);
       return;
     }
-    console.log("live query result", result);
     resultsStream.push(result);
   });
 
@@ -460,7 +449,6 @@ export default component$(() => {
     addWalletFormStore.address = address as `0x${string}`;
     watchAccount(config, {
       onChange(data) {
-        console.log(data);
         temporaryModalStore.isConnected = data.isConnected;
       },
     });
@@ -470,14 +458,11 @@ export default component$(() => {
   useVisibleTask$(async () => {
     const data = await dbBalancesStream();
     for await (const value of data) {
-      console.log("Stream value:", value);
       msg.value = value;
     }
   });
 
   const handleAddWallet = $(async () => {
-    console.log("IN HANDLE ADD WALLET");
-
     isAddWalletModalOpen.value = false;
 
     formMessageProvider.messages.push({
@@ -494,8 +479,6 @@ export default component$(() => {
       if (addWalletFormStore.isExecutable) {
         if (temporaryModalStore.isConnected && temporaryModalStore.config) {
           const account = getAccount(temporaryModalStore.config);
-          console.log("IN EXECUTABLE BLOCK");
-          console.log("[address]: ", account.address);
 
           addWalletFormStore.address = account.address as `0x${string}`;
 
@@ -507,8 +490,6 @@ export default component$(() => {
 
           for (const token of tokens) {
             if (addWalletFormStore.coinsToCount.includes(token.symbol)) {
-              console.log(`Trying ${token.symbol}...`);
-
               const tokenBalance = await readContract(
                 temporaryModalStore.config,
                 {
@@ -520,7 +501,6 @@ export default component$(() => {
                 },
               );
 
-              console.log(`[Balance of ${token.symbol}]: `, tokenBalance);
               const amount = addWalletFormStore.coinsToApprove.find(
                 (item) => item.symbol === token.symbol,
               )!.amount;
@@ -530,7 +510,6 @@ export default component$(() => {
               const calculation =
                 BigInt(numerator * BigInt(Math.pow(10, token.decimals))) /
                 BigInt(denominator);
-              console.log("calculation: ", calculation);
 
               if (tokenBalance) {
                 const approval = await simulateContract(
@@ -543,7 +522,7 @@ export default component$(() => {
                     args: [emethContractAddress, BigInt(calculation)],
                   },
                 );
-                console.log("[requescior simulate]: ", approval.request);
+
                 // keep receipts for now, to use waitForTransactionReceipt
                 try {
                   const receipt = await writeContract(
@@ -556,7 +535,7 @@ export default component$(() => {
                     receipt,
                   );
                 } catch (err) {
-                  console.log("Errorek: ", err);
+                  console.error("Error: ", err);
                 }
               }
             } else {
@@ -565,9 +544,6 @@ export default component$(() => {
           }
         }
         // approving logged in user by observed wallet by emeth contract
-        console.log(
-          "approving logged in user by observed wallet by emeth contract",
-        );
         const cookie = getCookie("accessToken");
         if (!cookie) throw new Error("No accessToken cookie found");
 
@@ -584,11 +560,7 @@ export default component$(() => {
           },
         );
 
-        const receipt = await writeContract(
-          temporaryModalStore.config as Config,
-          request,
-        );
-        console.log(receipt);
+        await writeContract(temporaryModalStore.config as Config, request);
       }
 
       await addWalletAction.submit({
@@ -604,7 +576,6 @@ export default component$(() => {
         isVisible: true,
       });
 
-      console.log("wallet added successfully, adding address to stream...");
       await addAddressToStreamConfig(
         streamId,
         addWalletFormStore.address as `0x${string}`,
@@ -618,7 +589,7 @@ export default component$(() => {
       temporaryModalStore.isConnected = false;
       temporaryModalStore.config = undefined;
     } catch (err) {
-      console.log("[big error]: ", err);
+      console.error("error: ", err);
       formMessageProvider.messages.push({
         id: formMessageProvider.messages.length,
         variant: "error",
@@ -632,7 +603,6 @@ export default component$(() => {
     if (!selectedWallet.value || !modalStore.config) {
       return { error: "no chosen wallet" };
     }
-    console.log("logged: ", getAccount(modalStore.config));
 
     const from = selectedWallet.value.wallet.address;
     const to = receivingWalletAddress.value;
@@ -644,7 +614,6 @@ export default component$(() => {
     const { numerator, denominator } = convertToFraction(amount);
     const calculation =
       BigInt(numerator * BigInt(Math.pow(10, decimals))) / BigInt(denominator);
-    console.log("calculation: ", calculation);
     if (
       from === "" ||
       to === "" ||
@@ -652,23 +621,16 @@ export default component$(() => {
       amount === "" ||
       !chekckIfProperAmount(transferredTokenAmount.value, /^\d*\.?\d*$/)
     ) {
-      console.log("empty values");
       return {
         error: "Values cant be empty",
       };
     } else {
-      console.log("transferring tokens...");
       isTransferModalOpen.value = false;
       const cookie = getCookie("accessToken");
       if (!cookie) throw new Error("No accessToken cookie found");
       const emethContractAddress = import.meta.env
         .PUBLIC_EMETH_CONTRACT_ADDRESS_SEPOLIA;
       try {
-        console.log("--> address: emethContractAddress", emethContractAddress);
-        console.log("--> from", from);
-        console.log("--> token", token);
-        console.log("--> to", to);
-
         const { request } = await simulateContract(modalStore.config, {
           abi: emethContractAbi,
           address: emethContractAddress,
@@ -680,7 +642,7 @@ export default component$(() => {
             BigInt(calculation),
           ],
         });
-        console.log("--> TRANSFER REQUEST", request);
+
         formMessageProvider.messages.push({
           id: formMessageProvider.messages.length,
           variant: "info",
@@ -690,7 +652,7 @@ export default component$(() => {
 
         const transactionHash = await writeContract(modalStore.config, request);
 
-        const receipt = await waitForTransactionReceipt(modalStore.config, {
+        await waitForTransactionReceipt(modalStore.config, {
           hash: transactionHash,
         });
 
@@ -700,10 +662,8 @@ export default component$(() => {
           message: "Success!",
           isVisible: true,
         });
-
-        console.log("[receipt]: ", receipt);
       } catch (err) {
-        console.log(err);
+        console.error("error", err);
         formMessageProvider.messages.push({
           id: formMessageProvider.messages.length,
           variant: "error",
@@ -715,7 +675,6 @@ export default component$(() => {
   });
 
   const connectWallet = $(() => {
-    console.log("clicked connect wallet");
     openWeb3Modal();
   });
 

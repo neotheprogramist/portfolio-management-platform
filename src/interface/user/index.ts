@@ -37,7 +37,6 @@ export const createUserIfNotExists = async (db: Surreal, address: string) => {
       address,
     })
   ).at(0);
-  console.log("Get user by address", getUserByAddressUncheckedResult);
 
   if (
     getUserByAddressUncheckedResult instanceof Array &&
@@ -46,7 +45,6 @@ export const createUserIfNotExists = async (db: Surreal, address: string) => {
     const getUserByAddressResult = GetUserByAddressValidator.parse(
       getUserByAddressUncheckedResult,
     );
-    console.log("Got user by address", getUserByAddressResult.at(0));
     return getUserByAddressResult.at(0)?.["->auth_account"].out.at(0);
   } else {
     const createAddressResult = CreateAddressValidator.parse(
@@ -54,12 +52,10 @@ export const createUserIfNotExists = async (db: Surreal, address: string) => {
         address,
       }),
     ).at(0);
-    console.log("Created address", createAddressResult);
 
     const createUserResult = CreateUserValidator.parse(
       await db.query(CreateUserQuery),
     ).at(0);
-    console.log("Created user", createUserResult);
 
     if (
       !createAddressResult ||
@@ -76,7 +72,6 @@ export const createUserIfNotExists = async (db: Surreal, address: string) => {
         user_id: createUserResult.id,
       }),
     ).at(0);
-    console.log("Related address to user", relateAddressToUserResult);
 
     return relateAddressToUserResult?.out;
   }

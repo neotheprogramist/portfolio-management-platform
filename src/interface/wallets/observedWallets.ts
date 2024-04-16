@@ -16,7 +16,6 @@ export const getResultAddresses = async (db: Surreal, userId: string) => {
   const resultAddresses = (
     await db.query(`SELECT ->observes_wallet.out.address FROM ${userId};`)
   ).at(0);
-  console.log("resultAddresses", resultAddresses);
   return GetResultAddresses.array().parse(resultAddresses);
 };
 
@@ -34,7 +33,6 @@ export const getWalletDetails = async (db: Surreal, address: string) => {
       `SELECT id, name, chainId FROM wallet WHERE address = '${getAddress(address)}';`,
     )
   ).at(0);
-  console.log("walletDetails", walletDetails);
   return GetWalletDetails.array().parse(walletDetails);
 };
 
@@ -55,7 +53,6 @@ export const getBalanceToUpdate = async (
       `SELECT * FROM balance WHERE ->(for_wallet WHERE out.address = '${getAddress(accountAddress)}') AND ->(for_token WHERE out.address = '${getAddress(tokenAddress)}');`,
     )
   ).at(0);
-  console.log("balanceToUpdate", balanceToUpdate);
   return GetBalanceToUpdate.array().parse(balanceToUpdate);
 };
 
@@ -69,7 +66,6 @@ export type GetDBTokensAddresses = z.infer<typeof GetDBTokensAddresses>;
 
 export const getDBTokensAddresses = async (db: Surreal) => {
   const tokensAddresses = (await db.query(`SELECT address FROM token;`)).at(0);
-  console.log("tokensAddresses", tokensAddresses);
   return GetDBTokensAddresses.parse(tokensAddresses);
 };
 
@@ -85,7 +81,6 @@ export const getDBTokenPriceUSD = async (db: Surreal, tokenAddress: string) => {
       `SELECT priceUSD FROM token WHERE address = '${checksumAddress(tokenAddress as `0x${string}`)}';`,
     )
   ).at(0);
-  // console.log("tokenPriceUSD", tokenPriceUSD);
   return GetDBTokenPriceUSD.array().parse(tokenPriceUSD);
 };
 

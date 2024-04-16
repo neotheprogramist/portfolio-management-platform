@@ -31,7 +31,6 @@ export const TokenRowWallets = component$<TokenRowWalletsProps>(
     transferredCoin,
     // allowance,
   }) => {
-    console.log("imagePath", imagePath);
     const imageTransformer$ = $(
       ({ src, width, height }: ImageTransformerProps): string => {
         return `${src}?height=${height}&width=${width}&format=webp&fit=fill`;

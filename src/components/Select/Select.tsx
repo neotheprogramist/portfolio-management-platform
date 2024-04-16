@@ -21,7 +21,6 @@ export const Select = component$<SelectProps>((props) => {
       <select
         onClick$={(e: any) => {
           const target = e.target as any;
-          console.log("target.value: ", target.value);
           props.onValueChange(target.value); // Użyj funkcji przekazanej przez propsy do aktualizacji wartości
         }}
         value={props.value}

@@ -155,7 +155,7 @@ export const useToggleChart = routeAction$(async (data, requestEvent) => {
         }
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
@@ -259,7 +259,6 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
               include: "percent_change",
               address: ethTokenAddress,
             });
-            console.log("Token Price", tokenPrice);
 
             partBalance += tokenBalance.raw
               .filter((item) => item.symbol === tokenPrice.raw.tokenSymbol)
@@ -295,7 +294,7 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
         }
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
     const totalValueChange = getTotalValueChange(valueChange);
 
@@ -413,10 +412,7 @@ export const useGetFavoriteTokens = routeLoader$(async (requestEvent) => {
     `SELECT * FROM ${userId}->has_structure WHERE out.name = 'Favourite Tokens';`,
   );
   if (!result.length) return [];
-  // console.log("result", result);
   const createdStructure = result[0].out;
-
-  // console.log("createdStructure", createdStructure);
   const availableStructures: any[] = [];
 
   const [structure] = await db.select(`${createdStructure}`);
@@ -440,7 +436,6 @@ export const useGetFavoriteTokens = routeLoader$(async (requestEvent) => {
     );
     const [tokenValue] = await getDBTokenPriceUSD(db, token[0].address);
     const [imagePath] = await getTokenImagePath(db, token[0].symbol);
-    // console.log("---------IMAGE PATH---------", imagePath.imagePath);
     const tokenWithBalance = {
       id: token[0].id,
       name: token[0].name,
@@ -469,7 +464,6 @@ export const useGetFavoriteTokens = routeLoader$(async (requestEvent) => {
     structureBalance: structureTokens,
   });
 
-  // console.log("Available Structures from routeloader: ", availableStructures);
   return availableStructures;
 });
 
@@ -510,9 +504,6 @@ export default component$(() => {
 
       if (changePeriod.value !== false) {
         const newChartData = await toggleChart.submit(selectedPeriod);
-        console.log("=========================");
-        console.log(newChartData);
-        console.log("=========================");
         chartDataStore.data = newChartData.value.chartData;
       }
     });

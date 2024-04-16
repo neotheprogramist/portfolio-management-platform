@@ -18,7 +18,6 @@ export const getExistingWallet = async (db: Surreal, address: string) => {
       { addr: address },
     )
   ).at(0);
-  console.log("getExistingWallet", existingWallet);
   return ExistingWalletResult.array().parse(existingWallet);
 };
 
@@ -33,7 +32,6 @@ export const getTokenByAddress = async (db: Surreal, address: string) => {
       `SELECT id FROM token where address = '${getAddress(address)}'`,
     )
   ).at(0);
-  console.log("token", tokenQueryResult);
   return TokenResult.array().parse(tokenQueryResult);
 };
 
@@ -54,7 +52,6 @@ export const getExistingRelation = async (
       `SELECT * FROM ${userId}->observes_wallet WHERE out = ${walletId};`,
     )
   ).at(0);
-  console.log("existingRelation", existingRelationQueryResult);
   return ExistingRelationResult.array().parse(existingRelationQueryResult);
 };
 
