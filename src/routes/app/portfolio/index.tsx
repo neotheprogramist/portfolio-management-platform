@@ -2,7 +2,7 @@ import { ButtonWithIcon } from "~/components/Buttons/Buttons";
 import IconEdit from "/public/assets/icons/portfolio/edit.svg?jsx";
 import IconArrowDown from "/public/assets/icons/arrow-down.svg?jsx";
 import IconClose from "/public/assets/icons/close.svg?jsx";
-import { Group } from "~/components/Groups/Group";
+import { Group } from "~/components/Groups/Group2";
 import {
   $,
   component$,
@@ -28,7 +28,7 @@ import {
   getWalletDetails,
 } from "~/interface/wallets/observedWallets";
 import { type Wallet } from "~/interface/auth/Wallet";
-import { Modal } from "~/components/Modal/Modal";
+import { Modal } from "~/components/Modal/Modal2";
 import { isValidName } from "~/utils/validators/addWallet";
 import { structureExists } from "~/interface/structure/removeStructure";
 

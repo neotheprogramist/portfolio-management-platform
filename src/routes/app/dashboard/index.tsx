@@ -5,7 +5,7 @@ import {
   SuccessStatus,
   WarningStatus,
 } from "~/components/ActionAlertsMessage/ActionStatus";
-import { TokenRow } from "~/components/Tokens/TokenRow";
+import { TokenRow } from "~/components/Tokens/TokenRow2";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 import { connectToDB } from "~/utils/db";
 import { routeAction$, routeLoader$, useNavigate } from "@builder.io/qwik-city";

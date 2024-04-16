@@ -3,7 +3,7 @@ import ImgAvatar from "/public/assets/images/avatar.png?jsx";
 import IconArrowDown from "/public/assets/icons/arrow-down.svg?jsx";
 import { ModalStoreContext } from "~/interface/web3modal/ModalStore";
 import { getAccount } from "@wagmi/core";
-import { NavLink } from "./NavLink";
+import { NavLink } from "./NavLink2";
 
 export const NavbarContent = component$(() => {
   const modalStore = useContext(ModalStoreContext);

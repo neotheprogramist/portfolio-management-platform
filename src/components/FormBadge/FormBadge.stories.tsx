@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "storybook-framework-qwik";
 import { FormBadge, type FormBadgeProps } from "./FormBadge";
-import { CheckBox } from "../Checkbox/Checkbox";
-import { Input } from "../Input/Input";
+import { CheckBox } from "../Checkbox/Checkbox2";
+import { Input } from "../Input/Input2";
 import { $ } from "@builder.io/qwik";
 
 const meta: Meta<FormBadgeProps> = {

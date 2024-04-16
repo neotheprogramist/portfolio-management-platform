@@ -1,6 +1,6 @@
 import { type QRL, component$, $ } from "@builder.io/qwik";
 import { getAddress } from "viem";
-import { Input } from "~/components/Input/Input";
+import { Input } from "~/components/Input/Input2";
 import { type addWalletFormStore } from "~/routes/app/wallets";
 import { useDebouncer } from "~/utils/debouncer";
 import {
