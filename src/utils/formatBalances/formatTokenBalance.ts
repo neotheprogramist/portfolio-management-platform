@@ -23,13 +23,16 @@ export const getTotalValueChange = (
 };
 
 export const getProperTotalValueChange = (
-  firstEntry: number, lastEntry: number
-): number => lastEntry - firstEntry
+  firstEntry: number,
+  lastEntry: number,
+): number => lastEntry - firstEntry;
 
 export const getPercentageOfTotalValueChange = (
-  firstEntryValue: number, totalValueChange: number
+  firstEntryValue: number,
+  totalValueChange: number,
 ): number => {
   if (firstEntryValue != 0) {
-    return totalValueChange / firstEntryValue * 100
-  } return 100
-}
+    return (totalValueChange / firstEntryValue) * 100;
+  }
+  return 100;
+};

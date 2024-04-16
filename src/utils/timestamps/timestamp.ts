@@ -53,8 +53,7 @@ export function getSelectedPeriodInHours(dataPeriod: PeriodState) {
 
 export function getSelectedPeriodKey(dataPeriod: PeriodState) {
   for (const key in dataPeriod) {
-    if (dataPeriod[key])
-      return key
+    if (dataPeriod[key]) return key;
   }
-  return ""
+  return "";
 }

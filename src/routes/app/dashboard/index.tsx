@@ -148,7 +148,13 @@ export const useToggleChart = routeAction$(async (data, requestEvent) => {
               .reduce((sum, currentItem) => {
                 return (
                   sum +
-                  parseFloat(convertWeiToQuantity(currentItem.balance, currentItem.decimals)) * tokenPrice.raw.usdPrice
+                  parseFloat(
+                    convertWeiToQuantity(
+                      currentItem.balance,
+                      currentItem.decimals,
+                    ),
+                  ) *
+                    tokenPrice.raw.usdPrice
                 );
               }, 0);
           }
@@ -162,16 +168,22 @@ export const useToggleChart = routeAction$(async (data, requestEvent) => {
     }
   }
 
-  let totalValueChange = 0
+  let totalValueChange = 0;
 
   if (chartData.length >= 2) {
-    totalValueChange = getProperTotalValueChange(chartData[0], chartData[chartData.length - 1])
+    totalValueChange = getProperTotalValueChange(
+      chartData[0],
+      chartData[chartData.length - 1],
+    );
   }
 
-  let percentageOfTotalValueChange = 0
+  let percentageOfTotalValueChange = 0;
 
   if (chartData.length >= 2) {
-    percentageOfTotalValueChange = getPercentageOfTotalValueChange(chartData[0], totalValueChange)
+    percentageOfTotalValueChange = getPercentageOfTotalValueChange(
+      chartData[0],
+      totalValueChange,
+    );
   }
 
   return {
@@ -248,7 +260,7 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
         });
       }
     }
-    
+
     try {
       for (let i = 0; i < chartTimestamps.length; i++) {
         try {
@@ -278,7 +290,13 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
               .reduce((sum, currentItem) => {
                 return (
                   sum +
-                  parseFloat(convertWeiToQuantity(currentItem.balance, currentItem.decimals)) * tokenPrice.raw.usdPrice
+                  parseFloat(
+                    convertWeiToQuantity(
+                      currentItem.balance,
+                      currentItem.decimals,
+                    ),
+                  ) *
+                    tokenPrice.raw.usdPrice
                 );
               }, 0);
           }
@@ -291,13 +309,19 @@ export const usePortfolio24hChange = routeLoader$(async (requestEvent) => {
       console.log(error);
     }
   }
-  let totalValueChange = 0
+  let totalValueChange = 0;
 
-  totalValueChange = getProperTotalValueChange(chartData[0], chartData[chartData.length - 1])
+  totalValueChange = getProperTotalValueChange(
+    chartData[0],
+    chartData[chartData.length - 1],
+  );
 
-  let percentageOfTotalValueChange = 0
+  let percentageOfTotalValueChange = 0;
 
-  percentageOfTotalValueChange = getPercentageOfTotalValueChange(chartData[0], totalValueChange)
+  percentageOfTotalValueChange = getPercentageOfTotalValueChange(
+    chartData[0],
+    totalValueChange,
+  );
 
   return {
     percentageOfTotalValueChange: percentageOfTotalValueChange.toFixed(2) + "%",
@@ -480,13 +504,14 @@ export default component$(() => {
   const toggleChart = useToggleChart();
   const portfolioValueChange = usePortfolio24hChange();
   const chartDataStore = useStore({
-    data: portfolioValueChange.value.chartData
+    data: portfolioValueChange.value.chartData,
   });
   const portfolioValueStore = useStore({
     selectedPeriodLabel: portfolioValueChange.value.period,
     portfolioValueChange: portfolioValueChange.value.totalValueChange,
-    portfolioPercentageValueChange: portfolioValueChange.value.percentageOfTotalValueChange,
-  })
+    portfolioPercentageValueChange:
+      portfolioValueChange.value.percentageOfTotalValueChange,
+  });
   const changePeriod = useSignal(false);
   const selectedPeriod: PeriodState = useStore({
     "24h": true,
@@ -516,8 +541,10 @@ export default component$(() => {
         console.log("=========================");
         chartDataStore.data = newChartData.value.chartData;
         portfolioValueStore.selectedPeriodLabel = newChartData.value.period;
-        portfolioValueStore.portfolioValueChange = newChartData.value.totalValueChange;
-        portfolioValueStore.portfolioPercentageValueChange = newChartData.value.percentageOfTotalValueChange;
+        portfolioValueStore.portfolioValueChange =
+          newChartData.value.totalValueChange;
+        portfolioValueStore.portfolioPercentageValueChange =
+          newChartData.value.percentageOfTotalValueChange;
       }
     });
   });
@@ -527,7 +554,9 @@ export default component$(() => {
       totalPortfolioValue={totalPortfolioValue.value}
       isPortfolioFullScreen={isPortfolioFullScreen}
       portfolioValueChange={portfolioValueStore.portfolioValueChange}
-      portfolioPercentageValueChange={portfolioValueStore.portfolioPercentageValueChange}
+      portfolioPercentageValueChange={
+        portfolioValueStore.portfolioPercentageValueChange
+      }
       chartData={chartDataStore.data}
       selectedPeriod={selectedPeriod}
       period={portfolioValueStore.selectedPeriodLabel}
@@ -543,11 +572,13 @@ export default component$(() => {
           totalPortfolioValue={totalPortfolioValue.value}
           isPortfolioFullScreen={isPortfolioFullScreen}
           portfolioValueChange={portfolioValueStore.portfolioValueChange}
-        portfolioPercentageValueChange={portfolioValueStore.portfolioPercentageValueChange}
+          portfolioPercentageValueChange={
+            portfolioValueStore.portfolioPercentageValueChange
+          }
           chartData={chartDataStore.data}
           selectedPeriod={selectedPeriod}
           period={portfolioValueStore.selectedPeriodLabel}
-        onClick$={(e: any) => {
+          onClick$={(e: any) => {
             togglePeriod(e.target.name);
             changePeriod.value = true;
           }}
