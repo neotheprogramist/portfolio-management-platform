@@ -43,7 +43,7 @@ export const TokenRow = component$<TokenRowProps>((props) => {
         <div class="flex h-full items-center overflow-auto font-medium">
           <ButtonWithIcon
             text="Swap Token"
-            image="/public/assets/icons/portfolio/swap.svg?jsx"
+            image="/assets/icons/portfolio/swap.svg?jsx"
             class="custom-border-1 py-2 text-sm "
           />
         </div>
