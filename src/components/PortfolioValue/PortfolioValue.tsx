@@ -15,13 +15,12 @@ import { type PeriodState } from "~/interface/balance/Balance";
 export interface PortfolioValueProps {
   totalPortfolioValue: string;
   isPortfolioFullScreen: Signal<boolean>;
-  portfolioValueChange?: {
-    valueChange: string;
-    percentageChange: string;
-  };
+  portfolioValueChange: string;
+  portfolioPercentageValueChange: string;
   chartData?: [number, number][];
   onClick$?: QRL<(e: any) => void>;
   selectedPeriod: PeriodState;
+  period: string;
 }
 
 export const PortfolioValue = component$<PortfolioValueProps>(
@@ -29,9 +28,11 @@ export const PortfolioValue = component$<PortfolioValueProps>(
     totalPortfolioValue,
     isPortfolioFullScreen,
     portfolioValueChange,
+    portfolioPercentageValueChange,
     onClick$,
     selectedPeriod,
     chartData,
+    period,
   }) => {
     const chart = $(() => {
       let data: [number, number][] = [];
@@ -145,9 +146,9 @@ export const PortfolioValue = component$<PortfolioValueProps>(
               ${totalPortfolioValue}
             </h1>
             <p class="text-xs">
-              24h change: {portfolioValueChange?.valueChange ?? "0"}{" "}
+              {period} change: {portfolioValueChange}{" "}
               <span class="text-customGreen">
-                {portfolioValueChange?.percentageChange ?? "0.00%"}
+                {portfolioPercentageValueChange}
               </span>
             </p>
           </div>
